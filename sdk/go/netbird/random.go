@@ -5,9 +5,9 @@ package netbird
 
 import (
 	"context"
-	"errors"
 	"reflect"
 
+	"errors"
 	"github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -21,8 +21,7 @@ type Random struct {
 
 // NewRandom registers a new resource with the given unique name, arguments, and options.
 func NewRandom(ctx *pulumi.Context,
-	name string, args *RandomArgs, opts ...pulumi.ResourceOption,
-) (*Random, error) {
+	name string, args *RandomArgs, opts ...pulumi.ResourceOption) (*Random, error) {
 	if args == nil {
 		return nil, errors.New("missing one or more required arguments")
 	}
@@ -42,8 +41,7 @@ func NewRandom(ctx *pulumi.Context,
 // GetRandom gets an existing Random resource's state with the given name, ID, and optional
 // state properties that are used to uniquely qualify the lookup (nil if not required).
 func GetRandom(ctx *pulumi.Context,
-	name string, id pulumi.IDInput, state *RandomState, opts ...pulumi.ResourceOption,
-) (*Random, error) {
+	name string, id pulumi.IDInput, state *RandomState, opts ...pulumi.ResourceOption) (*Random, error) {
 	var resource Random
 	err := ctx.ReadResource("netbird:index:Random", name, id, state, &resource, opts...)
 	if err != nil {
@@ -53,9 +51,11 @@ func GetRandom(ctx *pulumi.Context,
 }
 
 // Input properties used for looking up and filtering Random resources.
-type randomState struct{}
+type randomState struct {
+}
 
-type RandomState struct{}
+type RandomState struct {
+}
 
 func (RandomState) ElementType() reflect.Type {
 	return reflect.TypeOf((*randomState)(nil)).Elem()

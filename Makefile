@@ -29,21 +29,20 @@ help: ## Show help
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
 prepare:: ## Prepare renamed project structure
-	@if test -z "${NAME}"; then echo "NAME not set"; exit 1; fi
-	@if test -z "${REPOSITORY}"; then echo "REPOSITORY not set"; exit 1; fi
-	@if test -z "${ORG}"; then echo "ORG not set"; exit 1; fi
-	@if test ! -d "provider/cmd/pulumi-resource-${PACK}"; then "Project already prepared"; exit 1; fi # SED_SKIP
-	mv "provider/cmd/pulumi-resource-${PACK}" provider/cmd/pulumi-resource-${NAME} # SED_SKIP
-	if [[ "${OS}" != "Darwin" ]]; then \
-		find . \( -path './.git' -o -path './sdk' \) -prune -o -not -name 'go.sum' -type f -exec sed -i '/SED_SKIP/!s,github.com/pulumi/pulumi-[x]yz,${REPOSITORY},g' {} \; &> /dev/null; \
-		find . \( -path './.git' -o -path './sdk' \) -prune -o -not -name 'go.sum' -type f -exec sed -i '/SED_SKIP/!s/[xX]yz/${NAME}/g' {} \; &> /dev/null; \
-		find . \( -path './.git' -o -path './sdk' \) -prune -o -not -name 'go.sum' -type f -exec sed -i '/SED_SKIP/!s/[aA]bc/${ORG}/g' {} \; &> /dev/null; \
+	@if [ -d "provider/cmd/pulumi-resource-${PACK}" ]; then \
+		mv "provider/cmd/pulumi-resource-${PACK}" "provider/cmd/pulumi-resource-${NAME}"; \
 	fi
-	# In MacOS the -i parameter needs an empty string to execute in place.
-	if [[ "${OS}" == "Darwin" ]]; then \
-		find . \( -path './.git' -o -path './sdk' \) -prune -o -not -name 'go.sum' -type f -exec sed -i '' '/SED_SKIP/!s,github.com/pulumi/pulumi-[x]yz,${REPOSITORY},g' {} \; &> /dev/null; \
-		find . \( -path './.git' -o -path './sdk' \) -prune -o -not -name 'go.sum' -type f -exec sed -i '' '/SED_SKIP/!s/[xX]yz/${NAME}/g' {} \; &> /dev/null; \
-		find . \( -path './.git' -o -path './sdk' \) -prune -o -not -name 'go.sum' -type f -exec sed -i '' '/SED_SKIP/!s/[aA]bc/${ORG}/g' {} \; &> /dev/null; \
+	@if [[ "${OS}" != "Darwin" ]]; then \
+		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s|example.com/pulumi-netbird/sdk/go/netbird/internal|$(PROJECT)/sdk/go/netbird/internal|g' {} \; ; \
+		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s,github.com/pulumi/pulumi-[x]yz,$(REPOSITORY),g' {} \; ; \
+		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s/[xX]yz/$(NAME)/g' {} \; ; \
+		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s/[aA]bc/$(ORG)/g' {} \; ; \
+	fi
+	@if [[ "${OS}" == "Darwin" ]]; then \
+		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s|example.com/pulumi-netbird/sdk/go/netbird/internal|$(PROJECT)/sdk/go/netbird/internal|g' {} \; ; \
+		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s,github.com/pulumi/pulumi-[x]yz,$(REPOSITORY),g' {} \; ; \
+		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s/[xX]yz/$(NAME)/g' {} \; ; \
+		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s/[aA]bc/$(ORG)/g' {} \; ; \
 	fi
 
 ensure: ## Ensure Go modules are tidy

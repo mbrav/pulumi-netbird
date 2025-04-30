@@ -5,9 +5,9 @@ package netbird
 
 import (
 	"context"
-	"errors"
 	"reflect"
 
+	"errors"
 	"github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -21,8 +21,7 @@ type RandomComponent struct {
 
 // NewRandomComponent registers a new resource with the given unique name, arguments, and options.
 func NewRandomComponent(ctx *pulumi.Context,
-	name string, args *RandomComponentArgs, opts ...pulumi.ResourceOption,
-) (*RandomComponent, error) {
+	name string, args *RandomComponentArgs, opts ...pulumi.ResourceOption) (*RandomComponent, error) {
 	if args == nil {
 		return nil, errors.New("missing one or more required arguments")
 	}

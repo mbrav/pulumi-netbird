@@ -1,0 +1,20 @@
+name: provider-netbird
+runtime: yaml
+plugins:
+  providers:
+    - name: netbird
+      path: ../../bin
+
+resources:
+  myRandomResource:
+    type: netbird:Random
+    properties:
+      length: 24
+  myRandomComponent:
+    type: netbird:RandomComponent
+    properties:
+      length: 24
+
+outputs:
+  output:
+    value: ${myRandomResource.result}

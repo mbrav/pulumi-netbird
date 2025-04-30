@@ -1,0 +1,6 @@
+name: provider-netbird
+runtime: go
+plugins:
+  providers:
+    - name: netbird
+      path: ../../bin

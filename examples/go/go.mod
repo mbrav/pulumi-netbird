@@ -3,9 +3,11 @@ module provider-netbird
 go 1.24
 
 require (
-	github.com/mbrav/pulumi-netbird/sdk v0.0.1
+	github.com/mbrav/pulumi-netbird/sdk v0.0.2
 	github.com/pulumi/pulumi/sdk/v3 v3.166.0
 )
+
+replace github.com/mbrav/pulumi-netbird/sdk => ../../sdk
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
@@ -92,5 +94,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/frand v1.5.1 // indirect
 )
-
-replace github.com/mbrav/pulumi-netbird/sdk => ../../sdk

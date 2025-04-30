@@ -7,6 +7,7 @@ toolchain go1.24.2
 replace (
 	github.com/mbrav/pulumi-netbird/provider => ./provider
 	github.com/mbrav/pulumi-netbird/sdk => ./sdk
+	github.com/mbrav/pulumi-netbird/provider/cmd/pulumi-resource-netbird => ./provider/cmd/pulumi-resource-netbird
 )
 
 require (

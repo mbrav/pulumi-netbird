@@ -14,3 +14,29 @@ var _ = internal.GetEnvOrDefault
 func GetItsasecret(ctx *pulumi.Context) bool {
 	return config.GetBool(ctx, "netbird:itsasecret")
 }
+
+// Netbird API Token
+func GetNetbirdToken(ctx *pulumi.Context) string {
+	v, err := config.Try(ctx, "netbird:netbirdToken")
+	if err == nil {
+		return v
+	}
+	var value string
+	if d := internal.GetEnvOrDefault("", nil, "NETBIRD_TOKEN"); d != nil {
+		value = d.(string)
+	}
+	return value
+}
+
+// URL to Netbird API, example: https://nb.mydomain:33073
+func GetNetbirdUrl(ctx *pulumi.Context) string {
+	v, err := config.Try(ctx, "netbird:netbirdUrl")
+	if err == nil {
+		return v
+	}
+	var value string
+	if d := internal.GetEnvOrDefault("https://nb.mydomain:33073", nil, "NETBIRD_URL"); d != nil {
+		value = d.(string)
+	}
+	return value
+}

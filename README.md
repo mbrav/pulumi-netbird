@@ -1,5 +1,7 @@
 # Pulumi NetBird Native Provider
 
+![netbird_logo](./assets/logo.webp)
+
 ## Project still in WIP
 
 This repository contains the **Pulumi NetBird Provider**, a native Pulumi provider built in Go using the [`pulumi-go-provider`](https://github.com/pulumi/pulumi-go-provider) SDK. It enables you to manage **NetBird** resources—like networks, peers, groups, and access rules—declaratively using Pulumi's infrastructure-as-code framework.

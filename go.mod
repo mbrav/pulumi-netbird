@@ -1,17 +1,16 @@
 module github.com/mbrav/pulumi-netbird
 
-go 1.24
-
-toolchain go1.24.2
+go 1.24.2
 
 replace (
 	github.com/mbrav/pulumi-netbird/provider => ./provider
-	github.com/mbrav/pulumi-netbird/sdk => ./sdk
 	github.com/mbrav/pulumi-netbird/provider/cmd/pulumi-resource-netbird => ./provider/cmd/pulumi-resource-netbird
+	github.com/mbrav/pulumi-netbird/sdk => ./sdk
 )
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/netbirdio/netbird v0.43.1
 	github.com/pulumi/pulumi-go-provider v0.26.0
 	github.com/pulumi/pulumi-random/sdk/v4 v4.18.1
 	github.com/pulumi/pulumi/sdk/v3 v3.166.0
@@ -23,9 +22,7 @@ require (
 	github.com/BurntSushi/toml v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.2.0 // indirect
-	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
@@ -38,7 +35,6 @@ require (
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cheggaaa/pb v1.0.29 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
-	github.com/containerd/console v1.0.4 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/djherbis/times v1.6.0 // indirect
@@ -68,7 +64,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
-	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/natefinch/atomic v1.0.1 // indirect
 	github.com/opentracing/basictracer-go v1.1.0 // indirect
@@ -89,6 +84,7 @@ require (
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/segmentio/encoding v0.4.1 // indirect
 	github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/skeema/knownhosts v1.3.1 // indirect
 	github.com/spf13/cobra v1.9.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect

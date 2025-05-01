@@ -1,2 +1,2 @@
-// Package netbird exports types, functions, subpackages for provisioning netbird resources.
+// Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.
 package netbird

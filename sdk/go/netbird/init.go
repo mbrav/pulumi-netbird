@@ -6,8 +6,8 @@ package netbird
 import (
 	"fmt"
 
-	"github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal"
 	"github.com/blang/semver"
+	"github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -21,6 +21,8 @@ func (m *module) Version() semver.Version {
 
 func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi.Resource, err error) {
 	switch typ {
+	case "netbird:index:Network":
+		r = &Network{}
 	case "netbird:index:Random":
 		r = &Random{}
 	case "netbird:index:RandomComponent":

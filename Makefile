@@ -32,18 +32,6 @@ prepare:: ## Prepare renamed project structure
 	@if [ -d "provider/cmd/pulumi-resource-${PACK}" ]; then \
 		mv "provider/cmd/pulumi-resource-${PACK}" "provider/cmd/pulumi-resource-${NAME}"; \
 	fi
-	@if [[ "${OS}" != "Darwin" ]]; then \
-		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s|example.com/pulumi-netbird/sdk/go/netbird/internal|$(PROJECT)/sdk/go/netbird/internal|g' {} \; ; \
-		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s,github.com/pulumi/pulumi-[x]yz,$(REPOSITORY),g' {} \; ; \
-		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s/[xX]yz/$(NAME)/g' {} \; ; \
-		find ./sdk/go -name '*.go' -exec sed -i '/SED_SKIP/!s/[aA]bc/$(ORG)/g' {} \; ; \
-	fi
-	@if [[ "${OS}" == "Darwin" ]]; then \
-		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s|example.com/pulumi-netbird/sdk/go/netbird/internal|$(PROJECT)/sdk/go/netbird/internal|g' {} \; ; \
-		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s,github.com/pulumi/pulumi-[x]yz,$(REPOSITORY),g' {} \; ; \
-		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s/[xX]yz/$(NAME)/g' {} \; ; \
-		find ./sdk/go -name '*.go' -exec sed -i '' '/SED_SKIP/!s/[aA]bc/$(ORG)/g' {} \; ; \
-	fi
 
 ensure: ## Ensure Go modules are tidy
 	cd provider && go mod tidy
@@ -84,17 +72,30 @@ endef
 up: ## Deploy stack
 	$(call pulumi_login) \
 	cd ${EXAMPLES_DIR} && \
-	pulumi cancel --stack ${PACK}-dev || true && \
+	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
-	pulumi up -y
+	pulumi up --yes
 
+apply: ## Apply changes to the stack (without preview)
+	$(call pulumi_login) \
+	cd ${EXAMPLES_DIR} && \
+	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
+	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
+	pulumi up --yes --skip-preview
+
+plan: ## Preview stack changes without applying
+	$(call pulumi_login) \
+	cd ${EXAMPLES_DIR} && \
+	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
+	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
+	pulumi preview
 
 down: ## Destroy stack
 	$(call pulumi_login) \
 	cd ${EXAMPLES_DIR} && \
 	pulumi stack select ${PACK}-dev && \
-	pulumi destroy -y && \
-	pulumi stack rm ${PACK}-dev -y
+	pulumi destroy --yes && \
+	pulumi stack rm ${PACK}-dev --yes
 
 lint: ## Run Go linters
 	for DIR in "provider" "sdk" "tests" ; do \

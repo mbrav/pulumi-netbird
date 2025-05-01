@@ -5,16 +5,28 @@ plugins:
     - name: netbird
       path: ../../bin
 
+config:
+  netbird:netbirdToken: token
+  netbird:netbirdUrl: https://nb.domain:33073
+
 resources:
-  myRandomResource:
-    type: netbird:Random
+  network-management:
+    type: netbird:Network
     properties:
-      length: 24
-  myRandomComponent:
-    type: netbird:RandomComponent
+      name: Management
+      description: Network for Management
+  network-dmz:
+    type: netbird:Network
     properties:
-      length: 24
+      name: DMZ
+      description: Network for Public facing resources
 
 outputs:
-  output:
-    value: ${myRandomResource.result}
+  networkManagement:
+    value:
+      name: ${network-management.name}
+      id: ${network-management.nbId}
+  networkDmz:
+    value:
+      name: ${network-dmz.name}
+      id: ${network-dmz.nbId}

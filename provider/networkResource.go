@@ -20,7 +20,7 @@ type NetworkArgs struct {
 type NetworkState struct {
 	Name        string `pulumi:"name"`
 	Description string `pulumi:"description"`
-	NetbirdID   string `pulumi:"netbirdId"`
+	NbID        string `pulumi:"nbId"`
 }
 
 // Create a new network resource.
@@ -48,7 +48,7 @@ func (Network) Create(ctx context.Context, name string, input NetworkArgs, previ
 		return "", state, fmt.Errorf("creating network failed: %w", err)
 	}
 
-	state.NetbirdID = created.Id
+	state.NbID = created.Id
 	return name, state, nil
 }
 
@@ -59,7 +59,7 @@ func (Network) Read(ctx context.Context, id string, inputs NetworkArgs, state Ne
 		return inputs, state, err
 	}
 
-	net, err := client.Networks.Get(ctx, state.NetbirdID)
+	net, err := client.Networks.Get(ctx, state.NbID)
 	if err != nil {
 		return inputs, state, fmt.Errorf("reading network failed: %w", err)
 	}
@@ -72,7 +72,7 @@ func (Network) Read(ctx context.Context, id string, inputs NetworkArgs, state Ne
 		}, NetworkState{
 			Name:        net.Name,
 			Description: desc,
-			NetbirdID:   net.Id,
+			NbID:        net.Id,
 		}, nil
 }
 
@@ -83,7 +83,7 @@ func (Network) Update(ctx context.Context, id string, old NetworkArgs, new Netwo
 		return state, err
 	}
 
-	updated, err := client.Networks.Update(ctx, state.NetbirdID, api.PutApiNetworksNetworkIdJSONRequestBody{
+	updated, err := client.Networks.Update(ctx, state.NbID, api.PutApiNetworksNetworkIdJSONRequestBody{
 		Name:        new.Name,
 		Description: &new.Description,
 	})
@@ -92,7 +92,7 @@ func (Network) Update(ctx context.Context, id string, old NetworkArgs, new Netwo
 	}
 
 	return NetworkState{
-		NetbirdID:   updated.Id,
+		NbID:        updated.Id,
 		Name:        updated.Name,
 		Description: stringOrEmpty(updated.Description),
 	}, nil
@@ -105,7 +105,7 @@ func (Network) Delete(ctx context.Context, id string, props NetworkState) error 
 		return err
 	}
 
-	if err := client.Networks.Delete(ctx, props.NetbirdID); err != nil {
+	if err := client.Networks.Delete(ctx, props.NbID); err != nil {
 		return fmt.Errorf("deleting network failed: %w", err)
 	}
 	return nil

@@ -23,10 +23,6 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 	switch typ {
 	case "netbird:index:Network":
 		r = &Network{}
-	case "netbird:index:Random":
-		r = &Random{}
-	case "netbird:index:RandomComponent":
-		r = &RandomComponent{}
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", typ)
 	}

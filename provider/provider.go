@@ -1,8 +1,6 @@
 package provider
 
 import (
-	"fmt"
-
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 	"github.com/pulumi/pulumi-go-provider/middleware/schema"
@@ -63,42 +61,15 @@ func Provider() p.Provider {
 			},
 		},
 		Resources: []infer.InferredResource{
-			infer.Resource[Random](),
+			// infer.Resource[Random](),
 			infer.Resource[Network](),
 		},
-		Components: []infer.InferredComponent{
-			infer.Component(NewRandomComponent),
-		},
+		// Components: []infer.InferredComponent{
+		// 	infer.Component(NewRandomComponent),
+		// },
 		Config: infer.Config[Config](),
 		ModuleMap: map[tokens.ModuleName]tokens.ModuleName{
 			"provider": "index",
 		},
 	})
-}
-
-// Define provider-level configuration.
-type Config struct {
-	Scream       *bool  `pulumi:"itsasecret,optional"`
-	NetBirdToken string `pulumi:"netbirdToken"`
-	NetBirdURL   string `pulumi:"netbirdUrl"`
-}
-
-// Annotate provider configuration.
-func (c *Config) Annotate(a infer.Annotator) {
-	a.Describe(&c.NetBirdURL, "URL to Netbird API, example: https://nb.mydomain:33073")
-	a.Describe(&c.NetBirdToken, "Netbird API Token")
-
-	a.SetDefault(&c.NetBirdURL, "https://nb.mydomain:33073", "NETBIRD_URL")
-	a.SetDefault(&c.NetBirdToken, "", "NETBIRD_TOKEN")
-}
-
-// Configure validates the provider configuration.
-func (c *Config) Configure() error {
-	if c.NetBirdToken == "" {
-		return fmt.Errorf("netbirdToken must be set in provider configuration")
-	}
-	if c.NetBirdURL == "" {
-		return fmt.Errorf("netbirdUrl must be set in provider configuration")
-	}
-	return nil
 }

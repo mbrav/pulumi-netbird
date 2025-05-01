@@ -7,7 +7,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/common/tokens"
 )
 
-var Version string
+var Version string = "0.0.5"
 
 const Name string = "netbird"
 
@@ -61,8 +61,8 @@ func Provider() p.Provider {
 			},
 		},
 		Resources: []infer.InferredResource{
-			// infer.Resource[Random](),
 			infer.Resource[Network](),
+			infer.Resource[Group](),
 		},
 		// Components: []infer.InferredComponent{
 		// 	infer.Component(NewRandomComponent),

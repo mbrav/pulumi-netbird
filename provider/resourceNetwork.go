@@ -40,7 +40,7 @@ func (Network) Create(ctx context.Context, name string, input NetworkArgs, previ
 		return "", state, err
 	}
 
-	created, err := client.Networks.Create(ctx, api.PostApiNetworksJSONRequestBody{
+	created, err := client.Networks.Create(ctx, api.NetworkRequest{
 		Name:        input.Name,
 		Description: &input.Description,
 	})
@@ -83,7 +83,7 @@ func (Network) Update(ctx context.Context, id string, old NetworkArgs, new Netwo
 		return state, err
 	}
 
-	updated, err := client.Networks.Update(ctx, state.NbID, api.PutApiNetworksNetworkIdJSONRequestBody{
+	updated, err := client.Networks.Update(ctx, state.NbID, api.NetworkRequest{
 		Name:        new.Name,
 		Description: &new.Description,
 	})

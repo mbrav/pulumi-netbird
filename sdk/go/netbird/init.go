@@ -25,6 +25,8 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 		r = &Group{}
 	case "netbird:index:Network":
 		r = &Network{}
+	case "netbird:index:NetworkResource":
+		r = &NetworkResource{}
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", typ)
 	}

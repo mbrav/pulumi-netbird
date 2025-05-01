@@ -25,25 +25,8 @@ Ensure the following are installed and available in your `$PATH`:
 ## Build and Test
 
 ```bash
-make build install        # Build and install the provider locally
-make gen_examples         # Generate Go examples from YAML source
-make up                   # Deploy the example Pulumi stack
-make down                 # Destroy the example stack
+make help                 # Get all commands
 ```
-
-## Creating Your Own Provider (Optional)
-
-This repository was based on Pulumi’s native provider boilerplate. If you're building your own provider:
-
-```bash
-make prepare NAME=yourprovider ORG=yourorg REPOSITORY=github.com/yourorg/pulumi-yourprovider
-```
-
-This command will:
-
-* Rename relevant files and folders
-* Update Go module paths
-* Replace placeholder names
 
 ## Example Usage
 

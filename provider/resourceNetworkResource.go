@@ -7,6 +7,8 @@ import (
 	"github.com/netbirdio/netbird/management/server/http/api"
 )
 
+// FIX: Not updateing Enabled state on UPDATE
+
 // NetworkResource represents a Pulumi resource for NetBird network resources.
 type NetworkResource struct{}
 

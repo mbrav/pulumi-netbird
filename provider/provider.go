@@ -64,6 +64,7 @@ func Provider() p.Provider {
 			infer.Resource[Group](),
 			infer.Resource[Network](),
 			infer.Resource[NetworkResource](),
+			infer.Resource[NetworkRouter](),
 		},
 		// Components: []infer.InferredComponent{
 		// 	infer.Component(NewRandomComponent),

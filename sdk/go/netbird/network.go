@@ -15,9 +15,9 @@ import (
 type Network struct {
 	pulumi.CustomResourceState
 
-	Description pulumi.StringOutput `pulumi:"description"`
-	Name        pulumi.StringOutput `pulumi:"name"`
-	NbId        pulumi.StringOutput `pulumi:"nbId"`
+	Description pulumi.StringPtrOutput `pulumi:"description"`
+	Name        pulumi.StringOutput    `pulumi:"name"`
+	NbId        pulumi.StringOutput    `pulumi:"nbId"`
 }
 
 // NewNetwork registers a new resource with the given unique name, arguments, and options.
@@ -27,9 +27,6 @@ func NewNetwork(ctx *pulumi.Context,
 		return nil, errors.New("missing one or more required arguments")
 	}
 
-	if args.Description == nil {
-		return nil, errors.New("invalid value for required argument 'Description'")
-	}
 	if args.Name == nil {
 		return nil, errors.New("invalid value for required argument 'Name'")
 	}
@@ -66,13 +63,13 @@ func (NetworkState) ElementType() reflect.Type {
 }
 
 type networkArgs struct {
-	Description string `pulumi:"description"`
-	Name        string `pulumi:"name"`
+	Description *string `pulumi:"description"`
+	Name        string  `pulumi:"name"`
 }
 
 // The set of arguments for constructing a Network resource.
 type NetworkArgs struct {
-	Description pulumi.StringInput
+	Description pulumi.StringPtrInput
 	Name        pulumi.StringInput
 }
 
@@ -163,8 +160,8 @@ func (o NetworkOutput) ToNetworkOutputWithContext(ctx context.Context) NetworkOu
 	return o
 }
 
-func (o NetworkOutput) Description() pulumi.StringOutput {
-	return o.ApplyT(func(v *Network) pulumi.StringOutput { return v.Description }).(pulumi.StringOutput)
+func (o NetworkOutput) Description() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *Network) pulumi.StringPtrOutput { return v.Description }).(pulumi.StringPtrOutput)
 }
 
 func (o NetworkOutput) Name() pulumi.StringOutput {

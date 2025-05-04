@@ -14,6 +14,7 @@ PROVIDER_BIN      := $(WORKING_DIR)/bin/$(PROVIDER)
 VERSION           ?= $(shell pulumictl get version)
 PROVIDER_PATH     := provider
 VERSION_PATH      := ${PROVIDER_PATH}.Version
+SCHEMA_PATH       := $(WORKING_DIR)/provider/cmd/pulumi-resource-${PACK}/schema.json
 
 OS                := $(shell uname)
 SHELL             := /bin/bash
@@ -38,10 +39,16 @@ ensure: ## Ensure Go modules are tidy
 	cd sdk && go mod tidy
 	cd tests && go mod tidy
 
+schema: $(PROVIDER_BIN) ## Generate schema.json from provider binary
+	@echo "Generating schema.json..."
+	pulumi package get-schema $(PROVIDER_BIN) > $(SCHEMA_PATH)
+	@echo "Wrote schema.json to $(SCHEMA_PATH)"
+
 provider: $(PROVIDER_BIN) ## Build provider binary
 $(PROVIDER_BIN): $(shell find provider -name "*.go")
 	go build -o $(PROVIDER_BIN) -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" $(PROJECT)/${PROVIDER_PATH}/cmd/$(PROVIDER)
-
+	@echo "Generating schema to $(SCHEMA_PATH)"
+	pulumi package get-schema $(PROVIDER_BIN) > $(SCHEMA_PATH)
 	@echo "Installing local plugin to Pulumi plugin cache..."
 	@mkdir -p ~/.pulumi/plugins/${PACK}/resource/${VERSION}
 	@cp $(PROVIDER_BIN) ~/.pulumi/plugins/${PACK}/resource/${VERSION}/pulumi-resource-${PACK}
@@ -53,7 +60,7 @@ provider_symlink: ## Symlink provider to Pulumi plugin cache
 	@mkdir -p ~/.pulumi/plugins/${PACK}/resource/${VERSION}
 	@ln -sf $(PROVIDER_BIN) ~/.pulumi/plugins/${PACK}/resource/${VERSION}/pulumi-resource-${PACK}
 
-go_sdk: $(PROVIDER_BIN) ## Generate Go SDK from provider binary
+go_sdk: schema $(PROVIDER_BIN) ## Generate Go SDK from provider binary
 	rm -rf sdk/go
 	pulumi package gen-sdk $(PROVIDER_BIN) --language go
 

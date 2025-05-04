@@ -3,35 +3,12 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 )
 
 // FIX: Not updateing Enabled state on UPDATE
-
-// NetworkResource represents a Pulumi resource for NetBird network resources.
-type NetworkResource struct{}
-
-// NetworkResourceArgs represents the input arguments for creating or updating a network resource.
-type NetworkResourceArgs struct {
-	Name        string    `pulumi:"name"`
-	Description *string   `pulumi:"description,optional"`
-	NetworkID   string    `pulumi:"network_id"`
-	Address     string    `pulumi:"address"`
-	Enabled     bool      `pulumi:"enabled"`
-	GroupIDs    *[]string `pulumi:"group_ids,optional"`
-}
-
-// NetworkResourceState represents the state of a network resource.
-type NetworkResourceState struct {
-	Name        string    `pulumi:"name"`
-	Description *string   `pulumi:"description"`
-	NbID        string    `pulumi:"nbId"`
-	NetworkID   string    `pulumi:"network_id"`
-	Address     string    `pulumi:"address"`
-	Enabled     bool      `pulumi:"enabled"`
-	GroupIDs    *[]string `pulumi:"group_ids,optional"`
-}
 
 func (NetworkResource) Create(ctx context.Context, name string, input NetworkResourceArgs, preview bool) (string, NetworkResourceState, error) {
 	state := NetworkResourceState{
@@ -144,4 +121,62 @@ func (NetworkResource) Delete(ctx context.Context, id string, state NetworkResou
 		return fmt.Errorf("deleting network resource failed: %w", err)
 	}
 	return nil
+}
+
+// Import allows importing an existing NetBird network resource by its ID.
+//
+// To import a NetBird network resource into your Pulumi stack, use:
+//
+//	pulumi import netbird:index:NetworkResource <pulumi-resource-name> <network-id>/<resource-id>
+//
+// Example:
+//
+//	pulumi import netbird:index:NetworkResource core-dns 70abf594-fb68-4ec9-84b9-672758bfc1a3/2ab785be-1439-4ef3-a2b4-cfb622a6f60a
+func (NetworkResource) Import(ctx context.Context, name string, input NetworkResourceArgs, preview bool) (string, NetworkResourceState, error) {
+	state := NetworkResourceState{}
+
+	if preview {
+		// Expect NetworkID and NbID to be passed as "network-id/resource-id" in input.Name
+		ids := strings.SplitN(input.Name, "/", 2)
+		if len(ids) != 2 {
+			return "", state, fmt.Errorf("invalid import ID format, expected <network-id>/<resource-id>")
+		}
+		state.NetworkID = ids[0]
+		state.NbID = ids[1]
+		return name, state, nil
+	}
+
+	ids := strings.SplitN(input.Name, "/", 2)
+	if len(ids) != 2 {
+		return "", state, fmt.Errorf("invalid import ID format, expected <network-id>/<resource-id>")
+	}
+	networkID := ids[0]
+	resourceID := ids[1]
+
+	client, err := getNetBirdClient(ctx)
+	if err != nil {
+		return "", state, err
+	}
+
+	res, err := client.Networks.Resources(networkID).Get(ctx, resourceID)
+	if err != nil {
+		return "", state, fmt.Errorf("importing network resource failed: %w", err)
+	}
+
+	groupIDs := make([]string, len(res.Groups))
+	for i, grp := range res.Groups {
+		groupIDs[i] = grp.Id
+	}
+
+	state = NetworkResourceState{
+		Name:        res.Name,
+		Description: res.Description,
+		NbID:        res.Id,
+		NetworkID:   networkID,
+		Address:     res.Address,
+		Enabled:     res.Enabled,
+		GroupIDs:    &groupIDs,
+	}
+
+	return name, state, nil
 }

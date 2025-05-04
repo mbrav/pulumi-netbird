@@ -7,28 +7,6 @@ import (
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 )
 
-// Policy represents a resource for managing NetBird policies.
-type Policy struct{}
-
-// PolicyArgs are the input arguments for a policy resource.
-type PolicyArgs struct {
-	Name                string                   `pulumi:"name"`
-	Description         *string                  `pulumi:"description"`
-	Enabled             bool                     `pulumi:"enabled"`
-	Rules               []nbapi.PolicyRuleUpdate `pulumi:"rules"`
-	SourcePostureChecks *[]string                `pulumi:"sourcePostureChecks"`
-}
-
-// PolicyState is the persisted state of the resource.
-type PolicyState struct {
-	NbID                string                   `pulumi:"nbId"`
-	Name                string                   `pulumi:"name"`
-	Description         *string                  `pulumi:"description"`
-	Enabled             bool                     `pulumi:"enabled"`
-	Rules               []nbapi.PolicyRuleUpdate `pulumi:"rules"`
-	SourcePostureChecks *[]string                `pulumi:"sourcePostureChecks"`
-}
-
 func (Policy) Create(ctx context.Context, name string, input PolicyArgs, preview bool) (string, PolicyState, error) {
 	state := PolicyState{
 		Name:                input.Name,
@@ -125,4 +103,35 @@ func (Policy) Delete(ctx context.Context, id string, props PolicyState) error {
 		return fmt.Errorf("deleting policy failed: %w", err)
 	}
 	return nil
+}
+
+func (Policy) Import(ctx context.Context, id string, input PolicyArgs, preview bool) (string, PolicyState, error) {
+	state := PolicyState{}
+
+	if preview {
+		// We can't fetch data in preview, but we still set the ID
+		state.NbID = id
+		return id, state, nil
+	}
+
+	client, err := getNetBirdClient(ctx)
+	if err != nil {
+		return "", state, err
+	}
+
+	pol, err := client.Policies.Get(ctx, id)
+	if err != nil {
+		return "", state, fmt.Errorf("importing policy failed: %w", err)
+	}
+
+	state = PolicyState{
+		NbID:                *pol.Id,
+		Name:                pol.Name,
+		Description:         pol.Description,
+		Enabled:             pol.Enabled,
+		Rules:               []nbapi.PolicyRuleUpdate{}, // not returned by GET
+		SourcePostureChecks: &pol.SourcePostureChecks,
+	}
+
+	return id, state, nil
 }

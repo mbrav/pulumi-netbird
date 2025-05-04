@@ -1,0 +1,365 @@
+{
+  "name": "netbird",
+  "displayName": "netbird",
+  "version": "0.0.8-alpha.1746442831+0f7e56d0.dirty",
+  "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
+  "keywords": [
+    "pulumi",
+    "networking",
+    "netbird",
+    "security"
+  ],
+  "homepage": "https://pulumi.com",
+  "license": "AGPL-3.0",
+  "repository": "https://github.com/mbrav/pulumi-netbird",
+  "logoUrl": "https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp",
+  "pluginDownloadURL": "github://api.github.com/mbrav",
+  "publisher": "mbrav",
+  "meta": {
+    "moduleFormat": "(.*)"
+  },
+  "language": {
+    "csharp": {
+      "packageReferences": {
+        "Pulumi": "3.*"
+      }
+    },
+    "go": {
+      "generateResourceContainerTypes": true,
+      "importBasePath": "github.com/mbrav/pulumi-netbird/sdk/go/netbird"
+    },
+    "java": {
+      "buildFiles": "gradle",
+      "dependencies": {
+        "com.pulumi:pulumi": "1.10.0"
+      },
+      "gradleNexusPublishPluginVersion": "2.0.0"
+    },
+    "nodejs": {
+      "dependencies": {
+        "@pulumi/pulumi": "^3.0.0"
+      },
+      "packageName": "@mbrav/pulumi-netbird"
+    },
+    "python": {
+      "requires": {
+        "pulumi": "\u003e=3.0.0,\u003c4.0.0"
+      }
+    }
+  },
+  "config": {
+    "variables": {
+      "itsasecret": {
+        "type": "boolean"
+      },
+      "netbirdToken": {
+        "type": "string",
+        "description": "Netbird API Token",
+        "default": "",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_TOKEN"
+          ]
+        }
+      },
+      "netbirdUrl": {
+        "type": "string",
+        "description": "URL to Netbird API, example: https://nb.mydomain:33073",
+        "default": "https://nb.mydomain:33073",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_URL"
+          ]
+        }
+      }
+    },
+    "defaults": [
+      "netbirdToken",
+      "netbirdUrl"
+    ]
+  },
+  "provider": {
+    "properties": {
+      "netbirdToken": {
+        "type": "string",
+        "description": "Netbird API Token",
+        "default": "",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_TOKEN"
+          ]
+        }
+      },
+      "netbirdUrl": {
+        "type": "string",
+        "description": "URL to Netbird API, example: https://nb.mydomain:33073",
+        "default": "https://nb.mydomain:33073",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_URL"
+          ]
+        }
+      }
+    },
+    "type": "object",
+    "required": [
+      "netbirdToken",
+      "netbirdUrl"
+    ],
+    "inputProperties": {
+      "itsasecret": {
+        "type": "boolean"
+      },
+      "netbirdToken": {
+        "type": "string",
+        "description": "Netbird API Token",
+        "default": "",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_TOKEN"
+          ]
+        }
+      },
+      "netbirdUrl": {
+        "type": "string",
+        "description": "URL to Netbird API, example: https://nb.mydomain:33073",
+        "default": "https://nb.mydomain:33073",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_URL"
+          ]
+        }
+      }
+    },
+    "requiredInputs": [
+      "netbirdToken",
+      "netbirdUrl"
+    ]
+  },
+  "resources": {
+    "netbird:index:Group": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "nbId": {
+          "type": "string"
+        },
+        "peers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "type": "object",
+      "required": [
+        "name",
+        "nbId"
+      ],
+      "inputProperties": {
+        "name": {
+          "type": "string"
+        },
+        "peers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "requiredInputs": [
+        "name"
+      ]
+    },
+    "netbird:index:Network": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nbId": {
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "required": [
+        "name",
+        "nbId"
+      ],
+      "inputProperties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "requiredInputs": [
+        "name"
+      ]
+    },
+    "netbird:index:NetworkResource": {
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "group_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "nbId": {
+          "type": "string"
+        },
+        "network_id": {
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "required": [
+        "address",
+        "description",
+        "enabled",
+        "name",
+        "nbId",
+        "network_id"
+      ],
+      "inputProperties": {
+        "address": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "group_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "network_id": {
+          "type": "string"
+        }
+      },
+      "requiredInputs": [
+        "address",
+        "enabled",
+        "name",
+        "network_id"
+      ]
+    },
+    "netbird:index:NetworkRouter": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "masquerade": {
+          "type": "boolean"
+        },
+        "metric": {
+          "type": "integer"
+        },
+        "nbId": {
+          "type": "string"
+        },
+        "network_id": {
+          "type": "string"
+        },
+        "peer": {
+          "type": "string"
+        },
+        "peer_groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "masquerade",
+        "metric",
+        "nbId",
+        "network_id",
+        "peer",
+        "peer_groups"
+      ],
+      "inputProperties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "masquerade": {
+          "type": "boolean"
+        },
+        "metric": {
+          "type": "integer"
+        },
+        "network_id": {
+          "type": "string"
+        },
+        "peer": {
+          "type": "string"
+        },
+        "peer_groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "requiredInputs": [
+        "enabled",
+        "masquerade",
+        "metric",
+        "network_id"
+      ]
+    },
+    "netbird:index:Peer": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "peerId": {
+          "type": "string"
+        },
+        "sshEnabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object",
+      "required": [
+        "name",
+        "peerId",
+        "sshEnabled"
+      ],
+      "inputProperties": {
+        "peerId": {
+          "type": "string"
+        }
+      },
+      "requiredInputs": [
+        "peerId"
+      ]
+    }
+  }
+}

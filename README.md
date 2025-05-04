@@ -1,6 +1,10 @@
 # Pulumi NetBird Native Provider
 
-![netbird_logo](./assets/logo.webp)
+<p align="center">
+    <a href="https://github.com/mbrav/pulumi-netbird" target="_blank" rel="noopener noreferrer">
+        <img width="100" src="./assets/logo.webp" title="pulumi-netbird"">
+    </a>
+</p>
 
 ## Project still in WIP
 

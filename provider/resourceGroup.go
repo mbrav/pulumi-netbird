@@ -7,22 +7,6 @@ import (
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 )
 
-// Group represents a resource for managing NetBird groups.
-type Group struct{}
-
-// GroupArgs represents the input arguments for creating or updating a group.
-type GroupArgs struct {
-	Name  string    `pulumi:"name"`
-	Peers *[]string `pulumi:"peers,optional"`
-}
-
-// GroupState represents the state of the group resource.
-type GroupState struct {
-	Name  string    `pulumi:"name"`
-	Peers *[]string `pulumi:"peers,optional"`
-	NbID  string    `pulumi:"nbId"`
-}
-
 // Create a new group resource.
 func (Group) Create(ctx context.Context, name string, input GroupArgs, preview bool) (string, GroupState, error) {
 	state := GroupState{
@@ -117,4 +101,46 @@ func (Group) Delete(ctx context.Context, id string, props GroupState) error {
 		return fmt.Errorf("deleting group failed: %w", err)
 	}
 	return nil
+}
+
+// Import method to import a group resource into Pulumi by its ID.
+//
+// To import a NetBird group into your Pulumi stack, use the following Pulumi CLI command:
+//
+//	pulumi import netbird:index:Group <pulumi-resource-name> <netbird-group-id>
+//
+// Example:
+//
+//	pulumi import netbird:index:Group dev-group d5e7e222-4563-4b1b-bf1d-1c2d5c8a13f3
+func (Group) Import(ctx context.Context, name string, input GroupArgs, preview bool) (string, GroupState, error) {
+	state := GroupState{}
+
+	if preview {
+		// Pulumi will populate input.PulumiID with the import ID
+		state.NbID = input.Name
+		return name, state, nil
+	}
+
+	client, err := getNetBirdClient(ctx)
+	if err != nil {
+		return "", state, err
+	}
+
+	group, err := client.Groups.Get(ctx, input.Name) // input.Name is used as the ID during import
+	if err != nil {
+		return "", state, fmt.Errorf("importing group failed: %w", err)
+	}
+
+	peerIDs := make([]string, len(group.Peers))
+	for i, peer := range group.Peers {
+		peerIDs[i] = peer.Id
+	}
+
+	state = GroupState{
+		Name:  group.Name,
+		Peers: &peerIDs,
+		NbID:  group.Id,
+	}
+
+	return name, state, nil
 }

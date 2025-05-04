@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/netbirdio/netbird/management/server/http/api"
+	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 )
 
 // Network represents a resource for managing NetBird networks.
@@ -34,13 +34,12 @@ func (Network) Create(ctx context.Context, name string, input NetworkArgs, previ
 		return name, state, nil
 	}
 
-	// Get the NetBird client with the configuration
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
 		return "", state, err
 	}
 
-	created, err := client.Networks.Create(ctx, api.NetworkRequest{
+	created, err := client.Networks.Create(ctx, nbapi.NetworkRequest{
 		Name:        input.Name,
 		Description: &input.Description,
 	})
@@ -83,7 +82,7 @@ func (Network) Update(ctx context.Context, id string, old NetworkArgs, new Netwo
 		return state, err
 	}
 
-	updated, err := client.Networks.Update(ctx, state.NbID, api.NetworkRequest{
+	updated, err := client.Networks.Update(ctx, state.NbID, nbapi.NetworkRequest{
 		Name:        new.Name,
 		Description: &new.Description,
 	})

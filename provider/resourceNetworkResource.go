@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/netbirdio/netbird/management/server/http/api"
+	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 )
 
 // FIX: Not updateing Enabled state on UPDATE
@@ -52,7 +52,7 @@ func (NetworkResource) Create(ctx context.Context, name string, input NetworkRes
 		return "", state, err
 	}
 
-	created, err := client.Networks.Resources(input.NetworkID).Create(ctx, api.NetworkResourceRequest{
+	created, err := client.Networks.Resources(input.NetworkID).Create(ctx, nbapi.NetworkResourceRequest{
 		Name:        input.Name,
 		Address:     input.Address,
 		Description: input.Description,
@@ -107,7 +107,7 @@ func (NetworkResource) Update(ctx context.Context, id string, old NetworkResourc
 		return state, err
 	}
 
-	updated, err := client.Networks.Resources(state.NetworkID).Update(ctx, state.NbID, api.NetworkResourceRequest{
+	updated, err := client.Networks.Resources(state.NetworkID).Update(ctx, state.NbID, nbapi.NetworkResourceRequest{
 		Name:        new.Name,
 		Address:     new.Address,
 		Description: new.Description,

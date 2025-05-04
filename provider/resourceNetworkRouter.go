@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/netbirdio/netbird/management/server/http/api"
+	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 )
 
 // FIX: Recreate resource on UPDATE
@@ -42,14 +42,17 @@ func (NetworkRouter) Create(ctx context.Context, name string, input NetworkRoute
 		Peer:       input.Peer,
 		PeerGroups: input.PeerGroups,
 	}
+
 	if preview {
 		return name, state, nil
 	}
+
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
 		return "", state, err
 	}
-	created, err := client.Networks.Routers(input.NetworkID).Create(ctx, api.NetworkRouterRequest{
+
+	created, err := client.Networks.Routers(input.NetworkID).Create(ctx, nbapi.NetworkRouterRequest{
 		Enabled:    input.Enabled,
 		Masquerade: input.Masquerade,
 		Metric:     input.Metric,
@@ -59,6 +62,7 @@ func (NetworkRouter) Create(ctx context.Context, name string, input NetworkRoute
 	if err != nil {
 		return "", state, fmt.Errorf("creating network router failed: %w", err)
 	}
+
 	state.NbID = created.Id
 	return name, state, nil
 }
@@ -95,7 +99,7 @@ func (NetworkRouter) Update(ctx context.Context, id string, old NetworkRouterArg
 	if err != nil {
 		return state, err
 	}
-	updated, err := client.Networks.Routers(state.NetworkID).Update(ctx, state.NbID, api.NetworkRouterRequest{
+	updated, err := client.Networks.Routers(state.NetworkID).Update(ctx, state.NbID, nbapi.NetworkRouterRequest{
 		Enabled:    new.Enabled,
 		Masquerade: new.Masquerade,
 		Metric:     new.Metric,

@@ -76,12 +76,12 @@ up: ## Deploy stack
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
 	pulumi up --yes
 
-apply: ## Apply changes to the stack (without preview)
+refresh: ## Refresh the stack state from the actual resources
 	$(call pulumi_login) \
 	cd ${EXAMPLES_DIR} && \
 	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
-	pulumi up --yes --skip-preview
+	pulumi refresh --yes
 
 plan: ## Preview stack changes without applying
 	$(call pulumi_login) \

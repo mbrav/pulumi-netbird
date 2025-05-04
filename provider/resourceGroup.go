@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/netbirdio/netbird/management/server/http/api"
+	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 )
 
 // Group represents a resource for managing NetBird groups.
@@ -39,7 +39,7 @@ func (Group) Create(ctx context.Context, name string, input GroupArgs, preview b
 		return "", state, err
 	}
 
-	created, err := client.Groups.Create(ctx, api.GroupRequest{
+	created, err := client.Groups.Create(ctx, nbapi.GroupRequest{
 		Name:  input.Name,
 		Peers: input.Peers,
 	})
@@ -86,7 +86,7 @@ func (Group) Update(ctx context.Context, id string, old GroupArgs, new GroupArgs
 		return state, err
 	}
 
-	updated, err := client.Groups.Update(ctx, state.NbID, api.GroupRequest{
+	updated, err := client.Groups.Update(ctx, state.NbID, nbapi.GroupRequest{
 		Name:  new.Name,
 		Peers: new.Peers,
 	})

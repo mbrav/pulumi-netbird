@@ -6,9 +6,54 @@ import (
 	"strings"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
 // FIX: Not updateing Enabled state on UPDATE
+
+// NetworkResource represents a Pulumi resource for NetBird network resources.
+type NetworkResource struct{}
+
+// NetworkResourceArgs represents the input arguments for creating or updating a network resource.
+type NetworkResourceArgs struct {
+	Name        string    `pulumi:"name"`
+	Description *string   `pulumi:"description,optional"`
+	NetworkID   string    `pulumi:"network_id"`
+	Address     string    `pulumi:"address"`
+	Enabled     bool      `pulumi:"enabled"`
+	GroupIDs    *[]string `pulumi:"group_ids,optional"`
+}
+
+// NetworkResourceState represents the state of a network resource.
+type NetworkResourceState struct {
+	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
+	NetworkResourceArgs
+	Name        string    `pulumi:"name"`
+	Description *string   `pulumi:"description,optional"`
+	NetworkID   string    `pulumi:"network_id"`
+	Address     string    `pulumi:"address"`
+	Enabled     bool      `pulumi:"enabled"`
+	GroupIDs    *[]string `pulumi:"group_ids,optional"`
+	NbID        string    `pulumi:"nbId"`
+}
+
+// NetworkResource annotation
+func (NetworkResource) Annotate(a infer.Annotator) {
+	a.Describe(&NetworkResource{}, "A NetBird network resource, such as a CIDR range assigned to the network.")
+}
+
+func (n *NetworkResourceArgs) Annotate(a infer.Annotator) {
+	a.Describe(&n.Name, "The name of the network resource.")
+	a.Describe(&n.Description, "An optional description of the network resource.")
+	a.Describe(&n.NetworkID, "The ID of the associated network.")
+	a.Describe(&n.Address, "The IP address or subnet of the network resource.")
+	a.Describe(&n.Enabled, "Indicates if the resource is currently enabled.")
+	a.Describe(&n.GroupIDs, "Optional list of group IDs to associate with this network resource.")
+}
+
+func (n *NetworkResourceState) Annotate(a infer.Annotator) {
+	a.Describe(&n.NbID, "The internal NetBird ID of the network resource.")
+}
 
 func (NetworkResource) Create(ctx context.Context, name string, input NetworkResourceArgs, preview bool) (string, NetworkResourceState, error) {
 	state := NetworkResourceState{

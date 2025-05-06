@@ -5,7 +5,49 @@ import (
 	"fmt"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	"github.com/pulumi/pulumi-go-provider/infer"
 )
+
+// Policy represents a resource for managing NetBird policies.
+type Policy struct{}
+
+// PolicyArgs are the input arguments for a policy resource.
+type PolicyArgs struct {
+	Name                string                   `pulumi:"name"`
+	Description         *string                  `pulumi:"description"`
+	Enabled             bool                     `pulumi:"enabled"`
+	Rules               []nbapi.PolicyRuleUpdate `pulumi:"rules"`
+	SourcePostureChecks *[]string                `pulumi:"sourcePostureChecks"`
+}
+
+// PolicyState is the persisted state of the resource.
+type PolicyState struct {
+	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
+	// PolicyArgs
+	Name                string                   `pulumi:"name"`
+	Description         *string                  `pulumi:"description"`
+	Enabled             bool                     `pulumi:"enabled"`
+	Rules               []nbapi.PolicyRuleUpdate `pulumi:"rules"`
+	SourcePostureChecks *[]string                `pulumi:"sourcePostureChecks"`
+	NbID                string                   `pulumi:"nbId"`
+}
+
+// Policy annotation
+func (Policy) Annotate(a infer.Annotator) {
+	a.Describe(&Policy{}, "A NetBird policy defining rules for communication between peers.")
+}
+
+func (p *PolicyArgs) Annotate(a infer.Annotator) {
+	a.Describe(&p.Name, "The name of the policy.")
+	a.Describe(&p.Description, "An optional description of the policy.")
+	a.Describe(&p.Enabled, "Whether the policy is currently active.")
+	a.Describe(&p.Rules, "The list of rules defining the behavior of this policy.")
+	a.Describe(&p.SourcePostureChecks, "Optional posture check IDs used as sources in policy rules.")
+}
+
+func (p *PolicyState) Annotate(a infer.Annotator) {
+	a.Describe(&p.NbID, "The internal NetBird ID of the policy.")
+}
 
 func (Policy) Create(ctx context.Context, name string, input PolicyArgs, preview bool) (string, PolicyState, error) {
 	state := PolicyState{

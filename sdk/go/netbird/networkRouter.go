@@ -12,15 +12,23 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// A NetBird router used to route traffic between peers or networks.
 type NetworkRouter struct {
 	pulumi.CustomResourceState
 
-	Enabled     pulumi.BoolOutput        `pulumi:"enabled"`
-	Masquerade  pulumi.BoolOutput        `pulumi:"masquerade"`
-	Metric      pulumi.IntOutput         `pulumi:"metric"`
-	NbId        pulumi.StringOutput      `pulumi:"nbId"`
-	Network_id  pulumi.StringOutput      `pulumi:"network_id"`
-	Peer        pulumi.StringOutput      `pulumi:"peer"`
+	// Whether the router is enabled.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+	// Whether NAT masquerading is enabled for this router.
+	Masquerade pulumi.BoolOutput `pulumi:"masquerade"`
+	// The routing metric (priority) for this router.
+	Metric pulumi.IntOutput `pulumi:"metric"`
+	// The internal NetBird ID of the router.
+	NbId pulumi.StringOutput `pulumi:"nbId"`
+	// The ID of the network that this router is associated with.
+	Network_id pulumi.StringOutput `pulumi:"network_id"`
+	// Optional peer ID to route through.
+	Peer pulumi.StringPtrOutput `pulumi:"peer"`
+	// Optional list of peer group IDs to use as routing targets.
 	Peer_groups pulumi.StringArrayOutput `pulumi:"peer_groups"`
 }
 
@@ -76,21 +84,33 @@ func (NetworkRouterState) ElementType() reflect.Type {
 }
 
 type networkRouterArgs struct {
-	Enabled     bool     `pulumi:"enabled"`
-	Masquerade  bool     `pulumi:"masquerade"`
-	Metric      int      `pulumi:"metric"`
-	Network_id  string   `pulumi:"network_id"`
-	Peer        *string  `pulumi:"peer"`
+	// Whether the router is enabled.
+	Enabled bool `pulumi:"enabled"`
+	// Whether NAT masquerading is enabled for this router.
+	Masquerade bool `pulumi:"masquerade"`
+	// The routing metric (priority) for this router.
+	Metric int `pulumi:"metric"`
+	// The ID of the network that this router is associated with.
+	Network_id string `pulumi:"network_id"`
+	// Optional peer ID to route through.
+	Peer *string `pulumi:"peer"`
+	// Optional list of peer group IDs to use as routing targets.
 	Peer_groups []string `pulumi:"peer_groups"`
 }
 
 // The set of arguments for constructing a NetworkRouter resource.
 type NetworkRouterArgs struct {
-	Enabled     pulumi.BoolInput
-	Masquerade  pulumi.BoolInput
-	Metric      pulumi.IntInput
-	Network_id  pulumi.StringInput
-	Peer        pulumi.StringPtrInput
+	// Whether the router is enabled.
+	Enabled pulumi.BoolInput
+	// Whether NAT masquerading is enabled for this router.
+	Masquerade pulumi.BoolInput
+	// The routing metric (priority) for this router.
+	Metric pulumi.IntInput
+	// The ID of the network that this router is associated with.
+	Network_id pulumi.StringInput
+	// Optional peer ID to route through.
+	Peer pulumi.StringPtrInput
+	// Optional list of peer group IDs to use as routing targets.
 	Peer_groups pulumi.StringArrayInput
 }
 
@@ -181,30 +201,37 @@ func (o NetworkRouterOutput) ToNetworkRouterOutputWithContext(ctx context.Contex
 	return o
 }
 
+// Whether the router is enabled.
 func (o NetworkRouterOutput) Enabled() pulumi.BoolOutput {
 	return o.ApplyT(func(v *NetworkRouter) pulumi.BoolOutput { return v.Enabled }).(pulumi.BoolOutput)
 }
 
+// Whether NAT masquerading is enabled for this router.
 func (o NetworkRouterOutput) Masquerade() pulumi.BoolOutput {
 	return o.ApplyT(func(v *NetworkRouter) pulumi.BoolOutput { return v.Masquerade }).(pulumi.BoolOutput)
 }
 
+// The routing metric (priority) for this router.
 func (o NetworkRouterOutput) Metric() pulumi.IntOutput {
 	return o.ApplyT(func(v *NetworkRouter) pulumi.IntOutput { return v.Metric }).(pulumi.IntOutput)
 }
 
+// The internal NetBird ID of the router.
 func (o NetworkRouterOutput) NbId() pulumi.StringOutput {
 	return o.ApplyT(func(v *NetworkRouter) pulumi.StringOutput { return v.NbId }).(pulumi.StringOutput)
 }
 
+// The ID of the network that this router is associated with.
 func (o NetworkRouterOutput) Network_id() pulumi.StringOutput {
 	return o.ApplyT(func(v *NetworkRouter) pulumi.StringOutput { return v.Network_id }).(pulumi.StringOutput)
 }
 
-func (o NetworkRouterOutput) Peer() pulumi.StringOutput {
-	return o.ApplyT(func(v *NetworkRouter) pulumi.StringOutput { return v.Peer }).(pulumi.StringOutput)
+// Optional peer ID to route through.
+func (o NetworkRouterOutput) Peer() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *NetworkRouter) pulumi.StringPtrOutput { return v.Peer }).(pulumi.StringPtrOutput)
 }
 
+// Optional list of peer group IDs to use as routing targets.
 func (o NetworkRouterOutput) Peer_groups() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *NetworkRouter) pulumi.StringArrayOutput { return v.Peer_groups }).(pulumi.StringArrayOutput)
 }

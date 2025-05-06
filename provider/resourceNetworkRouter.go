@@ -6,9 +6,54 @@ import (
 	"strings"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
 // FIX: Recreate resource on UPDATE
+
+// NetworkRouter represents a Pulumi resource for NetBird network routers.
+type NetworkRouter struct{}
+
+// NetworkRouterArgs represents the input arguments for creating or updating a network router.
+type NetworkRouterArgs struct {
+	NetworkID  string    `pulumi:"network_id"`
+	Enabled    bool      `pulumi:"enabled"`
+	Masquerade bool      `pulumi:"masquerade"`
+	Metric     int       `pulumi:"metric"`
+	Peer       *string   `pulumi:"peer,optional"`
+	PeerGroups *[]string `pulumi:"peer_groups,optional"`
+}
+
+// NetworkRouterState represents the state of a network router.
+type NetworkRouterState struct {
+	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
+	NetworkRouterArgs
+	NetworkID  string    `pulumi:"network_id"`
+	Enabled    bool      `pulumi:"enabled"`
+	Masquerade bool      `pulumi:"masquerade"`
+	Metric     int       `pulumi:"metric"`
+	Peer       *string   `pulumi:"peer,optional"`
+	PeerGroups *[]string `pulumi:"peer_groups,optional"`
+	NbID       string    `pulumi:"nbId"`
+}
+
+// NetworkRouter annotation
+func (NetworkRouter) Annotate(a infer.Annotator) {
+	a.Describe(&NetworkRouter{}, "A NetBird router used to route traffic between peers or networks.")
+}
+
+func (r *NetworkRouterArgs) Annotate(a infer.Annotator) {
+	a.Describe(&r.NetworkID, "The ID of the network that this router is associated with.")
+	a.Describe(&r.Enabled, "Whether the router is enabled.")
+	a.Describe(&r.Masquerade, "Whether NAT masquerading is enabled for this router.")
+	a.Describe(&r.Metric, "The routing metric (priority) for this router.")
+	a.Describe(&r.Peer, "Optional peer ID to route through.")
+	a.Describe(&r.PeerGroups, "Optional list of peer group IDs to use as routing targets.")
+}
+
+func (r *NetworkRouterState) Annotate(a infer.Annotator) {
+	a.Describe(&r.NbID, "The internal NetBird ID of the router.")
+}
 
 func (NetworkRouter) Create(ctx context.Context, name string, input NetworkRouterArgs, preview bool) (string, NetworkRouterState, error) {
 	state := NetworkRouterState{

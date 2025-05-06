@@ -12,12 +12,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// A NetBird peer representing a connected device.
 type Peer struct {
 	pulumi.CustomResourceState
 
-	Name       pulumi.StringOutput `pulumi:"name"`
-	PeerId     pulumi.StringOutput `pulumi:"peerId"`
-	SshEnabled pulumi.BoolOutput   `pulumi:"sshEnabled"`
+	// The name of the peer.
+	Name pulumi.StringOutput `pulumi:"name"`
+	// The ID of the peer.
+	NbId pulumi.StringOutput `pulumi:"nbId"`
+	// Whether SSH is enabled for the peer.
+	SshEnabled pulumi.BoolOutput `pulumi:"sshEnabled"`
 }
 
 // NewPeer registers a new resource with the given unique name, arguments, and options.
@@ -27,8 +31,11 @@ func NewPeer(ctx *pulumi.Context,
 		return nil, errors.New("missing one or more required arguments")
 	}
 
-	if args.PeerId == nil {
-		return nil, errors.New("invalid value for required argument 'PeerId'")
+	if args.Name == nil {
+		return nil, errors.New("invalid value for required argument 'Name'")
+	}
+	if args.NbId == nil {
+		return nil, errors.New("invalid value for required argument 'NbId'")
 	}
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource Peer
@@ -63,12 +70,18 @@ func (PeerState) ElementType() reflect.Type {
 }
 
 type peerArgs struct {
-	PeerId string `pulumi:"peerId"`
+	// The name of the peer.
+	Name string `pulumi:"name"`
+	// The ID of the peer.
+	NbId string `pulumi:"nbId"`
 }
 
 // The set of arguments for constructing a Peer resource.
 type PeerArgs struct {
-	PeerId pulumi.StringInput
+	// The name of the peer.
+	Name pulumi.StringInput
+	// The ID of the peer.
+	NbId pulumi.StringInput
 }
 
 func (PeerArgs) ElementType() reflect.Type {
@@ -158,14 +171,17 @@ func (o PeerOutput) ToPeerOutputWithContext(ctx context.Context) PeerOutput {
 	return o
 }
 
+// The name of the peer.
 func (o PeerOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v *Peer) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
 }
 
-func (o PeerOutput) PeerId() pulumi.StringOutput {
-	return o.ApplyT(func(v *Peer) pulumi.StringOutput { return v.PeerId }).(pulumi.StringOutput)
+// The ID of the peer.
+func (o PeerOutput) NbId() pulumi.StringOutput {
+	return o.ApplyT(func(v *Peer) pulumi.StringOutput { return v.NbId }).(pulumi.StringOutput)
 }
 
+// Whether SSH is enabled for the peer.
 func (o PeerOutput) SshEnabled() pulumi.BoolOutput {
 	return o.ApplyT(func(v *Peer) pulumi.BoolOutput { return v.SshEnabled }).(pulumi.BoolOutput)
 }

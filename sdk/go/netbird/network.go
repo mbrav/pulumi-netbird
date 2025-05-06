@@ -12,12 +12,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// A NetBird network
 type Network struct {
 	pulumi.CustomResourceState
 
+	// An optional description of the network.
 	Description pulumi.StringPtrOutput `pulumi:"description"`
-	Name        pulumi.StringOutput    `pulumi:"name"`
-	NbId        pulumi.StringOutput    `pulumi:"nbId"`
+	// The name of the NetBird network.
+	Name pulumi.StringOutput `pulumi:"name"`
+	// The internal NetBird network ID.
+	NbId pulumi.StringOutput `pulumi:"nbId"`
 }
 
 // NewNetwork registers a new resource with the given unique name, arguments, and options.
@@ -63,14 +67,18 @@ func (NetworkState) ElementType() reflect.Type {
 }
 
 type networkArgs struct {
+	// An optional description of the network.
 	Description *string `pulumi:"description"`
-	Name        string  `pulumi:"name"`
+	// The name of the NetBird network.
+	Name string `pulumi:"name"`
 }
 
 // The set of arguments for constructing a Network resource.
 type NetworkArgs struct {
+	// An optional description of the network.
 	Description pulumi.StringPtrInput
-	Name        pulumi.StringInput
+	// The name of the NetBird network.
+	Name pulumi.StringInput
 }
 
 func (NetworkArgs) ElementType() reflect.Type {
@@ -160,14 +168,17 @@ func (o NetworkOutput) ToNetworkOutputWithContext(ctx context.Context) NetworkOu
 	return o
 }
 
+// An optional description of the network.
 func (o NetworkOutput) Description() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *Network) pulumi.StringPtrOutput { return v.Description }).(pulumi.StringPtrOutput)
 }
 
+// The name of the NetBird network.
 func (o NetworkOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v *Network) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
 }
 
+// The internal NetBird network ID.
 func (o NetworkOutput) NbId() pulumi.StringOutput {
 	return o.ApplyT(func(v *Network) pulumi.StringOutput { return v.NbId }).(pulumi.StringOutput)
 }

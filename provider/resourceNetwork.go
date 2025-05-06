@@ -5,7 +5,48 @@ import (
 	"fmt"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	"github.com/pulumi/pulumi-go-provider/infer"
 )
+
+// Network represents a resource for managing NetBird networks.
+type Network struct{}
+
+// NetworkArgs represents the input arguments for creating or updating a network.
+type NetworkArgs struct {
+	Name        string  `pulumi:"name"`
+	Description *string `pulumi:"description,optional"`
+}
+
+// NetworkState represents the state of the network resource.
+type NetworkState struct {
+	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
+	NetworkArgs
+	Name        string  `pulumi:"name"`
+	Description *string `pulumi:"description,optional"`
+	NbID        string  `pulumi:"nbId"`
+}
+
+// Network Annotation
+func (Network) Annotate(a infer.Annotator) {
+	a.Describe(&Network{}, "A NetBird network")
+}
+
+// NetworkArgs Annotation
+func (n *NetworkArgs) Annotate(a infer.Annotator) {
+	a.Describe(&n.Name, "The name of the NetBird network.")
+	a.Describe(&n.Description, "An optional description of the network.")
+}
+
+// NetworkState Annotation
+func (n *NetworkState) Annotate(a infer.Annotator) {
+	a.Describe(&n.NbID, "The internal NetBird network ID.")
+}
+
+// Dependency mapping
+func (*Network) WireDependencies(f infer.FieldSelector, args *NetworkArgs, state *NetworkState) {
+	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
+}
 
 // Create a new network resource.
 func (Network) Create(ctx context.Context, name string, input NetworkArgs, preview bool) (string, NetworkState, error) {

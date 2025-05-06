@@ -12,16 +12,24 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// A NetBird network resource, such as a CIDR range assigned to the network.
 type NetworkResource struct {
 	pulumi.CustomResourceState
 
-	Address     pulumi.StringOutput      `pulumi:"address"`
-	Description pulumi.StringOutput      `pulumi:"description"`
-	Enabled     pulumi.BoolOutput        `pulumi:"enabled"`
-	Group_ids   pulumi.StringArrayOutput `pulumi:"group_ids"`
-	Name        pulumi.StringOutput      `pulumi:"name"`
-	NbId        pulumi.StringOutput      `pulumi:"nbId"`
-	Network_id  pulumi.StringOutput      `pulumi:"network_id"`
+	// The IP address or subnet of the network resource.
+	Address pulumi.StringOutput `pulumi:"address"`
+	// An optional description of the network resource.
+	Description pulumi.StringPtrOutput `pulumi:"description"`
+	// Indicates if the resource is currently enabled.
+	Enabled pulumi.BoolOutput `pulumi:"enabled"`
+	// Optional list of group IDs to associate with this network resource.
+	Group_ids pulumi.StringArrayOutput `pulumi:"group_ids"`
+	// The name of the network resource.
+	Name pulumi.StringOutput `pulumi:"name"`
+	// The internal NetBird ID of the network resource.
+	NbId pulumi.StringOutput `pulumi:"nbId"`
+	// The ID of the associated network.
+	Network_id pulumi.StringOutput `pulumi:"network_id"`
 }
 
 // NewNetworkResource registers a new resource with the given unique name, arguments, and options.
@@ -76,22 +84,34 @@ func (NetworkResourceState) ElementType() reflect.Type {
 }
 
 type networkResourceArgs struct {
-	Address     string   `pulumi:"address"`
-	Description *string  `pulumi:"description"`
-	Enabled     bool     `pulumi:"enabled"`
-	Group_ids   []string `pulumi:"group_ids"`
-	Name        string   `pulumi:"name"`
-	Network_id  string   `pulumi:"network_id"`
+	// The IP address or subnet of the network resource.
+	Address string `pulumi:"address"`
+	// An optional description of the network resource.
+	Description *string `pulumi:"description"`
+	// Indicates if the resource is currently enabled.
+	Enabled bool `pulumi:"enabled"`
+	// Optional list of group IDs to associate with this network resource.
+	Group_ids []string `pulumi:"group_ids"`
+	// The name of the network resource.
+	Name string `pulumi:"name"`
+	// The ID of the associated network.
+	Network_id string `pulumi:"network_id"`
 }
 
 // The set of arguments for constructing a NetworkResource resource.
 type NetworkResourceArgs struct {
-	Address     pulumi.StringInput
+	// The IP address or subnet of the network resource.
+	Address pulumi.StringInput
+	// An optional description of the network resource.
 	Description pulumi.StringPtrInput
-	Enabled     pulumi.BoolInput
-	Group_ids   pulumi.StringArrayInput
-	Name        pulumi.StringInput
-	Network_id  pulumi.StringInput
+	// Indicates if the resource is currently enabled.
+	Enabled pulumi.BoolInput
+	// Optional list of group IDs to associate with this network resource.
+	Group_ids pulumi.StringArrayInput
+	// The name of the network resource.
+	Name pulumi.StringInput
+	// The ID of the associated network.
+	Network_id pulumi.StringInput
 }
 
 func (NetworkResourceArgs) ElementType() reflect.Type {
@@ -181,30 +201,37 @@ func (o NetworkResourceOutput) ToNetworkResourceOutputWithContext(ctx context.Co
 	return o
 }
 
+// The IP address or subnet of the network resource.
 func (o NetworkResourceOutput) Address() pulumi.StringOutput {
 	return o.ApplyT(func(v *NetworkResource) pulumi.StringOutput { return v.Address }).(pulumi.StringOutput)
 }
 
-func (o NetworkResourceOutput) Description() pulumi.StringOutput {
-	return o.ApplyT(func(v *NetworkResource) pulumi.StringOutput { return v.Description }).(pulumi.StringOutput)
+// An optional description of the network resource.
+func (o NetworkResourceOutput) Description() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *NetworkResource) pulumi.StringPtrOutput { return v.Description }).(pulumi.StringPtrOutput)
 }
 
+// Indicates if the resource is currently enabled.
 func (o NetworkResourceOutput) Enabled() pulumi.BoolOutput {
 	return o.ApplyT(func(v *NetworkResource) pulumi.BoolOutput { return v.Enabled }).(pulumi.BoolOutput)
 }
 
+// Optional list of group IDs to associate with this network resource.
 func (o NetworkResourceOutput) Group_ids() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *NetworkResource) pulumi.StringArrayOutput { return v.Group_ids }).(pulumi.StringArrayOutput)
 }
 
+// The name of the network resource.
 func (o NetworkResourceOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v *NetworkResource) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
 }
 
+// The internal NetBird ID of the network resource.
 func (o NetworkResourceOutput) NbId() pulumi.StringOutput {
 	return o.ApplyT(func(v *NetworkResource) pulumi.StringOutput { return v.NbId }).(pulumi.StringOutput)
 }
 
+// The ID of the associated network.
 func (o NetworkResourceOutput) Network_id() pulumi.StringOutput {
 	return o.ApplyT(func(v *NetworkResource) pulumi.StringOutput { return v.Network_id }).(pulumi.StringOutput)
 }

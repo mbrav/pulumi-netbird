@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.8-alpha.1746442831+0f7e56d0.dirty",
+  "version": "0.0.8-alpha.1746521044+a131d662.dirty",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -138,18 +138,22 @@
   },
   "resources": {
     "netbird:index:Group": {
+      "description": "A NetBird group, which represents a collection of peers.",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the group."
         },
         "nbId": {
-          "type": "string"
+          "type": "string",
+          "description": "The internal NetBird group ID."
         },
         "peers": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "An optional list of peer IDs to associate with this group."
         }
       },
       "type": "object",
@@ -159,13 +163,15 @@
       ],
       "inputProperties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the group."
         },
         "peers": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "An optional list of peer IDs to associate with this group."
         }
       },
       "requiredInputs": [
@@ -173,15 +179,19 @@
       ]
     },
     "netbird:index:Network": {
+      "description": "A NetBird network",
       "properties": {
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "An optional description of the network."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the NetBird network."
         },
         "nbId": {
-          "type": "string"
+          "type": "string",
+          "description": "The internal NetBird network ID."
         }
       },
       "type": "object",
@@ -191,10 +201,12 @@
       ],
       "inputProperties": {
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "An optional description of the network."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the NetBird network."
         }
       },
       "requiredInputs": [
@@ -202,36 +214,43 @@
       ]
     },
     "netbird:index:NetworkResource": {
+      "description": "A NetBird network resource, such as a CIDR range assigned to the network.",
       "properties": {
         "address": {
-          "type": "string"
+          "type": "string",
+          "description": "The IP address or subnet of the network resource."
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "An optional description of the network resource."
         },
         "enabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Indicates if the resource is currently enabled."
         },
         "group_ids": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "Optional list of group IDs to associate with this network resource."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the network resource."
         },
         "nbId": {
-          "type": "string"
+          "type": "string",
+          "description": "The internal NetBird ID of the network resource."
         },
         "network_id": {
-          "type": "string"
+          "type": "string",
+          "description": "The ID of the associated network."
         }
       },
       "type": "object",
       "required": [
         "address",
-        "description",
         "enabled",
         "name",
         "nbId",
@@ -239,25 +258,31 @@
       ],
       "inputProperties": {
         "address": {
-          "type": "string"
+          "type": "string",
+          "description": "The IP address or subnet of the network resource."
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "An optional description of the network resource."
         },
         "enabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Indicates if the resource is currently enabled."
         },
         "group_ids": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "Optional list of group IDs to associate with this network resource."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the network resource."
         },
         "network_id": {
-          "type": "string"
+          "type": "string",
+          "description": "The ID of the associated network."
         }
       },
       "requiredInputs": [
@@ -268,30 +293,38 @@
       ]
     },
     "netbird:index:NetworkRouter": {
+      "description": "A NetBird router used to route traffic between peers or networks.",
       "properties": {
         "enabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether the router is enabled."
         },
         "masquerade": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether NAT masquerading is enabled for this router."
         },
         "metric": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The routing metric (priority) for this router."
         },
         "nbId": {
-          "type": "string"
+          "type": "string",
+          "description": "The internal NetBird ID of the router."
         },
         "network_id": {
-          "type": "string"
+          "type": "string",
+          "description": "The ID of the network that this router is associated with."
         },
         "peer": {
-          "type": "string"
+          "type": "string",
+          "description": "Optional peer ID to route through."
         },
         "peer_groups": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "Optional list of peer group IDs to use as routing targets."
         }
       },
       "type": "object",
@@ -300,31 +333,35 @@
         "masquerade",
         "metric",
         "nbId",
-        "network_id",
-        "peer",
-        "peer_groups"
+        "network_id"
       ],
       "inputProperties": {
         "enabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether the router is enabled."
         },
         "masquerade": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether NAT masquerading is enabled for this router."
         },
         "metric": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The routing metric (priority) for this router."
         },
         "network_id": {
-          "type": "string"
+          "type": "string",
+          "description": "The ID of the network that this router is associated with."
         },
         "peer": {
-          "type": "string"
+          "type": "string",
+          "description": "Optional peer ID to route through."
         },
         "peer_groups": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "description": "Optional list of peer group IDs to use as routing targets."
         }
       },
       "requiredInputs": [
@@ -335,30 +372,40 @@
       ]
     },
     "netbird:index:Peer": {
+      "description": "A NetBird peer representing a connected device.",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the peer."
         },
-        "peerId": {
-          "type": "string"
+        "nbId": {
+          "type": "string",
+          "description": "The ID of the peer."
         },
         "sshEnabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether SSH is enabled for the peer."
         }
       },
       "type": "object",
       "required": [
         "name",
-        "peerId",
+        "nbId",
         "sshEnabled"
       ],
       "inputProperties": {
-        "peerId": {
-          "type": "string"
+        "name": {
+          "type": "string",
+          "description": "The name of the peer."
+        },
+        "nbId": {
+          "type": "string",
+          "description": "The ID of the peer."
         }
       },
       "requiredInputs": [
-        "peerId"
+        "name",
+        "nbId"
       ]
     }
   }

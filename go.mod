@@ -6,14 +6,13 @@ replace (
 	github.com/mbrav/pulumi-netbird/provider => ./provider
 	github.com/mbrav/pulumi-netbird/provider/cmd/pulumi-resource-netbird => ./provider/cmd/pulumi-resource-netbird
 	github.com/mbrav/pulumi-netbird/sdk => ./sdk
+// github.com/pulumi/pulumi-go-provider => ./pulumi-go-provider
 )
 
 require (
-	github.com/blang/semver v3.5.1+incompatible
 	github.com/netbirdio/netbird v0.43.2
-	github.com/pulumi/pulumi-go-provider v0.26.0
+	github.com/pulumi/pulumi-go-provider v0.25.1-0.20250505210018-c7040104b594
 	github.com/pulumi/pulumi/sdk/v3 v3.167.0
-	github.com/stretchr/testify v1.10.0
 )
 
 require (
@@ -25,6 +24,7 @@ require (
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
+	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/charmbracelet/bubbles v0.21.0 // indirect
 	github.com/charmbracelet/bubbletea v1.3.5 // indirect
 	github.com/charmbracelet/colorprofile v0.3.1 // indirect
@@ -35,7 +35,6 @@ require (
 	github.com/cheggaaa/pb v1.0.29 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/djherbis/times v1.6.0 // indirect
 	github.com/edsrzf/mmap-go v1.2.0 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
@@ -60,7 +59,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mitchellh/go-ps v1.0.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
@@ -72,10 +70,10 @@ require (
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/term v1.1.0 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pulumi/appdash v0.0.0-20231130102222-75f619a67231 // indirect
 	github.com/pulumi/esc v0.14.2 // indirect
 	github.com/pulumi/pulumi/pkg/v3 v3.167.0 // indirect
+	github.com/pulumi/pulumi/sdk v1.14.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect

@@ -17,3 +17,10 @@ func getNetBirdClient(ctx context.Context) (*rest.Client, error) {
 	// Create and return the client using the provided token and URL
 	return rest.NewWithBearerToken(nbURL, nbToken), nil
 }
+
+func strPtr(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}

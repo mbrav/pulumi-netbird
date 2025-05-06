@@ -5,7 +5,40 @@ import (
 	"fmt"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	"github.com/pulumi/pulumi-go-provider/infer"
 )
+
+// Group represents a resource for managing NetBird groups.
+type Group struct{}
+
+// GroupArgs represents the input arguments for creating or updating a group.
+type GroupArgs struct {
+	Name  string    `pulumi:"name"`
+	Peers *[]string `pulumi:"peers,optional"`
+}
+
+// GroupState represents the state of the group resource.
+type GroupState struct {
+	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
+	GroupArgs
+	Name  string    `pulumi:"name"`
+	Peers *[]string `pulumi:"peers,optional"`
+	NbID  string    `pulumi:"nbId"`
+}
+
+// Group annotation
+func (Group) Annotate(a infer.Annotator) {
+	a.Describe(&Group{}, "A NetBird group, which represents a collection of peers.")
+}
+
+func (g *GroupArgs) Annotate(a infer.Annotator) {
+	a.Describe(&g.Name, "The name of the group.")
+	a.Describe(&g.Peers, "An optional list of peer IDs to associate with this group.")
+}
+
+func (g *GroupState) Annotate(a infer.Annotator) {
+	a.Describe(&g.NbID, "The internal NetBird group ID.")
+}
 
 // Create a new group resource.
 func (Group) Create(ctx context.Context, name string, input GroupArgs, preview bool) (string, GroupState, error) {

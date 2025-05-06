@@ -4,7 +4,6 @@ import (
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 	"github.com/pulumi/pulumi-go-provider/middleware/schema"
-	"github.com/pulumi/pulumi/sdk/v3/go/common/tokens"
 )
 
 var Version string = "0.0.8"
@@ -61,19 +60,19 @@ func Provider() p.Provider {
 			},
 		},
 		Resources: []infer.InferredResource{
-			infer.Resource[Group](),
-			infer.Resource[Network](),
-			infer.Resource[NetworkResource](),
-			infer.Resource[NetworkRouter](),
-			infer.Resource[Peer](),
-			// infer.Resource[Policy](),
+			// infer.Resource[Group](),
+			infer.Resource[*Network](),
+			// infer.Resource[NetworkResource](),
+			// infer.Resource[NetworkRouter](),
+			// infer.Resource[Peer](),
+			// infer.Resource[*Policy](),
 		},
 		// Components: []infer.InferredComponent{
 		// 	infer.Component(NewRandomComponent),
 		// },
 		Config: infer.Config[Config](),
-		ModuleMap: map[tokens.ModuleName]tokens.ModuleName{
-			"provider": "index",
-		},
+		// ModuleMap: map[tokens.ModuleName]tokens.ModuleName{
+		// 	"auto-naming": "index",
+		// },
 	})
 }

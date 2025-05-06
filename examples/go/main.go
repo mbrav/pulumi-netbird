@@ -15,7 +15,7 @@ func main() {
 		if err != nil {
 			return err
 		}
-		//
+
 		// // Create a policy to allow SSH access to the Management network
 		// _, err = netbird.NewPolicy(ctx, "allow-ssh-management", &netbird.PolicyArgs{
 		// 	Name:        pulumi.String("Allow SSH to Management"),

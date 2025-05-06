@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.8-alpha.1746442831+0f7e56d0.dirty",
+  "version": "0.0.8-alpha.1746522006+37fd38bf.dirty",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -137,51 +137,20 @@
     ]
   },
   "resources": {
-    "netbird:index:Group": {
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "nbId": {
-          "type": "string"
-        },
-        "peers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "type": "object",
-      "required": [
-        "name",
-        "nbId"
-      ],
-      "inputProperties": {
-        "name": {
-          "type": "string"
-        },
-        "peers": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "requiredInputs": [
-        "name"
-      ]
-    },
-    "netbird:index:Network": {
+    "netbird:provider:Network": {
+      "description": "A NetBird network.",
       "properties": {
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "An optional description of the network."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the NetBird network."
         },
         "nbId": {
-          "type": "string"
+          "type": "string",
+          "description": "The internal NetBird network ID."
         }
       },
       "type": "object",
@@ -191,174 +160,16 @@
       ],
       "inputProperties": {
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "An optional description of the network."
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name of the NetBird network."
         }
       },
       "requiredInputs": [
         "name"
-      ]
-    },
-    "netbird:index:NetworkResource": {
-      "properties": {
-        "address": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "group_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "name": {
-          "type": "string"
-        },
-        "nbId": {
-          "type": "string"
-        },
-        "network_id": {
-          "type": "string"
-        }
-      },
-      "type": "object",
-      "required": [
-        "address",
-        "description",
-        "enabled",
-        "name",
-        "nbId",
-        "network_id"
-      ],
-      "inputProperties": {
-        "address": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "enabled": {
-          "type": "boolean"
-        },
-        "group_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "name": {
-          "type": "string"
-        },
-        "network_id": {
-          "type": "string"
-        }
-      },
-      "requiredInputs": [
-        "address",
-        "enabled",
-        "name",
-        "network_id"
-      ]
-    },
-    "netbird:index:NetworkRouter": {
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "masquerade": {
-          "type": "boolean"
-        },
-        "metric": {
-          "type": "integer"
-        },
-        "nbId": {
-          "type": "string"
-        },
-        "network_id": {
-          "type": "string"
-        },
-        "peer": {
-          "type": "string"
-        },
-        "peer_groups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "type": "object",
-      "required": [
-        "enabled",
-        "masquerade",
-        "metric",
-        "nbId",
-        "network_id",
-        "peer",
-        "peer_groups"
-      ],
-      "inputProperties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "masquerade": {
-          "type": "boolean"
-        },
-        "metric": {
-          "type": "integer"
-        },
-        "network_id": {
-          "type": "string"
-        },
-        "peer": {
-          "type": "string"
-        },
-        "peer_groups": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "requiredInputs": [
-        "enabled",
-        "masquerade",
-        "metric",
-        "network_id"
-      ]
-    },
-    "netbird:index:Peer": {
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "peerId": {
-          "type": "string"
-        },
-        "sshEnabled": {
-          "type": "boolean"
-        }
-      },
-      "type": "object",
-      "required": [
-        "name",
-        "peerId",
-        "sshEnabled"
-      ],
-      "inputProperties": {
-        "peerId": {
-          "type": "string"
-        }
-      },
-      "requiredInputs": [
-        "peerId"
       ]
     }
   }

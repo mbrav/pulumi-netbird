@@ -3,12 +3,48 @@ package provider
 import (
 	"context"
 	"fmt"
+
+	"github.com/pulumi/pulumi-go-provider/infer"
 )
+
+// Peer represents a resource for managing NetBird peers.
+type Peer struct{}
+
+// PeerArgs represents the input arguments for a peer resource.
+type PeerArgs struct {
+	Name string `pulumi:"name"`
+	NbID string `pulumi:"nbId"`
+}
+
+// PeerState represents the state of the peer resource.
+type PeerState struct {
+	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
+	PeerArgs
+	Name       string `pulumi:"name"`
+	SshEnabled bool   `pulumi:"sshEnabled"`
+	NbID       string `pulumi:"nbId"`
+}
+
+// Peer annotation
+func (Peer) Annotate(a infer.Annotator) {
+	a.Describe(&Peer{}, "A NetBird peer representing a connected device.")
+}
+
+func (p *PeerArgs) Annotate(a infer.Annotator) {
+	a.Describe(&p.Name, "The name of the peer.")
+	a.Describe(&p.NbID, "The ID of the peer.")
+}
+
+func (p *PeerState) Annotate(a infer.Annotator) {
+	a.Describe(&p.Name, "The name of the peer.")
+	a.Describe(&p.SshEnabled, "Whether SSH is enabled for the peer.")
+	// a.Describe(&p.NbID, "The ID of the peer.")
+}
 
 // Create method is a no-op since peers cannot be created through the API, only imported.
 func (Peer) Create(ctx context.Context, name string, input PeerArgs, preview bool) (string, PeerState, error) {
 	state := PeerState{
-		PeerID: input.PeerID,
+		NbID: input.NbID,
 	}
 
 	if preview {
@@ -26,15 +62,15 @@ func (Peer) Read(ctx context.Context, id string, inputs PeerArgs, state PeerStat
 		return inputs, state, err
 	}
 
-	peer, err := client.Peers.Get(ctx, state.PeerID)
+	peer, err := client.Peers.Get(ctx, state.NbID)
 	if err != nil {
 		return inputs, state, fmt.Errorf("reading peer failed: %w", err)
 	}
 
 	return PeerArgs{
-			PeerID: peer.Id,
+			NbID: peer.Id,
 		}, PeerState{
-			PeerID:     peer.Id,
+			NbID:       peer.Id,
 			Name:       peer.Name,
 			SshEnabled: peer.SshEnabled,
 		}, nil
@@ -68,7 +104,7 @@ func (Peer) Delete(ctx context.Context, id string, props PeerState) error {
 //	pulumi import netbird:index:Peer my-peer 17a3fa1e-cb8b-4c4b-bfdd-0000abcdef01
 func (Peer) Import(ctx context.Context, name string, input PeerArgs, preview bool) (string, PeerState, error) {
 	state := PeerState{
-		PeerID: input.PeerID,
+		NbID: input.NbID,
 	}
 
 	if preview {
@@ -80,7 +116,7 @@ func (Peer) Import(ctx context.Context, name string, input PeerArgs, preview boo
 		return "", state, err
 	}
 
-	peer, err := client.Peers.Get(ctx, input.PeerID)
+	peer, err := client.Peers.Get(ctx, input.NbID)
 	if err != nil {
 		return "", state, fmt.Errorf("importing peer failed: %w", err)
 	}

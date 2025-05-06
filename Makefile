@@ -1,5 +1,3 @@
-PROJECT_NAME      := Pulumi NetBird Resource Provider
-
 PACK              := netbird
 PACKDIR           := sdk
 PROJECT           := github.com/mbrav/pulumi-netbird
@@ -60,7 +58,7 @@ provider_symlink: ## Symlink provider to Pulumi plugin cache
 	@mkdir -p ~/.pulumi/plugins/${PACK}/resource/${VERSION}
 	@ln -sf $(PROVIDER_BIN) ~/.pulumi/plugins/${PACK}/resource/${VERSION}/pulumi-resource-${PACK}
 
-go_sdk: schema $(PROVIDER_BIN) ## Generate Go SDK from provider binary
+go_sdk: $(PROVIDER_BIN) ## Generate Go SDK from provider binary
 	rm -rf sdk/go
 	pulumi package gen-sdk $(PROVIDER_BIN) --language go
 
@@ -81,21 +79,21 @@ up: ## Deploy stack
 	cd ${EXAMPLES_DIR} && \
 	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
-	pulumi up --yes
+	pulumi up --yes -d -v 3
 
 refresh: ## Refresh the stack state from the actual resources
 	$(call pulumi_login) \
 	cd ${EXAMPLES_DIR} && \
 	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
-	pulumi refresh --yes
+	pulumi refresh --yes -d -v 3
 
 plan: ## Preview stack changes without applying
 	$(call pulumi_login) \
 	cd ${EXAMPLES_DIR} && \
 	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
-	pulumi preview
+	pulumi preview -d -v 3
 
 down: ## Destroy stack
 	$(call pulumi_login) \
@@ -112,6 +110,6 @@ lint: ## Run Go linters
 install: ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin
 
-build: provider go_sdk ## Build provider binary and SDK
+build: provider go_sdk schema ## Build provider binary and SDK
 
 only_build: build ## Alias for build used by CI

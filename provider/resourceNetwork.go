@@ -46,17 +46,15 @@ func (n *NetworkState) Annotate(a infer.Annotator) {
 
 // Create creates a new NetBird network.
 func (*Network) Create(ctx context.Context, req infer.CreateRequest[NetworkArgs]) (infer.CreateResponse[NetworkState], error) {
-	state := NetworkState{
-		Name:        req.Inputs.Name,
-		Description: req.Inputs.Description,
-	}
-
-	p.GetLogger(ctx).Debugf("Create:NetworkState name=%s, description=%s", state.Name, strPtr(state.Description))
-
+	p.GetLogger(ctx).Debugf("Create:NetworkState name=%s, description=%s", req.Inputs.Name, strPtr(req.Inputs.Description))
 	// Return preview state without performing real actions.
 	if req.DryRun {
 		return infer.CreateResponse[NetworkState]{
-			Output: state,
+			Output: NetworkState{
+				Name:        req.Inputs.Name,
+				Description: req.Inputs.Description,
+				NbID:        "unknown",
+			},
 		}, nil
 	}
 
@@ -75,12 +73,14 @@ func (*Network) Create(ctx context.Context, req infer.CreateRequest[NetworkArgs]
 
 	p.GetLogger(ctx).Debugf("Create:NetworkAPI name=%s, description=%s id=%s", net.Name, strPtr(net.Description), net.Id)
 
-	state.NbID = net.Id
-
 	// Return the created network's ID and state
 	return infer.CreateResponse[NetworkState]{
-		ID:     state.NbID,
-		Output: state,
+		ID: net.Id,
+		Output: NetworkState{
+			Name:        net.Name,
+			Description: net.Description,
+			NbID:        net.Id,
+		},
 	}, nil
 }
 
@@ -113,33 +113,38 @@ func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, Net
 }
 
 // Diff compares the desired and actual state of a network resource.
+// func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, NetworkState]) (infer.DiffResponse, error) {
+// 	diff := map[string]p.PropertyDiff{}
+//
+// 	// Compare Name input vs state
+// 	if req.Inputs.Name != req.State.Name {
+// 		diff["name"] = p.PropertyDiff{Kind: p.Update}
+// 	}
+//
+// 	// Compare Description input vs state (handling nils)
+// 	oldDesc := ""
+// 	if req.State.Description != nil {
+// 		oldDesc = *req.State.Description
+// 	}
+// 	newDesc := ""
+// 	if req.Inputs.Description != nil {
+// 		newDesc = *req.Inputs.Description
+// 	}
+// 	if oldDesc != newDesc {
+// 		diff["description"] = p.PropertyDiff{Kind: p.Update}
+// 	}
+//
+// 	p.GetLogger(ctx).Debugf("Read:Network description old:%s new:%s", newDesc, oldDesc)
+//
+// 	return infer.DiffResponse{
+// 		HasChanges:   len(diff) > 0,
+// 		DetailedDiff: diff,
+// 	}, nil
+// }
+
 func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, NetworkState]) (infer.DiffResponse, error) {
-	diff := map[string]p.PropertyDiff{}
-
-	// Compare Name input vs state
-	if req.Inputs.Name != req.State.Name {
-		diff["name"] = p.PropertyDiff{Kind: p.Update}
-	}
-
-	// Compare Description input vs state (handling nils)
-	oldDesc := ""
-	if req.State.Description != nil {
-		oldDesc = *req.State.Description
-	}
-	newDesc := ""
-	if req.Inputs.Description != nil {
-		newDesc = *req.Inputs.Description
-	}
-	if oldDesc != newDesc {
-		diff["description"] = p.PropertyDiff{Kind: p.Update}
-	}
-
-	p.GetLogger(ctx).Debugf("Read:Network description old:%s new:%s", newDesc, oldDesc)
-
-	return infer.DiffResponse{
-		HasChanges:   len(diff) > 0,
-		DetailedDiff: diff,
-	}, nil
+	p.GetLogger(ctx).Debugf("Diff:Network state=%+v, input=%+v", req.State, req.Inputs)
+	return infer.DiffResponse{}, nil
 }
 
 // Update modifies an existing network resource.

@@ -3,38 +3,34 @@ package provider
 import (
 	"context"
 	"fmt"
-	"strings"
+	"slices"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
-
-// FIX: Not updateing Enabled state on UPDATE
 
 // NetworkResource represents a Pulumi resource for NetBird network resources.
 type NetworkResource struct{}
 
 // NetworkResourceArgs represents the input arguments for creating or updating a network resource.
 type NetworkResourceArgs struct {
-	Name        string    `pulumi:"name"`
-	Description *string   `pulumi:"description,optional"`
-	NetworkID   string    `pulumi:"network_id"`
-	Address     string    `pulumi:"address"`
-	Enabled     bool      `pulumi:"enabled"`
-	GroupIDs    *[]string `pulumi:"group_ids,optional"`
+	Name        string   `pulumi:"name"`
+	Description *string  `pulumi:"description,optional"`
+	NetworkID   string   `pulumi:"network_id"`
+	Address     string   `pulumi:"address"`
+	Enabled     bool     `pulumi:"enabled"`
+	GroupIDs    []string `pulumi:"group_ids"`
 }
 
 // NetworkResourceState represents the state of a network resource.
 type NetworkResourceState struct {
-	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
-	NetworkResourceArgs
-	Name        string    `pulumi:"name"`
-	Description *string   `pulumi:"description,optional"`
-	NetworkID   string    `pulumi:"network_id"`
-	Address     string    `pulumi:"address"`
-	Enabled     bool      `pulumi:"enabled"`
-	GroupIDs    *[]string `pulumi:"group_ids,optional"`
-	NbID        string    `pulumi:"nbId"`
+	Name        string   `pulumi:"name"`
+	Description *string  `pulumi:"description,optional"`
+	NetworkID   string   `pulumi:"network_id"`
+	Address     string   `pulumi:"address"`
+	Enabled     bool     `pulumi:"enabled"`
+	GroupIDs    []string `pulumi:"group_ids"`
 }
 
 // NetworkResource annotation
@@ -42,186 +38,231 @@ func (NetworkResource) Annotate(a infer.Annotator) {
 	a.Describe(&NetworkResource{}, "A NetBird network resource, such as a CIDR range assigned to the network.")
 }
 
-func (n *NetworkResourceArgs) Annotate(a infer.Annotator) {
-	a.Describe(&n.Name, "The name of the network resource.")
-	a.Describe(&n.Description, "An optional description of the network resource.")
-	a.Describe(&n.NetworkID, "The ID of the associated network.")
-	a.Describe(&n.Address, "The IP address or subnet of the network resource.")
-	a.Describe(&n.Enabled, "Indicates if the resource is currently enabled.")
-	a.Describe(&n.GroupIDs, "Optional list of group IDs to associate with this network resource.")
+// Annotate provides documentation for NetworkResourceArgs fields.
+func (a *NetworkResourceArgs) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&a.Name, "Name of the network resource.")
+	annotator.Describe(&a.Description, "Optional description of the resource.")
+	annotator.Describe(&a.NetworkID, "ID of the network this resource belongs to.")
+	annotator.Describe(&a.Address, "CIDR or IP address block assigned to the resource.")
+	annotator.Describe(&a.Enabled, "Whether the resource is enabled.")
+	annotator.Describe(&a.GroupIDs, "List of group IDs associated with this resource.")
 }
 
-func (n *NetworkResourceState) Annotate(a infer.Annotator) {
-	a.Describe(&n.NbID, "The internal NetBird ID of the network resource.")
+// Annotate provides documentation for NetworkResourceState fields.
+func (s *NetworkResourceState) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&s.Name, "Name of the network resource.")
+	annotator.Describe(&s.Description, "Optional description of the resource.")
+	annotator.Describe(&s.NetworkID, "ID of the network this resource belongs to.")
+	annotator.Describe(&s.Address, "CIDR or IP address block assigned to the resource.")
+	annotator.Describe(&s.Enabled, "Whether the resource is enabled.")
+	annotator.Describe(&s.GroupIDs, "List of group IDs associated with this resource.")
 }
 
-func (NetworkResource) Create(ctx context.Context, name string, input NetworkResourceArgs, preview bool) (string, NetworkResourceState, error) {
-	state := NetworkResourceState{
-		Name:        input.Name,
-		Description: input.Description,
-		NetworkID:   input.NetworkID,
-		Address:     input.Address,
-		Enabled:     input.Enabled,
-		GroupIDs:    input.GroupIDs,
-	}
+// Create creates a new NetBird network resource.
+func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[NetworkResourceArgs]) (infer.CreateResponse[NetworkResourceState], error) {
+	p.GetLogger(ctx).Debugf("Create:NetworkResource name=%s, description=%s net_id=%s", req.Inputs.Name, strPtr(req.Inputs.Description), req.Inputs.NetworkID)
 
-	if preview {
-		return name, state, nil
-	}
+	// Always sort Input group IDS
+	slices.Sort(req.Inputs.GroupIDs)
 
-	client, err := getNetBirdClient(ctx)
-	if err != nil {
-		return "", state, err
-	}
-
-	created, err := client.Networks.Resources(input.NetworkID).Create(ctx, nbapi.NetworkResourceRequest{
-		Name:        input.Name,
-		Address:     input.Address,
-		Description: input.Description,
-		Enabled:     input.Enabled,
-		Groups:      *input.GroupIDs,
-	})
-	if err != nil {
-		return "", state, fmt.Errorf("creating network resource failed: %w", err)
-	}
-
-	state.NbID = created.Id
-	return name, state, nil
-}
-
-func (NetworkResource) Read(ctx context.Context, id string, input NetworkResourceArgs, state NetworkResourceState) (NetworkResourceArgs, NetworkResourceState, error) {
-	client, err := getNetBirdClient(ctx)
-	if err != nil {
-		return input, state, err
-	}
-
-	res, err := client.Networks.Resources(state.NetworkID).Get(ctx, state.NbID)
-	if err != nil {
-		return input, state, fmt.Errorf("reading network resource failed: %w", err)
-	}
-
-	groupIDs := make([]string, len(res.Groups))
-	for i, peer := range res.Groups {
-		groupIDs[i] = peer.Id
-	}
-
-	return NetworkResourceArgs{
-			Name:        res.Name,
-			Description: res.Description,
-			NetworkID:   state.NetworkID,
-			Address:     res.Address,
-			Enabled:     res.Enabled,
-			GroupIDs:    &groupIDs,
-		}, NetworkResourceState{
-			Name:        res.Name,
-			Description: res.Description,
-			NbID:        res.Id,
-			NetworkID:   state.NetworkID,
-			Address:     res.Address,
-			Enabled:     res.Enabled,
-			GroupIDs:    &groupIDs,
+	if req.DryRun {
+		return infer.CreateResponse[NetworkResourceState]{
+			ID: "preview",
+			Output: NetworkResourceState{
+				Name:        req.Inputs.Name,
+				Description: req.Inputs.Description,
+				NetworkID:   req.Inputs.NetworkID,
+				Address:     req.Inputs.Address,
+				Enabled:     req.Inputs.Enabled,
+				GroupIDs:    req.Inputs.GroupIDs,
+			},
 		}, nil
-}
+	}
 
-func (NetworkResource) Update(ctx context.Context, id string, old NetworkResourceArgs, new NetworkResourceArgs, state NetworkResourceState) (NetworkResourceState, error) {
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
-		return state, err
+		return infer.CreateResponse[NetworkResourceState]{}, err
 	}
-
-	updated, err := client.Networks.Resources(state.NetworkID).Update(ctx, state.NbID, nbapi.NetworkResourceRequest{
-		Name:        new.Name,
-		Address:     new.Address,
-		Description: new.Description,
-		Enabled:     new.Enabled,
-		Groups:      *new.GroupIDs,
+	net, err := client.Networks.Resources(req.Inputs.NetworkID).Create(ctx, nbapi.NetworkResourceRequest{
+		Name:        req.Inputs.Name,
+		Description: req.Inputs.Description,
+		Address:     req.Inputs.Address,
+		Enabled:     req.Inputs.Enabled,
+		Groups:      req.Inputs.GroupIDs,
 	})
 	if err != nil {
-		return state, fmt.Errorf("updating network resource failed: %w", err)
+		return infer.CreateResponse[NetworkResourceState]{}, fmt.Errorf("creating network failed: %w", err)
 	}
 
-	groupIDs := make([]string, len(updated.Groups))
-	for i, peer := range updated.Groups {
-		groupIDs[i] = peer.Id
-	}
+	p.GetLogger(ctx).Debugf("Create:NetworkResourceAPI name=%s, id=%s, net_id=%s", net.Name, net.Id, req.Inputs.NetworkID)
 
-	return NetworkResourceState{
-		Name:        updated.Name,
-		Description: updated.Description,
-		NbID:        updated.Id,
-		NetworkID:   state.NetworkID,
-		Address:     updated.Address,
-		Enabled:     updated.Enabled,
-		GroupIDs:    &groupIDs,
+	return infer.CreateResponse[NetworkResourceState]{
+		ID: net.Id,
+		Output: NetworkResourceState{
+			Name:        net.Name,
+			Description: net.Description,
+			NetworkID:   req.Inputs.NetworkID,
+			Address:     net.Address,
+			Enabled:     net.Enabled,
+			GroupIDs:    getNetworkResourceGroupIDs(net),
+		},
 	}, nil
 }
 
-func (NetworkResource) Delete(ctx context.Context, id string, state NetworkResourceState) error {
+// Read fetches the current state of a network resource from NetBird.
+func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkResourceArgs, NetworkResourceState]) (infer.ReadResponse[NetworkResourceArgs, NetworkResourceState], error) {
+	p.GetLogger(ctx).Debugf("Read:NetworkReourceArgs[%s] name=%s", req.ID, req.Inputs.Name)
+	p.GetLogger(ctx).Debugf("Read:NetworkResourceState[%s] name=%s, netd_id=%s", req.ID, req.State.Name, req.State.NetworkID)
+
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
-		return err
+		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, err
 	}
 
-	if err := client.Networks.Resources(state.NetworkID).Delete(ctx, state.NbID); err != nil {
-		return fmt.Errorf("deleting network resource failed: %w", err)
+	net, err := client.Networks.Resources(req.State.NetworkID).Get(ctx, req.ID)
+	if err != nil {
+		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, fmt.Errorf("reading network failed: %w", err)
 	}
-	return nil
+
+	p.GetLogger(ctx).Debugf("Read:NetworkResourceAPI[%s] name=%s", net.Id, net.Name)
+
+	return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{
+		ID: req.ID,
+		Inputs: NetworkResourceArgs{
+			Name:        net.Name,
+			Description: net.Description,
+			NetworkID:   req.State.NetworkID,
+			Address:     net.Address,
+			Enabled:     net.Enabled,
+			GroupIDs:    getNetworkResourceGroupIDs(net),
+		},
+		State: NetworkResourceState{
+			Name:        net.Name,
+			Description: net.Description,
+			NetworkID:   req.State.NetworkID,
+			Address:     net.Address,
+			Enabled:     net.Enabled,
+			GroupIDs:    getNetworkResourceGroupIDs(net),
+		},
+	}, nil
 }
 
-// Import allows importing an existing NetBird network resource by its ID.
-//
-// To import a NetBird network resource into your Pulumi stack, use:
-//
-//	pulumi import netbird:index:NetworkResource <pulumi-resource-name> <network-id>/<resource-id>
-//
-// Example:
-//
-//	pulumi import netbird:index:NetworkResource core-dns 70abf594-fb68-4ec9-84b9-672758bfc1a3/2ab785be-1439-4ef3-a2b4-cfb622a6f60a
-func (NetworkResource) Import(ctx context.Context, name string, input NetworkResourceArgs, preview bool) (string, NetworkResourceState, error) {
-	state := NetworkResourceState{}
+// Update updates the state of the NetBird network resource if needed.
+func (*NetworkResource) Update(ctx context.Context, req infer.UpdateRequest[NetworkResourceArgs, NetworkResourceState]) (infer.UpdateResponse[NetworkResourceState], error) {
+	p.GetLogger(ctx).Debugf("Update:NetworkResource[%s] name=%s", req.ID, req.Inputs.Name)
 
-	if preview {
-		// Expect NetworkID and NbID to be passed as "network-id/resource-id" in input.Name
-		ids := strings.SplitN(input.Name, "/", 2)
-		if len(ids) != 2 {
-			return "", state, fmt.Errorf("invalid import ID format, expected <network-id>/<resource-id>")
-		}
-		state.NetworkID = ids[0]
-		state.NbID = ids[1]
-		return name, state, nil
-	}
+	// Always sort group IDs before comparison or use
+	slices.Sort(req.Inputs.GroupIDs)
 
-	ids := strings.SplitN(input.Name, "/", 2)
-	if len(ids) != 2 {
-		return "", state, fmt.Errorf("invalid import ID format, expected <network-id>/<resource-id>")
+	if req.DryRun {
+		return infer.UpdateResponse[NetworkResourceState]{
+			Output: NetworkResourceState{
+				Name:        req.Inputs.Name,
+				Description: req.Inputs.Description,
+				NetworkID:   req.Inputs.NetworkID,
+				Address:     req.Inputs.Address,
+				Enabled:     req.Inputs.Enabled,
+				GroupIDs:    req.Inputs.GroupIDs,
+			},
+		}, nil
 	}
-	networkID := ids[0]
-	resourceID := ids[1]
 
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
-		return "", state, err
+		return infer.UpdateResponse[NetworkResourceState]{}, err
 	}
 
-	res, err := client.Networks.Resources(networkID).Get(ctx, resourceID)
+	net, err := client.Networks.Resources(req.Inputs.NetworkID).Update(ctx, req.ID, nbapi.NetworkResourceRequest{
+		Name:        req.Inputs.Name,
+		Description: req.Inputs.Description,
+		Address:     req.Inputs.Address,
+		Enabled:     req.Inputs.Enabled,
+		Groups:      req.Inputs.GroupIDs,
+	})
 	if err != nil {
-		return "", state, fmt.Errorf("importing network resource failed: %w", err)
+		return infer.UpdateResponse[NetworkResourceState]{}, fmt.Errorf("updating network resource failed: %w", err)
 	}
 
-	groupIDs := make([]string, len(res.Groups))
-	for i, grp := range res.Groups {
-		groupIDs[i] = grp.Id
+	return infer.UpdateResponse[NetworkResourceState]{
+		Output: NetworkResourceState{
+			Name:        net.Name,
+			Description: net.Description,
+			NetworkID:   req.Inputs.NetworkID,
+			Address:     net.Address,
+			Enabled:     net.Enabled,
+			GroupIDs:    getNetworkResourceGroupIDs(net),
+		},
+	}, nil
+}
+
+// Delete removes a network resource from NetBird.
+func (*NetworkResource) Delete(ctx context.Context, req infer.DeleteRequest[NetworkResourceState]) (infer.DeleteResponse, error) {
+	p.GetLogger(ctx).Debugf("Delete:NetworkResource[%s]", req.ID)
+
+	client, err := getNetBirdClient(ctx)
+	if err != nil {
+		return infer.DeleteResponse{}, err
 	}
 
-	state = NetworkResourceState{
-		Name:        res.Name,
-		Description: res.Description,
-		NbID:        res.Id,
-		NetworkID:   networkID,
-		Address:     res.Address,
-		Enabled:     res.Enabled,
-		GroupIDs:    &groupIDs,
+	err = client.Networks.Resources(req.State.NetworkID).Delete(ctx, req.ID)
+	if err != nil {
+		return infer.DeleteResponse{}, fmt.Errorf("deleting network resource failed: %w", err)
 	}
 
-	return name, state, nil
+	return infer.DeleteResponse{}, nil
+}
+
+// Diff detects changes between inputs and prior state.
+func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkResourceArgs, NetworkResourceState]) (infer.DiffResponse, error) {
+	p.GetLogger(ctx).Debugf("Diff:NetworkResource[%s]", req.ID)
+	diff := map[string]p.PropertyDiff{}
+
+	if req.Inputs.Name != req.State.Name {
+		diff["name"] = p.PropertyDiff{Kind: p.Update}
+	}
+	if !equalPtr(req.Inputs.Description, req.State.Description) {
+		diff["description"] = p.PropertyDiff{Kind: p.Update}
+	}
+	if req.Inputs.Address != req.State.Address {
+		diff["address"] = p.PropertyDiff{Kind: p.Update}
+	}
+	if req.Inputs.Enabled != req.State.Enabled {
+		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
+	}
+	if req.Inputs.GroupIDs != nil && req.State.GroupIDs != nil {
+		slices.Sort(req.Inputs.GroupIDs)
+		slices.Sort(req.State.GroupIDs)
+		if !slices.Equal(req.Inputs.GroupIDs, req.State.GroupIDs) {
+			diff["group_ids"] = p.PropertyDiff{Kind: p.Update}
+			p.GetLogger(ctx).Debugf("Diff:NetworkResource group_ids input=%s output=%s", req.Inputs.GroupIDs, req.State.GroupIDs)
+		}
+	}
+
+	p.GetLogger(ctx).Debugf("Diff:NetworkResource[%s] diff=%d", req.ID, len(diff))
+
+	return infer.DiffResponse{
+		DeleteBeforeReplace: false,
+		HasChanges:          len(diff) > 0,
+		DetailedDiff:        diff,
+	}, nil
+}
+
+// Check provides input validation and default setting.
+func (*NetworkResource) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkResourceArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:NetworkResource old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+	args, failures, err := infer.DefaultCheck[NetworkResourceArgs](ctx, req.NewInputs)
+	return infer.CheckResponse[NetworkResourceArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
+}
+
+// Extract and sort group IDs
+func getNetworkResourceGroupIDs(net *nbapi.NetworkResource) []string {
+	var groupIDs []string
+	for _, g := range net.Groups {
+		groupIDs = append(groupIDs, g.Id)
+	}
+	slices.Sort(groupIDs)
+	return groupIDs
 }

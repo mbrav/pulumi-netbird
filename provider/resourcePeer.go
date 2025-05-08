@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
@@ -12,117 +14,150 @@ type Peer struct{}
 
 // PeerArgs represents the input arguments for a peer resource.
 type PeerArgs struct {
-	Name string `pulumi:"name"`
-	NbID string `pulumi:"nbId"`
+	Name                        string `pulumi:"name"`
+	InactivityExpirationEnabled bool   `pulumi:"inactivity_expiration_enabled"`
+	LoginExpirationEnabled      bool   `pulumi:"login_expiration_enabled"`
+	SshEnabled                  bool   `pulumi:"sshEnabled"`
 }
 
 // PeerState represents the state of the peer resource.
 type PeerState struct {
-	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
-	PeerArgs
-	Name       string `pulumi:"name"`
-	SshEnabled bool   `pulumi:"sshEnabled"`
-	NbID       string `pulumi:"nbId"`
+	Name                        string `pulumi:"name"`
+	InactivityExpirationEnabled bool   `pulumi:"inactivity_expiration_enabled"`
+	LoginExpirationEnabled      bool   `pulumi:"login_expiration_enabled"`
+	SshEnabled                  bool   `pulumi:"sshEnabled"`
 }
 
-// Peer annotation
+// Annotate describes the resource and its fields.
 func (Peer) Annotate(a infer.Annotator) {
 	a.Describe(&Peer{}, "A NetBird peer representing a connected device.")
 }
 
 func (p *PeerArgs) Annotate(a infer.Annotator) {
 	a.Describe(&p.Name, "The name of the peer.")
-	a.Describe(&p.NbID, "The ID of the peer.")
+	a.Describe(&p.InactivityExpirationEnabled, "Whether Inactivity Expiration is enabled.")
+	a.Describe(&p.LoginExpirationEnabled, "Whether Login Expiration is enabled.")
+	a.Describe(&p.SshEnabled, "Whether SSH is enabled.")
 }
 
 func (p *PeerState) Annotate(a infer.Annotator) {
 	a.Describe(&p.Name, "The name of the peer.")
-	a.Describe(&p.SshEnabled, "Whether SSH is enabled for the peer.")
-	// a.Describe(&p.NbID, "The ID of the peer.")
+	a.Describe(&p.InactivityExpirationEnabled, "Whether Inactivity Expiration is enabled.")
+	a.Describe(&p.LoginExpirationEnabled, "Whether Login Expiration is enabled.")
+	a.Describe(&p.SshEnabled, "Whether SSH is enabled.")
 }
 
-// Create method is a no-op since peers cannot be created through the API, only imported.
-func (Peer) Create(ctx context.Context, name string, input PeerArgs, preview bool) (string, PeerState, error) {
-	state := PeerState{
-		NbID: input.NbID,
-	}
+// Create is a no-op; peers must be imported.
+func (*Peer) Create(ctx context.Context, req infer.CreateRequest[PeerArgs]) (infer.CreateResponse[PeerState], error) {
+	state := PeerState{}
 
-	if preview {
-		return name, state, nil
-	}
-
-	// Peer cannot be created via the API, only imported, so we return the state as-is
-	return name, state, nil
-}
-
-// Read method retrieves the state of a peer resource from NetBird API.
-func (Peer) Read(ctx context.Context, id string, inputs PeerArgs, state PeerState) (PeerArgs, PeerState, error) {
-	client, err := getNetBirdClient(ctx)
-	if err != nil {
-		return inputs, state, err
-	}
-
-	peer, err := client.Peers.Get(ctx, state.NbID)
-	if err != nil {
-		return inputs, state, fmt.Errorf("reading peer failed: %w", err)
-	}
-
-	return PeerArgs{
-			NbID: peer.Id,
-		}, PeerState{
-			NbID:       peer.Id,
-			Name:       peer.Name,
-			SshEnabled: peer.SshEnabled,
+	if req.DryRun {
+		return infer.CreateResponse[PeerState]{
+			ID:     "preview",
+			Output: state,
 		}, nil
+	}
+	return infer.CreateResponse[PeerState]{
+		ID:     req.Inputs.Name,
+		Output: state,
+	}, nil
 }
 
-// Update method is a no-op for peers as they cannot be updated via the API.
-func (Peer) Update(ctx context.Context, id string, old PeerArgs, new PeerArgs, state PeerState) (PeerState, error) {
-	// Peers cannot be updated through Pulumi or the API, so we return the current state.
-	return state, nil
-}
+// Read fetches the current state of a peer from NetBird.
+func (*Peer) Read(ctx context.Context, req infer.ReadRequest[PeerArgs, PeerState]) (infer.ReadResponse[PeerArgs, PeerState], error) {
+	p.GetLogger(ctx).Debugf("Read:Peer[%s]", req.ID)
 
-// Delete method is a no-op for peers as they cannot be deleted through the API.
-func (Peer) Delete(ctx context.Context, id string, props PeerState) error {
-	// Peers cannot be deleted via Pulumi or the API, so no action is required here.
-	return nil
-}
-
-// Import method to import a peer resource into Pulumi by its ID.
-//
-// To import a NetBird peer into your Pulumi stack, use the following Pulumi CLI command:
-//
-//	pulumi import <pulumi-resource-type> <pulumi-resource-name> <netbird-peer-id>
-//
-// Replace the placeholders as follows:
-//   - <pulumi-resource-type>: the fully qualified Pulumi type, e.g. "netbird:index:Peer"
-//   - <pulumi-resource-name>: the logical name you want to give to this resource in your Pulumi program
-//   - <netbird-peer-id>: the actual Peer ID from NetBird (e.g., "17a3fa1e-cb8b-4c4b-bfdd-0000abcdef01")
-//
-// Example:
-//
-//	pulumi import netbird:index:Peer my-peer 17a3fa1e-cb8b-4c4b-bfdd-0000abcdef01
-func (Peer) Import(ctx context.Context, name string, input PeerArgs, preview bool) (string, PeerState, error) {
-	state := PeerState{
-		NbID: input.NbID,
+	client, err := getNetBirdClient(ctx)
+	if err != nil {
+		return infer.ReadResponse[PeerArgs, PeerState]{}, err
 	}
 
-	if preview {
-		return name, state, nil
+	peer, err := client.Peers.Get(ctx, req.ID)
+	if err != nil {
+		return infer.ReadResponse[PeerArgs, PeerState]{}, fmt.Errorf("reading peer failed: %w", err)
+	}
+
+	p.GetLogger(ctx).Debugf("Read:PeerAPI[%s] name=%s", peer.Ip, peer.Name)
+
+	return infer.ReadResponse[PeerArgs, PeerState]{
+		ID: req.ID,
+		Inputs: PeerArgs{
+			Name:                        peer.Name,
+			InactivityExpirationEnabled: peer.InactivityExpirationEnabled,
+			LoginExpirationEnabled:      peer.LoginExpirationEnabled,
+			SshEnabled:                  peer.SshEnabled,
+		},
+		State: PeerState{
+			Name:                        peer.Name,
+			InactivityExpirationEnabled: peer.InactivityExpirationEnabled,
+			LoginExpirationEnabled:      peer.LoginExpirationEnabled,
+			SshEnabled:                  peer.SshEnabled,
+		},
+	}, nil
+}
+
+// Update updates the state of the NetBird Peer if needed.
+func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerState]) (infer.UpdateResponse[PeerState], error) {
+	p.GetLogger(ctx).Debugf("Update:Peer[%s]", req.ID)
+
+	if req.DryRun {
+		return infer.UpdateResponse[PeerState]{
+			Output: PeerState{
+				Name:                        req.Inputs.Name,
+				InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
+				LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
+				SshEnabled:                  req.Inputs.SshEnabled,
+			},
+		}, nil
 	}
 
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
-		return "", state, err
+		return infer.UpdateResponse[PeerState]{}, err
 	}
 
-	peer, err := client.Peers.Get(ctx, input.NbID)
+	_, err = client.Peers.Update(ctx, req.ID, nbapi.PeerRequest{
+		Name:                        req.Inputs.Name,
+		InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
+		LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
+		SshEnabled:                  req.Inputs.SshEnabled,
+	})
 	if err != nil {
-		return "", state, fmt.Errorf("importing peer failed: %w", err)
+		return infer.UpdateResponse[PeerState]{}, fmt.Errorf("updating peer failed: %w", err)
 	}
 
-	state.Name = peer.Name
-	state.SshEnabled = peer.SshEnabled
+	return infer.UpdateResponse[PeerState]{
+		Output: PeerState{
+			Name:                        req.Inputs.Name,
+			InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
+			LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
+			SshEnabled:                  req.Inputs.SshEnabled,
+		},
+	}, nil
+}
 
-	return name, state, nil
+// Diff detects changes between inputs and prior state.
+func (*Peer) Diff(ctx context.Context, req infer.DiffRequest[PeerArgs, PeerState]) (infer.DiffResponse, error) {
+	p.GetLogger(ctx).Debugf("Diff:Peer[%s]", req.ID)
+
+	diff := map[string]p.PropertyDiff{}
+
+	if req.Inputs.Name != req.State.Name {
+		diff["name"] = p.PropertyDiff{Kind: p.Update}
+	}
+	if req.Inputs.InactivityExpirationEnabled != req.State.InactivityExpirationEnabled {
+		diff["inactivity_expiration_enabled"] = p.PropertyDiff{Kind: p.Update}
+	}
+	if req.Inputs.LoginExpirationEnabled != req.State.LoginExpirationEnabled {
+		diff["login_expiration_enabled"] = p.PropertyDiff{Kind: p.Update}
+	}
+	if req.Inputs.SshEnabled != req.State.SshEnabled {
+		diff["sshEnabled"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	return infer.DiffResponse{
+		DeleteBeforeReplace: false,
+		HasChanges:          len(diff) > 0,
+		DetailedDiff:        diff,
+	}, nil
 }

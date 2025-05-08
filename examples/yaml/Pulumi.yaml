@@ -9,24 +9,117 @@ config:
   netbird:netbirdToken: token
   netbird:netbirdUrl: https://nb.domain:33073
 
-resources:
-  network-management:
-    type: netbird:Network
-    properties:
-      name: Management
-      description: Network for Management
-  network-dmz:
-    type: netbird:Network
-    properties:
-      name: DMZ
-      description: Network for Public facing resources
-
 outputs:
   networkManagement:
     value:
-      name: ${network-management.name}
-      id: ${network-management.nbId}
-  networkDmz:
-    value:
-      name: ${network-dmz.name}
-      id: ${network-dmz.nbId}
+      name: ${net-management.name}
+      id: ${net-management.Id}
+
+resources:
+  net-management:
+    type: netbird:provider:Network
+    properties:
+      name: Management
+      description: Network for Management
+
+  net-r1:
+    type: netbird:provider:Network
+    properties:
+      name: R1
+      description: Network for Region 1
+
+  group-devops:
+    type: netbird:provider:Group
+    properties:
+      name: DevOps
+      peers: []
+
+  group-backoffice:
+    type: netbird:provider:Group
+    properties:
+      name: Backoffice
+      peers: []
+
+  group-hr:
+    type: netbird:provider:Group
+    properties:
+      name: HR
+      peers: []
+
+  netres-r1-net-01:
+    type: netbird:provider:NetworkResource
+    properties:
+      name: S1 Franfurt Net 01
+      description: Network 01 in S1 Franfurt
+      network_id: ${net-r1.id}
+      address: 10.10.1.0/24
+      enabled: true
+      group_ids:
+        - ${group-devops.id}
+
+  netres-r1-net-02:
+    type: netbird:provider:NetworkResource
+    properties:
+      name: S1 Franfurt Net 02
+      description: Network 02 in S1 Franfurt
+      network_id: ${net-r1.id}
+      address: 10.10.2.0/24
+      enabled: true
+      group_ids:
+        - ${group-devops.id}
+
+  netres-r1-net-03:
+    type: netbird:provider:NetworkResource
+    properties:
+      name: S1 Franfurt Net 03
+      description: Network 03 in S1 Franfurt
+      network_id: ${net-r1.id}
+      address: 10.10.3.0/24
+      enabled: true
+      group_ids:
+        - ${group-devops.id}
+
+  router-r1:
+    type: netbird:provider:NetworkRouter
+    properties:
+      network_id: ${net-r1.id}
+      enabled: true
+      masquerade: true
+      metric: 10
+      peer: ""
+      peer_groups:
+        - ${group-devops.id}
+
+  # pulumi import
+  test-import-peer:
+    type: netbird:provider:Peer
+    properties:
+      inactivity_expiration_enabled: false
+      login_expiration_enabled: false
+      name: test-import-peer
+      sshEnabled: true
+    options:
+      protect: true
+
+  test-ssh-policy:
+    type: netbird:provider:Policy
+    properties:
+      name: "Test SSH Policy"
+      description: "Allow SSH access from admin group to servers"
+      enabled: true
+      posture_checks: []
+      # posture_checks:
+      #   - "posture-check-1"
+      rules:
+        - name: "SSH Access"
+          description: "Allow inbound SSH from Admins to Servers"
+          bidirectional: false
+          action: accept
+          enabled: true
+          protocol: tcp
+          ports:
+            - "22"
+          # sources:
+          #   - "group-admins"
+          # destinations:
+          #   - "group-servers"

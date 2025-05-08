@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/mbrav/pulumi-netbird/provider"
@@ -10,7 +11,8 @@ import (
 
 func main() {
 	log.Printf("Starting provider %s v%s", provider.Name, provider.Version)
-	err := p.RunProvider(provider.Name, provider.Version, provider.Provider())
+	ctx := context.Background()
+	err := p.RunProvider(ctx, provider.Name, provider.Version, provider.Provider())
 	if err != nil {
 		log.Fatalf("Provider failed: %v", err)
 	}

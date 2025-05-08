@@ -110,6 +110,6 @@ lint: ## Run Go linters
 install: ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin
 
-build: provider go_sdk schema ## Build provider binary and SDK
+build: provider go_sdk ## Build provider binary and SDK
 
 only_build: build ## Alias for build used by CI

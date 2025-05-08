@@ -21,8 +21,18 @@ func (m *module) Version() semver.Version {
 
 func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi.Resource, err error) {
 	switch typ {
+	case "netbird:provider:Group":
+		r = &Group{}
 	case "netbird:provider:Network":
 		r = &Network{}
+	case "netbird:provider:NetworkResource":
+		r = &NetworkResource{}
+	case "netbird:provider:NetworkRouter":
+		r = &NetworkRouter{}
+	case "netbird:provider:Peer":
+		r = &Peer{}
+	case "netbird:provider:Policy":
+		r = &Policy{}
 	default:
 		return nil, fmt.Errorf("unknown resource type: %s", typ)
 	}

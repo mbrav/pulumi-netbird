@@ -20,8 +20,6 @@ type Network struct {
 	Description pulumi.StringPtrOutput `pulumi:"description"`
 	// The name of the NetBird network.
 	Name pulumi.StringOutput `pulumi:"name"`
-	// The internal NetBird network ID.
-	NbId pulumi.StringOutput `pulumi:"nbId"`
 }
 
 // NewNetwork registers a new resource with the given unique name, arguments, and options.
@@ -176,11 +174,6 @@ func (o NetworkOutput) Description() pulumi.StringPtrOutput {
 // The name of the NetBird network.
 func (o NetworkOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v *Network) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
-}
-
-// The internal NetBird network ID.
-func (o NetworkOutput) NbId() pulumi.StringOutput {
-	return o.ApplyT(func(v *Network) pulumi.StringOutput { return v.NbId }).(pulumi.StringOutput)
 }
 
 type NetworkArrayOutput struct{ *pulumi.OutputState }

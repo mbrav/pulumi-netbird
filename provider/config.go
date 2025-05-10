@@ -1,16 +1,20 @@
 package provider
 
 import (
+	"context"
 	"fmt"
+	"os"
 
+	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
+var _ = (infer.CustomConfigure)((*Config)(nil))
+
 // Define provider-level configuration.
 type Config struct {
-	Scream       *bool  `pulumi:"itsasecret,optional"`
-	NetBirdToken string `pulumi:"netbirdToken"`
 	NetBirdUrl   string `pulumi:"netbirdUrl"`
+	NetBirdToken string `pulumi:"netbirdToken"`
 }
 
 // Annotate provider configuration.
@@ -23,7 +27,14 @@ func (c *Config) Annotate(a infer.Annotator) {
 }
 
 // Configure validates the provider configuration.
-func (c *Config) Configure() error {
+func (c *Config) Configure(ctx context.Context) error {
+	if envVal, exists := os.LookupEnv("NETBIRD_URL"); exists {
+		c.NetBirdUrl = envVal
+	}
+	if envVal, exists := os.LookupEnv("NETBIRD_TOKEN"); exists {
+		c.NetBirdToken = envVal
+	}
+	p.GetLogger(ctx).Debugf("Config netbirdToken=%s, netbirdUrl=%s", c.NetBirdUrl, c.NetBirdToken)
 	if c.NetBirdToken == "" {
 		return fmt.Errorf("netbirdToken must be set in provider configuration")
 	}

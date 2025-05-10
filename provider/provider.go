@@ -7,9 +7,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/common/tokens"
 )
 
-var Version string = "0.0.8"
-
-const Name string = "netbird"
+// Change to const to disable semver Version management
+var (
+	Name    string = "netbird"
+	Version string = "0.0.8"
+)
 
 // Define Provider.
 func Provider() p.Provider {
@@ -60,20 +62,19 @@ func Provider() p.Provider {
 				},
 			},
 		},
+		Components: []infer.InferredComponent{},
 		Resources: []infer.InferredResource{
-			infer.Resource[Group](),
-			infer.Resource[Network](),
-			infer.Resource[NetworkResource](),
-			infer.Resource[NetworkRouter](),
-			infer.Resource[Peer](),
-			// infer.Resource[Policy](),
+			infer.Resource[*Group](),
+			infer.Resource[*Network](),
+			infer.Resource[*NetworkResource](),
+			infer.Resource[*NetworkRouter](),
+			infer.Resource[*Peer](),
+			infer.Resource[*Policy](),
 		},
-		// Components: []infer.InferredComponent{
-		// 	infer.Component(NewRandomComponent),
-		// },
-		Config: infer.Config[Config](),
+		Functions: []infer.InferredFunction{},
+		// Config:    infer.Config[*Config](),
 		ModuleMap: map[tokens.ModuleName]tokens.ModuleName{
-			"provider": "index",
+			"auto-naming": "index",
 		},
 	})
 }

@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.8-alpha.1746521044+a131d662.dirty",
+  "version": "0.0.8-alpha.1746899478+c54b2049",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -47,124 +47,288 @@
       }
     }
   },
-  "config": {
-    "variables": {
-      "itsasecret": {
-        "type": "boolean"
-      },
-      "netbirdToken": {
-        "type": "string",
-        "description": "Netbird API Token",
-        "default": "",
-        "defaultInfo": {
-          "environment": [
-            "NETBIRD_TOKEN"
-          ]
+  "config": {},
+  "types": {
+    "netbird:provider:PolicyRuleArgs": {
+      "properties": {
+        "action": {
+          "$ref": "#/types/netbird:provider:RuleAction",
+          "description": "The action to take: 'accept' or 'drop'."
+        },
+        "bidirectional": {
+          "type": "boolean",
+          "description": "Whether the rule applies bidirectionally."
+        },
+        "description": {
+          "type": "string",
+          "description": "An optional description of the policy rule."
+        },
+        "destinationResource": {
+          "$ref": "#/types/netbird:provider:Resource",
+          "description": "Optional destination resource for the rule."
+        },
+        "destinations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional list of destination group IDs."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the rule is active."
+        },
+        "id": {
+          "type": "string",
+          "description": "Optional unique identifier for the policy rule."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the policy rule."
+        },
+        "portRanges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:provider:PolicyRulePortRange"
+          },
+          "description": "Optional list of port ranges."
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional list of ports."
+        },
+        "protocol": {
+          "$ref": "#/types/netbird:provider:Protocol",
+          "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
+        },
+        "sourceResource": {
+          "$ref": "#/types/netbird:provider:Resource",
+          "description": "Optional source resource for the rule."
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional list of source group IDs."
         }
       },
-      "netbirdUrl": {
-        "type": "string",
-        "description": "URL to Netbird API, example: https://nb.mydomain:33073",
-        "default": "https://nb.mydomain:33073",
-        "defaultInfo": {
-          "environment": [
-            "NETBIRD_URL"
-          ]
-        }
-      }
+      "type": "object",
+      "required": [
+        "action",
+        "bidirectional",
+        "enabled",
+        "name",
+        "protocol"
+      ]
     },
-    "defaults": [
-      "netbirdToken",
-      "netbirdUrl"
-    ]
+    "netbird:provider:PolicyRuleGroup": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the group."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the group."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "netbird:provider:PolicyRulePortRange": {
+      "properties": {
+        "end": {
+          "type": "integer"
+        },
+        "start": {
+          "type": "integer"
+        }
+      },
+      "type": "object",
+      "required": [
+        "end",
+        "start"
+      ]
+    },
+    "netbird:provider:PolicyRuleState": {
+      "properties": {
+        "action": {
+          "$ref": "#/types/netbird:provider:RuleAction",
+          "description": "The action to take: 'accept' or 'drop'."
+        },
+        "bidirectional": {
+          "type": "boolean",
+          "description": "Whether the rule applies bidirectionally."
+        },
+        "description": {
+          "type": "string",
+          "description": "An optional description of the policy rule."
+        },
+        "destinationResource": {
+          "$ref": "#/types/netbird:provider:Resource",
+          "description": "Optional destination resource for the rule."
+        },
+        "destinations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:provider:PolicyRuleGroup"
+          },
+          "description": "Optional list of destination groups."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the rule is active."
+        },
+        "id": {
+          "type": "string",
+          "description": "Optional unique identifier for the policy rule."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the policy rule."
+        },
+        "portRanges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:provider:PolicyRulePortRange"
+          },
+          "description": "Optional list of port ranges."
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional list of ports."
+        },
+        "protocol": {
+          "$ref": "#/types/netbird:provider:Protocol",
+          "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
+        },
+        "sourceResource": {
+          "$ref": "#/types/netbird:provider:Resource",
+          "description": "Optional source resource for the rule."
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:provider:PolicyRuleGroup"
+          },
+          "description": "Optional list of source groups."
+        }
+      },
+      "type": "object",
+      "required": [
+        "action",
+        "bidirectional",
+        "enabled",
+        "name",
+        "protocol"
+      ]
+    },
+    "netbird:provider:Protocol": {
+      "type": "string",
+      "enum": [
+        {
+          "description": "All protocols",
+          "value": "all"
+        },
+        {
+          "description": "ICMP protocol",
+          "value": "icmp"
+        },
+        {
+          "description": "TCP protocol",
+          "value": "tcp"
+        },
+        {
+          "description": "UDP protocol",
+          "value": "udp"
+        }
+      ]
+    },
+    "netbird:provider:Resource": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the resource."
+        },
+        "type": {
+          "$ref": "#/types/netbird:provider:ResourceType",
+          "description": "The type of resource: 'domain', 'host', or 'subnet'."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ]
+    },
+    "netbird:provider:ResourceType": {
+      "type": "string",
+      "enum": [
+        {
+          "description": "A domain resource (e.g., example.com).",
+          "value": "domain"
+        },
+        {
+          "description": "A host resource (e.g., peer or device).",
+          "value": "host"
+        },
+        {
+          "description": "A subnet resource (e.g., 192.168.0.0/24).",
+          "value": "subnet"
+        }
+      ]
+    },
+    "netbird:provider:RuleAction": {
+      "type": "string",
+      "enum": [
+        {
+          "description": "Accept action",
+          "value": "accept"
+        },
+        {
+          "description": "Drop action",
+          "value": "drop"
+        }
+      ]
+    }
   },
   "provider": {
-    "properties": {
-      "netbirdToken": {
-        "type": "string",
-        "description": "Netbird API Token",
-        "default": "",
-        "defaultInfo": {
-          "environment": [
-            "NETBIRD_TOKEN"
-          ]
-        }
-      },
-      "netbirdUrl": {
-        "type": "string",
-        "description": "URL to Netbird API, example: https://nb.mydomain:33073",
-        "default": "https://nb.mydomain:33073",
-        "defaultInfo": {
-          "environment": [
-            "NETBIRD_URL"
-          ]
-        }
-      }
-    },
-    "type": "object",
-    "required": [
-      "netbirdToken",
-      "netbirdUrl"
-    ],
-    "inputProperties": {
-      "itsasecret": {
-        "type": "boolean"
-      },
-      "netbirdToken": {
-        "type": "string",
-        "description": "Netbird API Token",
-        "default": "",
-        "defaultInfo": {
-          "environment": [
-            "NETBIRD_TOKEN"
-          ]
-        }
-      },
-      "netbirdUrl": {
-        "type": "string",
-        "description": "URL to Netbird API, example: https://nb.mydomain:33073",
-        "default": "https://nb.mydomain:33073",
-        "defaultInfo": {
-          "environment": [
-            "NETBIRD_URL"
-          ]
-        }
-      }
-    },
-    "requiredInputs": [
-      "netbirdToken",
-      "netbirdUrl"
-    ]
+    "type": "object"
   },
   "resources": {
-    "netbird:index:Group": {
+    "netbird:provider:Group": {
       "description": "A NetBird group, which represents a collection of peers.",
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the group."
-        },
-        "nbId": {
-          "type": "string",
-          "description": "The internal NetBird group ID."
+          "description": "The name of the NetBird group."
         },
         "peers": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "An optional list of peer IDs to associate with this group."
+          "description": "An optional list of peer IDs associated with this group."
         }
       },
       "type": "object",
       "required": [
-        "name",
-        "nbId"
+        "name"
       ],
       "inputProperties": {
         "name": {
           "type": "string",
-          "description": "The name of the group."
+          "description": "The name of the NetBird group."
         },
         "peers": {
           "type": "array",
@@ -178,8 +342,8 @@
         "name"
       ]
     },
-    "netbird:index:Network": {
-      "description": "A NetBird network",
+    "netbird:provider:Network": {
+      "description": "A NetBird network.",
       "properties": {
         "description": {
           "type": "string",
@@ -188,16 +352,11 @@
         "name": {
           "type": "string",
           "description": "The name of the NetBird network."
-        },
-        "nbId": {
-          "type": "string",
-          "description": "The internal NetBird network ID."
         }
       },
       "type": "object",
       "required": [
-        "name",
-        "nbId"
+        "name"
       ],
       "inputProperties": {
         "description": {
@@ -213,87 +372,84 @@
         "name"
       ]
     },
-    "netbird:index:NetworkResource": {
+    "netbird:provider:NetworkResource": {
       "description": "A NetBird network resource, such as a CIDR range assigned to the network.",
       "properties": {
         "address": {
           "type": "string",
-          "description": "The IP address or subnet of the network resource."
+          "description": "CIDR or IP address block assigned to the resource."
         },
         "description": {
           "type": "string",
-          "description": "An optional description of the network resource."
+          "description": "Optional description of the resource."
         },
         "enabled": {
           "type": "boolean",
-          "description": "Indicates if the resource is currently enabled."
+          "description": "Whether the resource is enabled."
         },
         "group_ids": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of group IDs to associate with this network resource."
+          "description": "List of group IDs associated with this resource."
         },
         "name": {
           "type": "string",
-          "description": "The name of the network resource."
-        },
-        "nbId": {
-          "type": "string",
-          "description": "The internal NetBird ID of the network resource."
+          "description": "Name of the network resource."
         },
         "network_id": {
           "type": "string",
-          "description": "The ID of the associated network."
+          "description": "ID of the network this resource belongs to."
         }
       },
       "type": "object",
       "required": [
         "address",
         "enabled",
+        "group_ids",
         "name",
-        "nbId",
         "network_id"
       ],
       "inputProperties": {
         "address": {
           "type": "string",
-          "description": "The IP address or subnet of the network resource."
+          "description": "CIDR or IP address block assigned to the resource."
         },
         "description": {
           "type": "string",
-          "description": "An optional description of the network resource."
+          "description": "Optional description of the resource."
         },
         "enabled": {
           "type": "boolean",
-          "description": "Indicates if the resource is currently enabled."
+          "description": "Whether the resource is enabled."
         },
         "group_ids": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of group IDs to associate with this network resource."
+          "description": "List of group IDs associated with this resource."
         },
         "name": {
           "type": "string",
-          "description": "The name of the network resource."
+          "description": "Name of the network resource."
         },
         "network_id": {
           "type": "string",
-          "description": "The ID of the associated network."
+          "description": "ID of the network this resource belongs to."
         }
       },
       "requiredInputs": [
         "address",
         "enabled",
+        "group_ids",
         "name",
         "network_id"
       ]
     },
-    "netbird:index:NetworkRouter": {
-      "description": "A NetBird router used to route traffic between peers or networks.",
+    "netbird:provider:NetworkRouter": {
+      "description": "A NetBird network router resource.",
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -301,30 +457,29 @@
         },
         "masquerade": {
           "type": "boolean",
-          "description": "Whether NAT masquerading is enabled for this router."
+          "description": "Whether masquerading is enabled."
         },
         "metric": {
           "type": "integer",
-          "description": "The routing metric (priority) for this router."
+          "description": "Routing metric value."
         },
         "nbId": {
-          "type": "string",
-          "description": "The internal NetBird ID of the router."
+          "type": "string"
         },
         "network_id": {
           "type": "string",
-          "description": "The ID of the network that this router is associated with."
+          "description": "ID of the network this router belongs to."
         },
         "peer": {
           "type": "string",
-          "description": "Optional peer ID to route through."
+          "description": "Optional peer ID associated with this router."
         },
         "peer_groups": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of peer group IDs to use as routing targets."
+          "description": "Optional list of peer group IDs associated with this router."
         }
       },
       "type": "object",
@@ -342,26 +497,26 @@
         },
         "masquerade": {
           "type": "boolean",
-          "description": "Whether NAT masquerading is enabled for this router."
+          "description": "Whether masquerading is enabled."
         },
         "metric": {
           "type": "integer",
-          "description": "The routing metric (priority) for this router."
+          "description": "Routing metric value."
         },
         "network_id": {
           "type": "string",
-          "description": "The ID of the network that this router is associated with."
+          "description": "ID of the network this router belongs to."
         },
         "peer": {
           "type": "string",
-          "description": "Optional peer ID to route through."
+          "description": "Optional peer ID associated with this router."
         },
         "peer_groups": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of peer group IDs to use as routing targets."
+          "description": "Optional list of peer group IDs associated with this router."
         }
       },
       "requiredInputs": [
@@ -371,41 +526,126 @@
         "network_id"
       ]
     },
-    "netbird:index:Peer": {
+    "netbird:provider:Peer": {
       "description": "A NetBird peer representing a connected device.",
       "properties": {
+        "inactivity_expiration_enabled": {
+          "type": "boolean",
+          "description": "Whether Inactivity Expiration is enabled."
+        },
+        "login_expiration_enabled": {
+          "type": "boolean",
+          "description": "Whether Login Expiration is enabled."
+        },
         "name": {
           "type": "string",
           "description": "The name of the peer."
-        },
-        "nbId": {
-          "type": "string",
-          "description": "The ID of the peer."
         },
         "sshEnabled": {
           "type": "boolean",
-          "description": "Whether SSH is enabled for the peer."
+          "description": "Whether SSH is enabled."
         }
       },
       "type": "object",
       "required": [
+        "inactivity_expiration_enabled",
+        "login_expiration_enabled",
         "name",
-        "nbId",
         "sshEnabled"
       ],
       "inputProperties": {
+        "inactivity_expiration_enabled": {
+          "type": "boolean",
+          "description": "Whether Inactivity Expiration is enabled."
+        },
+        "login_expiration_enabled": {
+          "type": "boolean",
+          "description": "Whether Login Expiration is enabled."
+        },
         "name": {
           "type": "string",
           "description": "The name of the peer."
         },
-        "nbId": {
-          "type": "string",
-          "description": "The ID of the peer."
+        "sshEnabled": {
+          "type": "boolean",
+          "description": "Whether SSH is enabled."
         }
       },
       "requiredInputs": [
+        "inactivity_expiration_enabled",
+        "login_expiration_enabled",
         "name",
-        "nbId"
+        "sshEnabled"
+      ]
+    },
+    "netbird:provider:Policy": {
+      "description": "A NetBird policy defining rules for communication between peers.",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "An optional description of the policy."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the policy is currently active."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the policy."
+        },
+        "posture_checks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional posture check IDs used as sources in policy rules."
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:provider:PolicyRuleState"
+          },
+          "description": "The list of rules defining the behavior of this policy."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "name",
+        "rules"
+      ],
+      "inputProperties": {
+        "description": {
+          "type": "string",
+          "description": "An optional description of the policy."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the policy is currently active."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the policy."
+        },
+        "posture_checks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional posture check IDs used as sources in policy rules."
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:provider:PolicyRuleArgs"
+          },
+          "description": "The list of rules defining the behavior of this policy."
+        }
+      },
+      "requiredInputs": [
+        "enabled",
+        "name",
+        "rules"
       ]
     }
   }

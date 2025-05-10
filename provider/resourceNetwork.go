@@ -5,172 +5,195 @@ import (
 	"fmt"
 
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
 // Network represents a resource for managing NetBird networks.
 type Network struct{}
 
-// NetworkArgs represents the input arguments for creating or updating a network.
+// Annotate adds a description to the Network resource type.
+func (n *Network) Annotate(a infer.Annotator) {
+	a.Describe(&n, "A NetBird network.")
+}
+
+// NetworkArgs defines input fields for creating or updating a network.
 type NetworkArgs struct {
 	Name        string  `pulumi:"name"`
 	Description *string `pulumi:"description,optional"`
 }
 
-// NetworkState represents the state of the network resource.
-type NetworkState struct {
-	// It is generally a good idea to embed args in outputs, but it isn't strictly necessary.
-	NetworkArgs
-	Name        string  `pulumi:"name"`
-	Description *string `pulumi:"description,optional"`
-	NbID        string  `pulumi:"nbId"`
-}
-
-// Network Annotation
-func (Network) Annotate(a infer.Annotator) {
-	a.Describe(&Network{}, "A NetBird network")
-}
-
-// NetworkArgs Annotation
+// Annotate provides documentation for NetworkArgs fields.
 func (n *NetworkArgs) Annotate(a infer.Annotator) {
 	a.Describe(&n.Name, "The name of the NetBird network.")
 	a.Describe(&n.Description, "An optional description of the network.")
 }
 
-// NetworkState Annotation
+// NetworkState represents the output state of a network resource.
+type NetworkState struct {
+	Name        string  `pulumi:"name"`
+	Description *string `pulumi:"description,optional"`
+}
+
+// Annotate provides documentation for NetworkState fields.
 func (n *NetworkState) Annotate(a infer.Annotator) {
-	a.Describe(&n.NbID, "The internal NetBird network ID.")
+	a.Describe(&n.Name, "The name of the NetBird network.")
+	a.Describe(&n.Description, "An optional description of the network.")
 }
 
-// Dependency mapping
-func (*Network) WireDependencies(f infer.FieldSelector, args *NetworkArgs, state *NetworkState) {
-	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
-	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
-}
+// Create creates a new NetBird network.
+func (*Network) Create(ctx context.Context, req infer.CreateRequest[NetworkArgs]) (infer.CreateResponse[NetworkState], error) {
+	p.GetLogger(ctx).Debugf("Create:Network name=%s, description=%s", req.Inputs.Name, strPtr(req.Inputs.Description))
 
-// Create a new network resource.
-func (Network) Create(ctx context.Context, name string, input NetworkArgs, preview bool) (string, NetworkState, error) {
-	state := NetworkState{
-		Name:        input.Name,
-		Description: input.Description,
-	}
-
-	if preview {
-		return name, state, nil
-	}
-
-	client, err := getNetBirdClient(ctx)
-	if err != nil {
-		return "", state, err
-	}
-
-	created, err := client.Networks.Create(ctx, nbapi.NetworkRequest{
-		Name:        input.Name,
-		Description: input.Description,
-	})
-	if err != nil {
-		return "", state, fmt.Errorf("creating network failed: %w", err)
-	}
-
-	state.NbID = created.Id
-	return name, state, nil
-}
-
-// Read an existing network resource by ID.
-func (Network) Read(ctx context.Context, id string, inputs NetworkArgs, state NetworkState) (NetworkArgs, NetworkState, error) {
-	client, err := getNetBirdClient(ctx)
-	if err != nil {
-		return inputs, state, err
-	}
-
-	net, err := client.Networks.Get(ctx, state.NbID)
-	if err != nil {
-		return inputs, state, fmt.Errorf("reading network failed: %w", err)
-	}
-
-	return NetworkArgs{
-			Name:        net.Name,
-			Description: net.Description,
-		}, NetworkState{
-			Name:        net.Name,
-			Description: net.Description,
-			NbID:        net.Id,
+	if req.DryRun {
+		return infer.CreateResponse[NetworkState]{
+			ID: "preview",
+			Output: NetworkState{
+				Name:        req.Inputs.Name,
+				Description: req.Inputs.Description,
+			},
 		}, nil
-}
+	}
 
-// Update an existing network resource.
-func (Network) Update(ctx context.Context, id string, old NetworkArgs, new NetworkArgs, state NetworkState) (NetworkState, error) {
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
-		return state, err
+		return infer.CreateResponse[NetworkState]{}, err
 	}
 
-	updated, err := client.Networks.Update(ctx, state.NbID, nbapi.NetworkRequest{
-		Name:        new.Name,
-		Description: new.Description,
+	net, err := client.Networks.Create(ctx, nbapi.NetworkRequest{
+		Name:        req.Inputs.Name,
+		Description: req.Inputs.Description,
 	})
 	if err != nil {
-		return state, fmt.Errorf("updating network failed: %w", err)
+		return infer.CreateResponse[NetworkState]{}, fmt.Errorf("creating network failed: %w", err)
 	}
 
-	return NetworkState{
-		NbID:        updated.Id,
-		Name:        updated.Name,
-		Description: updated.Description,
+	p.GetLogger(ctx).Debugf("Create:NetworkAPI name=%s, id=%s", net.Name, net.Id)
+
+	return infer.CreateResponse[NetworkState]{
+		ID: net.Id,
+		Output: NetworkState{
+			Name:        net.Name,
+			Description: net.Description,
+		},
 	}, nil
 }
 
-// Delete an existing network resource.
-func (Network) Delete(ctx context.Context, id string, props NetworkState) error {
+// Read fetches the current state of a network from NetBird.
+func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, NetworkState]) (infer.ReadResponse[NetworkArgs, NetworkState], error) {
+	p.GetLogger(ctx).Debugf("Read:NetworkArgs[%s] name=%s", req.ID, req.Inputs.Name)
+	p.GetLogger(ctx).Debugf("Read:NetworkState[%s] name=%s, id=%s", req.ID, req.State.Name, req.ID)
+
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
-		return err
+		return infer.ReadResponse[NetworkArgs, NetworkState]{}, err
 	}
 
-	if err := client.Networks.Delete(ctx, props.NbID); err != nil {
-		return fmt.Errorf("deleting network failed: %w", err)
+	net, err := client.Networks.Get(ctx, req.ID)
+	if err != nil {
+		return infer.ReadResponse[NetworkArgs, NetworkState]{}, fmt.Errorf("reading network failed: %w", err)
 	}
-	return nil
+
+	p.GetLogger(ctx).Debugf("Read:NetworkAPI[%s] name=%s", net.Id, net.Name)
+
+	return infer.ReadResponse[NetworkArgs, NetworkState]{
+		ID: req.ID,
+		Inputs: NetworkArgs{
+			Name:        net.Name,
+			Description: net.Description,
+		},
+		State: NetworkState{
+			Name:        net.Name,
+			Description: net.Description,
+		},
+	}, nil
 }
 
-// Import method to import a network resource into Pulumi by its ID.
-//
-// To import a NetBird network into your Pulumi stack, use the following Pulumi CLI command:
-//
-//	pulumi import netbird:index:Network <pulumi-resource-name> <netbird-network-id>
-//
-// Example:
-//
-//	pulumi import netbird:index:Network corp-network 4c2d2e8d-bf71-4a0c-9b8f-2f4d2cb723d7
-func (Network) Import(ctx context.Context, id string, input NetworkArgs, preview bool) (string, NetworkArgs, NetworkState, error) {
-	state := NetworkState{}
-	args := NetworkArgs{}
+// Update updates the state of the network if needed.
+func (*Network) Update(ctx context.Context, req infer.UpdateRequest[NetworkArgs, NetworkState]) (infer.UpdateResponse[NetworkState], error) {
+	p.GetLogger(ctx).Debugf("Update:Network[%s] name=%s", req.ID, req.Inputs.Name)
 
-	if preview {
-		state.NbID = id
-		return id, args, state, nil
+	if req.DryRun {
+		return infer.UpdateResponse[NetworkState]{
+			Output: NetworkState{
+				Name:        req.Inputs.Name,
+				Description: req.Inputs.Description,
+			},
+		}, nil
 	}
 
 	client, err := getNetBirdClient(ctx)
 	if err != nil {
-		return "", args, state, err
+		return infer.UpdateResponse[NetworkState]{}, err
 	}
 
-	network, err := client.Networks.Get(ctx, id)
+	_, err = client.Networks.Update(ctx, req.ID, nbapi.NetworkRequest{
+		Name:        req.Inputs.Name,
+		Description: req.Inputs.Description,
+	})
 	if err != nil {
-		return "", args, state, fmt.Errorf("importing network failed: %w", err)
+		return infer.UpdateResponse[NetworkState]{}, fmt.Errorf("updating network failed: %w", err)
 	}
 
-	state = NetworkState{
-		NbID:        network.Id,
-		Name:        network.Name,
-		Description: network.Description,
+	return infer.UpdateResponse[NetworkState]{
+		Output: NetworkState{
+			Name:        req.Inputs.Name,
+			Description: req.Inputs.Description,
+		},
+	}, nil
+}
+
+// Delete removes a network from NetBird.
+func (*Network) Delete(ctx context.Context, req infer.DeleteRequest[NetworkState]) (infer.DeleteResponse, error) {
+	p.GetLogger(ctx).Debugf("Delete:Network[%s]", req.ID)
+
+	client, err := getNetBirdClient(ctx)
+	if err != nil {
+		return infer.DeleteResponse{}, err
 	}
 
-	args = NetworkArgs{
-		Name:        network.Name,
-		Description: network.Description,
+	err = client.Networks.Delete(ctx, req.ID)
+	if err != nil {
+		return infer.DeleteResponse{}, fmt.Errorf("deleting network failed: %w", err)
 	}
 
-	return id, args, state, nil
+	return infer.DeleteResponse{}, nil
+}
+
+// Diff detects changes between inputs and prior state.
+func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, NetworkState]) (infer.DiffResponse, error) {
+	p.GetLogger(ctx).Debugf("Diff:Network[%s]", req.ID)
+	diff := map[string]p.PropertyDiff{}
+
+	if req.Inputs.Name != req.State.Name {
+		diff["name"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	if !equalPtr(req.Inputs.Description, req.State.Description) {
+		diff["description"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	p.GetLogger(ctx).Debugf("Diff:Network[%s] diff=%d", req.ID, len(diff))
+
+	return infer.DiffResponse{
+		DeleteBeforeReplace: false,
+		HasChanges:          len(diff) > 0,
+		DetailedDiff:        diff,
+	}, nil
+}
+
+// Check provides input validation and default setting.
+func (*Network) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:Network old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+	args, failures, err := infer.DefaultCheck[NetworkArgs](ctx, req.NewInputs)
+	return infer.CheckResponse[NetworkArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
+}
+
+// WireDependencies explicitly defines input/output relationships.
+func (*Network) WireDependencies(f infer.FieldSelector, args *NetworkArgs, state *NetworkState) {
+	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
 }

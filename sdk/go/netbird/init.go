@@ -11,34 +11,6 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-type module struct {
-	version semver.Version
-}
-
-func (m *module) Version() semver.Version {
-	return m.version
-}
-
-func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi.Resource, err error) {
-	switch typ {
-	case "netbird:index:Group":
-		r = &Group{}
-	case "netbird:index:Network":
-		r = &Network{}
-	case "netbird:index:NetworkResource":
-		r = &NetworkResource{}
-	case "netbird:index:NetworkRouter":
-		r = &NetworkRouter{}
-	case "netbird:index:Peer":
-		r = &Peer{}
-	default:
-		return nil, fmt.Errorf("unknown resource type: %s", typ)
-	}
-
-	err = ctx.RegisterResource(typ, name, nil, r, pulumi.URN_(urn))
-	return
-}
-
 type pkg struct {
 	version semver.Version
 }
@@ -62,11 +34,6 @@ func init() {
 	if err != nil {
 		version = semver.Version{Major: 1}
 	}
-	pulumi.RegisterResourceModule(
-		"netbird",
-		"index",
-		&module{version},
-	)
 	pulumi.RegisterResourcePackage(
 		"netbird",
 		&pkg{version},

@@ -34,3 +34,5 @@ go.work.sum
 Pulumi.*.yaml
 ci-scripts
 provider/**/schema-embed
+./pulumi-go-provider
+schema-*.json

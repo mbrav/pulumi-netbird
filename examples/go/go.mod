@@ -4,13 +4,11 @@ go 1.24
 
 require (
 	github.com/mbrav/pulumi-netbird/sdk v0.0.8
-	github.com/pulumi/pulumi/sdk/v3 v3.167.0
+	github.com/pulumi/pulumi/sdk/v3 v3.169.0
 )
 
-replace github.com/mbrav/pulumi-netbird/sdk => ../../sdk
-
 require (
-	dario.cat/mergo v1.0.1 // indirect
+	dario.cat/mergo v1.0.2 // indirect
 	github.com/BurntSushi/toml v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.2.0 // indirect
@@ -94,3 +92,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/frand v1.5.1 // indirect
 )
+
+replace github.com/mbrav/pulumi-netbird/sdk => ../../sdk

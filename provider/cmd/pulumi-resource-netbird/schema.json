@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.8-alpha.1746899478+c54b2049",
+  "version": "0.0.9-alpha.1746982820+14553bd3.dirty",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -63,7 +63,7 @@
           "type": "string",
           "description": "An optional description of the policy rule."
         },
-        "destinationResource": {
+        "destination": {
           "$ref": "#/types/netbird:provider:Resource",
           "description": "Optional destination resource for the rule."
         },
@@ -89,7 +89,7 @@
         "portRanges": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:PolicyRulePortRange"
+            "$ref": "#/types/netbird:provider:RulePortRange"
           },
           "description": "Optional list of port ranges."
         },
@@ -104,7 +104,7 @@
           "$ref": "#/types/netbird:provider:Protocol",
           "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
         },
-        "sourceResource": {
+        "source": {
           "$ref": "#/types/netbird:provider:Resource",
           "description": "Optional source resource for the rule."
         },
@@ -125,38 +125,6 @@
         "protocol"
       ]
     },
-    "netbird:provider:PolicyRuleGroup": {
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "The unique identifier of the group."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the group."
-        }
-      },
-      "type": "object",
-      "required": [
-        "id",
-        "name"
-      ]
-    },
-    "netbird:provider:PolicyRulePortRange": {
-      "properties": {
-        "end": {
-          "type": "integer"
-        },
-        "start": {
-          "type": "integer"
-        }
-      },
-      "type": "object",
-      "required": [
-        "end",
-        "start"
-      ]
-    },
     "netbird:provider:PolicyRuleState": {
       "properties": {
         "action": {
@@ -171,14 +139,14 @@
           "type": "string",
           "description": "An optional description of the policy rule."
         },
-        "destinationResource": {
+        "destination": {
           "$ref": "#/types/netbird:provider:Resource",
           "description": "Optional destination resource for the rule."
         },
         "destinations": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:PolicyRuleGroup"
+            "$ref": "#/types/netbird:provider:RuleGroup"
           },
           "description": "Optional list of destination groups."
         },
@@ -197,7 +165,7 @@
         "portRanges": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:PolicyRulePortRange"
+            "$ref": "#/types/netbird:provider:RulePortRange"
           },
           "description": "Optional list of port ranges."
         },
@@ -212,14 +180,14 @@
           "$ref": "#/types/netbird:provider:Protocol",
           "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
         },
-        "sourceResource": {
+        "source": {
           "$ref": "#/types/netbird:provider:Resource",
           "description": "Optional source resource for the rule."
         },
         "sources": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:PolicyRuleGroup"
+            "$ref": "#/types/netbird:provider:RuleGroup"
           },
           "description": "Optional list of source groups."
         }
@@ -299,6 +267,38 @@
           "description": "Drop action",
           "value": "drop"
         }
+      ]
+    },
+    "netbird:provider:RuleGroup": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the group."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the group."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ]
+    },
+    "netbird:provider:RulePortRange": {
+      "properties": {
+        "end": {
+          "type": "integer"
+        },
+        "start": {
+          "type": "integer"
+        }
+      },
+      "type": "object",
+      "required": [
+        "end",
+        "start"
       ]
     }
   },

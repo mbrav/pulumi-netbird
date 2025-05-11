@@ -21,7 +21,7 @@ type PolicyRuleArgs struct {
 	// An optional description of the policy rule.
 	Description *string `pulumi:"description"`
 	// Optional destination resource for the rule.
-	DestinationResource *Resource `pulumi:"destinationResource"`
+	Destination *Resource `pulumi:"destination"`
 	// Optional list of destination group IDs.
 	Destinations []string `pulumi:"destinations"`
 	// Whether the rule is active.
@@ -31,13 +31,13 @@ type PolicyRuleArgs struct {
 	// The name of the policy rule.
 	Name string `pulumi:"name"`
 	// Optional list of port ranges.
-	PortRanges []PolicyRulePortRange `pulumi:"portRanges"`
+	PortRanges []RulePortRange `pulumi:"portRanges"`
 	// Optional list of ports.
 	Ports []string `pulumi:"ports"`
 	// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
 	Protocol Protocol `pulumi:"protocol"`
 	// Optional source resource for the rule.
-	SourceResource *Resource `pulumi:"sourceResource"`
+	Source *Resource `pulumi:"source"`
 	// Optional list of source group IDs.
 	Sources []string `pulumi:"sources"`
 }
@@ -61,7 +61,7 @@ type PolicyRuleArgsArgs struct {
 	// An optional description of the policy rule.
 	Description pulumi.StringPtrInput `pulumi:"description"`
 	// Optional destination resource for the rule.
-	DestinationResource ResourcePtrInput `pulumi:"destinationResource"`
+	Destination ResourcePtrInput `pulumi:"destination"`
 	// Optional list of destination group IDs.
 	Destinations pulumi.StringArrayInput `pulumi:"destinations"`
 	// Whether the rule is active.
@@ -71,13 +71,13 @@ type PolicyRuleArgsArgs struct {
 	// The name of the policy rule.
 	Name pulumi.StringInput `pulumi:"name"`
 	// Optional list of port ranges.
-	PortRanges PolicyRulePortRangeArrayInput `pulumi:"portRanges"`
+	PortRanges RulePortRangeArrayInput `pulumi:"portRanges"`
 	// Optional list of ports.
 	Ports pulumi.StringArrayInput `pulumi:"ports"`
 	// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
 	Protocol ProtocolInput `pulumi:"protocol"`
 	// Optional source resource for the rule.
-	SourceResource ResourcePtrInput `pulumi:"sourceResource"`
+	Source ResourcePtrInput `pulumi:"source"`
 	// Optional list of source group IDs.
 	Sources pulumi.StringArrayInput `pulumi:"sources"`
 }
@@ -149,8 +149,8 @@ func (o PolicyRuleArgsOutput) Description() pulumi.StringPtrOutput {
 }
 
 // Optional destination resource for the rule.
-func (o PolicyRuleArgsOutput) DestinationResource() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.DestinationResource }).(ResourcePtrOutput)
+func (o PolicyRuleArgsOutput) Destination() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.Destination }).(ResourcePtrOutput)
 }
 
 // Optional list of destination group IDs.
@@ -174,8 +174,8 @@ func (o PolicyRuleArgsOutput) Name() pulumi.StringOutput {
 }
 
 // Optional list of port ranges.
-func (o PolicyRuleArgsOutput) PortRanges() PolicyRulePortRangeArrayOutput {
-	return o.ApplyT(func(v PolicyRuleArgs) []PolicyRulePortRange { return v.PortRanges }).(PolicyRulePortRangeArrayOutput)
+func (o PolicyRuleArgsOutput) PortRanges() RulePortRangeArrayOutput {
+	return o.ApplyT(func(v PolicyRuleArgs) []RulePortRange { return v.PortRanges }).(RulePortRangeArrayOutput)
 }
 
 // Optional list of ports.
@@ -189,8 +189,8 @@ func (o PolicyRuleArgsOutput) Protocol() ProtocolOutput {
 }
 
 // Optional source resource for the rule.
-func (o PolicyRuleArgsOutput) SourceResource() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.SourceResource }).(ResourcePtrOutput)
+func (o PolicyRuleArgsOutput) Source() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.Source }).(ResourcePtrOutput)
 }
 
 // Optional list of source group IDs.
@@ -218,157 +218,6 @@ func (o PolicyRuleArgsArrayOutput) Index(i pulumi.IntInput) PolicyRuleArgsOutput
 	}).(PolicyRuleArgsOutput)
 }
 
-type PolicyRuleGroup struct {
-	// The unique identifier of the group.
-	Id string `pulumi:"id"`
-	// The name of the group.
-	Name string `pulumi:"name"`
-}
-
-type PolicyRuleGroupOutput struct{ *pulumi.OutputState }
-
-func (PolicyRuleGroupOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*PolicyRuleGroup)(nil)).Elem()
-}
-
-func (o PolicyRuleGroupOutput) ToPolicyRuleGroupOutput() PolicyRuleGroupOutput {
-	return o
-}
-
-func (o PolicyRuleGroupOutput) ToPolicyRuleGroupOutputWithContext(ctx context.Context) PolicyRuleGroupOutput {
-	return o
-}
-
-// The unique identifier of the group.
-func (o PolicyRuleGroupOutput) Id() pulumi.StringOutput {
-	return o.ApplyT(func(v PolicyRuleGroup) string { return v.Id }).(pulumi.StringOutput)
-}
-
-// The name of the group.
-func (o PolicyRuleGroupOutput) Name() pulumi.StringOutput {
-	return o.ApplyT(func(v PolicyRuleGroup) string { return v.Name }).(pulumi.StringOutput)
-}
-
-type PolicyRuleGroupArrayOutput struct{ *pulumi.OutputState }
-
-func (PolicyRuleGroupArrayOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*[]PolicyRuleGroup)(nil)).Elem()
-}
-
-func (o PolicyRuleGroupArrayOutput) ToPolicyRuleGroupArrayOutput() PolicyRuleGroupArrayOutput {
-	return o
-}
-
-func (o PolicyRuleGroupArrayOutput) ToPolicyRuleGroupArrayOutputWithContext(ctx context.Context) PolicyRuleGroupArrayOutput {
-	return o
-}
-
-func (o PolicyRuleGroupArrayOutput) Index(i pulumi.IntInput) PolicyRuleGroupOutput {
-	return pulumi.All(o, i).ApplyT(func(vs []interface{}) PolicyRuleGroup {
-		return vs[0].([]PolicyRuleGroup)[vs[1].(int)]
-	}).(PolicyRuleGroupOutput)
-}
-
-type PolicyRulePortRange struct {
-	End   int `pulumi:"end"`
-	Start int `pulumi:"start"`
-}
-
-// PolicyRulePortRangeInput is an input type that accepts PolicyRulePortRangeArgs and PolicyRulePortRangeOutput values.
-// You can construct a concrete instance of `PolicyRulePortRangeInput` via:
-//
-//	PolicyRulePortRangeArgs{...}
-type PolicyRulePortRangeInput interface {
-	pulumi.Input
-
-	ToPolicyRulePortRangeOutput() PolicyRulePortRangeOutput
-	ToPolicyRulePortRangeOutputWithContext(context.Context) PolicyRulePortRangeOutput
-}
-
-type PolicyRulePortRangeArgs struct {
-	End   pulumi.IntInput `pulumi:"end"`
-	Start pulumi.IntInput `pulumi:"start"`
-}
-
-func (PolicyRulePortRangeArgs) ElementType() reflect.Type {
-	return reflect.TypeOf((*PolicyRulePortRange)(nil)).Elem()
-}
-
-func (i PolicyRulePortRangeArgs) ToPolicyRulePortRangeOutput() PolicyRulePortRangeOutput {
-	return i.ToPolicyRulePortRangeOutputWithContext(context.Background())
-}
-
-func (i PolicyRulePortRangeArgs) ToPolicyRulePortRangeOutputWithContext(ctx context.Context) PolicyRulePortRangeOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(PolicyRulePortRangeOutput)
-}
-
-// PolicyRulePortRangeArrayInput is an input type that accepts PolicyRulePortRangeArray and PolicyRulePortRangeArrayOutput values.
-// You can construct a concrete instance of `PolicyRulePortRangeArrayInput` via:
-//
-//	PolicyRulePortRangeArray{ PolicyRulePortRangeArgs{...} }
-type PolicyRulePortRangeArrayInput interface {
-	pulumi.Input
-
-	ToPolicyRulePortRangeArrayOutput() PolicyRulePortRangeArrayOutput
-	ToPolicyRulePortRangeArrayOutputWithContext(context.Context) PolicyRulePortRangeArrayOutput
-}
-
-type PolicyRulePortRangeArray []PolicyRulePortRangeInput
-
-func (PolicyRulePortRangeArray) ElementType() reflect.Type {
-	return reflect.TypeOf((*[]PolicyRulePortRange)(nil)).Elem()
-}
-
-func (i PolicyRulePortRangeArray) ToPolicyRulePortRangeArrayOutput() PolicyRulePortRangeArrayOutput {
-	return i.ToPolicyRulePortRangeArrayOutputWithContext(context.Background())
-}
-
-func (i PolicyRulePortRangeArray) ToPolicyRulePortRangeArrayOutputWithContext(ctx context.Context) PolicyRulePortRangeArrayOutput {
-	return pulumi.ToOutputWithContext(ctx, i).(PolicyRulePortRangeArrayOutput)
-}
-
-type PolicyRulePortRangeOutput struct{ *pulumi.OutputState }
-
-func (PolicyRulePortRangeOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*PolicyRulePortRange)(nil)).Elem()
-}
-
-func (o PolicyRulePortRangeOutput) ToPolicyRulePortRangeOutput() PolicyRulePortRangeOutput {
-	return o
-}
-
-func (o PolicyRulePortRangeOutput) ToPolicyRulePortRangeOutputWithContext(ctx context.Context) PolicyRulePortRangeOutput {
-	return o
-}
-
-func (o PolicyRulePortRangeOutput) End() pulumi.IntOutput {
-	return o.ApplyT(func(v PolicyRulePortRange) int { return v.End }).(pulumi.IntOutput)
-}
-
-func (o PolicyRulePortRangeOutput) Start() pulumi.IntOutput {
-	return o.ApplyT(func(v PolicyRulePortRange) int { return v.Start }).(pulumi.IntOutput)
-}
-
-type PolicyRulePortRangeArrayOutput struct{ *pulumi.OutputState }
-
-func (PolicyRulePortRangeArrayOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*[]PolicyRulePortRange)(nil)).Elem()
-}
-
-func (o PolicyRulePortRangeArrayOutput) ToPolicyRulePortRangeArrayOutput() PolicyRulePortRangeArrayOutput {
-	return o
-}
-
-func (o PolicyRulePortRangeArrayOutput) ToPolicyRulePortRangeArrayOutputWithContext(ctx context.Context) PolicyRulePortRangeArrayOutput {
-	return o
-}
-
-func (o PolicyRulePortRangeArrayOutput) Index(i pulumi.IntInput) PolicyRulePortRangeOutput {
-	return pulumi.All(o, i).ApplyT(func(vs []interface{}) PolicyRulePortRange {
-		return vs[0].([]PolicyRulePortRange)[vs[1].(int)]
-	}).(PolicyRulePortRangeOutput)
-}
-
 type PolicyRuleState struct {
 	// The action to take: 'accept' or 'drop'.
 	Action RuleAction `pulumi:"action"`
@@ -377,9 +226,9 @@ type PolicyRuleState struct {
 	// An optional description of the policy rule.
 	Description *string `pulumi:"description"`
 	// Optional destination resource for the rule.
-	DestinationResource *Resource `pulumi:"destinationResource"`
+	Destination *Resource `pulumi:"destination"`
 	// Optional list of destination groups.
-	Destinations []PolicyRuleGroup `pulumi:"destinations"`
+	Destinations []RuleGroup `pulumi:"destinations"`
 	// Whether the rule is active.
 	Enabled bool `pulumi:"enabled"`
 	// Optional unique identifier for the policy rule.
@@ -387,15 +236,15 @@ type PolicyRuleState struct {
 	// The name of the policy rule.
 	Name string `pulumi:"name"`
 	// Optional list of port ranges.
-	PortRanges []PolicyRulePortRange `pulumi:"portRanges"`
+	PortRanges []RulePortRange `pulumi:"portRanges"`
 	// Optional list of ports.
 	Ports []string `pulumi:"ports"`
 	// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
 	Protocol Protocol `pulumi:"protocol"`
 	// Optional source resource for the rule.
-	SourceResource *Resource `pulumi:"sourceResource"`
+	Source *Resource `pulumi:"source"`
 	// Optional list of source groups.
-	Sources []PolicyRuleGroup `pulumi:"sources"`
+	Sources []RuleGroup `pulumi:"sources"`
 }
 
 type PolicyRuleStateOutput struct{ *pulumi.OutputState }
@@ -428,13 +277,13 @@ func (o PolicyRuleStateOutput) Description() pulumi.StringPtrOutput {
 }
 
 // Optional destination resource for the rule.
-func (o PolicyRuleStateOutput) DestinationResource() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.DestinationResource }).(ResourcePtrOutput)
+func (o PolicyRuleStateOutput) Destination() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.Destination }).(ResourcePtrOutput)
 }
 
 // Optional list of destination groups.
-func (o PolicyRuleStateOutput) Destinations() PolicyRuleGroupArrayOutput {
-	return o.ApplyT(func(v PolicyRuleState) []PolicyRuleGroup { return v.Destinations }).(PolicyRuleGroupArrayOutput)
+func (o PolicyRuleStateOutput) Destinations() RuleGroupArrayOutput {
+	return o.ApplyT(func(v PolicyRuleState) []RuleGroup { return v.Destinations }).(RuleGroupArrayOutput)
 }
 
 // Whether the rule is active.
@@ -453,8 +302,8 @@ func (o PolicyRuleStateOutput) Name() pulumi.StringOutput {
 }
 
 // Optional list of port ranges.
-func (o PolicyRuleStateOutput) PortRanges() PolicyRulePortRangeArrayOutput {
-	return o.ApplyT(func(v PolicyRuleState) []PolicyRulePortRange { return v.PortRanges }).(PolicyRulePortRangeArrayOutput)
+func (o PolicyRuleStateOutput) PortRanges() RulePortRangeArrayOutput {
+	return o.ApplyT(func(v PolicyRuleState) []RulePortRange { return v.PortRanges }).(RulePortRangeArrayOutput)
 }
 
 // Optional list of ports.
@@ -468,13 +317,13 @@ func (o PolicyRuleStateOutput) Protocol() ProtocolOutput {
 }
 
 // Optional source resource for the rule.
-func (o PolicyRuleStateOutput) SourceResource() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.SourceResource }).(ResourcePtrOutput)
+func (o PolicyRuleStateOutput) Source() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.Source }).(ResourcePtrOutput)
 }
 
 // Optional list of source groups.
-func (o PolicyRuleStateOutput) Sources() PolicyRuleGroupArrayOutput {
-	return o.ApplyT(func(v PolicyRuleState) []PolicyRuleGroup { return v.Sources }).(PolicyRuleGroupArrayOutput)
+func (o PolicyRuleStateOutput) Sources() RuleGroupArrayOutput {
+	return o.ApplyT(func(v PolicyRuleState) []RuleGroup { return v.Sources }).(RuleGroupArrayOutput)
 }
 
 type PolicyRuleStateArrayOutput struct{ *pulumi.OutputState }
@@ -653,21 +502,172 @@ func (o ResourcePtrOutput) Type() ResourceTypePtrOutput {
 	}).(ResourceTypePtrOutput)
 }
 
+type RuleGroup struct {
+	// The unique identifier of the group.
+	Id string `pulumi:"id"`
+	// The name of the group.
+	Name string `pulumi:"name"`
+}
+
+type RuleGroupOutput struct{ *pulumi.OutputState }
+
+func (RuleGroupOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*RuleGroup)(nil)).Elem()
+}
+
+func (o RuleGroupOutput) ToRuleGroupOutput() RuleGroupOutput {
+	return o
+}
+
+func (o RuleGroupOutput) ToRuleGroupOutputWithContext(ctx context.Context) RuleGroupOutput {
+	return o
+}
+
+// The unique identifier of the group.
+func (o RuleGroupOutput) Id() pulumi.StringOutput {
+	return o.ApplyT(func(v RuleGroup) string { return v.Id }).(pulumi.StringOutput)
+}
+
+// The name of the group.
+func (o RuleGroupOutput) Name() pulumi.StringOutput {
+	return o.ApplyT(func(v RuleGroup) string { return v.Name }).(pulumi.StringOutput)
+}
+
+type RuleGroupArrayOutput struct{ *pulumi.OutputState }
+
+func (RuleGroupArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]RuleGroup)(nil)).Elem()
+}
+
+func (o RuleGroupArrayOutput) ToRuleGroupArrayOutput() RuleGroupArrayOutput {
+	return o
+}
+
+func (o RuleGroupArrayOutput) ToRuleGroupArrayOutputWithContext(ctx context.Context) RuleGroupArrayOutput {
+	return o
+}
+
+func (o RuleGroupArrayOutput) Index(i pulumi.IntInput) RuleGroupOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) RuleGroup {
+		return vs[0].([]RuleGroup)[vs[1].(int)]
+	}).(RuleGroupOutput)
+}
+
+type RulePortRange struct {
+	End   int `pulumi:"end"`
+	Start int `pulumi:"start"`
+}
+
+// RulePortRangeInput is an input type that accepts RulePortRangeArgs and RulePortRangeOutput values.
+// You can construct a concrete instance of `RulePortRangeInput` via:
+//
+//	RulePortRangeArgs{...}
+type RulePortRangeInput interface {
+	pulumi.Input
+
+	ToRulePortRangeOutput() RulePortRangeOutput
+	ToRulePortRangeOutputWithContext(context.Context) RulePortRangeOutput
+}
+
+type RulePortRangeArgs struct {
+	End   pulumi.IntInput `pulumi:"end"`
+	Start pulumi.IntInput `pulumi:"start"`
+}
+
+func (RulePortRangeArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*RulePortRange)(nil)).Elem()
+}
+
+func (i RulePortRangeArgs) ToRulePortRangeOutput() RulePortRangeOutput {
+	return i.ToRulePortRangeOutputWithContext(context.Background())
+}
+
+func (i RulePortRangeArgs) ToRulePortRangeOutputWithContext(ctx context.Context) RulePortRangeOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(RulePortRangeOutput)
+}
+
+// RulePortRangeArrayInput is an input type that accepts RulePortRangeArray and RulePortRangeArrayOutput values.
+// You can construct a concrete instance of `RulePortRangeArrayInput` via:
+//
+//	RulePortRangeArray{ RulePortRangeArgs{...} }
+type RulePortRangeArrayInput interface {
+	pulumi.Input
+
+	ToRulePortRangeArrayOutput() RulePortRangeArrayOutput
+	ToRulePortRangeArrayOutputWithContext(context.Context) RulePortRangeArrayOutput
+}
+
+type RulePortRangeArray []RulePortRangeInput
+
+func (RulePortRangeArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]RulePortRange)(nil)).Elem()
+}
+
+func (i RulePortRangeArray) ToRulePortRangeArrayOutput() RulePortRangeArrayOutput {
+	return i.ToRulePortRangeArrayOutputWithContext(context.Background())
+}
+
+func (i RulePortRangeArray) ToRulePortRangeArrayOutputWithContext(ctx context.Context) RulePortRangeArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(RulePortRangeArrayOutput)
+}
+
+type RulePortRangeOutput struct{ *pulumi.OutputState }
+
+func (RulePortRangeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*RulePortRange)(nil)).Elem()
+}
+
+func (o RulePortRangeOutput) ToRulePortRangeOutput() RulePortRangeOutput {
+	return o
+}
+
+func (o RulePortRangeOutput) ToRulePortRangeOutputWithContext(ctx context.Context) RulePortRangeOutput {
+	return o
+}
+
+func (o RulePortRangeOutput) End() pulumi.IntOutput {
+	return o.ApplyT(func(v RulePortRange) int { return v.End }).(pulumi.IntOutput)
+}
+
+func (o RulePortRangeOutput) Start() pulumi.IntOutput {
+	return o.ApplyT(func(v RulePortRange) int { return v.Start }).(pulumi.IntOutput)
+}
+
+type RulePortRangeArrayOutput struct{ *pulumi.OutputState }
+
+func (RulePortRangeArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]RulePortRange)(nil)).Elem()
+}
+
+func (o RulePortRangeArrayOutput) ToRulePortRangeArrayOutput() RulePortRangeArrayOutput {
+	return o
+}
+
+func (o RulePortRangeArrayOutput) ToRulePortRangeArrayOutputWithContext(ctx context.Context) RulePortRangeArrayOutput {
+	return o
+}
+
+func (o RulePortRangeArrayOutput) Index(i pulumi.IntInput) RulePortRangeOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) RulePortRange {
+		return vs[0].([]RulePortRange)[vs[1].(int)]
+	}).(RulePortRangeOutput)
+}
+
 func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsInput)(nil)).Elem(), PolicyRuleArgsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsArrayInput)(nil)).Elem(), PolicyRuleArgsArray{})
-	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRulePortRangeInput)(nil)).Elem(), PolicyRulePortRangeArgs{})
-	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRulePortRangeArrayInput)(nil)).Elem(), PolicyRulePortRangeArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourcePtrInput)(nil)).Elem(), ResourceArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeArrayInput)(nil)).Elem(), RulePortRangeArray{})
 	pulumi.RegisterOutputType(PolicyRuleArgsOutput{})
 	pulumi.RegisterOutputType(PolicyRuleArgsArrayOutput{})
-	pulumi.RegisterOutputType(PolicyRuleGroupOutput{})
-	pulumi.RegisterOutputType(PolicyRuleGroupArrayOutput{})
-	pulumi.RegisterOutputType(PolicyRulePortRangeOutput{})
-	pulumi.RegisterOutputType(PolicyRulePortRangeArrayOutput{})
 	pulumi.RegisterOutputType(PolicyRuleStateOutput{})
 	pulumi.RegisterOutputType(PolicyRuleStateArrayOutput{})
 	pulumi.RegisterOutputType(ResourceOutput{})
 	pulumi.RegisterOutputType(ResourcePtrOutput{})
+	pulumi.RegisterOutputType(RuleGroupOutput{})
+	pulumi.RegisterOutputType(RuleGroupArrayOutput{})
+	pulumi.RegisterOutputType(RulePortRangeOutput{})
+	pulumi.RegisterOutputType(RulePortRangeArrayOutput{})
 }

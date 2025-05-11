@@ -11,7 +11,7 @@ replace (
 
 require (
 	github.com/netbirdio/netbird v0.43.2
-	github.com/pulumi/pulumi-go-provider v1.0.0-rc1.0.20250509191404-fa41e96845ec
+	github.com/pulumi/pulumi-go-provider v1.0.0-rc1.0.20250512171221-239453950805
 	github.com/pulumi/pulumi/sdk/v3 v3.169.0
 )
 

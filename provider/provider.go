@@ -31,7 +31,7 @@ func Provider() p.Provider {
 		WithPublisher("mbrav").
 		WithLogoURL("https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp").
 		// WithNamespace("nb").
-		WithConfig(infer.Config[*Config]()).
+		// WithConfig(infer.Config[*Config]()).
 		WithResources(
 			infer.Resource[*Group](),
 			infer.Resource[*Network](),

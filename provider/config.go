@@ -9,25 +9,24 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-var _ = (infer.CustomConfigure)((*Config)(nil))
-
 // Define provider-level configuration.
 type Config struct {
 	NetBirdUrl   string `pulumi:"netbirdUrl"`
-	NetBirdToken string `pulumi:"netbirdToken"`
+	NetBirdToken string `pulumi:"netbirdToken" provider:"secret"`
 }
 
 // Annotate provider configuration.
 func (c *Config) Annotate(a infer.Annotator) {
-	a.Describe(&c.NetBirdUrl, "URL to Netbird API, example: https://nb.mydomain:33073")
+	a.Describe(&c.NetBirdUrl, "URL to Netbird API, example: https://api.netbird.io")
 	a.Describe(&c.NetBirdToken, "Netbird API Token")
 
-	a.SetDefault(&c.NetBirdUrl, "https://nb.mydomain:33073", "NETBIRD_URL")
+	a.SetDefault(&c.NetBirdUrl, "https://api.netbird.io", "NETBIRD_URL")
 	a.SetDefault(&c.NetBirdToken, "", "NETBIRD_TOKEN")
 }
 
 // Configure validates the provider configuration.
 func (c *Config) Configure(ctx context.Context) error {
+	p.GetLogger(ctx).Debugf("Configure:Config")
 	if envVal, exists := os.LookupEnv("NETBIRD_URL"); exists {
 		c.NetBirdUrl = envVal
 	}

@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.9-alpha.1746982820+14553bd3.dirty",
+  "version": "0.0.9+dirty",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -47,7 +47,35 @@
       }
     }
   },
-  "config": {},
+  "config": {
+    "variables": {
+      "netbirdToken": {
+        "type": "string",
+        "description": "Netbird API Token",
+        "default": "",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_TOKEN"
+          ]
+        },
+        "secret": true
+      },
+      "netbirdUrl": {
+        "type": "string",
+        "description": "URL to Netbird API, example: https://api.netbird.io",
+        "default": "https://api.netbird.io",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_URL"
+          ]
+        }
+      }
+    },
+    "defaults": [
+      "netbirdToken",
+      "netbirdUrl"
+    ]
+  },
   "types": {
     "netbird:provider:PolicyRuleArgs": {
       "properties": {
@@ -303,7 +331,61 @@
     }
   },
   "provider": {
-    "type": "object"
+    "properties": {
+      "netbirdToken": {
+        "type": "string",
+        "description": "Netbird API Token",
+        "default": "",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_TOKEN"
+          ]
+        },
+        "secret": true
+      },
+      "netbirdUrl": {
+        "type": "string",
+        "description": "URL to Netbird API, example: https://api.netbird.io",
+        "default": "https://api.netbird.io",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_URL"
+          ]
+        }
+      }
+    },
+    "type": "object",
+    "required": [
+      "netbirdToken",
+      "netbirdUrl"
+    ],
+    "inputProperties": {
+      "netbirdToken": {
+        "type": "string",
+        "description": "Netbird API Token",
+        "default": "",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_TOKEN"
+          ]
+        },
+        "secret": true
+      },
+      "netbirdUrl": {
+        "type": "string",
+        "description": "URL to Netbird API, example: https://api.netbird.io",
+        "default": "https://api.netbird.io",
+        "defaultInfo": {
+          "environment": [
+            "NETBIRD_URL"
+          ]
+        }
+      }
+    },
+    "requiredInputs": [
+      "netbirdToken",
+      "netbirdUrl"
+    ]
   },
   "resources": {
     "netbird:provider:Group": {

@@ -11,14 +11,17 @@ import (
 // Retrieve the NetBird client using the provider configuration.
 func getNetBirdClient(ctx context.Context) (*rest.Client, error) {
 	// Get the configuration from the provider's context
-	config := infer.GetConfig[Config](ctx)
+	config := infer.GetConfig[*Config](ctx)
 
 	// BUG: Fix this workaround
 	var nbToken string
 	var nbURL string
 
 	nbToken = config.NetBirdToken
-	nbURL = config.NetBirdToken
+	nbURL = config.NetBirdUrl
+
+	// nbToken = ""
+	// nbURL = ""
 
 	// Create and return the client using the provided token and URL
 	return rest.NewWithBearerToken(nbURL, nbToken), nil

@@ -9,7 +9,7 @@ import (
 // Change to const to disable semver Version management
 var (
 	Name    string = "netbird"
-	Version string = "0.0.9"
+	Version string = "0.0.10"
 )
 
 // Define Provider.
@@ -31,7 +31,7 @@ func Provider() p.Provider {
 		WithPublisher("mbrav").
 		WithLogoURL("https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp").
 		// WithNamespace("nb").
-		// WithConfig(infer.Config[*Config]()).
+		WithConfig(infer.Config[*Config]()).
 		WithResources(
 			infer.Resource[*Group](),
 			infer.Resource[*Network](),

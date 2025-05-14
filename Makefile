@@ -103,7 +103,8 @@ down: ## Destroy stack
 	pulumi stack rm ${PACK}-dev --yes
 
 lint: ## Run Go linters
-	for DIR in "provider" "sdk" "tests" ; do \
+	for DIR in "provider" "sdk/go" "tests" ; do \
+		echo $$DIR; \
 		pushd $$DIR && golangci-lint run -c ../.golangci.yml --timeout 10m && popd ; \
 	done
 

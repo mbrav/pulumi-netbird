@@ -1,10 +1,11 @@
-package provider
+package resource
 
 import (
 	"context"
 	"fmt"
 	"slices"
 
+	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -79,10 +80,11 @@ func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[Netw
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.CreateResponse[NetworkResourceState]{}, err
 	}
+
 	net, err := client.Networks.Resources(req.Inputs.NetworkID).Create(ctx, nbapi.NetworkResourceRequest{
 		Name:        req.Inputs.Name,
 		Description: req.Inputs.Description,
@@ -114,7 +116,7 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 	p.GetLogger(ctx).Debugf("Read:NetworkReourceArgs[%s] name=%s", req.ID, req.Inputs.Name)
 	p.GetLogger(ctx).Debugf("Read:NetworkResourceState[%s] name=%s, netd_id=%s", req.ID, req.State.Name, req.State.NetworkID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, err
 	}
@@ -167,7 +169,7 @@ func (*NetworkResource) Update(ctx context.Context, req infer.UpdateRequest[Netw
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.UpdateResponse[NetworkResourceState]{}, err
 	}
@@ -199,7 +201,7 @@ func (*NetworkResource) Update(ctx context.Context, req infer.UpdateRequest[Netw
 func (*NetworkResource) Delete(ctx context.Context, req infer.DeleteRequest[NetworkResourceState]) (infer.DeleteResponse, error) {
 	p.GetLogger(ctx).Debugf("Delete:NetworkResource[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.DeleteResponse{}, err
 	}
@@ -215,23 +217,29 @@ func (*NetworkResource) Delete(ctx context.Context, req infer.DeleteRequest[Netw
 // Diff detects changes between inputs and prior state.
 func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkResourceArgs, NetworkResourceState]) (infer.DiffResponse, error) {
 	p.GetLogger(ctx).Debugf("Diff:NetworkResource[%s]", req.ID)
+
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
 		diff["name"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.Address != req.State.Address {
 		diff["address"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.Enabled != req.State.Enabled {
 		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.GroupIDs != nil && req.State.GroupIDs != nil {
 		slices.Sort(req.Inputs.GroupIDs)
 		slices.Sort(req.State.GroupIDs)
+
 		if !slices.Equal(req.Inputs.GroupIDs, req.State.GroupIDs) {
 			diff["group_ids"] = p.PropertyDiff{Kind: p.Update}
 			p.GetLogger(ctx).Debugf("Diff:NetworkResource group_ids input=%s output=%s", req.Inputs.GroupIDs, req.State.GroupIDs)
@@ -251,6 +259,7 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 func (*NetworkResource) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkResourceArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:NetworkResource old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
 	args, failures, err := infer.DefaultCheck[NetworkResourceArgs](ctx, req.NewInputs)
+
 	return infer.CheckResponse[NetworkResourceArgs]{
 		Inputs:   args,
 		Failures: failures,
@@ -263,6 +272,8 @@ func getNetworkResourceGroupIDs(net *nbapi.NetworkResource) []string {
 	for _, g := range net.Groups {
 		groupIDs = append(groupIDs, g.Id)
 	}
+
 	slices.Sort(groupIDs)
+
 	return groupIDs
 }

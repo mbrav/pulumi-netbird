@@ -11,7 +11,9 @@ import (
 
 func main() {
 	log.Printf("Starting provider %s v%s", provider.Name, provider.Version)
+
 	ctx := context.Background()
+
 	err := p.RunProvider(ctx, provider.Name, provider.Version, provider.Provider())
 	if err != nil {
 		log.Fatalf("Provider failed: %v", err)

@@ -1,9 +1,10 @@
-package provider
+package resource
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -32,7 +33,7 @@ type PolicyState struct {
 
 // PolicyRuleArgs represents user input for an individual rule in a policy.
 type PolicyRuleArgs struct {
-	Id                  *string          `pulumi:"id,optional"`           // Optional rule ID (used for updates)
+	ID                  *string          `pulumi:"id,optional"`           // Optional rule ID (used for updates)
 	Name                string           `pulumi:"name"`                  // Rule name
 	Description         *string          `pulumi:"description,optional"`  // Optional rule description
 	Bidirectional       bool             `pulumi:"bidirectional"`         // Whether the rule is bidirectional
@@ -49,7 +50,7 @@ type PolicyRuleArgs struct {
 
 // PolicyRuleState represents the state of an individual rule within a policy.
 type PolicyRuleState struct {
-	Id                  *string          `pulumi:"id,optional"`
+	ID                  *string          `pulumi:"id,optional"`
 	Name                string           `pulumi:"name"`
 	Description         *string          `pulumi:"description,optional"`
 	Bidirectional       bool             `pulumi:"bidirectional"`
@@ -108,6 +109,7 @@ type Resource struct {
 	Type ResourceType `pulumi:"type"` // The type of the resource (domain, host, subnet)
 }
 
+// Annotation for Resource for generated SDKs.
 func (r *Resource) Annotate(a infer.Annotator) {
 	a.Describe(&r.Id, "The unique identifier of the resource.")
 	a.Describe(&r.Type, "The type of resource: 'domain', 'host', or 'subnet'.")
@@ -132,20 +134,24 @@ func (ResourceType) Values() []infer.EnumValue[ResourceType] {
 	}
 }
 
+// RulePortRange type.
 type RulePortRange struct {
 	Start int `pulumi:"start"`
 	End   int `pulumi:"end"`
 }
 
+// RuleGroup type.
 type RuleGroup struct {
-	Id   string `pulumi:"id"`
+	ID   string `pulumi:"id"`
 	Name string `pulumi:"name"`
 }
 
+// Annotation for Policy for generated SDKs.
 func (Policy) Annotate(a infer.Annotator) {
 	a.Describe(&Policy{}, "A NetBird policy defining rules for communication between peers.")
 }
 
+// Annotation for PolicyArgs for generated SDKs.
 func (p *PolicyArgs) Annotate(a infer.Annotator) {
 	a.Describe(&p.Name, "The name of the policy.")
 	a.Describe(&p.Description, "An optional description of the policy.")
@@ -154,6 +160,7 @@ func (p *PolicyArgs) Annotate(a infer.Annotator) {
 	a.Describe(&p.SourcePostureChecks, "Optional posture check IDs used as sources in policy rules.")
 }
 
+// Annotation for PolicyState for generated SDKs.
 func (p *PolicyState) Annotate(a infer.Annotator) {
 	a.Describe(&p.Name, "The name of the policy.")
 	a.Describe(&p.Description, "An optional description of the policy.")
@@ -162,8 +169,9 @@ func (p *PolicyState) Annotate(a infer.Annotator) {
 	a.Describe(&p.SourcePostureChecks, "Optional posture check IDs used as sources in policy rules.")
 }
 
+// Annotation for PolicyRuleArgs for generated SDKs.
 func (p *PolicyRuleArgs) Annotate(a infer.Annotator) {
-	a.Describe(&p.Id, "Optional unique identifier for the policy rule.")
+	a.Describe(&p.ID, "Optional unique identifier for the policy rule.")
 	a.Describe(&p.Name, "The name of the policy rule.")
 	a.Describe(&p.Description, "An optional description of the policy rule.")
 	a.Describe(&p.Bidirectional, "Whether the rule applies bidirectionally.")
@@ -178,8 +186,9 @@ func (p *PolicyRuleArgs) Annotate(a infer.Annotator) {
 	a.Describe(&p.DestinationResource, "Optional destination resource for the rule.")
 }
 
+// Annotation for PolicyRuleState for generated SDKs.
 func (p *PolicyRuleState) Annotate(a infer.Annotator) {
-	a.Describe(&p.Id, "Optional unique identifier for the policy rule.")
+	a.Describe(&p.ID, "Optional unique identifier for the policy rule.")
 	a.Describe(&p.Name, "The name of the policy rule.")
 	a.Describe(&p.Description, "An optional description of the policy rule.")
 	a.Describe(&p.Bidirectional, "Whether the rule applies bidirectionally.")
@@ -194,37 +203,44 @@ func (p *PolicyRuleState) Annotate(a infer.Annotator) {
 	a.Describe(&p.DestinationResource, "Optional destination resource for the rule.")
 }
 
+// Annotation for RuleGroup for generated SDKs.
 func (g *RuleGroup) Annotate(a infer.Annotator) {
-	a.Describe(&g.Id, "The unique identifier of the group.")
+	a.Describe(&g.ID, "The unique identifier of the group.")
 	a.Describe(&g.Name, "The name of the group.")
 }
 
 // Create creates a new NetBird policy.
 func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) (infer.CreateResponse[PolicyState], error) {
 	p.GetLogger(ctx).Debugf("Create:Policy")
+
 	if req.DryRun {
 		// Convert PolicyRuleArgs to PolicyRuleState for preview
 		rules := make([]PolicyRuleState, len(req.Inputs.Rules))
+
 		for i, rule := range req.Inputs.Rules {
 			// Construct sources and destination groups
 			var sources, destinations *[]RuleGroup
+
 			if rule.Sources != nil {
 				groups := make([]RuleGroup, len(*rule.Sources))
 				for j, g := range *rule.Sources {
-					groups[j] = RuleGroup{Name: "preview", Id: g}
+					groups[j] = RuleGroup{Name: "preview", ID: g}
 				}
+
 				sources = &groups
 			}
+
 			if rule.Destinations != nil {
 				groups := make([]RuleGroup, len(*rule.Destinations))
 				for j, g := range *rule.Sources {
-					groups[j] = RuleGroup{Name: "preview", Id: g}
+					groups[j] = RuleGroup{Name: "preview", ID: g}
 				}
+
 				destinations = &groups
 			}
 
 			rules[i] = PolicyRuleState{
-				Id:                  rule.Id,
+				ID:                  rule.ID,
 				Name:                rule.Name,
 				Description:         rule.Description,
 				Bidirectional:       rule.Bidirectional,
@@ -252,7 +268,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.CreateResponse[PolicyState]{}, err
 	}
@@ -261,7 +277,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 	apiRules := make([]nbapi.PolicyRuleUpdate, len(req.Inputs.Rules))
 	for i, rule := range req.Inputs.Rules {
 		apiRules[i] = nbapi.PolicyRuleUpdate{
-			Id:                  rule.Id,
+			Id:                  rule.ID,
 			Name:                rule.Name,
 			Description:         rule.Description,
 			Bidirectional:       rule.Bidirectional,
@@ -292,7 +308,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 	rules := make([]PolicyRuleState, len(created.Rules))
 	for i, rule := range created.Rules {
 		rules[i] = PolicyRuleState{
-			Id:                  rule.Id,
+			ID:                  rule.Id,
 			Name:                rule.Name,
 			Description:         rule.Description,
 			Bidirectional:       rule.Bidirectional,
@@ -324,7 +340,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, PolicyState]) (infer.ReadResponse[PolicyArgs, PolicyState], error) {
 	p.GetLogger(ctx).Debugf("Read:Policy[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[PolicyArgs, PolicyState]{}, err
 	}
@@ -337,7 +353,7 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 	rules := make([]PolicyRuleState, len(policy.Rules))
 	for i, rule := range policy.Rules {
 		rules[i] = PolicyRuleState{
-			Id:                  rule.Id,
+			ID:                  rule.Id,
 			Name:                rule.Name,
 			Description:         rule.Description,
 			Bidirectional:       rule.Bidirectional,
@@ -379,25 +395,30 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 	if req.DryRun {
 		// Construct PolicyRuleState for preview output
 		rules := make([]PolicyRuleState, len(req.Inputs.Rules))
+
 		for i, rule := range req.Inputs.Rules {
 			var sources, destinations *[]RuleGroup
+
 			if rule.Sources != nil {
 				groups := make([]RuleGroup, len(*rule.Sources))
 				for j, g := range *rule.Sources {
-					groups[j] = RuleGroup{Name: "preview", Id: g}
+					groups[j] = RuleGroup{Name: "preview", ID: g}
 				}
+
 				sources = &groups
 			}
+
 			if rule.Destinations != nil {
 				groups := make([]RuleGroup, len(*rule.Destinations))
 				for j, g := range *rule.Destinations {
-					groups[j] = RuleGroup{Name: "preview", Id: g}
+					groups[j] = RuleGroup{Name: "preview", ID: g}
 				}
+
 				destinations = &groups
 			}
 
 			rules[i] = PolicyRuleState{
-				Id:                  rule.Id,
+				ID:                  rule.ID,
 				Name:                rule.Name,
 				Description:         rule.Description,
 				Bidirectional:       rule.Bidirectional,
@@ -424,7 +445,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.UpdateResponse[PolicyState]{}, err
 	}
@@ -433,7 +454,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 	apiRules := make([]nbapi.PolicyRuleUpdate, len(req.Inputs.Rules))
 	for i, rule := range req.Inputs.Rules {
 		apiRules[i] = nbapi.PolicyRuleUpdate{
-			Id:                  rule.Id,
+			Id:                  rule.ID,
 			Name:                rule.Name,
 			Description:         rule.Description,
 			Bidirectional:       rule.Bidirectional,
@@ -464,7 +485,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 	rules := make([]PolicyRuleState, len(updated.Rules))
 	for i, rule := range updated.Rules {
 		rules[i] = PolicyRuleState{
-			Id:                  rule.Id,
+			ID:                  rule.Id,
 			Name:                rule.Name,
 			Description:         rule.Description,
 			Bidirectional:       rule.Bidirectional,
@@ -495,7 +516,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 func (*Policy) Delete(ctx context.Context, req infer.DeleteRequest[PolicyState]) (infer.DeleteResponse, error) {
 	p.GetLogger(ctx).Debugf("Delete:Policy[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.DeleteResponse{}, err
 	}
@@ -517,9 +538,11 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 	if req.Inputs.Name != req.State.Name {
 		diff["name"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if strPtr(req.Inputs.Description) != strPtr(req.State.Description) {
 		diff["description"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.Enabled != req.State.Enabled {
 		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
 	}
@@ -528,6 +551,7 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 		diff["rules"] = p.PropertyDiff{Kind: p.Update}
 	} else {
 		equal := true
+
 		for i := range req.Inputs.Rules {
 			in := req.Inputs.Rules[i]
 			st := req.State.Rules[i]
@@ -547,13 +571,16 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 				!equalResourcePtr(in.SourceResource, st.SourceResource) ||
 				!equalResourcePtr(in.DestinationResource, st.DestinationResource) {
 				equal = false
+
 				break
 			}
 		}
+
 		if !equal {
 			diff["rules"] = p.PropertyDiff{Kind: p.Update}
 		}
 	}
+
 	if !equalSlicePtr(req.Inputs.SourcePostureChecks, req.State.SourcePostureChecks) {
 		diff["posture_checks"] = p.PropertyDiff{Kind: p.Update}
 	}
@@ -572,10 +599,12 @@ func toAPIPortRanges(in *[]RulePortRange) *[]nbapi.RulePortRange {
 	if in == nil {
 		return nil
 	}
+
 	out := make([]nbapi.RulePortRange, len(*in))
 	for i, r := range *in {
 		out[i] = nbapi.RulePortRange{Start: r.Start, End: r.End}
 	}
+
 	return &out
 }
 
@@ -584,10 +613,12 @@ func fromAPIPortRanges(in *[]nbapi.RulePortRange) *[]RulePortRange {
 	if in == nil {
 		return nil
 	}
+
 	out := make([]RulePortRange, len(*in))
 	for i, r := range *in {
 		out[i] = RulePortRange{Start: r.Start, End: r.End}
 	}
+
 	return &out
 }
 
@@ -596,10 +627,12 @@ func fromAPIGroupMinimums(in *[]nbapi.GroupMinimum) *[]RuleGroup {
 	if in == nil {
 		return nil
 	}
+
 	out := make([]RuleGroup, len(*in))
 	for i, r := range *in {
-		out[i] = RuleGroup{Id: r.Id, Name: r.Name}
+		out[i] = RuleGroup{ID: r.Id, Name: r.Name}
 	}
+
 	return &out
 }
 
@@ -608,6 +641,7 @@ func toAPIResource(in *Resource) *nbapi.Resource {
 	if in == nil {
 		return nil
 	}
+
 	return &nbapi.Resource{
 		Id:   in.Id,
 		Type: nbapi.ResourceType(in.Type),
@@ -619,35 +653,41 @@ func fromAPIResource(in *nbapi.Resource) *Resource {
 	if in == nil {
 		return nil
 	}
+
 	return &Resource{
 		Id:   in.Id,
 		Type: ResourceType(in.Type),
 	}
 }
 
-func toGroupIds(groups *[]RuleGroup) *[]string {
-	if groups == nil {
-		return nil
-	}
-	ids := make([]string, len(*groups))
-	for i, g := range *groups {
-		ids[i] = g.Id
-	}
-	return &ids
-}
+// func toGroupIds(groups *[]RuleGroup) *[]string {
+// 	if groups == nil {
+// 		return nil
+// 	}
+//
+// 	ids := make([]string, len(*groups))
+// 	for i, g := range *groups {
+// 		ids[i] = g.ID
+// 	}
+//
+// 	return &ids
+// }
 
 func equalPortRangePtr(a, b *[]RulePortRange) bool {
 	if a == nil && b == nil {
 		return true
 	}
+
 	if a == nil || b == nil || len(*a) != len(*b) {
 		return false
 	}
+
 	for i := range *a {
 		if (*a)[i] != (*b)[i] {
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -655,8 +695,10 @@ func equalResourcePtr(a, b *Resource) bool {
 	if a == nil && b == nil {
 		return true
 	}
+
 	if a == nil || b == nil {
 		return false
 	}
+
 	return a.Type == b.Type && a.Id == b.Id
 }

@@ -1,9 +1,10 @@
-package provider
+package resource
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -57,6 +58,7 @@ func (*Peer) Create(ctx context.Context, req infer.CreateRequest[PeerArgs]) (inf
 			Output: state,
 		}, nil
 	}
+
 	return infer.CreateResponse[PeerState]{
 		ID:     req.Inputs.Name,
 		Output: state,
@@ -67,7 +69,7 @@ func (*Peer) Create(ctx context.Context, req infer.CreateRequest[PeerArgs]) (inf
 func (*Peer) Read(ctx context.Context, req infer.ReadRequest[PeerArgs, PeerState]) (infer.ReadResponse[PeerArgs, PeerState], error) {
 	p.GetLogger(ctx).Debugf("Read:Peer[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[PeerArgs, PeerState]{}, err
 	}
@@ -111,7 +113,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.UpdateResponse[PeerState]{}, err
 	}
@@ -145,12 +147,15 @@ func (*Peer) Diff(ctx context.Context, req infer.DiffRequest[PeerArgs, PeerState
 	if req.Inputs.Name != req.State.Name {
 		diff["name"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.InactivityExpirationEnabled != req.State.InactivityExpirationEnabled {
 		diff["inactivity_expiration_enabled"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.LoginExpirationEnabled != req.State.LoginExpirationEnabled {
 		diff["login_expiration_enabled"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.SshEnabled != req.State.SshEnabled {
 		diff["sshEnabled"] = p.PropertyDiff{Kind: p.Update}
 	}

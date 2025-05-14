@@ -1,9 +1,10 @@
-package provider
+package resource
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -55,7 +56,7 @@ func (*Network) Create(ctx context.Context, req infer.CreateRequest[NetworkArgs]
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.CreateResponse[NetworkState]{}, err
 	}
@@ -84,7 +85,7 @@ func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, Net
 	p.GetLogger(ctx).Debugf("Read:NetworkArgs[%s] name=%s", req.ID, req.Inputs.Name)
 	p.GetLogger(ctx).Debugf("Read:NetworkState[%s] name=%s, id=%s", req.ID, req.State.Name, req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[NetworkArgs, NetworkState]{}, err
 	}
@@ -122,7 +123,7 @@ func (*Network) Update(ctx context.Context, req infer.UpdateRequest[NetworkArgs,
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.UpdateResponse[NetworkState]{}, err
 	}
@@ -147,7 +148,7 @@ func (*Network) Update(ctx context.Context, req infer.UpdateRequest[NetworkArgs,
 func (*Network) Delete(ctx context.Context, req infer.DeleteRequest[NetworkState]) (infer.DeleteResponse, error) {
 	p.GetLogger(ctx).Debugf("Delete:Network[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.DeleteResponse{}, err
 	}
@@ -163,6 +164,7 @@ func (*Network) Delete(ctx context.Context, req infer.DeleteRequest[NetworkState
 // Diff detects changes between inputs and prior state.
 func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, NetworkState]) (infer.DiffResponse, error) {
 	p.GetLogger(ctx).Debugf("Diff:Network[%s]", req.ID)
+
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
@@ -186,6 +188,7 @@ func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, Net
 func (*Network) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:Network old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
 	args, failures, err := infer.DefaultCheck[NetworkArgs](ctx, req.NewInputs)
+
 	return infer.CheckResponse[NetworkArgs]{
 		Inputs:   args,
 		Failures: failures,

@@ -1,6 +1,8 @@
 package provider
 
 import (
+	"github.com/mbrav/pulumi-netbird/provider/config"
+	"github.com/mbrav/pulumi-netbird/provider/resource"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 	"github.com/pulumi/pulumi/sdk/v3/go/common/tokens"
@@ -31,14 +33,14 @@ func Provider() p.Provider {
 		WithPublisher("mbrav").
 		WithLogoURL("https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp").
 		// WithNamespace("nb").
-		WithConfig(infer.Config[*Config]()).
+		WithConfig(infer.Config[*config.Config]()).
 		WithResources(
-			infer.Resource[*Group](),
-			infer.Resource[*Network](),
-			infer.Resource[*NetworkResource](),
-			infer.Resource[*NetworkRouter](),
-			infer.Resource[*Peer](),
-			infer.Resource[*Policy](),
+			infer.Resource[*resource.Group](),
+			infer.Resource[*resource.Network](),
+			infer.Resource[*resource.NetworkResource](),
+			infer.Resource[*resource.NetworkRouter](),
+			infer.Resource[*resource.Peer](),
+			infer.Resource[*resource.Policy](),
 		).
 		WithModuleMap(map[tokens.ModuleName]tokens.ModuleName{
 			"auto-naming": "index",

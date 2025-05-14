@@ -1,11 +1,8 @@
-module provider-netbird
+module github.com/mbrav/pulumi-netbird/examples/go
 
-go 1.24
+go 1.24.2
 
-require (
-	github.com/mbrav/pulumi-netbird/sdk v0.0.10
-	github.com/pulumi/pulumi/sdk/v3 v3.169.0
-)
+toolchain go1.24.3
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
@@ -48,6 +45,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-localereader v0.0.1 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
+	github.com/mbrav/pulumi-netbird v0.0.11 // indirect
 	github.com/mitchellh/go-ps v1.0.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
@@ -61,6 +59,7 @@ require (
 	github.com/pkg/term v1.1.0 // indirect
 	github.com/pulumi/appdash v0.0.0-20231130102222-75f619a67231 // indirect
 	github.com/pulumi/esc v0.14.2 // indirect
+	github.com/pulumi/pulumi/sdk/v3 v3.169.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
@@ -92,5 +91,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/frand v1.5.1 // indirect
 )
-
-replace github.com/mbrav/pulumi-netbird/sdk => ../../sdk

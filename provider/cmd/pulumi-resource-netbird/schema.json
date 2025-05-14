@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.9+dirty",
+  "version": "0.0.12-alpha.1747205986+d0d5d5f3.dirty",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -77,10 +77,10 @@
     ]
   },
   "types": {
-    "netbird:provider:PolicyRuleArgs": {
+    "netbird:resource:PolicyRuleArgs": {
       "properties": {
         "action": {
-          "$ref": "#/types/netbird:provider:RuleAction",
+          "$ref": "#/types/netbird:resource:RuleAction",
           "description": "The action to take: 'accept' or 'drop'."
         },
         "bidirectional": {
@@ -92,7 +92,7 @@
           "description": "An optional description of the policy rule."
         },
         "destination": {
-          "$ref": "#/types/netbird:provider:Resource",
+          "$ref": "#/types/netbird:resource:Resource",
           "description": "Optional destination resource for the rule."
         },
         "destinations": {
@@ -117,7 +117,7 @@
         "portRanges": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:RulePortRange"
+            "$ref": "#/types/netbird:resource:RulePortRange"
           },
           "description": "Optional list of port ranges."
         },
@@ -129,11 +129,11 @@
           "description": "Optional list of ports."
         },
         "protocol": {
-          "$ref": "#/types/netbird:provider:Protocol",
+          "$ref": "#/types/netbird:resource:Protocol",
           "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
         },
         "source": {
-          "$ref": "#/types/netbird:provider:Resource",
+          "$ref": "#/types/netbird:resource:Resource",
           "description": "Optional source resource for the rule."
         },
         "sources": {
@@ -153,10 +153,10 @@
         "protocol"
       ]
     },
-    "netbird:provider:PolicyRuleState": {
+    "netbird:resource:PolicyRuleState": {
       "properties": {
         "action": {
-          "$ref": "#/types/netbird:provider:RuleAction",
+          "$ref": "#/types/netbird:resource:RuleAction",
           "description": "The action to take: 'accept' or 'drop'."
         },
         "bidirectional": {
@@ -168,13 +168,13 @@
           "description": "An optional description of the policy rule."
         },
         "destination": {
-          "$ref": "#/types/netbird:provider:Resource",
+          "$ref": "#/types/netbird:resource:Resource",
           "description": "Optional destination resource for the rule."
         },
         "destinations": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:RuleGroup"
+            "$ref": "#/types/netbird:resource:RuleGroup"
           },
           "description": "Optional list of destination groups."
         },
@@ -193,7 +193,7 @@
         "portRanges": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:RulePortRange"
+            "$ref": "#/types/netbird:resource:RulePortRange"
           },
           "description": "Optional list of port ranges."
         },
@@ -205,17 +205,17 @@
           "description": "Optional list of ports."
         },
         "protocol": {
-          "$ref": "#/types/netbird:provider:Protocol",
+          "$ref": "#/types/netbird:resource:Protocol",
           "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
         },
         "source": {
-          "$ref": "#/types/netbird:provider:Resource",
+          "$ref": "#/types/netbird:resource:Resource",
           "description": "Optional source resource for the rule."
         },
         "sources": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:RuleGroup"
+            "$ref": "#/types/netbird:resource:RuleGroup"
           },
           "description": "Optional list of source groups."
         }
@@ -229,7 +229,7 @@
         "protocol"
       ]
     },
-    "netbird:provider:Protocol": {
+    "netbird:resource:Protocol": {
       "type": "string",
       "enum": [
         {
@@ -250,14 +250,14 @@
         }
       ]
     },
-    "netbird:provider:Resource": {
+    "netbird:resource:Resource": {
       "properties": {
         "id": {
           "type": "string",
           "description": "The unique identifier of the resource."
         },
         "type": {
-          "$ref": "#/types/netbird:provider:ResourceType",
+          "$ref": "#/types/netbird:resource:ResourceType",
           "description": "The type of resource: 'domain', 'host', or 'subnet'."
         }
       },
@@ -267,7 +267,7 @@
         "type"
       ]
     },
-    "netbird:provider:ResourceType": {
+    "netbird:resource:ResourceType": {
       "type": "string",
       "enum": [
         {
@@ -284,7 +284,7 @@
         }
       ]
     },
-    "netbird:provider:RuleAction": {
+    "netbird:resource:RuleAction": {
       "type": "string",
       "enum": [
         {
@@ -297,7 +297,7 @@
         }
       ]
     },
-    "netbird:provider:RuleGroup": {
+    "netbird:resource:RuleGroup": {
       "properties": {
         "id": {
           "type": "string",
@@ -314,7 +314,7 @@
         "name"
       ]
     },
-    "netbird:provider:RulePortRange": {
+    "netbird:resource:RulePortRange": {
       "properties": {
         "end": {
           "type": "integer"
@@ -388,7 +388,7 @@
     ]
   },
   "resources": {
-    "netbird:provider:Group": {
+    "netbird:resource:Group": {
       "description": "A NetBird group, which represents a collection of peers.",
       "properties": {
         "name": {
@@ -424,7 +424,7 @@
         "name"
       ]
     },
-    "netbird:provider:Network": {
+    "netbird:resource:Network": {
       "description": "A NetBird network.",
       "properties": {
         "description": {
@@ -454,7 +454,7 @@
         "name"
       ]
     },
-    "netbird:provider:NetworkResource": {
+    "netbird:resource:NetworkResource": {
       "description": "A NetBird network resource, such as a CIDR range assigned to the network.",
       "properties": {
         "address": {
@@ -530,7 +530,7 @@
         "network_id"
       ]
     },
-    "netbird:provider:NetworkRouter": {
+    "netbird:resource:NetworkRouter": {
       "description": "A NetBird network router resource.",
       "properties": {
         "enabled": {
@@ -608,7 +608,7 @@
         "network_id"
       ]
     },
-    "netbird:provider:Peer": {
+    "netbird:resource:Peer": {
       "description": "A NetBird peer representing a connected device.",
       "properties": {
         "inactivity_expiration_enabled": {
@@ -660,7 +660,7 @@
         "sshEnabled"
       ]
     },
-    "netbird:provider:Policy": {
+    "netbird:resource:Policy": {
       "description": "A NetBird policy defining rules for communication between peers.",
       "properties": {
         "description": {
@@ -685,7 +685,7 @@
         "rules": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:PolicyRuleState"
+            "$ref": "#/types/netbird:resource:PolicyRuleState"
           },
           "description": "The list of rules defining the behavior of this policy."
         }
@@ -719,7 +719,7 @@
         "rules": {
           "type": "array",
           "items": {
-            "$ref": "#/types/netbird:provider:PolicyRuleArgs"
+            "$ref": "#/types/netbird:resource:PolicyRuleArgs"
           },
           "description": "The list of rules defining the behavior of this policy."
         }

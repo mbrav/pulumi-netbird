@@ -1,10 +1,11 @@
-package provider
+package resource
 
 import (
 	"context"
 	"fmt"
 	"slices"
 
+	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -56,7 +57,7 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.CreateResponse[GroupState]{}, err
 	}
@@ -92,7 +93,7 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 	p.GetLogger(ctx).Debugf("Read:GroupArgs[%s] name=%s", req.ID, req.Inputs.Name)
 	p.GetLogger(ctx).Debugf("Read:GroupState[%s] name=%s, id=%s", req.ID, req.State.Name, req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[GroupArgs, GroupState]{}, err
 	}
@@ -135,7 +136,7 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.UpdateResponse[GroupState]{}, err
 	}
@@ -165,7 +166,7 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 func (*Group) Delete(ctx context.Context, req infer.DeleteRequest[GroupState]) (infer.DeleteResponse, error) {
 	p.GetLogger(ctx).Debugf("Delete:Group[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.DeleteResponse{}, err
 	}
@@ -181,6 +182,7 @@ func (*Group) Delete(ctx context.Context, req infer.DeleteRequest[GroupState]) (
 // Diff detects changes between inputs and prior state.
 func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupState]) (infer.DiffResponse, error) {
 	p.GetLogger(ctx).Debugf("Diff:Group[%s]", req.ID)
+
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
@@ -206,6 +208,7 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 func (*Group) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[GroupArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:Group old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
 	args, failures, err := infer.DefaultCheck[GroupArgs](ctx, req.NewInputs)
+
 	return infer.CheckResponse[GroupArgs]{
 		Inputs:   args,
 		Failures: failures,

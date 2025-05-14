@@ -1,0 +1,59 @@
+version: "2"
+
+# Options for analysis running.
+run:
+  # The default concurrency value is the number of available CPU.
+  concurrency: 4
+  # Timeout for analysis, e.g. 30s, 5m.
+  # Default: 1m
+  timeout: 5m
+  # Exit code when at least one issue was found.
+  # Default: 1
+  issues-exit-code: 2
+  # Include test files or not.
+  # Default: true
+  tests: true
+  # List of build tags, all linters use it.
+  # Default: [].
+  modules-download-mode: readonly
+  # Allow multiple parallel golangci-lint instances running.
+  # If false (default) - golangci-lint acquires file lock on start.
+  allow-parallel-runners: false
+  # Define the Go version limit.
+  # Mainly related to generics support in go1.18.
+  # Default: use Go version from the go.mod file, fallback on the env var `GOVERSION`, fallback on 1.17
+  go: "1.24"
+
+linters:
+  default: all
+  enable:
+    - errcheck
+    - goconst
+    # - gofmt
+    - revive
+    - gosec
+    # - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - unconvert
+    - paralleltest
+    - staticcheck
+    # - stylecheck
+    - unused
+  disable:
+    - godot
+    - revive
+    - lll
+  exclusions:
+    rules:
+      # Require that exported types and functions have comments.
+      - path: "^.*/internal/.*$"
+        linters:
+          - package-comments
+
+formatters:
+  enable:
+    - gofmt

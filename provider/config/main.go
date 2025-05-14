@@ -1,10 +1,11 @@
-package provider
+package config
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"os"
 
+	"github.com/netbirdio/netbird/management/client/rest"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
@@ -12,7 +13,7 @@ import (
 // Define provider-level configuration.
 type Config struct {
 	NetBirdUrl   string `pulumi:"netbirdUrl"`
-	NetBirdToken string `pulumi:"netbirdToken" provider:"secret"`
+	NetBirdToken string `provider:"secret"   pulumi:"netbirdToken"`
 }
 
 // Annotate provider configuration.
@@ -27,18 +28,36 @@ func (c *Config) Annotate(a infer.Annotator) {
 // Configure validates the provider configuration.
 func (c *Config) Configure(ctx context.Context) error {
 	p.GetLogger(ctx).Debugf("Configure:Config")
+
 	if envVal, exists := os.LookupEnv("NETBIRD_URL"); exists {
 		c.NetBirdUrl = envVal
 	}
+
 	if envVal, exists := os.LookupEnv("NETBIRD_TOKEN"); exists {
 		c.NetBirdToken = envVal
 	}
+
 	p.GetLogger(ctx).Debugf("Config netbirdToken=%s, netbirdUrl=%s", c.NetBirdUrl, c.NetBirdToken)
+
 	if c.NetBirdToken == "" {
-		return fmt.Errorf("netbirdToken must be set in provider configuration")
+		return errors.New("netbirdToken must be set in provider configuration")
 	}
+
 	if c.NetBirdUrl == "" {
-		return fmt.Errorf("netbirdUrl must be set in provider configuration")
+		return errors.New("netbirdUrl must be set in provider configuration")
 	}
+
 	return nil
+}
+
+// Retrieve the NetBird client using the provider configuration.
+func GetNetBirdClient(ctx context.Context) (*rest.Client, error) {
+	// Get the configuration from the provider's context
+	config := infer.GetConfig[*Config](ctx)
+
+	nbToken := config.NetBirdToken
+	nbURL := config.NetBirdUrl
+
+	// Create and return the client using the provided token and URL
+	return rest.NewWithBearerToken(nbURL, nbToken), nil
 }

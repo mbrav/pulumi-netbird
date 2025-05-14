@@ -1,9 +1,10 @@
-package provider
+package resource
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -76,7 +77,7 @@ func (*NetworkRouter) Create(ctx context.Context, req infer.CreateRequest[Networ
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.CreateResponse[NetworkRouterState]{}, err
 	}
@@ -112,7 +113,7 @@ func (*NetworkRouter) Create(ctx context.Context, req infer.CreateRequest[Networ
 func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRouterArgs, NetworkRouterState]) (infer.ReadResponse[NetworkRouterArgs, NetworkRouterState], error) {
 	p.GetLogger(ctx).Debugf("Read:NetworkRouter[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{}, err
 	}
@@ -164,7 +165,7 @@ func (*NetworkRouter) Update(ctx context.Context, req infer.UpdateRequest[Networ
 		}, nil
 	}
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.UpdateResponse[NetworkRouterState]{}, err
 	}
@@ -197,7 +198,7 @@ func (*NetworkRouter) Update(ctx context.Context, req infer.UpdateRequest[Networ
 func (*NetworkRouter) Delete(ctx context.Context, req infer.DeleteRequest[NetworkRouterState]) (infer.DeleteResponse, error) {
 	p.GetLogger(ctx).Debugf("Delete:NetworkRouter[%s]", req.ID)
 
-	client, err := getNetBirdClient(ctx)
+	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.DeleteResponse{}, err
 	}
@@ -213,20 +214,25 @@ func (*NetworkRouter) Delete(ctx context.Context, req infer.DeleteRequest[Networ
 // Diff detects changes between inputs and prior state.
 func (*NetworkRouter) Diff(ctx context.Context, req infer.DiffRequest[NetworkRouterArgs, NetworkRouterState]) (infer.DiffResponse, error) {
 	p.GetLogger(ctx).Debugf("Diff:NetworkRouter[%s]", req.ID)
+
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Enabled != req.State.Enabled {
 		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.Masquerade != req.State.Masquerade {
 		diff["masquerade"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if req.Inputs.Metric != req.State.Metric {
 		diff["metric"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if !equalPtr(req.Inputs.Peer, req.State.Peer) {
 		diff["peer"] = p.PropertyDiff{Kind: p.Update}
 	}
+
 	if !equalSlicePtr(req.Inputs.PeerGroups, req.State.PeerGroups) {
 		diff["peer_groups"] = p.PropertyDiff{Kind: p.Update}
 	}

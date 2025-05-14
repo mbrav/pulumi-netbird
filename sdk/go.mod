@@ -2,12 +2,6 @@ module github.com/mbrav/pulumi-netbird/sdk
 
 go 1.24
 
-replace (
-	github.com/mbrav/pulumi-netbird/sdk/go/netbird => ./go/netbird
-	github.com/mbrav/pulumi-netbird/sdk/go/netbird/config => ./go/netbird/config
-	github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal => ./go/netbird/internal
-)
-
 require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/pulumi/pulumi/sdk/v3 v3.166.0
@@ -95,3 +89,10 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/frand v1.4.2 // indirect
 )
+
+// replace (
+// 	github.com/mbrav/pulumi-netbird/sdk/go/netbird => ./go/netbird
+// 	github.com/mbrav/pulumi-netbird/sdk/go/netbird/config => ./go/netbird/config
+// 	github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal => ./go/netbird/internal
+// )
+//

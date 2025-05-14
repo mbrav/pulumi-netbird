@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/mbrav/pulumi-netbird/sdk/go/netbird"
+	nbres "github.com/mbrav/pulumi-netbird/sdk/go/netbird/resource"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		// Create the "Management" network
-		_, err := netbird.NewNetwork(ctx, "net-management", &netbird.NetworkArgs{
+		_, err := nbres.NewNetwork(ctx, "net-management", &nbres.NetworkArgs{
 			Name:        pulumi.String("Management"),
 			Description: pulumi.String("Network for Management"),
 		})

@@ -3,7 +3,6 @@ module github.com/mbrav/pulumi-netbird
 go 1.24.2
 
 require (
-	github.com/blang/semver v3.5.1+incompatible
 	github.com/netbirdio/netbird v0.43.3
 	github.com/pulumi/pulumi-go-provider v1.0.0-rc1.0.20250513193014-71b57f2c33a9
 	github.com/pulumi/pulumi/sdk/v3 v3.169.0
@@ -18,6 +17,7 @@ require (
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
+	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/charmbracelet/bubbles v0.21.0 // indirect
 	github.com/charmbracelet/bubbletea v1.3.5 // indirect
 	github.com/charmbracelet/colorprofile v0.3.1 // indirect
@@ -75,7 +75,6 @@ require (
 	github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/skeema/knownhosts v1.3.1 // indirect
-	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/cobra v1.9.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/texttheater/golang-levenshtein v1.0.1 // indirect
@@ -102,12 +101,12 @@ require (
 	lukechampine.com/frand v1.5.1 // indirect
 )
 
-replace (
-	github.com/mbrav/pulumi-netbird/provider => ./provider
-	github.com/mbrav/pulumi-netbird/provider/cmd/pulumi-resource-netbird => ./provider/cmd/pulumi-resource-netbird
-	github.com/mbrav/pulumi-netbird/provider/config => ./provider/config
-	github.com/mbrav/pulumi-netbird/provider/resource => ./provider/resource
-	github.com/mbrav/pulumi-netbird/provider/util => ./provider/util
-	github.com/mbrav/pulumi-netbird/sdk => ./sdk
-// github.com/pulumi/pulumi-go-provider => ./pulumi-go-provider
-)
+// replace (
+// 	github.com/mbrav/pulumi-netbird/provider => ./provider
+// 	github.com/mbrav/pulumi-netbird/provider/cmd/pulumi-resource-netbird => ./provider/cmd/pulumi-resource-netbird
+// 	github.com/mbrav/pulumi-netbird/provider/config => ./provider/config
+// 	github.com/mbrav/pulumi-netbird/provider/resource => ./provider/resource
+// 	github.com/mbrav/pulumi-netbird/provider/util => ./provider/util
+// 	github.com/mbrav/pulumi-netbird/sdk => ./sdk
+// // github.com/pulumi/pulumi-go-provider => ./pulumi-go-provider
+// )

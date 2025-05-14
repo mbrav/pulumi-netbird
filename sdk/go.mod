@@ -95,4 +95,3 @@ require (
 // 	github.com/mbrav/pulumi-netbird/sdk/go/netbird/config => ./go/netbird/config
 // 	github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal => ./go/netbird/internal
 // )
-//

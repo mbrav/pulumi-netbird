@@ -1,0 +1,10 @@
+name: provider-netbird
+runtime: python
+plugins:
+  providers:
+    - name: netbird
+      path: ../../bin
+
+config:
+  netbird:netbirdToken: token
+  netbird:netbirdUrl: https://nb.domain:33073

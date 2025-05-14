@@ -180,7 +180,7 @@ resources:
           #   - "group-servers"
 ```
 
-## 🚀 Example Usage with Pulumi Go
+## 🦫 Example Usage with Pulumi Go
 
 You can use this provider with **Pulumi Go** to manage NetBird infrastructure declaratively.
 
@@ -204,6 +204,45 @@ Navigate to the Go example directory:
 
 ```bash
 cd examples/go
+```
+
+Initialize a new stack and configure your credentials:
+
+```bash
+pulumi stack init test
+pulumi config set netbird:netbirdToken YOUR_TOKEN
+pulumi config set netbird:netbirdUrl https://nb.domain:33073
+```
+
+### 2. Deploy
+
+```bash
+pulumi up
+```
+
+## 🐍 Example Usage with Pulumi Python
+
+You can use this provider with **Pulumi Python** to manage NetBird infrastructure declaratively.
+
+### 1. Setup
+
+First, you must generate the python SDK:
+
+```bash
+make provider 
+make sdk_python
+```
+
+Then install the wheel:
+
+```bash
+pip install sdk/python/bin/dist/pulumi_netbird-0.0.12a1747213794+dirty.tar.gz
+```
+
+Navigate to the Python example directory:
+
+```bash
+cd examples/python
 ```
 
 Initialize a new stack and configure your credentials:

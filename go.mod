@@ -101,12 +101,12 @@ require (
 	lukechampine.com/frand v1.5.1 // indirect
 )
 
-// replace (
-// 	github.com/mbrav/pulumi-netbird/provider => ./provider
-// 	github.com/mbrav/pulumi-netbird/provider/cmd/pulumi-resource-netbird => ./provider/cmd/pulumi-resource-netbird
-// 	github.com/mbrav/pulumi-netbird/provider/config => ./provider/config
-// 	github.com/mbrav/pulumi-netbird/provider/resource => ./provider/resource
-// 	github.com/mbrav/pulumi-netbird/provider/util => ./provider/util
-// 	github.com/mbrav/pulumi-netbird/sdk => ./sdk
-// // github.com/pulumi/pulumi-go-provider => ./pulumi-go-provider
-// )
+replace (
+	github.com/mbrav/pulumi-netbird/provider => ./provider
+	github.com/mbrav/pulumi-netbird/provider/cmd/pulumi-resource-netbird => ./provider/cmd/pulumi-resource-netbird
+	github.com/mbrav/pulumi-netbird/provider/config => ./provider/config
+	github.com/mbrav/pulumi-netbird/provider/resource => ./provider/resource
+	github.com/mbrav/pulumi-netbird/provider/util => ./provider/util
+	github.com/mbrav/pulumi-netbird/sdk => ./sdk
+// github.com/pulumi/pulumi-go-provider => ./pulumi-go-provider
+)

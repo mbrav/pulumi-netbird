@@ -58,9 +58,22 @@ provider_symlink: ## Symlink provider to Pulumi plugin cache
 	@mkdir -p ~/.pulumi/plugins/${PACK}/resource/${VERSION}
 	@ln -sf $(PROVIDER_BIN) ~/.pulumi/plugins/${PACK}/resource/${VERSION}/pulumi-resource-${PACK}
 
-go_sdk: $(PROVIDER_BIN) ## Generate Go SDK from provider binary
+sdk_go: $(PROVIDER_BIN) ## Generate Go SDK from provider binary
 	rm -rf sdk/go
 	pulumi package gen-sdk $(PROVIDER_BIN) --language go
+
+sdk_python: PYPI_VERSION := $(shell pulumictl get version --language python)
+sdk_python: $(PROVIDER_BIN) ## Generate Python SDK from provider binary
+	rm -rf sdk/python
+	@echo "Generating SDK Pversion $(PYPI_VERSION)"
+	pulumi package gen-sdk $(PROVIDER_BIN) --language python
+	cp README.md sdk/python/
+	cd sdk/python/ && \
+		python3 setup.py clean --all 2>/dev/null && \
+		rm -rf ./bin/ ../python.bin/ && cp -R . ../python.bin && mv ../python.bin ./bin && \
+		sed -i.bak -e 's/^VERSION = .*/VERSION = "$(PYPI_VERSION)"/g' -e 's/^PLUGIN_VERSION = .*/PLUGIN_VERSION = "$(VERSION)"/g' ./bin/setup.py && \
+		rm ./bin/setup.py.bak && \
+		cd ./bin && python3 setup.py build sdist
 
 test_provider: ## Run provider tests
 	cd tests && $(GO_TEST) ./...
@@ -111,6 +124,6 @@ lint: ## Run Go linters
 install: ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin
 
-build: provider go_sdk ## Build provider binary and SDK
+build: provider sdk_go ## Build provider binary and SDK
 
 only_build: build ## Alias for build used by CI

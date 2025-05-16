@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.13-alpha.1747384564+3ac17a5f.dirty",
+  "version": "0.0.13-alpha.1747385502+33f06826.dirty",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -27,7 +27,8 @@
     },
     "go": {
       "generateResourceContainerTypes": true,
-      "importBasePath": "github.com/mbrav/pulumi-netbird/sdk/go/netbird"
+      "importBasePath": "github.com/mbrav/pulumi-netbird/sdk/go/netbird",
+      "respectSchemaVersion": true
     },
     "java": {
       "buildFiles": "gradle",
@@ -43,9 +44,13 @@
       "packageName": "@mbrav/pulumi-netbird"
     },
     "python": {
+      "pyproject": {
+        "enabled": true
+      },
       "requires": {
         "pulumi": "\u003e=3.0.0,\u003c4.0.0"
-      }
+      },
+      "respectSchemaVersion": true
     }
   },
   "config": {

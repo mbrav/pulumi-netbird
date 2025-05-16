@@ -55,6 +55,7 @@ func Provider() p.Provider {
 			},
 			"go": map[string]any{
 				"generateResourceContainerTypes": true,
+				"respectSchemaVersion":           true,
 				"importBasePath":                 "github.com/mbrav/pulumi-netbird/sdk/go/netbird",
 			},
 			"nodejs": map[string]any{
@@ -64,6 +65,10 @@ func Provider() p.Provider {
 				},
 			},
 			"python": map[string]any{
+				"respectSchemaVersion": true,
+				"pyproject": map[string]bool{
+					"enabled": true,
+				},
 				"requires": map[string]string{
 					"pulumi": ">=3.0.0,<4.0.0",
 				},

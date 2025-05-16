@@ -13,32 +13,147 @@ import (
 
 var _ = internal.GetEnvOrDefault
 
+type Nameserver struct {
+	// Ip Nameserver IP
+	Ip string `pulumi:"ip"`
+	// Port Nameserver Port
+	Port int `pulumi:"port"`
+	// NsType Nameserver Type
+	Type NameserverNsType `pulumi:"type"`
+}
+
+// NameserverInput is an input type that accepts NameserverArgs and NameserverOutput values.
+// You can construct a concrete instance of `NameserverInput` via:
+//
+//	NameserverArgs{...}
+type NameserverInput interface {
+	pulumi.Input
+
+	ToNameserverOutput() NameserverOutput
+	ToNameserverOutputWithContext(context.Context) NameserverOutput
+}
+
+type NameserverArgs struct {
+	// Ip Nameserver IP
+	Ip pulumi.StringInput `pulumi:"ip"`
+	// Port Nameserver Port
+	Port pulumi.IntInput `pulumi:"port"`
+	// NsType Nameserver Type
+	Type NameserverNsTypeInput `pulumi:"type"`
+}
+
+func (NameserverArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*Nameserver)(nil)).Elem()
+}
+
+func (i NameserverArgs) ToNameserverOutput() NameserverOutput {
+	return i.ToNameserverOutputWithContext(context.Background())
+}
+
+func (i NameserverArgs) ToNameserverOutputWithContext(ctx context.Context) NameserverOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(NameserverOutput)
+}
+
+// NameserverArrayInput is an input type that accepts NameserverArray and NameserverArrayOutput values.
+// You can construct a concrete instance of `NameserverArrayInput` via:
+//
+//	NameserverArray{ NameserverArgs{...} }
+type NameserverArrayInput interface {
+	pulumi.Input
+
+	ToNameserverArrayOutput() NameserverArrayOutput
+	ToNameserverArrayOutputWithContext(context.Context) NameserverArrayOutput
+}
+
+type NameserverArray []NameserverInput
+
+func (NameserverArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]Nameserver)(nil)).Elem()
+}
+
+func (i NameserverArray) ToNameserverArrayOutput() NameserverArrayOutput {
+	return i.ToNameserverArrayOutputWithContext(context.Background())
+}
+
+func (i NameserverArray) ToNameserverArrayOutputWithContext(ctx context.Context) NameserverArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(NameserverArrayOutput)
+}
+
+type NameserverOutput struct{ *pulumi.OutputState }
+
+func (NameserverOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*Nameserver)(nil)).Elem()
+}
+
+func (o NameserverOutput) ToNameserverOutput() NameserverOutput {
+	return o
+}
+
+func (o NameserverOutput) ToNameserverOutputWithContext(ctx context.Context) NameserverOutput {
+	return o
+}
+
+// Ip Nameserver IP
+func (o NameserverOutput) Ip() pulumi.StringOutput {
+	return o.ApplyT(func(v Nameserver) string { return v.Ip }).(pulumi.StringOutput)
+}
+
+// Port Nameserver Port
+func (o NameserverOutput) Port() pulumi.IntOutput {
+	return o.ApplyT(func(v Nameserver) int { return v.Port }).(pulumi.IntOutput)
+}
+
+// NsType Nameserver Type
+func (o NameserverOutput) Type() NameserverNsTypeOutput {
+	return o.ApplyT(func(v Nameserver) NameserverNsType { return v.Type }).(NameserverNsTypeOutput)
+}
+
+type NameserverArrayOutput struct{ *pulumi.OutputState }
+
+func (NameserverArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]Nameserver)(nil)).Elem()
+}
+
+func (o NameserverArrayOutput) ToNameserverArrayOutput() NameserverArrayOutput {
+	return o
+}
+
+func (o NameserverArrayOutput) ToNameserverArrayOutputWithContext(ctx context.Context) NameserverArrayOutput {
+	return o
+}
+
+func (o NameserverArrayOutput) Index(i pulumi.IntInput) NameserverOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) Nameserver {
+		return vs[0].([]Nameserver)[vs[1].(int)]
+	}).(NameserverOutput)
+}
+
 type PolicyRuleArgs struct {
-	// The action to take: 'accept' or 'drop'.
+	// Action Policy rule accept or drops packets
 	Action RuleAction `pulumi:"action"`
-	// Whether the rule applies bidirectionally.
+	// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 	Bidirectional bool `pulumi:"bidirectional"`
-	// An optional description of the policy rule.
+	// Description Policy rule friendly description
 	Description *string `pulumi:"description"`
-	// Optional destination resource for the rule.
+	// DestinationResource for the rule
 	Destination *Resource `pulumi:"destination"`
-	// Optional list of destination group IDs.
+	// Destinations Policy rule destination group IDs
 	Destinations []string `pulumi:"destinations"`
-	// Whether the rule is active.
+	// Enabled Policy rule status
 	Enabled bool `pulumi:"enabled"`
-	// Optional unique identifier for the policy rule.
+	// ID Policy rule.
 	Id *string `pulumi:"id"`
-	// The name of the policy rule.
+	// Name Policy rule name identifier
 	Name string `pulumi:"name"`
-	// Optional list of port ranges.
+	// PortRanges Policy rule affected ports ranges list
 	PortRanges []RulePortRange `pulumi:"portRanges"`
-	// Optional list of ports.
+	// Ports Policy rule affected ports
 	Ports []string `pulumi:"ports"`
-	// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+	// Protocol Policy rule type of the traffic
 	Protocol Protocol `pulumi:"protocol"`
-	// Optional source resource for the rule.
+	// SourceResource for the rule
 	Source *Resource `pulumi:"source"`
-	// Optional list of source group IDs.
+	// Sources Policy rule source group IDs
 	Sources []string `pulumi:"sources"`
 }
 
@@ -54,31 +169,31 @@ type PolicyRuleArgsInput interface {
 }
 
 type PolicyRuleArgsArgs struct {
-	// The action to take: 'accept' or 'drop'.
+	// Action Policy rule accept or drops packets
 	Action RuleActionInput `pulumi:"action"`
-	// Whether the rule applies bidirectionally.
+	// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 	Bidirectional pulumi.BoolInput `pulumi:"bidirectional"`
-	// An optional description of the policy rule.
+	// Description Policy rule friendly description
 	Description pulumi.StringPtrInput `pulumi:"description"`
-	// Optional destination resource for the rule.
+	// DestinationResource for the rule
 	Destination ResourcePtrInput `pulumi:"destination"`
-	// Optional list of destination group IDs.
+	// Destinations Policy rule destination group IDs
 	Destinations pulumi.StringArrayInput `pulumi:"destinations"`
-	// Whether the rule is active.
+	// Enabled Policy rule status
 	Enabled pulumi.BoolInput `pulumi:"enabled"`
-	// Optional unique identifier for the policy rule.
+	// ID Policy rule.
 	Id pulumi.StringPtrInput `pulumi:"id"`
-	// The name of the policy rule.
+	// Name Policy rule name identifier
 	Name pulumi.StringInput `pulumi:"name"`
-	// Optional list of port ranges.
+	// PortRanges Policy rule affected ports ranges list
 	PortRanges RulePortRangeArrayInput `pulumi:"portRanges"`
-	// Optional list of ports.
+	// Ports Policy rule affected ports
 	Ports pulumi.StringArrayInput `pulumi:"ports"`
-	// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+	// Protocol Policy rule type of the traffic
 	Protocol ProtocolInput `pulumi:"protocol"`
-	// Optional source resource for the rule.
+	// SourceResource for the rule
 	Source ResourcePtrInput `pulumi:"source"`
-	// Optional list of source group IDs.
+	// Sources Policy rule source group IDs
 	Sources pulumi.StringArrayInput `pulumi:"sources"`
 }
 
@@ -133,67 +248,67 @@ func (o PolicyRuleArgsOutput) ToPolicyRuleArgsOutputWithContext(ctx context.Cont
 	return o
 }
 
-// The action to take: 'accept' or 'drop'.
+// Action Policy rule accept or drops packets
 func (o PolicyRuleArgsOutput) Action() RuleActionOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) RuleAction { return v.Action }).(RuleActionOutput)
 }
 
-// Whether the rule applies bidirectionally.
+// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 func (o PolicyRuleArgsOutput) Bidirectional() pulumi.BoolOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) bool { return v.Bidirectional }).(pulumi.BoolOutput)
 }
 
-// An optional description of the policy rule.
+// Description Policy rule friendly description
 func (o PolicyRuleArgsOutput) Description() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) *string { return v.Description }).(pulumi.StringPtrOutput)
 }
 
-// Optional destination resource for the rule.
+// DestinationResource for the rule
 func (o PolicyRuleArgsOutput) Destination() ResourcePtrOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.Destination }).(ResourcePtrOutput)
 }
 
-// Optional list of destination group IDs.
+// Destinations Policy rule destination group IDs
 func (o PolicyRuleArgsOutput) Destinations() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) []string { return v.Destinations }).(pulumi.StringArrayOutput)
 }
 
-// Whether the rule is active.
+// Enabled Policy rule status
 func (o PolicyRuleArgsOutput) Enabled() pulumi.BoolOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) bool { return v.Enabled }).(pulumi.BoolOutput)
 }
 
-// Optional unique identifier for the policy rule.
+// ID Policy rule.
 func (o PolicyRuleArgsOutput) Id() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) *string { return v.Id }).(pulumi.StringPtrOutput)
 }
 
-// The name of the policy rule.
+// Name Policy rule name identifier
 func (o PolicyRuleArgsOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) string { return v.Name }).(pulumi.StringOutput)
 }
 
-// Optional list of port ranges.
+// PortRanges Policy rule affected ports ranges list
 func (o PolicyRuleArgsOutput) PortRanges() RulePortRangeArrayOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) []RulePortRange { return v.PortRanges }).(RulePortRangeArrayOutput)
 }
 
-// Optional list of ports.
+// Ports Policy rule affected ports
 func (o PolicyRuleArgsOutput) Ports() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) []string { return v.Ports }).(pulumi.StringArrayOutput)
 }
 
-// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+// Protocol Policy rule type of the traffic
 func (o PolicyRuleArgsOutput) Protocol() ProtocolOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) Protocol { return v.Protocol }).(ProtocolOutput)
 }
 
-// Optional source resource for the rule.
+// SourceResource for the rule
 func (o PolicyRuleArgsOutput) Source() ResourcePtrOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.Source }).(ResourcePtrOutput)
 }
 
-// Optional list of source group IDs.
+// Sources Policy rule source group IDs
 func (o PolicyRuleArgsOutput) Sources() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) []string { return v.Sources }).(pulumi.StringArrayOutput)
 }
@@ -219,31 +334,31 @@ func (o PolicyRuleArgsArrayOutput) Index(i pulumi.IntInput) PolicyRuleArgsOutput
 }
 
 type PolicyRuleState struct {
-	// The action to take: 'accept' or 'drop'.
+	// Action Policy rule accept or drops packets
 	Action RuleAction `pulumi:"action"`
-	// Whether the rule applies bidirectionally.
+	// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 	Bidirectional bool `pulumi:"bidirectional"`
-	// An optional description of the policy rule.
+	// Description Policy rule friendly description
 	Description *string `pulumi:"description"`
-	// Optional destination resource for the rule.
+	// DestinationResource for the rule
 	Destination *Resource `pulumi:"destination"`
-	// Optional list of destination groups.
+	// Destinations Policy rule destination group IDs
 	Destinations []RuleGroup `pulumi:"destinations"`
-	// Whether the rule is active.
+	// Enabled Policy rule status
 	Enabled bool `pulumi:"enabled"`
-	// Optional unique identifier for the policy rule.
+	// ID Policy rule.
 	Id *string `pulumi:"id"`
-	// The name of the policy rule.
+	// Name Policy rule name identifier
 	Name string `pulumi:"name"`
-	// Optional list of port ranges.
+	// PortRanges Policy rule affected ports ranges list
 	PortRanges []RulePortRange `pulumi:"portRanges"`
-	// Optional list of ports.
+	// Ports Policy rule affected ports
 	Ports []string `pulumi:"ports"`
-	// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+	// Protocol Policy rule type of the traffic
 	Protocol Protocol `pulumi:"protocol"`
-	// Optional source resource for the rule.
+	// SourceResource for the rule
 	Source *Resource `pulumi:"source"`
-	// Optional list of source groups.
+	// Sources Policy rule source group IDs
 	Sources []RuleGroup `pulumi:"sources"`
 }
 
@@ -261,67 +376,67 @@ func (o PolicyRuleStateOutput) ToPolicyRuleStateOutputWithContext(ctx context.Co
 	return o
 }
 
-// The action to take: 'accept' or 'drop'.
+// Action Policy rule accept or drops packets
 func (o PolicyRuleStateOutput) Action() RuleActionOutput {
 	return o.ApplyT(func(v PolicyRuleState) RuleAction { return v.Action }).(RuleActionOutput)
 }
 
-// Whether the rule applies bidirectionally.
+// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 func (o PolicyRuleStateOutput) Bidirectional() pulumi.BoolOutput {
 	return o.ApplyT(func(v PolicyRuleState) bool { return v.Bidirectional }).(pulumi.BoolOutput)
 }
 
-// An optional description of the policy rule.
+// Description Policy rule friendly description
 func (o PolicyRuleStateOutput) Description() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v PolicyRuleState) *string { return v.Description }).(pulumi.StringPtrOutput)
 }
 
-// Optional destination resource for the rule.
+// DestinationResource for the rule
 func (o PolicyRuleStateOutput) Destination() ResourcePtrOutput {
 	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.Destination }).(ResourcePtrOutput)
 }
 
-// Optional list of destination groups.
+// Destinations Policy rule destination group IDs
 func (o PolicyRuleStateOutput) Destinations() RuleGroupArrayOutput {
 	return o.ApplyT(func(v PolicyRuleState) []RuleGroup { return v.Destinations }).(RuleGroupArrayOutput)
 }
 
-// Whether the rule is active.
+// Enabled Policy rule status
 func (o PolicyRuleStateOutput) Enabled() pulumi.BoolOutput {
 	return o.ApplyT(func(v PolicyRuleState) bool { return v.Enabled }).(pulumi.BoolOutput)
 }
 
-// Optional unique identifier for the policy rule.
+// ID Policy rule.
 func (o PolicyRuleStateOutput) Id() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v PolicyRuleState) *string { return v.Id }).(pulumi.StringPtrOutput)
 }
 
-// The name of the policy rule.
+// Name Policy rule name identifier
 func (o PolicyRuleStateOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v PolicyRuleState) string { return v.Name }).(pulumi.StringOutput)
 }
 
-// Optional list of port ranges.
+// PortRanges Policy rule affected ports ranges list
 func (o PolicyRuleStateOutput) PortRanges() RulePortRangeArrayOutput {
 	return o.ApplyT(func(v PolicyRuleState) []RulePortRange { return v.PortRanges }).(RulePortRangeArrayOutput)
 }
 
-// Optional list of ports.
+// Ports Policy rule affected ports
 func (o PolicyRuleStateOutput) Ports() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v PolicyRuleState) []string { return v.Ports }).(pulumi.StringArrayOutput)
 }
 
-// The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+// Protocol Policy rule type of the traffic
 func (o PolicyRuleStateOutput) Protocol() ProtocolOutput {
 	return o.ApplyT(func(v PolicyRuleState) Protocol { return v.Protocol }).(ProtocolOutput)
 }
 
-// Optional source resource for the rule.
+// SourceResource for the rule
 func (o PolicyRuleStateOutput) Source() ResourcePtrOutput {
 	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.Source }).(ResourcePtrOutput)
 }
 
-// Optional list of source groups.
+// Sources Policy rule source group IDs
 func (o PolicyRuleStateOutput) Sources() RuleGroupArrayOutput {
 	return o.ApplyT(func(v PolicyRuleState) []RuleGroup { return v.Sources }).(RuleGroupArrayOutput)
 }
@@ -554,7 +669,9 @@ func (o RuleGroupArrayOutput) Index(i pulumi.IntInput) RuleGroupOutput {
 }
 
 type RulePortRange struct {
-	End   int `pulumi:"end"`
+	// End of port range
+	End int `pulumi:"end"`
+	// Start of port range
 	Start int `pulumi:"start"`
 }
 
@@ -570,7 +687,9 @@ type RulePortRangeInput interface {
 }
 
 type RulePortRangeArgs struct {
-	End   pulumi.IntInput `pulumi:"end"`
+	// End of port range
+	End pulumi.IntInput `pulumi:"end"`
+	// Start of port range
 	Start pulumi.IntInput `pulumi:"start"`
 }
 
@@ -625,10 +744,12 @@ func (o RulePortRangeOutput) ToRulePortRangeOutputWithContext(ctx context.Contex
 	return o
 }
 
+// End of port range
 func (o RulePortRangeOutput) End() pulumi.IntOutput {
 	return o.ApplyT(func(v RulePortRange) int { return v.End }).(pulumi.IntOutput)
 }
 
+// Start of port range
 func (o RulePortRangeOutput) Start() pulumi.IntOutput {
 	return o.ApplyT(func(v RulePortRange) int { return v.Start }).(pulumi.IntOutput)
 }
@@ -654,12 +775,16 @@ func (o RulePortRangeArrayOutput) Index(i pulumi.IntInput) RulePortRangeOutput {
 }
 
 func init() {
+	pulumi.RegisterInputType(reflect.TypeOf((*NameserverInput)(nil)).Elem(), NameserverArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*NameserverArrayInput)(nil)).Elem(), NameserverArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsInput)(nil)).Elem(), PolicyRuleArgsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsArrayInput)(nil)).Elem(), PolicyRuleArgsArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourcePtrInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeArrayInput)(nil)).Elem(), RulePortRangeArray{})
+	pulumi.RegisterOutputType(NameserverOutput{})
+	pulumi.RegisterOutputType(NameserverArrayOutput{})
 	pulumi.RegisterOutputType(PolicyRuleArgsOutput{})
 	pulumi.RegisterOutputType(PolicyRuleArgsArrayOutput{})
 	pulumi.RegisterOutputType(PolicyRuleStateOutput{})

@@ -26,6 +26,7 @@ _utilities.register(
   "mod": "resource",
   "fqn": "pulumi_netbird.resource",
   "classes": {
+   "netbird:resource:DNS": "DNS",
    "netbird:resource:Group": "Group",
    "netbird:resource:Network": "Network",
    "netbird:resource:NetworkResource": "NetworkResource",

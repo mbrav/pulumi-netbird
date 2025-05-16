@@ -4,7 +4,7 @@ go 1.24.2
 
 require (
 	github.com/netbirdio/netbird v0.43.3
-	github.com/pulumi/pulumi-go-provider v1.0.0-rc1
+	github.com/pulumi/pulumi-go-provider v1.0.0-rc1.0.20250515181609-512f1e227889
 	github.com/pulumi/pulumi/sdk/v3 v3.170.0
 )
 

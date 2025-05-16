@@ -7,6 +7,7 @@ from .. import _utilities
 import typing
 # Export this package's modules as members:
 from ._enums import *
+from .dns import *
 from .group import *
 from .network import *
 from .network_resource import *

@@ -32,15 +32,17 @@ func Provider() p.Provider {
 		WithPluginDownloadURL("github://api.github.com/mbrav").
 		WithPublisher("mbrav").
 		WithLogoURL("https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp").
-		// WithNamespace("nb").
-		WithConfig(infer.Config[*config.Config]()).
+		WithNamespace("pulumi").
+		// WithWrapped(provider p.Provider),
+		WithConfig(infer.Config(&config.Config{})).
 		WithResources(
-			infer.Resource[*resource.Group](),
-			infer.Resource[*resource.Network](),
-			infer.Resource[*resource.NetworkResource](),
-			infer.Resource[*resource.NetworkRouter](),
-			infer.Resource[*resource.Peer](),
-			infer.Resource[*resource.Policy](),
+			infer.Resource(&resource.DNS{}),
+			infer.Resource(&resource.Group{}),
+			infer.Resource(&resource.Network{}),
+			infer.Resource(&resource.NetworkResource{}),
+			infer.Resource(&resource.NetworkRouter{}),
+			infer.Resource(&resource.Peer{}),
+			infer.Resource(&resource.Policy{}),
 		).
 		WithModuleMap(map[tokens.ModuleName]tokens.ModuleName{
 			"auto-naming": "index",

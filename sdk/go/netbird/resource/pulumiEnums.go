@@ -10,6 +10,170 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+type NameserverNsType string
+
+const (
+	// UDP type
+	NameserverNsTypeUdp = NameserverNsType("udp")
+)
+
+func (NameserverNsType) ElementType() reflect.Type {
+	return reflect.TypeOf((*NameserverNsType)(nil)).Elem()
+}
+
+func (e NameserverNsType) ToNameserverNsTypeOutput() NameserverNsTypeOutput {
+	return pulumi.ToOutput(e).(NameserverNsTypeOutput)
+}
+
+func (e NameserverNsType) ToNameserverNsTypeOutputWithContext(ctx context.Context) NameserverNsTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(NameserverNsTypeOutput)
+}
+
+func (e NameserverNsType) ToNameserverNsTypePtrOutput() NameserverNsTypePtrOutput {
+	return e.ToNameserverNsTypePtrOutputWithContext(context.Background())
+}
+
+func (e NameserverNsType) ToNameserverNsTypePtrOutputWithContext(ctx context.Context) NameserverNsTypePtrOutput {
+	return NameserverNsType(e).ToNameserverNsTypeOutputWithContext(ctx).ToNameserverNsTypePtrOutputWithContext(ctx)
+}
+
+func (e NameserverNsType) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e NameserverNsType) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e NameserverNsType) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e NameserverNsType) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type NameserverNsTypeOutput struct{ *pulumi.OutputState }
+
+func (NameserverNsTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*NameserverNsType)(nil)).Elem()
+}
+
+func (o NameserverNsTypeOutput) ToNameserverNsTypeOutput() NameserverNsTypeOutput {
+	return o
+}
+
+func (o NameserverNsTypeOutput) ToNameserverNsTypeOutputWithContext(ctx context.Context) NameserverNsTypeOutput {
+	return o
+}
+
+func (o NameserverNsTypeOutput) ToNameserverNsTypePtrOutput() NameserverNsTypePtrOutput {
+	return o.ToNameserverNsTypePtrOutputWithContext(context.Background())
+}
+
+func (o NameserverNsTypeOutput) ToNameserverNsTypePtrOutputWithContext(ctx context.Context) NameserverNsTypePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v NameserverNsType) *NameserverNsType {
+		return &v
+	}).(NameserverNsTypePtrOutput)
+}
+
+func (o NameserverNsTypeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o NameserverNsTypeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e NameserverNsType) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o NameserverNsTypeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o NameserverNsTypeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e NameserverNsType) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type NameserverNsTypePtrOutput struct{ *pulumi.OutputState }
+
+func (NameserverNsTypePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**NameserverNsType)(nil)).Elem()
+}
+
+func (o NameserverNsTypePtrOutput) ToNameserverNsTypePtrOutput() NameserverNsTypePtrOutput {
+	return o
+}
+
+func (o NameserverNsTypePtrOutput) ToNameserverNsTypePtrOutputWithContext(ctx context.Context) NameserverNsTypePtrOutput {
+	return o
+}
+
+func (o NameserverNsTypePtrOutput) Elem() NameserverNsTypeOutput {
+	return o.ApplyT(func(v *NameserverNsType) NameserverNsType {
+		if v != nil {
+			return *v
+		}
+		var ret NameserverNsType
+		return ret
+	}).(NameserverNsTypeOutput)
+}
+
+func (o NameserverNsTypePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o NameserverNsTypePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *NameserverNsType) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// NameserverNsTypeInput is an input type that accepts values of the NameserverNsType enum
+// A concrete instance of `NameserverNsTypeInput` can be one of the following:
+//
+//	NameserverNsTypeUdp
+type NameserverNsTypeInput interface {
+	pulumi.Input
+
+	ToNameserverNsTypeOutput() NameserverNsTypeOutput
+	ToNameserverNsTypeOutputWithContext(context.Context) NameserverNsTypeOutput
+}
+
+var nameserverNsTypePtrType = reflect.TypeOf((**NameserverNsType)(nil)).Elem()
+
+type NameserverNsTypePtrInput interface {
+	pulumi.Input
+
+	ToNameserverNsTypePtrOutput() NameserverNsTypePtrOutput
+	ToNameserverNsTypePtrOutputWithContext(context.Context) NameserverNsTypePtrOutput
+}
+
+type nameserverNsTypePtr string
+
+func NameserverNsTypePtr(v string) NameserverNsTypePtrInput {
+	return (*nameserverNsTypePtr)(&v)
+}
+
+func (*nameserverNsTypePtr) ElementType() reflect.Type {
+	return nameserverNsTypePtrType
+}
+
+func (in *nameserverNsTypePtr) ToNameserverNsTypePtrOutput() NameserverNsTypePtrOutput {
+	return pulumi.ToOutput(in).(NameserverNsTypePtrOutput)
+}
+
+func (in *nameserverNsTypePtr) ToNameserverNsTypePtrOutputWithContext(ctx context.Context) NameserverNsTypePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(NameserverNsTypePtrOutput)
+}
+
 type Protocol string
 
 const (
@@ -521,12 +685,16 @@ func (in *ruleActionPtr) ToRuleActionPtrOutputWithContext(ctx context.Context) R
 }
 
 func init() {
+	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypeInput)(nil)).Elem(), NameserverNsType("udp"))
+	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypePtrInput)(nil)).Elem(), NameserverNsType("udp"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolInput)(nil)).Elem(), Protocol("all"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolPtrInput)(nil)).Elem(), Protocol("all"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceTypeInput)(nil)).Elem(), ResourceType("domain"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceTypePtrInput)(nil)).Elem(), ResourceType("domain"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionInput)(nil)).Elem(), RuleAction("accept"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionPtrInput)(nil)).Elem(), RuleAction("accept"))
+	pulumi.RegisterOutputType(NameserverNsTypeOutput{})
+	pulumi.RegisterOutputType(NameserverNsTypePtrOutput{})
 	pulumi.RegisterOutputType(ProtocolOutput{})
 	pulumi.RegisterOutputType(ProtocolPtrOutput{})
 	pulumi.RegisterOutputType(ResourceTypeOutput{})

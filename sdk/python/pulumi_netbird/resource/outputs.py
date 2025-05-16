@@ -18,11 +18,52 @@ from . import outputs
 from ._enums import *
 
 __all__ = [
+    'Nameserver',
     'PolicyRuleState',
     'Resource',
     'RuleGroup',
     'RulePortRange',
 ]
+
+@pulumi.output_type
+class Nameserver(dict):
+    def __init__(__self__, *,
+                 ip: builtins.str,
+                 port: builtins.int,
+                 type: 'NameserverNsType'):
+        """
+        :param builtins.str ip: Ip Nameserver IP
+        :param builtins.int port: Port Nameserver Port
+        :param 'NameserverNsType' type: NsType Nameserver Type
+        """
+        pulumi.set(__self__, "ip", ip)
+        pulumi.set(__self__, "port", port)
+        pulumi.set(__self__, "type", type)
+
+    @property
+    @pulumi.getter
+    def ip(self) -> builtins.str:
+        """
+        Ip Nameserver IP
+        """
+        return pulumi.get(self, "ip")
+
+    @property
+    @pulumi.getter
+    def port(self) -> builtins.int:
+        """
+        Port Nameserver Port
+        """
+        return pulumi.get(self, "port")
+
+    @property
+    @pulumi.getter
+    def type(self) -> 'NameserverNsType':
+        """
+        NsType Nameserver Type
+        """
+        return pulumi.get(self, "type")
+
 
 @pulumi.output_type
 class PolicyRuleState(dict):
@@ -58,19 +99,19 @@ class PolicyRuleState(dict):
                  source: Optional['outputs.Resource'] = None,
                  sources: Optional[Sequence['outputs.RuleGroup']] = None):
         """
-        :param 'RuleAction' action: The action to take: 'accept' or 'drop'.
-        :param builtins.bool bidirectional: Whether the rule applies bidirectionally.
-        :param builtins.bool enabled: Whether the rule is active.
-        :param builtins.str name: The name of the policy rule.
-        :param 'Protocol' protocol: The protocol: 'tcp', 'udp', 'icmp', or 'all'.
-        :param builtins.str description: An optional description of the policy rule.
-        :param 'Resource' destination: Optional destination resource for the rule.
-        :param Sequence['RuleGroup'] destinations: Optional list of destination groups.
-        :param builtins.str id: Optional unique identifier for the policy rule.
-        :param Sequence['RulePortRange'] port_ranges: Optional list of port ranges.
-        :param Sequence[builtins.str] ports: Optional list of ports.
-        :param 'Resource' source: Optional source resource for the rule.
-        :param Sequence['RuleGroup'] sources: Optional list of source groups.
+        :param 'RuleAction' action: Action Policy rule accept or drops packets
+        :param builtins.bool bidirectional: Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
+        :param builtins.bool enabled: Enabled Policy rule status
+        :param builtins.str name: Name Policy rule name identifier
+        :param 'Protocol' protocol: Protocol Policy rule type of the traffic
+        :param builtins.str description: Description Policy rule friendly description
+        :param 'Resource' destination: DestinationResource for the rule 
+        :param Sequence['RuleGroup'] destinations: Destinations Policy rule destination group IDs
+        :param builtins.str id: ID Policy rule.
+        :param Sequence['RulePortRange'] port_ranges: PortRanges Policy rule affected ports ranges list
+        :param Sequence[builtins.str] ports: Ports Policy rule affected ports
+        :param 'Resource' source: SourceResource for the rule
+        :param Sequence['RuleGroup'] sources: Sources Policy rule source group IDs
         """
         pulumi.set(__self__, "action", action)
         pulumi.set(__self__, "bidirectional", bidirectional)
@@ -98,7 +139,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def action(self) -> 'RuleAction':
         """
-        The action to take: 'accept' or 'drop'.
+        Action Policy rule accept or drops packets
         """
         return pulumi.get(self, "action")
 
@@ -106,7 +147,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def bidirectional(self) -> builtins.bool:
         """
-        Whether the rule applies bidirectionally.
+        Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
         """
         return pulumi.get(self, "bidirectional")
 
@@ -114,7 +155,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def enabled(self) -> builtins.bool:
         """
-        Whether the rule is active.
+        Enabled Policy rule status
         """
         return pulumi.get(self, "enabled")
 
@@ -122,7 +163,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def name(self) -> builtins.str:
         """
-        The name of the policy rule.
+        Name Policy rule name identifier
         """
         return pulumi.get(self, "name")
 
@@ -130,7 +171,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def protocol(self) -> 'Protocol':
         """
-        The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+        Protocol Policy rule type of the traffic
         """
         return pulumi.get(self, "protocol")
 
@@ -138,7 +179,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def description(self) -> Optional[builtins.str]:
         """
-        An optional description of the policy rule.
+        Description Policy rule friendly description
         """
         return pulumi.get(self, "description")
 
@@ -146,7 +187,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def destination(self) -> Optional['outputs.Resource']:
         """
-        Optional destination resource for the rule.
+        DestinationResource for the rule 
         """
         return pulumi.get(self, "destination")
 
@@ -154,7 +195,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def destinations(self) -> Optional[Sequence['outputs.RuleGroup']]:
         """
-        Optional list of destination groups.
+        Destinations Policy rule destination group IDs
         """
         return pulumi.get(self, "destinations")
 
@@ -162,7 +203,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def id(self) -> Optional[builtins.str]:
         """
-        Optional unique identifier for the policy rule.
+        ID Policy rule.
         """
         return pulumi.get(self, "id")
 
@@ -170,7 +211,7 @@ class PolicyRuleState(dict):
     @pulumi.getter(name="portRanges")
     def port_ranges(self) -> Optional[Sequence['outputs.RulePortRange']]:
         """
-        Optional list of port ranges.
+        PortRanges Policy rule affected ports ranges list
         """
         return pulumi.get(self, "port_ranges")
 
@@ -178,7 +219,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def ports(self) -> Optional[Sequence[builtins.str]]:
         """
-        Optional list of ports.
+        Ports Policy rule affected ports
         """
         return pulumi.get(self, "ports")
 
@@ -186,7 +227,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def source(self) -> Optional['outputs.Resource']:
         """
-        Optional source resource for the rule.
+        SourceResource for the rule
         """
         return pulumi.get(self, "source")
 
@@ -194,7 +235,7 @@ class PolicyRuleState(dict):
     @pulumi.getter
     def sources(self) -> Optional[Sequence['outputs.RuleGroup']]:
         """
-        Optional list of source groups.
+        Sources Policy rule source group IDs
         """
         return pulumi.get(self, "sources")
 
@@ -262,17 +303,27 @@ class RulePortRange(dict):
     def __init__(__self__, *,
                  end: builtins.int,
                  start: builtins.int):
+        """
+        :param builtins.int end: End of port range
+        :param builtins.int start: Start of port range
+        """
         pulumi.set(__self__, "end", end)
         pulumi.set(__self__, "start", start)
 
     @property
     @pulumi.getter
     def end(self) -> builtins.int:
+        """
+        End of port range
+        """
         return pulumi.get(self, "end")
 
     @property
     @pulumi.getter
     def start(self) -> builtins.int:
+        """
+        Start of port range
+        """
         return pulumi.get(self, "start")
 
 

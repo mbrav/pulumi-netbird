@@ -30,11 +30,11 @@ class PolicyArgs:
                  posture_checks: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None):
         """
         The set of arguments for constructing a Policy resource.
-        :param pulumi.Input[builtins.bool] enabled: Whether the policy is currently active.
-        :param pulumi.Input[builtins.str] name: The name of the policy.
-        :param pulumi.Input[Sequence[pulumi.Input['PolicyRuleArgsArgs']]] rules: The list of rules defining the behavior of this policy.
-        :param pulumi.Input[builtins.str] description: An optional description of the policy.
-        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] posture_checks: Optional posture check IDs used as sources in policy rules.
+        :param pulumi.Input[builtins.bool] enabled: Enabled Policy status
+        :param pulumi.Input[builtins.str] name: Name Policy name identifier
+        :param pulumi.Input[Sequence[pulumi.Input['PolicyRuleArgsArgs']]] rules: Rules Policy rule object for policy UI editor
+        :param pulumi.Input[builtins.str] description: Description Policy friendly description, optional
+        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] posture_checks: SourcePostureChecks Posture checks ID's applied to policy source groups, optional
         """
         pulumi.set(__self__, "enabled", enabled)
         pulumi.set(__self__, "name", name)
@@ -48,7 +48,7 @@ class PolicyArgs:
     @pulumi.getter
     def enabled(self) -> pulumi.Input[builtins.bool]:
         """
-        Whether the policy is currently active.
+        Enabled Policy status
         """
         return pulumi.get(self, "enabled")
 
@@ -60,7 +60,7 @@ class PolicyArgs:
     @pulumi.getter
     def name(self) -> pulumi.Input[builtins.str]:
         """
-        The name of the policy.
+        Name Policy name identifier
         """
         return pulumi.get(self, "name")
 
@@ -72,7 +72,7 @@ class PolicyArgs:
     @pulumi.getter
     def rules(self) -> pulumi.Input[Sequence[pulumi.Input['PolicyRuleArgsArgs']]]:
         """
-        The list of rules defining the behavior of this policy.
+        Rules Policy rule object for policy UI editor
         """
         return pulumi.get(self, "rules")
 
@@ -84,7 +84,7 @@ class PolicyArgs:
     @pulumi.getter
     def description(self) -> Optional[pulumi.Input[builtins.str]]:
         """
-        An optional description of the policy.
+        Description Policy friendly description, optional
         """
         return pulumi.get(self, "description")
 
@@ -96,7 +96,7 @@ class PolicyArgs:
     @pulumi.getter
     def posture_checks(self) -> Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]:
         """
-        Optional posture check IDs used as sources in policy rules.
+        SourcePostureChecks Posture checks ID's applied to policy source groups, optional
         """
         return pulumi.get(self, "posture_checks")
 
@@ -122,11 +122,11 @@ class Policy(pulumi.CustomResource):
 
         :param str resource_name: The name of the resource.
         :param pulumi.ResourceOptions opts: Options for the resource.
-        :param pulumi.Input[builtins.str] description: An optional description of the policy.
-        :param pulumi.Input[builtins.bool] enabled: Whether the policy is currently active.
-        :param pulumi.Input[builtins.str] name: The name of the policy.
-        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] posture_checks: Optional posture check IDs used as sources in policy rules.
-        :param pulumi.Input[Sequence[pulumi.Input[Union['PolicyRuleArgsArgs', 'PolicyRuleArgsArgsDict']]]] rules: The list of rules defining the behavior of this policy.
+        :param pulumi.Input[builtins.str] description: Description Policy friendly description, optional
+        :param pulumi.Input[builtins.bool] enabled: Enabled Policy status
+        :param pulumi.Input[builtins.str] name: Name Policy name identifier
+        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] posture_checks: SourcePostureChecks Posture checks ID's applied to policy source groups, optional
+        :param pulumi.Input[Sequence[pulumi.Input[Union['PolicyRuleArgsArgs', 'PolicyRuleArgsArgsDict']]]] rules: Rules Policy rule object for policy UI editor
         """
         ...
     @overload
@@ -210,7 +210,7 @@ class Policy(pulumi.CustomResource):
     @pulumi.getter
     def description(self) -> pulumi.Output[Optional[builtins.str]]:
         """
-        An optional description of the policy.
+        Description Policy friendly description, optional
         """
         return pulumi.get(self, "description")
 
@@ -218,7 +218,7 @@ class Policy(pulumi.CustomResource):
     @pulumi.getter
     def enabled(self) -> pulumi.Output[builtins.bool]:
         """
-        Whether the policy is currently active.
+        Enabled Policy status
         """
         return pulumi.get(self, "enabled")
 
@@ -226,7 +226,7 @@ class Policy(pulumi.CustomResource):
     @pulumi.getter
     def name(self) -> pulumi.Output[builtins.str]:
         """
-        The name of the policy.
+        Name Policy name identifier
         """
         return pulumi.get(self, "name")
 
@@ -234,7 +234,7 @@ class Policy(pulumi.CustomResource):
     @pulumi.getter
     def posture_checks(self) -> pulumi.Output[Optional[Sequence[builtins.str]]]:
         """
-        Optional posture check IDs used as sources in policy rules.
+        SourcePostureChecks Posture checks ID's applied to policy source groups, optional
         """
         return pulumi.get(self, "posture_checks")
 
@@ -242,7 +242,7 @@ class Policy(pulumi.CustomResource):
     @pulumi.getter
     def rules(self) -> pulumi.Output[Sequence['outputs.PolicyRuleState']]:
         """
-        The list of rules defining the behavior of this policy.
+        Rules Policy rule object for policy UI editor
         """
         return pulumi.get(self, "rules")
 

@@ -17,6 +17,8 @@ from .. import _utilities
 from ._enums import *
 
 __all__ = [
+    'NameserverArgs',
+    'NameserverArgsDict',
     'PolicyRuleArgsArgs',
     'PolicyRuleArgsArgsDict',
     'ResourceArgs',
@@ -28,58 +30,127 @@ __all__ = [
 MYPY = False
 
 if not MYPY:
+    class NameserverArgsDict(TypedDict):
+        ip: pulumi.Input[builtins.str]
+        """
+        Ip Nameserver IP
+        """
+        port: pulumi.Input[builtins.int]
+        """
+        Port Nameserver Port
+        """
+        type: pulumi.Input['NameserverNsType']
+        """
+        NsType Nameserver Type
+        """
+elif False:
+    NameserverArgsDict: TypeAlias = Mapping[str, Any]
+
+@pulumi.input_type
+class NameserverArgs:
+    def __init__(__self__, *,
+                 ip: pulumi.Input[builtins.str],
+                 port: pulumi.Input[builtins.int],
+                 type: pulumi.Input['NameserverNsType']):
+        """
+        :param pulumi.Input[builtins.str] ip: Ip Nameserver IP
+        :param pulumi.Input[builtins.int] port: Port Nameserver Port
+        :param pulumi.Input['NameserverNsType'] type: NsType Nameserver Type
+        """
+        pulumi.set(__self__, "ip", ip)
+        pulumi.set(__self__, "port", port)
+        pulumi.set(__self__, "type", type)
+
+    @property
+    @pulumi.getter
+    def ip(self) -> pulumi.Input[builtins.str]:
+        """
+        Ip Nameserver IP
+        """
+        return pulumi.get(self, "ip")
+
+    @ip.setter
+    def ip(self, value: pulumi.Input[builtins.str]):
+        pulumi.set(self, "ip", value)
+
+    @property
+    @pulumi.getter
+    def port(self) -> pulumi.Input[builtins.int]:
+        """
+        Port Nameserver Port
+        """
+        return pulumi.get(self, "port")
+
+    @port.setter
+    def port(self, value: pulumi.Input[builtins.int]):
+        pulumi.set(self, "port", value)
+
+    @property
+    @pulumi.getter
+    def type(self) -> pulumi.Input['NameserverNsType']:
+        """
+        NsType Nameserver Type
+        """
+        return pulumi.get(self, "type")
+
+    @type.setter
+    def type(self, value: pulumi.Input['NameserverNsType']):
+        pulumi.set(self, "type", value)
+
+
+if not MYPY:
     class PolicyRuleArgsArgsDict(TypedDict):
         action: pulumi.Input['RuleAction']
         """
-        The action to take: 'accept' or 'drop'.
+        Action Policy rule accept or drops packets
         """
         bidirectional: pulumi.Input[builtins.bool]
         """
-        Whether the rule applies bidirectionally.
+        Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
         """
         enabled: pulumi.Input[builtins.bool]
         """
-        Whether the rule is active.
+        Enabled Policy rule status
         """
         name: pulumi.Input[builtins.str]
         """
-        The name of the policy rule.
+        Name Policy rule name identifier
         """
         protocol: pulumi.Input['Protocol']
         """
-        The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+        Protocol Policy rule type of the traffic
         """
         description: NotRequired[pulumi.Input[builtins.str]]
         """
-        An optional description of the policy rule.
+        Description Policy rule friendly description
         """
         destination: NotRequired[pulumi.Input['ResourceArgsDict']]
         """
-        Optional destination resource for the rule.
+        DestinationResource for the rule 
         """
         destinations: NotRequired[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]
         """
-        Optional list of destination group IDs.
+        Destinations Policy rule destination group IDs
         """
         id: NotRequired[pulumi.Input[builtins.str]]
         """
-        Optional unique identifier for the policy rule.
+        ID Policy rule.
         """
         port_ranges: NotRequired[pulumi.Input[Sequence[pulumi.Input['RulePortRangeArgsDict']]]]
         """
-        Optional list of port ranges.
+        PortRanges Policy rule affected ports ranges list
         """
         ports: NotRequired[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]
         """
-        Optional list of ports.
+        Ports Policy rule affected ports
         """
         source: NotRequired[pulumi.Input['ResourceArgsDict']]
         """
-        Optional source resource for the rule.
+        SourceResource for the rule
         """
         sources: NotRequired[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]
         """
-        Optional list of source group IDs.
+        Sources Policy rule source group IDs
         """
 elif False:
     PolicyRuleArgsArgsDict: TypeAlias = Mapping[str, Any]
@@ -101,19 +172,19 @@ class PolicyRuleArgsArgs:
                  source: Optional[pulumi.Input['ResourceArgs']] = None,
                  sources: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None):
         """
-        :param pulumi.Input['RuleAction'] action: The action to take: 'accept' or 'drop'.
-        :param pulumi.Input[builtins.bool] bidirectional: Whether the rule applies bidirectionally.
-        :param pulumi.Input[builtins.bool] enabled: Whether the rule is active.
-        :param pulumi.Input[builtins.str] name: The name of the policy rule.
-        :param pulumi.Input['Protocol'] protocol: The protocol: 'tcp', 'udp', 'icmp', or 'all'.
-        :param pulumi.Input[builtins.str] description: An optional description of the policy rule.
-        :param pulumi.Input['ResourceArgs'] destination: Optional destination resource for the rule.
-        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] destinations: Optional list of destination group IDs.
-        :param pulumi.Input[builtins.str] id: Optional unique identifier for the policy rule.
-        :param pulumi.Input[Sequence[pulumi.Input['RulePortRangeArgs']]] port_ranges: Optional list of port ranges.
-        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] ports: Optional list of ports.
-        :param pulumi.Input['ResourceArgs'] source: Optional source resource for the rule.
-        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] sources: Optional list of source group IDs.
+        :param pulumi.Input['RuleAction'] action: Action Policy rule accept or drops packets
+        :param pulumi.Input[builtins.bool] bidirectional: Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
+        :param pulumi.Input[builtins.bool] enabled: Enabled Policy rule status
+        :param pulumi.Input[builtins.str] name: Name Policy rule name identifier
+        :param pulumi.Input['Protocol'] protocol: Protocol Policy rule type of the traffic
+        :param pulumi.Input[builtins.str] description: Description Policy rule friendly description
+        :param pulumi.Input['ResourceArgs'] destination: DestinationResource for the rule 
+        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] destinations: Destinations Policy rule destination group IDs
+        :param pulumi.Input[builtins.str] id: ID Policy rule.
+        :param pulumi.Input[Sequence[pulumi.Input['RulePortRangeArgs']]] port_ranges: PortRanges Policy rule affected ports ranges list
+        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] ports: Ports Policy rule affected ports
+        :param pulumi.Input['ResourceArgs'] source: SourceResource for the rule
+        :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] sources: Sources Policy rule source group IDs
         """
         pulumi.set(__self__, "action", action)
         pulumi.set(__self__, "bidirectional", bidirectional)
@@ -141,7 +212,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def action(self) -> pulumi.Input['RuleAction']:
         """
-        The action to take: 'accept' or 'drop'.
+        Action Policy rule accept or drops packets
         """
         return pulumi.get(self, "action")
 
@@ -153,7 +224,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def bidirectional(self) -> pulumi.Input[builtins.bool]:
         """
-        Whether the rule applies bidirectionally.
+        Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
         """
         return pulumi.get(self, "bidirectional")
 
@@ -165,7 +236,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def enabled(self) -> pulumi.Input[builtins.bool]:
         """
-        Whether the rule is active.
+        Enabled Policy rule status
         """
         return pulumi.get(self, "enabled")
 
@@ -177,7 +248,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def name(self) -> pulumi.Input[builtins.str]:
         """
-        The name of the policy rule.
+        Name Policy rule name identifier
         """
         return pulumi.get(self, "name")
 
@@ -189,7 +260,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def protocol(self) -> pulumi.Input['Protocol']:
         """
-        The protocol: 'tcp', 'udp', 'icmp', or 'all'.
+        Protocol Policy rule type of the traffic
         """
         return pulumi.get(self, "protocol")
 
@@ -201,7 +272,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def description(self) -> Optional[pulumi.Input[builtins.str]]:
         """
-        An optional description of the policy rule.
+        Description Policy rule friendly description
         """
         return pulumi.get(self, "description")
 
@@ -213,7 +284,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def destination(self) -> Optional[pulumi.Input['ResourceArgs']]:
         """
-        Optional destination resource for the rule.
+        DestinationResource for the rule 
         """
         return pulumi.get(self, "destination")
 
@@ -225,7 +296,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def destinations(self) -> Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]:
         """
-        Optional list of destination group IDs.
+        Destinations Policy rule destination group IDs
         """
         return pulumi.get(self, "destinations")
 
@@ -237,7 +308,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def id(self) -> Optional[pulumi.Input[builtins.str]]:
         """
-        Optional unique identifier for the policy rule.
+        ID Policy rule.
         """
         return pulumi.get(self, "id")
 
@@ -249,7 +320,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter(name="portRanges")
     def port_ranges(self) -> Optional[pulumi.Input[Sequence[pulumi.Input['RulePortRangeArgs']]]]:
         """
-        Optional list of port ranges.
+        PortRanges Policy rule affected ports ranges list
         """
         return pulumi.get(self, "port_ranges")
 
@@ -261,7 +332,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def ports(self) -> Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]:
         """
-        Optional list of ports.
+        Ports Policy rule affected ports
         """
         return pulumi.get(self, "ports")
 
@@ -273,7 +344,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def source(self) -> Optional[pulumi.Input['ResourceArgs']]:
         """
-        Optional source resource for the rule.
+        SourceResource for the rule
         """
         return pulumi.get(self, "source")
 
@@ -285,7 +356,7 @@ class PolicyRuleArgsArgs:
     @pulumi.getter
     def sources(self) -> Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]:
         """
-        Optional list of source group IDs.
+        Sources Policy rule source group IDs
         """
         return pulumi.get(self, "sources")
 
@@ -347,7 +418,13 @@ class ResourceArgs:
 if not MYPY:
     class RulePortRangeArgsDict(TypedDict):
         end: pulumi.Input[builtins.int]
+        """
+        End of port range
+        """
         start: pulumi.Input[builtins.int]
+        """
+        Start of port range
+        """
 elif False:
     RulePortRangeArgsDict: TypeAlias = Mapping[str, Any]
 
@@ -356,12 +433,19 @@ class RulePortRangeArgs:
     def __init__(__self__, *,
                  end: pulumi.Input[builtins.int],
                  start: pulumi.Input[builtins.int]):
+        """
+        :param pulumi.Input[builtins.int] end: End of port range
+        :param pulumi.Input[builtins.int] start: Start of port range
+        """
         pulumi.set(__self__, "end", end)
         pulumi.set(__self__, "start", start)
 
     @property
     @pulumi.getter
     def end(self) -> pulumi.Input[builtins.int]:
+        """
+        End of port range
+        """
         return pulumi.get(self, "end")
 
     @end.setter
@@ -371,6 +455,9 @@ class RulePortRangeArgs:
     @property
     @pulumi.getter
     def start(self) -> pulumi.Input[builtins.int]:
+        """
+        Start of port range
+        """
         return pulumi.get(self, "start")
 
     @start.setter

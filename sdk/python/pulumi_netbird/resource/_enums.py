@@ -7,10 +7,19 @@ import pulumi
 from enum import Enum
 
 __all__ = [
+    'NameserverNsType',
     'Protocol',
     'ResourceType',
     'RuleAction',
 ]
+
+
+@pulumi.type_token("netbird:resource:NameserverNsType")
+class NameserverNsType(builtins.str, Enum):
+    UDP = "udp"
+    """
+    UDP type
+    """
 
 
 @pulumi.type_token("netbird:resource:Protocol")

@@ -13,6 +13,11 @@ import (
 // Policy defines the Pulumi resource handler for NetBird policy resources.
 type Policy struct{}
 
+// Annotation for Policy for generated SDKs.
+func (Policy) Annotate(a infer.Annotator) {
+	a.Describe(&Policy{}, "A NetBird policy defining rules for communication between peers.")
+}
+
 // PolicyArgs defines the user-supplied arguments for creating/updating a Policy resource.
 type PolicyArgs struct {
 	Name                string           `pulumi:"name"`                    // Policy name (required)
@@ -22,6 +27,15 @@ type PolicyArgs struct {
 	SourcePostureChecks *[]string        `pulumi:"posture_checks,optional"` // Optional list of posture check IDs
 }
 
+// Annotation for PolicyArgs for generated SDKs.
+func (p *PolicyArgs) Annotate(a infer.Annotator) {
+	a.Describe(&p.Name, "Name Policy name identifier")
+	a.Describe(&p.Description, "Description Policy friendly description, optional")
+	a.Describe(&p.Enabled, "Enabled Policy status")
+	a.Describe(&p.Rules, "Rules Policy rule object for policy UI editor")
+	a.Describe(&p.SourcePostureChecks, "SourcePostureChecks Posture checks ID's applied to policy source groups, optional")
+}
+
 // PolicyState represents the state of a Policy resource stored in Pulumi state.
 type PolicyState struct {
 	Name                string            `pulumi:"name"`
@@ -29,6 +43,15 @@ type PolicyState struct {
 	Enabled             bool              `pulumi:"enabled"`
 	Rules               []PolicyRuleState `pulumi:"rules"`
 	SourcePostureChecks *[]string         `pulumi:"posture_checks,optional"`
+}
+
+// Annotation for PolicyState for generated SDKs.
+func (p *PolicyState) Annotate(a infer.Annotator) {
+	a.Describe(&p.Name, "Name Policy name identifier")
+	a.Describe(&p.Description, "Description Policy friendly description, optional")
+	a.Describe(&p.Enabled, "Enabled Policy status")
+	a.Describe(&p.Rules, "Rules Policy rule object for policy UI editor")
+	a.Describe(&p.SourcePostureChecks, "SourcePostureChecks Posture checks ID's applied to policy source groups, optional")
 }
 
 // PolicyRuleArgs represents user input for an individual rule in a policy.
@@ -48,6 +71,23 @@ type PolicyRuleArgs struct {
 	DestinationResource *Resource        `pulumi:"destination,optional"`  // Optional single destination resource
 }
 
+// Annotation for PolicyRuleArgs for generated SDKs.
+func (p *PolicyRuleArgs) Annotate(a infer.Annotator) {
+	a.Describe(&p.ID, "ID Policy rule.")
+	a.Describe(&p.Name, "Name Policy rule name identifier")
+	a.Describe(&p.Description, "Description Policy rule friendly description")
+	a.Describe(&p.Bidirectional, "Bidirectional Define if the rule is applicable in both directions, sources, and destinations.")
+	a.Describe(&p.Action, "Action Policy rule accept or drops packets")
+	a.Describe(&p.Enabled, "Enabled Policy rule status")
+	a.Describe(&p.Protocol, "Protocol Policy rule type of the traffic")
+	a.Describe(&p.Ports, "Ports Policy rule affected ports")
+	a.Describe(&p.PortRanges, "PortRanges Policy rule affected ports ranges list")
+	a.Describe(&p.Sources, "Sources Policy rule source group IDs")
+	a.Describe(&p.Destinations, "Destinations Policy rule destination group IDs")
+	a.Describe(&p.SourceResource, "SourceResource for the rule")
+	a.Describe(&p.DestinationResource, "DestinationResource for the rule ")
+}
+
 // PolicyRuleState represents the state of an individual rule within a policy.
 type PolicyRuleState struct {
 	ID                  *string          `pulumi:"id,optional"`
@@ -63,6 +103,47 @@ type PolicyRuleState struct {
 	Destinations        *[]RuleGroup     `pulumi:"destinations,optional"`
 	SourceResource      *Resource        `pulumi:"source,optional"`
 	DestinationResource *Resource        `pulumi:"destination,optional"`
+}
+
+// Annotation for PolicyRuleState for generated SDKs.
+func (p *PolicyRuleState) Annotate(a infer.Annotator) {
+	a.Describe(&p.ID, "ID Policy rule.")
+	a.Describe(&p.Name, "Name Policy rule name identifier")
+	a.Describe(&p.Description, "Description Policy rule friendly description")
+	a.Describe(&p.Bidirectional, "Bidirectional Define if the rule is applicable in both directions, sources, and destinations.")
+	a.Describe(&p.Action, "Action Policy rule accept or drops packets")
+	a.Describe(&p.Enabled, "Enabled Policy rule status")
+	a.Describe(&p.Protocol, "Protocol Policy rule type of the traffic")
+	a.Describe(&p.Ports, "Ports Policy rule affected ports")
+	a.Describe(&p.PortRanges, "PortRanges Policy rule affected ports ranges list")
+	a.Describe(&p.Sources, "Sources Policy rule source group IDs")
+	a.Describe(&p.Destinations, "Destinations Policy rule destination group IDs")
+	a.Describe(&p.SourceResource, "SourceResource for the rule")
+	a.Describe(&p.DestinationResource, "DestinationResource for the rule ")
+}
+
+// RulePortRange type.
+type RulePortRange struct {
+	Start int `pulumi:"start"`
+	End   int `pulumi:"end"`
+}
+
+// Annotation for Resource for generated SDKs.
+func (r *RulePortRange) Annotate(a infer.Annotator) {
+	a.Describe(&r.Start, "Start of port range")
+	a.Describe(&r.End, "End of port range")
+}
+
+// RuleGroup type.
+type RuleGroup struct {
+	ID   string `pulumi:"id"`
+	Name string `pulumi:"name"`
+}
+
+// Annotation for RuleGroup for generated SDKs.
+func (g *RuleGroup) Annotate(a infer.Annotator) {
+	a.Describe(&g.ID, "The unique identifier of the group.")
+	a.Describe(&g.Name, "The name of the group.")
 }
 
 // RuleAction defines the allowed actions for a rule (accept/drop).
@@ -132,81 +213,6 @@ func (ResourceType) Values() []infer.EnumValue[ResourceType] {
 		{Name: "Host", Value: ResourceTypeHost, Description: "A host resource (e.g., peer or device)."},
 		{Name: "Subnet", Value: ResourceTypeSubnet, Description: "A subnet resource (e.g., 192.168.0.0/24)."},
 	}
-}
-
-// RulePortRange type.
-type RulePortRange struct {
-	Start int `pulumi:"start"`
-	End   int `pulumi:"end"`
-}
-
-// RuleGroup type.
-type RuleGroup struct {
-	ID   string `pulumi:"id"`
-	Name string `pulumi:"name"`
-}
-
-// Annotation for Policy for generated SDKs.
-func (Policy) Annotate(a infer.Annotator) {
-	a.Describe(&Policy{}, "A NetBird policy defining rules for communication between peers.")
-}
-
-// Annotation for PolicyArgs for generated SDKs.
-func (p *PolicyArgs) Annotate(a infer.Annotator) {
-	a.Describe(&p.Name, "The name of the policy.")
-	a.Describe(&p.Description, "An optional description of the policy.")
-	a.Describe(&p.Enabled, "Whether the policy is currently active.")
-	a.Describe(&p.Rules, "The list of rules defining the behavior of this policy.")
-	a.Describe(&p.SourcePostureChecks, "Optional posture check IDs used as sources in policy rules.")
-}
-
-// Annotation for PolicyState for generated SDKs.
-func (p *PolicyState) Annotate(a infer.Annotator) {
-	a.Describe(&p.Name, "The name of the policy.")
-	a.Describe(&p.Description, "An optional description of the policy.")
-	a.Describe(&p.Enabled, "Whether the policy is currently active.")
-	a.Describe(&p.Rules, "The list of rules defining the behavior of this policy.")
-	a.Describe(&p.SourcePostureChecks, "Optional posture check IDs used as sources in policy rules.")
-}
-
-// Annotation for PolicyRuleArgs for generated SDKs.
-func (p *PolicyRuleArgs) Annotate(a infer.Annotator) {
-	a.Describe(&p.ID, "Optional unique identifier for the policy rule.")
-	a.Describe(&p.Name, "The name of the policy rule.")
-	a.Describe(&p.Description, "An optional description of the policy rule.")
-	a.Describe(&p.Bidirectional, "Whether the rule applies bidirectionally.")
-	a.Describe(&p.Action, "The action to take: 'accept' or 'drop'.")
-	a.Describe(&p.Enabled, "Whether the rule is active.")
-	a.Describe(&p.Protocol, "The protocol: 'tcp', 'udp', 'icmp', or 'all'.")
-	a.Describe(&p.Ports, "Optional list of ports.")
-	a.Describe(&p.PortRanges, "Optional list of port ranges.")
-	a.Describe(&p.Sources, "Optional list of source group IDs.")
-	a.Describe(&p.Destinations, "Optional list of destination group IDs.")
-	a.Describe(&p.SourceResource, "Optional source resource for the rule.")
-	a.Describe(&p.DestinationResource, "Optional destination resource for the rule.")
-}
-
-// Annotation for PolicyRuleState for generated SDKs.
-func (p *PolicyRuleState) Annotate(a infer.Annotator) {
-	a.Describe(&p.ID, "Optional unique identifier for the policy rule.")
-	a.Describe(&p.Name, "The name of the policy rule.")
-	a.Describe(&p.Description, "An optional description of the policy rule.")
-	a.Describe(&p.Bidirectional, "Whether the rule applies bidirectionally.")
-	a.Describe(&p.Action, "The action to take: 'accept' or 'drop'.")
-	a.Describe(&p.Enabled, "Whether the rule is active.")
-	a.Describe(&p.Protocol, "The protocol: 'tcp', 'udp', 'icmp', or 'all'.")
-	a.Describe(&p.Ports, "Optional list of ports.")
-	a.Describe(&p.PortRanges, "Optional list of port ranges.")
-	a.Describe(&p.Sources, "Optional list of source groups.")
-	a.Describe(&p.Destinations, "Optional list of destination groups.")
-	a.Describe(&p.SourceResource, "Optional source resource for the rule.")
-	a.Describe(&p.DestinationResource, "Optional destination resource for the rule.")
-}
-
-// Annotation for RuleGroup for generated SDKs.
-func (g *RuleGroup) Annotate(a infer.Annotator) {
-	a.Describe(&g.ID, "The unique identifier of the group.")
-	a.Describe(&g.Name, "The name of the group.")
 }
 
 // Create creates a new NetBird policy.

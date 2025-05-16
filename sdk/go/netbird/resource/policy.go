@@ -16,15 +16,15 @@ import (
 type Policy struct {
 	pulumi.CustomResourceState
 
-	// An optional description of the policy.
+	// Description Policy friendly description, optional
 	Description pulumi.StringPtrOutput `pulumi:"description"`
-	// Whether the policy is currently active.
+	// Enabled Policy status
 	Enabled pulumi.BoolOutput `pulumi:"enabled"`
-	// The name of the policy.
+	// Name Policy name identifier
 	Name pulumi.StringOutput `pulumi:"name"`
-	// Optional posture check IDs used as sources in policy rules.
+	// SourcePostureChecks Posture checks ID's applied to policy source groups, optional
 	Posture_checks pulumi.StringArrayOutput `pulumi:"posture_checks"`
-	// The list of rules defining the behavior of this policy.
+	// Rules Policy rule object for policy UI editor
 	Rules PolicyRuleStateArrayOutput `pulumi:"rules"`
 }
 
@@ -77,29 +77,29 @@ func (PolicyState) ElementType() reflect.Type {
 }
 
 type policyArgs struct {
-	// An optional description of the policy.
+	// Description Policy friendly description, optional
 	Description *string `pulumi:"description"`
-	// Whether the policy is currently active.
+	// Enabled Policy status
 	Enabled bool `pulumi:"enabled"`
-	// The name of the policy.
+	// Name Policy name identifier
 	Name string `pulumi:"name"`
-	// Optional posture check IDs used as sources in policy rules.
+	// SourcePostureChecks Posture checks ID's applied to policy source groups, optional
 	Posture_checks []string `pulumi:"posture_checks"`
-	// The list of rules defining the behavior of this policy.
+	// Rules Policy rule object for policy UI editor
 	Rules []PolicyRuleArgs `pulumi:"rules"`
 }
 
 // The set of arguments for constructing a Policy resource.
 type PolicyArgs struct {
-	// An optional description of the policy.
+	// Description Policy friendly description, optional
 	Description pulumi.StringPtrInput
-	// Whether the policy is currently active.
+	// Enabled Policy status
 	Enabled pulumi.BoolInput
-	// The name of the policy.
+	// Name Policy name identifier
 	Name pulumi.StringInput
-	// Optional posture check IDs used as sources in policy rules.
+	// SourcePostureChecks Posture checks ID's applied to policy source groups, optional
 	Posture_checks pulumi.StringArrayInput
-	// The list of rules defining the behavior of this policy.
+	// Rules Policy rule object for policy UI editor
 	Rules PolicyRuleArgsArrayInput
 }
 
@@ -190,27 +190,27 @@ func (o PolicyOutput) ToPolicyOutputWithContext(ctx context.Context) PolicyOutpu
 	return o
 }
 
-// An optional description of the policy.
+// Description Policy friendly description, optional
 func (o PolicyOutput) Description() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *Policy) pulumi.StringPtrOutput { return v.Description }).(pulumi.StringPtrOutput)
 }
 
-// Whether the policy is currently active.
+// Enabled Policy status
 func (o PolicyOutput) Enabled() pulumi.BoolOutput {
 	return o.ApplyT(func(v *Policy) pulumi.BoolOutput { return v.Enabled }).(pulumi.BoolOutput)
 }
 
-// The name of the policy.
+// Name Policy name identifier
 func (o PolicyOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v *Policy) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
 }
 
-// Optional posture check IDs used as sources in policy rules.
+// SourcePostureChecks Posture checks ID's applied to policy source groups, optional
 func (o PolicyOutput) Posture_checks() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *Policy) pulumi.StringArrayOutput { return v.Posture_checks }).(pulumi.StringArrayOutput)
 }
 
-// The list of rules defining the behavior of this policy.
+// Rules Policy rule object for policy UI editor
 func (o PolicyOutput) Rules() PolicyRuleStateArrayOutput {
 	return o.ApplyT(func(v *Policy) PolicyRuleStateArrayOutput { return v.Rules }).(PolicyRuleStateArrayOutput)
 }

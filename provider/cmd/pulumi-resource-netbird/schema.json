@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.12-alpha.1747205986+d0d5d5f3.dirty",
+  "version": "0.0.13-alpha.1747384564+3ac17a5f.dirty",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",
@@ -15,6 +15,7 @@
   "logoUrl": "https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp",
   "pluginDownloadURL": "github://api.github.com/mbrav",
   "publisher": "mbrav",
+  "namespace": "pulumi",
   "meta": {
     "moduleFormat": "(.*)"
   },
@@ -77,71 +78,102 @@
     ]
   },
   "types": {
+    "netbird:resource:Nameserver": {
+      "properties": {
+        "ip": {
+          "type": "string",
+          "description": "Ip Nameserver IP"
+        },
+        "port": {
+          "type": "integer",
+          "description": "Port Nameserver Port"
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:NameserverNsType",
+          "description": "NsType Nameserver Type"
+        }
+      },
+      "type": "object",
+      "required": [
+        "ip",
+        "port",
+        "type"
+      ]
+    },
+    "netbird:resource:NameserverNsType": {
+      "type": "string",
+      "enum": [
+        {
+          "description": "UDP type",
+          "value": "udp"
+        }
+      ]
+    },
     "netbird:resource:PolicyRuleArgs": {
       "properties": {
         "action": {
           "$ref": "#/types/netbird:resource:RuleAction",
-          "description": "The action to take: 'accept' or 'drop'."
+          "description": "Action Policy rule accept or drops packets"
         },
         "bidirectional": {
           "type": "boolean",
-          "description": "Whether the rule applies bidirectionally."
+          "description": "Bidirectional Define if the rule is applicable in both directions, sources, and destinations."
         },
         "description": {
           "type": "string",
-          "description": "An optional description of the policy rule."
+          "description": "Description Policy rule friendly description"
         },
         "destination": {
           "$ref": "#/types/netbird:resource:Resource",
-          "description": "Optional destination resource for the rule."
+          "description": "DestinationResource for the rule "
         },
         "destinations": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of destination group IDs."
+          "description": "Destinations Policy rule destination group IDs"
         },
         "enabled": {
           "type": "boolean",
-          "description": "Whether the rule is active."
+          "description": "Enabled Policy rule status"
         },
         "id": {
           "type": "string",
-          "description": "Optional unique identifier for the policy rule."
+          "description": "ID Policy rule."
         },
         "name": {
           "type": "string",
-          "description": "The name of the policy rule."
+          "description": "Name Policy rule name identifier"
         },
         "portRanges": {
           "type": "array",
           "items": {
             "$ref": "#/types/netbird:resource:RulePortRange"
           },
-          "description": "Optional list of port ranges."
+          "description": "PortRanges Policy rule affected ports ranges list"
         },
         "ports": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of ports."
+          "description": "Ports Policy rule affected ports"
         },
         "protocol": {
           "$ref": "#/types/netbird:resource:Protocol",
-          "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
+          "description": "Protocol Policy rule type of the traffic"
         },
         "source": {
           "$ref": "#/types/netbird:resource:Resource",
-          "description": "Optional source resource for the rule."
+          "description": "SourceResource for the rule"
         },
         "sources": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of source group IDs."
+          "description": "Sources Policy rule source group IDs"
         }
       },
       "type": "object",
@@ -157,67 +189,67 @@
       "properties": {
         "action": {
           "$ref": "#/types/netbird:resource:RuleAction",
-          "description": "The action to take: 'accept' or 'drop'."
+          "description": "Action Policy rule accept or drops packets"
         },
         "bidirectional": {
           "type": "boolean",
-          "description": "Whether the rule applies bidirectionally."
+          "description": "Bidirectional Define if the rule is applicable in both directions, sources, and destinations."
         },
         "description": {
           "type": "string",
-          "description": "An optional description of the policy rule."
+          "description": "Description Policy rule friendly description"
         },
         "destination": {
           "$ref": "#/types/netbird:resource:Resource",
-          "description": "Optional destination resource for the rule."
+          "description": "DestinationResource for the rule "
         },
         "destinations": {
           "type": "array",
           "items": {
             "$ref": "#/types/netbird:resource:RuleGroup"
           },
-          "description": "Optional list of destination groups."
+          "description": "Destinations Policy rule destination group IDs"
         },
         "enabled": {
           "type": "boolean",
-          "description": "Whether the rule is active."
+          "description": "Enabled Policy rule status"
         },
         "id": {
           "type": "string",
-          "description": "Optional unique identifier for the policy rule."
+          "description": "ID Policy rule."
         },
         "name": {
           "type": "string",
-          "description": "The name of the policy rule."
+          "description": "Name Policy rule name identifier"
         },
         "portRanges": {
           "type": "array",
           "items": {
             "$ref": "#/types/netbird:resource:RulePortRange"
           },
-          "description": "Optional list of port ranges."
+          "description": "PortRanges Policy rule affected ports ranges list"
         },
         "ports": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional list of ports."
+          "description": "Ports Policy rule affected ports"
         },
         "protocol": {
           "$ref": "#/types/netbird:resource:Protocol",
-          "description": "The protocol: 'tcp', 'udp', 'icmp', or 'all'."
+          "description": "Protocol Policy rule type of the traffic"
         },
         "source": {
           "$ref": "#/types/netbird:resource:Resource",
-          "description": "Optional source resource for the rule."
+          "description": "SourceResource for the rule"
         },
         "sources": {
           "type": "array",
           "items": {
             "$ref": "#/types/netbird:resource:RuleGroup"
           },
-          "description": "Optional list of source groups."
+          "description": "Sources Policy rule source group IDs"
         }
       },
       "type": "object",
@@ -317,10 +349,12 @@
     "netbird:resource:RulePortRange": {
       "properties": {
         "end": {
-          "type": "integer"
+          "type": "integer",
+          "description": "End of port range"
         },
         "start": {
-          "type": "integer"
+          "type": "integer",
+          "description": "Start of port range"
         }
       },
       "type": "object",
@@ -388,6 +422,116 @@
     ]
   },
   "resources": {
+    "netbird:resource:DNS": {
+      "description": "A NetBird network.",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description Description of the nameserver group"
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domains Match domain list. It should be empty only if primary is true."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Enabled Nameserver group status"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Groups Distribution group IDs that defines group of peers that will use this nameserver group"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name Name of nameserver group name"
+        },
+        "nameservers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:Nameserver"
+          },
+          "description": "Nameservers Nameserver list"
+        },
+        "primary": {
+          "type": "boolean",
+          "description": "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty."
+        },
+        "search_domains_enabled": {
+          "type": "boolean",
+          "description": "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty."
+        }
+      },
+      "type": "object",
+      "required": [
+        "description",
+        "domains",
+        "enabled",
+        "groups",
+        "name",
+        "nameservers",
+        "primary",
+        "search_domains_enabled"
+      ],
+      "inputProperties": {
+        "description": {
+          "type": "string",
+          "description": "Description Description of the nameserver group"
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domains Match domain list. It should be empty only if primary is true."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Enabled Nameserver group status"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Groups Distribution group IDs that defines group of peers that will use this nameserver group"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name Name of nameserver group name"
+        },
+        "nameservers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:Nameserver"
+          },
+          "description": "Nameservers Nameserver list"
+        },
+        "primary": {
+          "type": "boolean",
+          "description": "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty."
+        },
+        "search_domains_enabled": {
+          "type": "boolean",
+          "description": "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty."
+        }
+      },
+      "requiredInputs": [
+        "description",
+        "domains",
+        "enabled",
+        "groups",
+        "name",
+        "nameservers",
+        "primary",
+        "search_domains_enabled"
+      ]
+    },
     "netbird:resource:Group": {
       "description": "A NetBird group, which represents a collection of peers.",
       "properties": {
@@ -665,29 +809,29 @@
       "properties": {
         "description": {
           "type": "string",
-          "description": "An optional description of the policy."
+          "description": "Description Policy friendly description, optional"
         },
         "enabled": {
           "type": "boolean",
-          "description": "Whether the policy is currently active."
+          "description": "Enabled Policy status"
         },
         "name": {
           "type": "string",
-          "description": "The name of the policy."
+          "description": "Name Policy name identifier"
         },
         "posture_checks": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional posture check IDs used as sources in policy rules."
+          "description": "SourcePostureChecks Posture checks ID's applied to policy source groups, optional"
         },
         "rules": {
           "type": "array",
           "items": {
             "$ref": "#/types/netbird:resource:PolicyRuleState"
           },
-          "description": "The list of rules defining the behavior of this policy."
+          "description": "Rules Policy rule object for policy UI editor"
         }
       },
       "type": "object",
@@ -699,29 +843,29 @@
       "inputProperties": {
         "description": {
           "type": "string",
-          "description": "An optional description of the policy."
+          "description": "Description Policy friendly description, optional"
         },
         "enabled": {
           "type": "boolean",
-          "description": "Whether the policy is currently active."
+          "description": "Enabled Policy status"
         },
         "name": {
           "type": "string",
-          "description": "The name of the policy."
+          "description": "Name Policy name identifier"
         },
         "posture_checks": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Optional posture check IDs used as sources in policy rules."
+          "description": "SourcePostureChecks Posture checks ID's applied to policy source groups, optional"
         },
         "rules": {
           "type": "array",
           "items": {
             "$ref": "#/types/netbird:resource:PolicyRuleArgs"
           },
-          "description": "The list of rules defining the behavior of this policy."
+          "description": "Rules Policy rule object for policy UI editor"
         }
       },
       "requiredInputs": [

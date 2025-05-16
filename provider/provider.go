@@ -11,7 +11,7 @@ import (
 // Change to const to disable semver Version management
 var (
 	Name    string = "netbird"
-	Version string = "0.0.10"
+	Version string = "0.0.12"
 )
 
 // Define Provider.

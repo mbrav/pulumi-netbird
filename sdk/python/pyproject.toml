@@ -5,7 +5,7 @@
   keywords = ["pulumi", "networking", "netbird", "security"]
   readme = "README.md"
   requires-python = ">=3.9"
-  version = "0.0.13a1747386095+3ddd8367.dirty"
+  version = "0.0.14a1747393712+2d38b1e5.dirty"
   [project.license]
     text = "AGPL-3.0"
   [project.urls]

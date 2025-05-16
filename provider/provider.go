@@ -44,6 +44,8 @@ func Provider() p.Provider {
 			infer.Resource(&resource.Peer{}),
 			infer.Resource(&resource.Policy{}),
 		).
+		// WithComponents(components ...infer.InferredComponent)
+		// WithFunctions(functions ...infer.InferredFunction)
 		WithModuleMap(map[tokens.ModuleName]tokens.ModuleName{
 			"auto-naming": "index",
 		}).

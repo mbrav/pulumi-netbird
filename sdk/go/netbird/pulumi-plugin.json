@@ -1,6 +1,6 @@
 {
   "resource": true,
   "name": "netbird",
-  "version": "0.0.13-alpha.1747386095+3ddd8367.dirty",
+  "version": "0.0.14-alpha.1747393712+2d38b1e5.dirty",
   "server": "github://api.github.com/mbrav"
 }

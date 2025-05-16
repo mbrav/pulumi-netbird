@@ -37,6 +37,11 @@ ensure: ## Ensure Go modules are tidy
 	cd sdk && go mod tidy
 	cd tests && go mod tidy
 
+ensure-update: ## Ensure Go modules are tidy and update
+	cd provider && go get -u ./... && go mod tidy
+	cd sdk && go get -u ./... && go mod tidy
+	cd tests && go get -u ./... && go mod tidy
+
 schema: $(PROVIDER_BIN) ## Generate schema.json from provider binary
 	@echo "Generating schema.json..."
 	pulumi package get-schema $(PROVIDER_BIN) > $(SCHEMA_PATH)

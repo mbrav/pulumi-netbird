@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.14-alpha.1747393712+2d38b1e5.dirty",
+  "version": "0.0.14-alpha.1747483269+b05ac964",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "pulumi",

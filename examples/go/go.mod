@@ -5,7 +5,7 @@ go 1.24.2
 toolchain go1.24.3
 
 require (
-	github.com/mbrav/pulumi-netbird/sdk v0.0.13
+	github.com/mbrav/pulumi-netbird/sdk v0.0.14
 	github.com/pulumi/pulumi/sdk/v3 v3.170.0
 )
 

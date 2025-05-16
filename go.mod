@@ -3,8 +3,8 @@ module github.com/mbrav/pulumi-netbird
 go 1.24.2
 
 require (
-	github.com/netbirdio/netbird v0.43.3
-	github.com/pulumi/pulumi-go-provider v1.0.0-rc1.0.20250515181609-512f1e227889
+	github.com/netbirdio/netbird v0.44.0
+	github.com/pulumi/pulumi-go-provider v1.0.1
 	github.com/pulumi/pulumi/sdk/v3 v3.170.0
 )
 
@@ -82,7 +82,7 @@ require (
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	github.com/zclconf/go-cty v1.16.2 // indirect
+	github.com/zclconf/go-cty v1.16.3 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect

@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/management/server/http/api"
@@ -91,7 +92,7 @@ const (
 // Values returns the valid enum values for NameserverNsType, used by Pulumi for schema generation and validation.
 func (NameserverNsType) Values() []infer.EnumValue[NameserverNsType] {
 	return []infer.EnumValue[NameserverNsType]{
-		{Name: "UDP", Value: NameserverNsTypeUdp, Description: "UDP type"},
+		{Name: "udp", Value: NameserverNsTypeUdp, Description: "UDP type"},
 	}
 }
 
@@ -120,16 +121,6 @@ func (*DNS) Create(ctx context.Context, req infer.CreateRequest[DNSArgs]) (infer
 		return infer.CreateResponse[DNSState]{}, err
 	}
 
-	// Convert to API Nameserver slice
-	apiNameservers := make([]nbapi.Nameserver, len(req.Inputs.Nameservers))
-	for i, ns := range req.Inputs.Nameservers {
-		apiNameservers[i] = nbapi.Nameserver{
-			Ip:     ns.Ip,
-			NsType: nbapi.NameserverNsType(ns.NsType),
-			Port:   ns.Port,
-		}
-	}
-
 	// Build request payload
 	createReq := nbapi.NameserverGroupRequest{
 		Name:                 req.Inputs.Name,
@@ -138,7 +129,7 @@ func (*DNS) Create(ctx context.Context, req infer.CreateRequest[DNSArgs]) (infer
 		Enabled:              req.Inputs.Enabled,
 		Groups:               req.Inputs.Groups,
 		Primary:              req.Inputs.Primary,
-		Nameservers:          apiNameservers,
+		Nameservers:          toAPINameservers(req.Inputs.Nameservers),
 		SearchDomainsEnabled: req.Inputs.SearchDomainsEnabled,
 	}
 
@@ -146,16 +137,6 @@ func (*DNS) Create(ctx context.Context, req infer.CreateRequest[DNSArgs]) (infer
 	created, err := client.DNS.CreateNameserverGroup(ctx, createReq)
 	if err != nil {
 		return infer.CreateResponse[DNSState]{}, fmt.Errorf("creating DNS group failed: %w", err)
-	}
-
-	// Convert API response back to internal state
-	stateNameservers := make([]Nameserver, len(created.Nameservers))
-	for i, ns := range created.Nameservers {
-		stateNameservers[i] = Nameserver{
-			Ip:     ns.Ip,
-			NsType: NameserverNsType(ns.NsType),
-			Port:   ns.Port,
-		}
 	}
 
 	return infer.CreateResponse[DNSState]{
@@ -167,129 +148,210 @@ func (*DNS) Create(ctx context.Context, req infer.CreateRequest[DNSArgs]) (infer
 			Enabled:              created.Enabled,
 			Groups:               created.Groups,
 			Primary:              created.Primary,
-			Nameservers:          stateNameservers,
+			Nameservers:          fromAPINameservers(created.Nameservers),
 			SearchDomainsEnabled: created.SearchDomainsEnabled,
 		},
 	}, nil
 }
 
-// // Read fetches the current state of a network from NetBird.
-// func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) (infer.ReadResponse[DNSArgs, DNSState], error) {
-// 	p.GetLogger(ctx).Debugf("Read:DNSArgs[%s] name=%s", req.ID, req.Inputs.Name)
-// 	p.GetLogger(ctx).Debugf("Read:DNSState[%s] name=%s, id=%s", req.ID, req.State.Name, req.ID)
-//
-// 	client, err := config.GetNetBirdClient(ctx)
-// 	if err != nil {
-// 		return infer.ReadResponse[DNSArgs, DNSState]{}, err
-// 	}
-//
-// 	net, err := client.DNSs.Get(ctx, req.ID)
-// 	if err != nil {
-// 		return infer.ReadResponse[DNSArgs, DNSState]{}, fmt.Errorf("reading network failed: %w", err)
-// 	}
-//
-// 	p.GetLogger(ctx).Debugf("Read:DNSAPI[%s] name=%s", net.Id, net.Name)
-//
-// 	return infer.ReadResponse[DNSArgs, DNSState]{
-// 		ID: req.ID,
-// 		Inputs: DNSArgs{
-// 			Name:        net.Name,
-// 			Description: net.Description,
-// 		},
-// 		State: DNSState{
-// 			Name:        net.Name,
-// 			Description: net.Description,
-// 		},
-// 	}, nil
-// }
-//
-// // Update updates the state of the network if needed.
-// func (*DNS) Update(ctx context.Context, req infer.UpdateRequest[DNSArgs, DNSState]) (infer.UpdateResponse[DNSState], error) {
-// 	p.GetLogger(ctx).Debugf("Update:DNS[%s] name=%s", req.ID, req.Inputs.Name)
-//
-// 	if req.DryRun {
-// 		return infer.UpdateResponse[DNSState]{
-// 			Output: DNSState{
-// 				Name:        req.Inputs.Name,
-// 				Description: req.Inputs.Description,
-// 			},
-// 		}, nil
-// 	}
-//
-// 	client, err := config.GetNetBirdClient(ctx)
-// 	if err != nil {
-// 		return infer.UpdateResponse[DNSState]{}, err
-// 	}
-//
-// 	_, err = client.DNSs.Update(ctx, req.ID, nbapi.DNSRequest{
-// 		Name:        req.Inputs.Name,
-// 		Description: req.Inputs.Description,
-// 	})
-// 	if err != nil {
-// 		return infer.UpdateResponse[DNSState]{}, fmt.Errorf("updating network failed: %w", err)
-// 	}
-//
-// 	return infer.UpdateResponse[DNSState]{
-// 		Output: DNSState{
-// 			Name:        req.Inputs.Name,
-// 			Description: req.Inputs.Description,
-// 		},
-// 	}, nil
-// }
-//
-// // Delete removes a network from NetBird.
-// func (*DNS) Delete(ctx context.Context, req infer.DeleteRequest[DNSState]) (infer.DeleteResponse, error) {
-// 	p.GetLogger(ctx).Debugf("Delete:DNS[%s]", req.ID)
-//
-// 	client, err := config.GetNetBirdClient(ctx)
-// 	if err != nil {
-// 		return infer.DeleteResponse{}, err
-// 	}
-//
-// 	err = client.DNSs.Delete(ctx, req.ID)
-// 	if err != nil {
-// 		return infer.DeleteResponse{}, fmt.Errorf("deleting network failed: %w", err)
-// 	}
-//
-// 	return infer.DeleteResponse{}, nil
-// }
-//
-// // Diff detects changes between inputs and prior state.
-// func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) (infer.DiffResponse, error) {
-// 	p.GetLogger(ctx).Debugf("Diff:DNS[%s]", req.ID)
-//
-// 	diff := map[string]p.PropertyDiff{}
-//
-// 	if req.Inputs.Name != req.State.Name {
-// 		diff["name"] = p.PropertyDiff{Kind: p.Update}
-// 	}
-//
-// 	if !equalPtr(req.Inputs.Description, req.State.Description) {
-// 		diff["description"] = p.PropertyDiff{Kind: p.Update}
-// 	}
-//
-// 	p.GetLogger(ctx).Debugf("Diff:DNS[%s] diff=%d", req.ID, len(diff))
-//
-// 	return infer.DiffResponse{
-// 		DeleteBeforeReplace: false,
-// 		HasChanges:          len(diff) > 0,
-// 		DetailedDiff:        diff,
-// 	}, nil
-// }
-//
-// // Check provides input validation and default setting.
-// func (*DNS) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[DNSArgs], error) {
-// 	p.GetLogger(ctx).Debugf("Check:DNS old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
-// 	args, failures, err := infer.DefaultCheck[DNSArgs](ctx, req.NewInputs)
-//
-// 	return infer.CheckResponse[DNSArgs]{
-// 		Inputs:   args,
-// 		Failures: failures,
-// 	}, err
-// }
-//
-// // WireDependencies explicitly defines input/output relationships.
-// func (*DNS) WireDependencies(f infer.FieldSelector, args *DNSArgs, state *DNSState) {
-// 	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
-// 	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
-// }
+// Read reads a DNS (Nameserver Group) from NetBird.
+func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) (infer.ReadResponse[DNSArgs, DNSState], error) {
+	p.GetLogger(ctx).Debugf("Read:DNS[%s]", req.ID)
+
+	client, err := config.GetNetBirdClient(ctx)
+	if err != nil {
+		return infer.ReadResponse[DNSArgs, DNSState]{}, err
+	}
+
+	group, err := client.DNS.GetNameserverGroup(ctx, req.ID)
+	if err != nil {
+		return infer.ReadResponse[DNSArgs, DNSState]{}, fmt.Errorf("reading DNS group failed: %w", err)
+	}
+
+	// Convert API nameservers to Pulumi state format
+	stateNameservers := make([]Nameserver, len(group.Nameservers))
+	for i, ns := range group.Nameservers {
+		stateNameservers[i] = Nameserver{
+			Ip:     ns.Ip,
+			NsType: NameserverNsType(ns.NsType),
+			Port:   ns.Port,
+		}
+	}
+
+	// Return response with both current Inputs and updated State
+	return infer.ReadResponse[DNSArgs, DNSState]{
+		ID: req.ID,
+		Inputs: DNSArgs{
+			Name:                 group.Name,
+			Description:          group.Description,
+			Domains:              group.Domains,
+			Enabled:              group.Enabled,
+			Groups:               group.Groups,
+			Primary:              group.Primary,
+			Nameservers:          stateNameservers,
+			SearchDomainsEnabled: group.SearchDomainsEnabled,
+		},
+		State: DNSState{
+			Name:                 group.Name,
+			Description:          group.Description,
+			Domains:              group.Domains,
+			Enabled:              group.Enabled,
+			Groups:               group.Groups,
+			Primary:              group.Primary,
+			Nameservers:          stateNameservers,
+			SearchDomainsEnabled: group.SearchDomainsEnabled,
+		},
+	}, nil
+}
+
+// Update updates a DNS (Nameserver Group) from NetBird.
+func (*DNS) Update(ctx context.Context, req infer.UpdateRequest[DNSArgs, DNSState]) (infer.UpdateResponse[DNSState], error) {
+	p.GetLogger(ctx).Debugf("Update:DNS[%s]", req.ID)
+
+	if req.DryRun {
+		return infer.UpdateResponse[DNSState]{
+			Output: DNSState{
+				Name:                 req.Inputs.Name,
+				Description:          req.Inputs.Description,
+				Domains:              req.Inputs.Domains,
+				Enabled:              req.Inputs.Enabled,
+				Groups:               req.Inputs.Groups,
+				Primary:              req.Inputs.Primary,
+				Nameservers:          req.Inputs.Nameservers,
+				SearchDomainsEnabled: req.Inputs.SearchDomainsEnabled,
+			},
+		}, nil
+	}
+
+	client, err := config.GetNetBirdClient(ctx)
+	if err != nil {
+		return infer.UpdateResponse[DNSState]{}, err
+	}
+
+	updated, err := client.DNS.UpdateNameserverGroup(ctx, req.ID, nbapi.NameserverGroupRequest{
+		Name:                 req.Inputs.Name,
+		Description:          req.Inputs.Description,
+		Domains:              req.Inputs.Domains,
+		Enabled:              req.Inputs.Enabled,
+		Groups:               req.Inputs.Groups,
+		Primary:              req.Inputs.Primary,
+		Nameservers:          toAPINameservers(req.Inputs.Nameservers),
+		SearchDomainsEnabled: req.Inputs.SearchDomainsEnabled,
+	})
+	if err != nil {
+		return infer.UpdateResponse[DNSState]{}, fmt.Errorf("updating DNS entry failed: %w", err)
+	}
+
+	return infer.UpdateResponse[DNSState]{
+		Output: DNSState{
+			Name:                 updated.Name,
+			Description:          updated.Description,
+			Enabled:              updated.Enabled,
+			Domains:              updated.Domains,
+			Groups:               updated.Groups,
+			Nameservers:          fromAPINameservers(updated.Nameservers),
+			SearchDomainsEnabled: updated.SearchDomainsEnabled,
+		},
+	}, nil
+}
+
+// Converts a slice of internal Nameserver to API Nameserver
+func toAPINameservers(in []Nameserver) []nbapi.Nameserver {
+	apiNameservers := make([]nbapi.Nameserver, len(in))
+	for i, ns := range in {
+		apiNameservers[i] = nbapi.Nameserver{
+			Ip:     ns.Ip,
+			NsType: nbapi.NameserverNsType(ns.NsType),
+			Port:   ns.Port,
+		}
+	}
+	return apiNameservers
+}
+
+// Converts a slice of API Nameserver to internal Nameserver
+func fromAPINameservers(in []nbapi.Nameserver) []Nameserver {
+	nameservers := make([]Nameserver, len(in))
+	for i, ns := range in {
+		nameservers[i] = Nameserver{
+			Ip:     ns.Ip,
+			NsType: NameserverNsType(ns.NsType),
+			Port:   ns.Port,
+		}
+	}
+	return nameservers
+}
+
+// Delete removes a DNS (Nameserver Group) from NetBird.
+func (*DNS) Delete(ctx context.Context, req infer.DeleteRequest[DNSState]) (infer.DeleteResponse, error) {
+	p.GetLogger(ctx).Debugf("Delete:DNS[%s]", req.ID)
+
+	client, err := config.GetNetBirdClient(ctx)
+	if err != nil {
+		return infer.DeleteResponse{}, err
+	}
+
+	err = client.DNS.DeleteNameserverGroup(ctx, req.ID)
+	if err != nil {
+		return infer.DeleteResponse{}, fmt.Errorf("deleting DNS entry failed: %w", err)
+	}
+
+	return infer.DeleteResponse{}, nil
+}
+
+// Diff detects changes between DNSArgs and DNSState.
+func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) (infer.DiffResponse, error) {
+	p.GetLogger(ctx).Debugf("Diff:DNS[%s]", req.ID)
+
+	diff := map[string]p.PropertyDiff{}
+
+	if req.Inputs.Name != req.State.Name {
+		diff["name"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	if req.Inputs.Description != req.State.Description {
+		diff["description"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	if !slices.Equal(req.Inputs.Domains, req.State.Domains) {
+		diff["domains"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	if req.Inputs.Enabled != req.State.Enabled {
+		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	if !slices.Equal(req.Inputs.Groups, req.State.Groups) {
+		diff["groups"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	if req.Inputs.Primary != req.State.Primary {
+		diff["primary"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	if req.Inputs.SearchDomainsEnabled != req.State.SearchDomainsEnabled {
+		diff["search_domains_enabled"] = p.PropertyDiff{Kind: p.Update}
+	}
+
+	// Compare nameservers
+	if len(req.Inputs.Nameservers) != len(req.State.Nameservers) {
+		diff["nameservers"] = p.PropertyDiff{Kind: p.Update}
+	} else {
+		for i := range req.Inputs.Nameservers {
+			in := req.Inputs.Nameservers[i]
+			st := req.State.Nameservers[i]
+
+			if in.Ip != st.Ip || in.NsType != st.NsType || in.Port != st.Port {
+				diff["nameservers"] = p.PropertyDiff{Kind: p.Update}
+				break
+			}
+		}
+	}
+
+	p.GetLogger(ctx).Debugf("Diff:DNS[%s] diff=%d", req.ID, len(diff))
+
+	return infer.DiffResponse{
+		DeleteBeforeReplace: false,
+		HasChanges:          len(diff) > 0,
+		DetailedDiff:        diff,
+	}, nil
+}

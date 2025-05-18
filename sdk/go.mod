@@ -93,9 +93,6 @@ require (
 	lukechampine.com/frand v1.5.1 // indirect
 )
 
-//
 // replace (
 // 	github.com/mbrav/pulumi-netbird/sdk/go/netbird => ./go/netbird
-// 	github.com/mbrav/pulumi-netbird/sdk/go/netbird/config => ./go/netbird/config
-// 	github.com/mbrav/pulumi-netbird/sdk/go/netbird/internal => ./go/netbird/internal
 // )

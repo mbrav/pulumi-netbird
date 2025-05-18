@@ -2,10 +2,10 @@
   name = "pulumi_netbird"
   description = "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework."
   dependencies = ["parver>=0.2.1", "pulumi>=3.0.0,<4.0.0", "semver>=2.8.1", "typing-extensions>=4.11,<5; python_version < \"3.11\""]
-  keywords = ["pulumi", "networking", "netbird", "security"]
+  keywords = ["category/networking", "category/security", "kind/native"]
   readme = "README.md"
   requires-python = ">=3.9"
-  version = "0.0.14a1747483269+b05ac964"
+  version = "0.0.15"
   [project.license]
     text = "AGPL-3.0"
   [project.urls]

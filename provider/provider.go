@@ -9,9 +9,10 @@ import (
 )
 
 // Change to const to disable semver Version management
-var (
+// Change to var to enable semver Version management
+const (
 	Name    string = "netbird"
-	Version string = "0.0.14"
+	Version string = "0.0.15"
 )
 
 // Define Provider.
@@ -21,10 +22,9 @@ func Provider() p.Provider {
 		WithDisplayName(Name).
 		WithDescription("Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.").
 		WithKeywords(
-			"pulumi",
-			"networking",
-			"netbird",
-			"security",
+			"category/networking",
+			"category/security",
+			"kind/native",
 		).
 		WithHomepage("https://pulumi.com").
 		WithLicense("AGPL-3.0").

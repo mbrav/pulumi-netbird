@@ -1,13 +1,12 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.14-alpha.1747483269+b05ac964",
+  "version": "0.0.15",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
-    "pulumi",
-    "networking",
-    "netbird",
-    "security"
+    "category/networking",
+    "category/security",
+    "kind/native"
   ],
   "homepage": "https://pulumi.com",
   "license": "AGPL-3.0",

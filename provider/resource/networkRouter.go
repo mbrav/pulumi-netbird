@@ -65,7 +65,6 @@ func (*NetworkRouter) Create(ctx context.Context, req infer.CreateRequest[Networ
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkRouterState]{
-			ID: "preview",
 			Output: NetworkRouterState{
 				NetworkID:  req.Inputs.NetworkID,
 				Enabled:    req.Inputs.Enabled,

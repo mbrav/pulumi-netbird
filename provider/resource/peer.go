@@ -54,7 +54,6 @@ func (*Peer) Create(ctx context.Context, req infer.CreateRequest[PeerArgs]) (inf
 
 	if req.DryRun {
 		return infer.CreateResponse[PeerState]{
-			ID:     "preview",
 			Output: state,
 		}, nil
 	}

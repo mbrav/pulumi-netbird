@@ -49,7 +49,6 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 
 	if req.DryRun {
 		return infer.CreateResponse[GroupState]{
-			ID: "preview",
 			Output: GroupState{
 				Name:  req.Inputs.Name,
 				Peers: req.Inputs.Peers,

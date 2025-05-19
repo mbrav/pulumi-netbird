@@ -48,7 +48,6 @@ func (*Network) Create(ctx context.Context, req infer.CreateRequest[NetworkArgs]
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkState]{
-			ID: "preview",
 			Output: NetworkState{
 				Name:        req.Inputs.Name,
 				Description: req.Inputs.Description,

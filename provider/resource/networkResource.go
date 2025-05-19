@@ -68,7 +68,6 @@ func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[Netw
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkResourceState]{
-			ID: "preview",
 			Output: NetworkResourceState{
 				Name:        req.Inputs.Name,
 				Description: req.Inputs.Description,

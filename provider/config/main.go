@@ -27,7 +27,7 @@ func (c *Config) Annotate(a infer.Annotator) {
 // Configure validates the provider configuration.
 func (c *Config) Configure(ctx context.Context) error {
 	p.GetLogger(ctx).Debugf("Configure:Config")
-	p.GetLogger(ctx).Debugf("Config netbirdToken=%s, netbirdUrl=%s", c.NetBirdUrl, c.NetBirdToken)
+	// p.GetLogger(ctx).Debugf("Config netbirdToken=%s, netbirdUrl=%s", c.NetBirdUrl, c.NetBirdToken)
 
 	if c.NetBirdToken == "" {
 		return errors.New("netbirdToken must be set in provider configuration")
@@ -42,12 +42,32 @@ func (c *Config) Configure(ctx context.Context) error {
 
 // Retrieve the NetBird client using the provider configuration.
 func GetNetBirdClient(ctx context.Context) (*rest.Client, error) {
-	// Get the configuration from the provider's context
 	config := infer.GetConfig[*Config](ctx)
+	if config == nil {
+		return nil, ErrNilProviderConfig
+	}
 
-	nbToken := config.NetBirdToken
-	nbURL := config.NetBirdUrl
+	if config.NetBirdToken == "" {
+		return nil, ErrMissingNetBirdToken
+	}
+	if config.NetBirdUrl == "" {
+		return nil, ErrMissingNetBirdURL
+	}
 
-	// Create and return the client using the provided token and URL
-	return rest.NewWithBearerToken(nbURL, nbToken), nil
+	client := rest.NewWithBearerToken(config.NetBirdUrl, config.NetBirdToken)
+	return client, nil
+}
+
+// Retrieve the NetBird URL using the provider configuration.
+func GetNetBirdURL(ctx context.Context) (string, error) {
+	config := infer.GetConfig[*Config](ctx)
+	if config == nil {
+		return "", ErrNilProviderConfig
+	}
+
+	if config.NetBirdUrl == "" {
+		return "", ErrMissingNetBirdURL
+	}
+
+	return config.NetBirdUrl, nil
 }

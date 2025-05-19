@@ -102,7 +102,6 @@ func (*DNS) Create(ctx context.Context, req infer.CreateRequest[DNSArgs]) (infer
 
 	if req.DryRun {
 		return infer.CreateResponse[DNSState]{
-			ID: "preview",
 			Output: DNSState{
 				Name:                 req.Inputs.Name,
 				Description:          req.Inputs.Description,

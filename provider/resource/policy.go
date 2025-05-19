@@ -263,7 +263,6 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 		}
 
 		return infer.CreateResponse[PolicyState]{
-			ID: "preview",
 			Output: PolicyState{
 				Name:                req.Inputs.Name,
 				Description:         req.Inputs.Description,

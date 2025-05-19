@@ -10,17 +10,28 @@ from .provider import *
 
 # Make subpackages available:
 if typing.TYPE_CHECKING:
+    import pulumi_netbird.component as __component
+    component = __component
     import pulumi_netbird.config as __config
     config = __config
     import pulumi_netbird.resource as __resource
     resource = __resource
 else:
+    component = _utilities.lazy_import('pulumi_netbird.component')
     config = _utilities.lazy_import('pulumi_netbird.config')
     resource = _utilities.lazy_import('pulumi_netbird.resource')
 
 _utilities.register(
     resource_modules="""
 [
+ {
+  "pkg": "netbird",
+  "mod": "component",
+  "fqn": "pulumi_netbird.component",
+  "classes": {
+   "netbird:component:ACLF": "ACLF"
+  }
+ },
  {
   "pkg": "netbird",
   "mod": "resource",

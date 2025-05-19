@@ -3,25 +3,19 @@ runtime: yaml
 plugins:
   providers:
     - name: netbird
-      path: ../../bin/pulumi-resource-netbird
+      path: ../../bin
 
 config:
   netbird:netbirdToken: token
   netbird:netbirdUrl: https://nb.domain:33073
 
 outputs:
-  networkManagement:
+  networkR1:
     value:
-      name: ${net-management.name}
-      id: ${net-management.Id}
+      name: ${net-r1.name}
+      id: ${net-r1.id}
 
 resources:
-  net-management:
-    type: netbird:resource:Network
-    properties:
-      name: Management
-      description: Network for Management
-
   group-devops:
     type: netbird:resource:Group
     properties:
@@ -172,3 +166,10 @@ resources:
             - ${group-devops.id}
           destinations:
             - ${group-backoffice.id}
+
+  component-acl-json:
+    type: netbird:component:ACLF
+    properties:
+      name: ACL File JSON
+      description: Generatated resource from ACL JSON
+      json_path: "./acls.json"

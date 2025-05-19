@@ -426,6 +426,50 @@
     ]
   },
   "resources": {
+    "netbird:component:ACLF": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "destRuleTotal": {
+          "type": "integer"
+        },
+        "json_path": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sourceRuleCount": {
+          "type": "integer"
+        }
+      },
+      "type": "object",
+      "required": [
+        "description",
+        "destRuleTotal",
+        "json_path",
+        "name",
+        "sourceRuleCount"
+      ],
+      "inputProperties": {
+        "description": {
+          "type": "string"
+        },
+        "json_path": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "requiredInputs": [
+        "description",
+        "json_path",
+        "name"
+      ],
+      "isComponent": true
+    },
     "netbird:resource:DNS": {
       "description": "A NetBird network.",
       "properties": {

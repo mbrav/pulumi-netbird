@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"github.com/mbrav/pulumi-netbird/provider/component"
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	"github.com/mbrav/pulumi-netbird/provider/resource"
 	p "github.com/pulumi/pulumi-go-provider"
@@ -45,11 +44,9 @@ func Provider() p.Provider {
 			infer.Resource(&resource.Peer{}),
 			infer.Resource(&resource.Policy{}),
 		).
-		WithComponents(
-			infer.ComponentF(component.NewACLFileComponent),
-			// infer.ComponentF(&component.ACLFile{}),
-			// infer.Component(&component.ACLFile{}),
-		).
+		// WithComponents(
+		// 	infer.ComponentF(component.NewACLFileComponent),
+		// ).
 		// WithFunctions(functions ...infer.InferredFunction)
 		WithModuleMap(map[tokens.ModuleName]tokens.ModuleName{
 			"auto-naming": "index",

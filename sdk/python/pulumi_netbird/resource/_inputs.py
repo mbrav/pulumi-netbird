@@ -124,7 +124,7 @@ if not MYPY:
         """
         Description Policy rule friendly description
         """
-        destination: NotRequired[pulumi.Input['ResourceArgsDict']]
+        destination_resource: NotRequired[pulumi.Input['ResourceArgsDict']]
         """
         DestinationResource for the rule 
         """
@@ -144,7 +144,7 @@ if not MYPY:
         """
         Ports Policy rule affected ports
         """
-        source: NotRequired[pulumi.Input['ResourceArgsDict']]
+        source_resource: NotRequired[pulumi.Input['ResourceArgsDict']]
         """
         SourceResource for the rule
         """
@@ -164,12 +164,12 @@ class PolicyRuleArgsArgs:
                  name: pulumi.Input[builtins.str],
                  protocol: pulumi.Input['Protocol'],
                  description: Optional[pulumi.Input[builtins.str]] = None,
-                 destination: Optional[pulumi.Input['ResourceArgs']] = None,
+                 destination_resource: Optional[pulumi.Input['ResourceArgs']] = None,
                  destinations: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None,
                  id: Optional[pulumi.Input[builtins.str]] = None,
                  port_ranges: Optional[pulumi.Input[Sequence[pulumi.Input['RulePortRangeArgs']]]] = None,
                  ports: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None,
-                 source: Optional[pulumi.Input['ResourceArgs']] = None,
+                 source_resource: Optional[pulumi.Input['ResourceArgs']] = None,
                  sources: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None):
         """
         :param pulumi.Input['RuleAction'] action: Action Policy rule accept or drops packets
@@ -178,12 +178,12 @@ class PolicyRuleArgsArgs:
         :param pulumi.Input[builtins.str] name: Name Policy rule name identifier
         :param pulumi.Input['Protocol'] protocol: Protocol Policy rule type of the traffic
         :param pulumi.Input[builtins.str] description: Description Policy rule friendly description
-        :param pulumi.Input['ResourceArgs'] destination: DestinationResource for the rule 
+        :param pulumi.Input['ResourceArgs'] destination_resource: DestinationResource for the rule 
         :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] destinations: Destinations Policy rule destination group IDs
         :param pulumi.Input[builtins.str] id: ID Policy rule.
         :param pulumi.Input[Sequence[pulumi.Input['RulePortRangeArgs']]] port_ranges: PortRanges Policy rule affected ports ranges list
         :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] ports: Ports Policy rule affected ports
-        :param pulumi.Input['ResourceArgs'] source: SourceResource for the rule
+        :param pulumi.Input['ResourceArgs'] source_resource: SourceResource for the rule
         :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] sources: Sources Policy rule source group IDs
         """
         pulumi.set(__self__, "action", action)
@@ -193,8 +193,8 @@ class PolicyRuleArgsArgs:
         pulumi.set(__self__, "protocol", protocol)
         if description is not None:
             pulumi.set(__self__, "description", description)
-        if destination is not None:
-            pulumi.set(__self__, "destination", destination)
+        if destination_resource is not None:
+            pulumi.set(__self__, "destination_resource", destination_resource)
         if destinations is not None:
             pulumi.set(__self__, "destinations", destinations)
         if id is not None:
@@ -203,8 +203,8 @@ class PolicyRuleArgsArgs:
             pulumi.set(__self__, "port_ranges", port_ranges)
         if ports is not None:
             pulumi.set(__self__, "ports", ports)
-        if source is not None:
-            pulumi.set(__self__, "source", source)
+        if source_resource is not None:
+            pulumi.set(__self__, "source_resource", source_resource)
         if sources is not None:
             pulumi.set(__self__, "sources", sources)
 
@@ -281,16 +281,16 @@ class PolicyRuleArgsArgs:
         pulumi.set(self, "description", value)
 
     @property
-    @pulumi.getter
-    def destination(self) -> Optional[pulumi.Input['ResourceArgs']]:
+    @pulumi.getter(name="destinationResource")
+    def destination_resource(self) -> Optional[pulumi.Input['ResourceArgs']]:
         """
         DestinationResource for the rule 
         """
-        return pulumi.get(self, "destination")
+        return pulumi.get(self, "destination_resource")
 
-    @destination.setter
-    def destination(self, value: Optional[pulumi.Input['ResourceArgs']]):
-        pulumi.set(self, "destination", value)
+    @destination_resource.setter
+    def destination_resource(self, value: Optional[pulumi.Input['ResourceArgs']]):
+        pulumi.set(self, "destination_resource", value)
 
     @property
     @pulumi.getter
@@ -341,16 +341,16 @@ class PolicyRuleArgsArgs:
         pulumi.set(self, "ports", value)
 
     @property
-    @pulumi.getter
-    def source(self) -> Optional[pulumi.Input['ResourceArgs']]:
+    @pulumi.getter(name="sourceResource")
+    def source_resource(self) -> Optional[pulumi.Input['ResourceArgs']]:
         """
         SourceResource for the rule
         """
-        return pulumi.get(self, "source")
+        return pulumi.get(self, "source_resource")
 
-    @source.setter
-    def source(self, value: Optional[pulumi.Input['ResourceArgs']]):
-        pulumi.set(self, "source", value)
+    @source_resource.setter
+    def source_resource(self, value: Optional[pulumi.Input['ResourceArgs']]):
+        pulumi.set(self, "source_resource", value)
 
     @property
     @pulumi.getter

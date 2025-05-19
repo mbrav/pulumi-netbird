@@ -3,4 +3,4 @@ runtime: go
 plugins:
   providers:
     - name: netbird
-      path: ../../bin
+      path: ../../bin/pulumi-resource-netbird

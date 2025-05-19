@@ -70,8 +70,12 @@ class PolicyRuleState(dict):
     @staticmethod
     def __key_warning(key: str):
         suggest = None
-        if key == "portRanges":
+        if key == "destinationResource":
+            suggest = "destination_resource"
+        elif key == "portRanges":
             suggest = "port_ranges"
+        elif key == "sourceResource":
+            suggest = "source_resource"
 
         if suggest:
             pulumi.log.warn(f"Key '{key}' not found in PolicyRuleState. Access the value via the '{suggest}' property getter instead.")
@@ -91,12 +95,12 @@ class PolicyRuleState(dict):
                  name: builtins.str,
                  protocol: 'Protocol',
                  description: Optional[builtins.str] = None,
-                 destination: Optional['outputs.Resource'] = None,
+                 destination_resource: Optional['outputs.Resource'] = None,
                  destinations: Optional[Sequence['outputs.RuleGroup']] = None,
                  id: Optional[builtins.str] = None,
                  port_ranges: Optional[Sequence['outputs.RulePortRange']] = None,
                  ports: Optional[Sequence[builtins.str]] = None,
-                 source: Optional['outputs.Resource'] = None,
+                 source_resource: Optional['outputs.Resource'] = None,
                  sources: Optional[Sequence['outputs.RuleGroup']] = None):
         """
         :param 'RuleAction' action: Action Policy rule accept or drops packets
@@ -105,12 +109,12 @@ class PolicyRuleState(dict):
         :param builtins.str name: Name Policy rule name identifier
         :param 'Protocol' protocol: Protocol Policy rule type of the traffic
         :param builtins.str description: Description Policy rule friendly description
-        :param 'Resource' destination: DestinationResource for the rule 
+        :param 'Resource' destination_resource: DestinationResource for the rule 
         :param Sequence['RuleGroup'] destinations: Destinations Policy rule destination group IDs
         :param builtins.str id: ID Policy rule.
         :param Sequence['RulePortRange'] port_ranges: PortRanges Policy rule affected ports ranges list
         :param Sequence[builtins.str] ports: Ports Policy rule affected ports
-        :param 'Resource' source: SourceResource for the rule
+        :param 'Resource' source_resource: SourceResource for the rule
         :param Sequence['RuleGroup'] sources: Sources Policy rule source group IDs
         """
         pulumi.set(__self__, "action", action)
@@ -120,8 +124,8 @@ class PolicyRuleState(dict):
         pulumi.set(__self__, "protocol", protocol)
         if description is not None:
             pulumi.set(__self__, "description", description)
-        if destination is not None:
-            pulumi.set(__self__, "destination", destination)
+        if destination_resource is not None:
+            pulumi.set(__self__, "destination_resource", destination_resource)
         if destinations is not None:
             pulumi.set(__self__, "destinations", destinations)
         if id is not None:
@@ -130,8 +134,8 @@ class PolicyRuleState(dict):
             pulumi.set(__self__, "port_ranges", port_ranges)
         if ports is not None:
             pulumi.set(__self__, "ports", ports)
-        if source is not None:
-            pulumi.set(__self__, "source", source)
+        if source_resource is not None:
+            pulumi.set(__self__, "source_resource", source_resource)
         if sources is not None:
             pulumi.set(__self__, "sources", sources)
 
@@ -184,12 +188,12 @@ class PolicyRuleState(dict):
         return pulumi.get(self, "description")
 
     @property
-    @pulumi.getter
-    def destination(self) -> Optional['outputs.Resource']:
+    @pulumi.getter(name="destinationResource")
+    def destination_resource(self) -> Optional['outputs.Resource']:
         """
         DestinationResource for the rule 
         """
-        return pulumi.get(self, "destination")
+        return pulumi.get(self, "destination_resource")
 
     @property
     @pulumi.getter
@@ -224,12 +228,12 @@ class PolicyRuleState(dict):
         return pulumi.get(self, "ports")
 
     @property
-    @pulumi.getter
-    def source(self) -> Optional['outputs.Resource']:
+    @pulumi.getter(name="sourceResource")
+    def source_resource(self) -> Optional['outputs.Resource']:
         """
         SourceResource for the rule
         """
-        return pulumi.get(self, "source")
+        return pulumi.get(self, "source_resource")
 
     @property
     @pulumi.getter

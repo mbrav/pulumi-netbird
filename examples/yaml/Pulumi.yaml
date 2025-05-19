@@ -3,7 +3,7 @@ runtime: yaml
 plugins:
   providers:
     - name: netbird
-      path: ../../bin
+      path: ../../bin/pulumi-resource-netbird
 
 config:
   netbird:netbirdToken: token
@@ -22,16 +22,16 @@ resources:
       name: Management
       description: Network for Management
 
-  net-r1:
-    type: netbird:resource:Network
-    properties:
-      name: R1
-      description: Network for Region 1
-
   group-devops:
     type: netbird:resource:Group
     properties:
       name: DevOps
+      peers: []
+
+  group-dev:
+    type: netbird:resource:Group
+    properties:
+      name: Dev
       peers: []
 
   group-backoffice:
@@ -46,11 +46,17 @@ resources:
       name: HR
       peers: []
 
+  net-r1:
+    type: netbird:resource:Network
+    properties:
+      name: R1
+      description: Network for Region 1
+
   netres-r1-net-01:
     type: netbird:resource:NetworkResource
     properties:
-      name: S1 Franfurt Net 01
-      description: Network 01 in S1 Franfurt
+      name: Region 1 Net 01
+      description: Network 01 in Region 1
       network_id: ${net-r1.id}
       address: 10.10.1.0/24
       enabled: true
@@ -60,8 +66,8 @@ resources:
   netres-r1-net-02:
     type: netbird:resource:NetworkResource
     properties:
-      name: S1 Franfurt Net 02
-      description: Network 02 in S1 Franfurt
+      name: Region 1 Net 02
+      description: Network 02 in S1 Region 1
       network_id: ${net-r1.id}
       address: 10.10.2.0/24
       enabled: true
@@ -71,8 +77,8 @@ resources:
   netres-r1-net-03:
     type: netbird:resource:NetworkResource
     properties:
-      name: S1 Franfurt Net 03
-      description: Network 03 in S1 Franfurt
+      name: Region 1 Net 03
+      description: Network 03 in Region 1
       network_id: ${net-r1.id}
       address: 10.10.3.0/24
       enabled: true
@@ -101,25 +107,68 @@ resources:
     options:
       protect: true
 
-  test-ssh-policy:
+  policy-ssh-grp-src-net-dest:
     type: netbird:resource:Policy
     properties:
-      name: "Test SSH Policy"
-      description: "Allow SSH access from admin group to servers"
+      name: "SSH Policy - Group to Subnet"
+      description: "Allow SSH (22/TCP) from DevOps and Dev groups to Region 1 Net 02"
       enabled: true
       posture_checks: []
-      # posture_checks:
-      #   - "posture-check-1"
       rules:
-        - name: "SSH Access"
-          description: "Allow inbound SSH from Admins to Servers"
+        - name: "SSH Access - Group → Subnet"
+          description: "Allow unidirectional SSH from DevOps & Dev groups to Net 02"
           bidirectional: false
           action: accept
           enabled: true
           protocol: tcp
           ports:
             - "22"
-          # sources:
-          #   - "group-admins"
-          # destinations:
-          #   - "group-servers"
+          sources:
+            - ${group-devops.id}
+            - ${group-dev.id}
+          destinationResource:
+            type: subnet
+            id: ${netres-r1-net-02.id}
+
+  policy-ssh-grp-src-host-dest:
+    type: netbird:resource:Policy
+    properties:
+      name: "SSH Policy - Group to Host"
+      description: "Allow SSH (22/TCP) from DevOps group to imported peer"
+      enabled: true
+      posture_checks: []
+      rules:
+        - name: "SSH Access - Group → Host"
+          description: "Allow SSH from DevOps to test-import-peer"
+          bidirectional: false
+          action: accept
+          enabled: true
+          protocol: tcp
+          ports:
+            - "22"
+          sources:
+            - ${group-devops.id}
+          destinationResource:
+            type: host
+            id: ${test-import-peer.id}
+
+  policy-ssh-grp-src-grp-dest:
+    type: netbird:resource:Policy
+    properties:
+      name: "SSH Policy - Group to Group"
+      description: "Allow SSH (22/TCP) from DevOps to Backoffice group resources"
+      enabled: true
+      posture_checks: []
+      rules:
+        - name: "SSH Access - Group → Group"
+          description: "SSH from DevOps group to Backoffice group"
+          bidirectional: false
+          action: accept
+          enabled: true
+          protocol: tcp
+          ports:
+            - "22"
+          sources:
+            - ${group-devops.id}
+          destinations:
+            - ${group-backoffice.id}

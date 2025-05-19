@@ -127,7 +127,7 @@
           "type": "string",
           "description": "Description Policy rule friendly description"
         },
-        "destination": {
+        "destinationResource": {
           "$ref": "#/types/netbird:resource:Resource",
           "description": "DestinationResource for the rule "
         },
@@ -168,7 +168,7 @@
           "$ref": "#/types/netbird:resource:Protocol",
           "description": "Protocol Policy rule type of the traffic"
         },
-        "source": {
+        "sourceResource": {
           "$ref": "#/types/netbird:resource:Resource",
           "description": "SourceResource for the rule"
         },
@@ -203,7 +203,7 @@
           "type": "string",
           "description": "Description Policy rule friendly description"
         },
-        "destination": {
+        "destinationResource": {
           "$ref": "#/types/netbird:resource:Resource",
           "description": "DestinationResource for the rule "
         },
@@ -244,7 +244,7 @@
           "$ref": "#/types/netbird:resource:Protocol",
           "description": "Protocol Policy rule type of the traffic"
         },
-        "source": {
+        "sourceResource": {
           "$ref": "#/types/netbird:resource:Resource",
           "description": "SourceResource for the rule"
         },

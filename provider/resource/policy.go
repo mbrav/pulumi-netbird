@@ -56,19 +56,19 @@ func (p *PolicyState) Annotate(a infer.Annotator) {
 
 // PolicyRuleArgs represents user input for an individual rule in a policy.
 type PolicyRuleArgs struct {
-	ID                  *string          `pulumi:"id,optional"`           // Optional rule ID (used for updates)
-	Name                string           `pulumi:"name"`                  // Rule name
-	Description         *string          `pulumi:"description,optional"`  // Optional rule description
-	Bidirectional       bool             `pulumi:"bidirectional"`         // Whether the rule is bidirectional
-	Action              RuleAction       `pulumi:"action"`                // Rule action (accept/drop)
-	Enabled             bool             `pulumi:"enabled"`               // Whether the rule is enabled
-	Protocol            Protocol         `pulumi:"protocol"`              // Network protocol
-	Ports               *[]string        `pulumi:"ports,optional"`        // Optional list of specific ports
-	PortRanges          *[]RulePortRange `pulumi:"portRanges,optional"`   // Optional list of port ranges
-	Sources             *[]string        `pulumi:"sources,optional"`      // Optional list of source group IDs
-	Destinations        *[]string        `pulumi:"destinations,optional"` // Optional list of destination group IDs
-	SourceResource      *Resource        `pulumi:"source,optional"`       // Optional single source resource
-	DestinationResource *Resource        `pulumi:"destination,optional"`  // Optional single destination resource
+	ID                  *string          `pulumi:"id,optional"`                  // Optional rule ID (used for updates)
+	Name                string           `pulumi:"name"`                         // Rule name
+	Description         *string          `pulumi:"description,optional"`         // Optional rule description
+	Bidirectional       bool             `pulumi:"bidirectional"`                // Whether the rule is bidirectional
+	Action              RuleAction       `pulumi:"action"`                       // Rule action (accept/drop)
+	Enabled             bool             `pulumi:"enabled"`                      // Whether the rule is enabled
+	Protocol            Protocol         `pulumi:"protocol"`                     // Network protocol
+	Ports               *[]string        `pulumi:"ports,optional"`               // Optional list of specific ports
+	PortRanges          *[]RulePortRange `pulumi:"portRanges,optional"`          // Optional list of port ranges
+	Sources             *[]string        `pulumi:"sources,optional"`             // Optional list of source group IDs
+	Destinations        *[]string        `pulumi:"destinations,optional"`        // Optional list of destination group IDs
+	SourceResource      *Resource        `pulumi:"sourceResource,optional"`      // Optional single source resource
+	DestinationResource *Resource        `pulumi:"destinationResource,optional"` // Optional single destination resource
 }
 
 // Annotation for PolicyRuleArgs for generated SDKs.
@@ -101,8 +101,8 @@ type PolicyRuleState struct {
 	PortRanges          *[]RulePortRange `pulumi:"portRanges,optional"`
 	Sources             *[]RuleGroup     `pulumi:"sources,optional"` // Fully-resolved group info (not just IDs)
 	Destinations        *[]RuleGroup     `pulumi:"destinations,optional"`
-	SourceResource      *Resource        `pulumi:"source,optional"`
-	DestinationResource *Resource        `pulumi:"destination,optional"`
+	SourceResource      *Resource        `pulumi:"sourceResource,optional"`
+	DestinationResource *Resource        `pulumi:"destinationResource,optional"`
 }
 
 // Annotation for PolicyRuleState for generated SDKs.
@@ -250,9 +250,9 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 				Name:                rule.Name,
 				Description:         rule.Description,
 				Bidirectional:       rule.Bidirectional,
-				Action:              rule.Action,
+				Action:              RuleAction(rule.Action),
 				Enabled:             rule.Enabled,
-				Protocol:            rule.Protocol,
+				Protocol:            Protocol(rule.Protocol),
 				Ports:               rule.Ports,
 				PortRanges:          rule.PortRanges,
 				Sources:             sources,
@@ -427,9 +427,9 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 				Name:                rule.Name,
 				Description:         rule.Description,
 				Bidirectional:       rule.Bidirectional,
-				Action:              rule.Action,
+				Action:              RuleAction(rule.Action),
 				Enabled:             rule.Enabled,
-				Protocol:            rule.Protocol,
+				Protocol:            Protocol(rule.Protocol),
 				Ports:               rule.Ports,
 				PortRanges:          rule.PortRanges,
 				Sources:             sources,
@@ -571,8 +571,8 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 				in.Protocol != Protocol(st.Protocol) ||
 				!equalSlicePtr(in.Ports, st.Ports) ||
 				!equalPortRangePtr(in.PortRanges, st.PortRanges) ||
-				// !equalSlicePtr(in.Sources, toGroupIds(st.Sources)) ||
-				// !equalSlicePtr(in.Destinations, toGroupIds(st.Destinations)) ||
+				!equalSlicePtr(in.Sources, toGroupIds(st.Sources)) ||
+				!equalSlicePtr(in.Destinations, toGroupIds(st.Destinations)) ||
 				!equalResourcePtr(in.SourceResource, st.SourceResource) ||
 				!equalResourcePtr(in.DestinationResource, st.DestinationResource) {
 				equal = false
@@ -665,18 +665,18 @@ func fromAPIResource(in *nbapi.Resource) *Resource {
 	}
 }
 
-// func toGroupIds(groups *[]RuleGroup) *[]string {
-// 	if groups == nil {
-// 		return nil
-// 	}
-//
-// 	ids := make([]string, len(*groups))
-// 	for i, g := range *groups {
-// 		ids[i] = g.ID
-// 	}
-//
-// 	return &ids
-// }
+func toGroupIds(groups *[]RuleGroup) *[]string {
+	if groups == nil {
+		return nil
+	}
+
+	ids := make([]string, len(*groups))
+	for i, g := range *groups {
+		ids[i] = g.ID
+	}
+
+	return &ids
+}
 
 func equalPortRangePtr(a, b *[]RulePortRange) bool {
 	if a == nil && b == nil {

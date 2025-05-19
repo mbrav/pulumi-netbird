@@ -136,7 +136,7 @@ type PolicyRuleArgs struct {
 	// Description Policy rule friendly description
 	Description *string `pulumi:"description"`
 	// DestinationResource for the rule
-	Destination *Resource `pulumi:"destination"`
+	DestinationResource *Resource `pulumi:"destinationResource"`
 	// Destinations Policy rule destination group IDs
 	Destinations []string `pulumi:"destinations"`
 	// Enabled Policy rule status
@@ -152,7 +152,7 @@ type PolicyRuleArgs struct {
 	// Protocol Policy rule type of the traffic
 	Protocol Protocol `pulumi:"protocol"`
 	// SourceResource for the rule
-	Source *Resource `pulumi:"source"`
+	SourceResource *Resource `pulumi:"sourceResource"`
 	// Sources Policy rule source group IDs
 	Sources []string `pulumi:"sources"`
 }
@@ -176,7 +176,7 @@ type PolicyRuleArgsArgs struct {
 	// Description Policy rule friendly description
 	Description pulumi.StringPtrInput `pulumi:"description"`
 	// DestinationResource for the rule
-	Destination ResourcePtrInput `pulumi:"destination"`
+	DestinationResource ResourcePtrInput `pulumi:"destinationResource"`
 	// Destinations Policy rule destination group IDs
 	Destinations pulumi.StringArrayInput `pulumi:"destinations"`
 	// Enabled Policy rule status
@@ -192,7 +192,7 @@ type PolicyRuleArgsArgs struct {
 	// Protocol Policy rule type of the traffic
 	Protocol ProtocolInput `pulumi:"protocol"`
 	// SourceResource for the rule
-	Source ResourcePtrInput `pulumi:"source"`
+	SourceResource ResourcePtrInput `pulumi:"sourceResource"`
 	// Sources Policy rule source group IDs
 	Sources pulumi.StringArrayInput `pulumi:"sources"`
 }
@@ -264,8 +264,8 @@ func (o PolicyRuleArgsOutput) Description() pulumi.StringPtrOutput {
 }
 
 // DestinationResource for the rule
-func (o PolicyRuleArgsOutput) Destination() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.Destination }).(ResourcePtrOutput)
+func (o PolicyRuleArgsOutput) DestinationResource() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.DestinationResource }).(ResourcePtrOutput)
 }
 
 // Destinations Policy rule destination group IDs
@@ -304,8 +304,8 @@ func (o PolicyRuleArgsOutput) Protocol() ProtocolOutput {
 }
 
 // SourceResource for the rule
-func (o PolicyRuleArgsOutput) Source() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.Source }).(ResourcePtrOutput)
+func (o PolicyRuleArgsOutput) SourceResource() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleArgs) *Resource { return v.SourceResource }).(ResourcePtrOutput)
 }
 
 // Sources Policy rule source group IDs
@@ -341,7 +341,7 @@ type PolicyRuleState struct {
 	// Description Policy rule friendly description
 	Description *string `pulumi:"description"`
 	// DestinationResource for the rule
-	Destination *Resource `pulumi:"destination"`
+	DestinationResource *Resource `pulumi:"destinationResource"`
 	// Destinations Policy rule destination group IDs
 	Destinations []RuleGroup `pulumi:"destinations"`
 	// Enabled Policy rule status
@@ -357,7 +357,7 @@ type PolicyRuleState struct {
 	// Protocol Policy rule type of the traffic
 	Protocol Protocol `pulumi:"protocol"`
 	// SourceResource for the rule
-	Source *Resource `pulumi:"source"`
+	SourceResource *Resource `pulumi:"sourceResource"`
 	// Sources Policy rule source group IDs
 	Sources []RuleGroup `pulumi:"sources"`
 }
@@ -392,8 +392,8 @@ func (o PolicyRuleStateOutput) Description() pulumi.StringPtrOutput {
 }
 
 // DestinationResource for the rule
-func (o PolicyRuleStateOutput) Destination() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.Destination }).(ResourcePtrOutput)
+func (o PolicyRuleStateOutput) DestinationResource() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.DestinationResource }).(ResourcePtrOutput)
 }
 
 // Destinations Policy rule destination group IDs
@@ -432,8 +432,8 @@ func (o PolicyRuleStateOutput) Protocol() ProtocolOutput {
 }
 
 // SourceResource for the rule
-func (o PolicyRuleStateOutput) Source() ResourcePtrOutput {
-	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.Source }).(ResourcePtrOutput)
+func (o PolicyRuleStateOutput) SourceResource() ResourcePtrOutput {
+	return o.ApplyT(func(v PolicyRuleState) *Resource { return v.SourceResource }).(ResourcePtrOutput)
 }
 
 // Sources Policy rule source group IDs

@@ -90,17 +90,17 @@ resources:
       peer_groups:
         - ${group-devops.id}
 
-  # pulumi import
-  test-import-peer:
-    type: netbird:resource:Peer
-    properties:
-      inactivity_expiration_enabled: false
-      login_expiration_enabled: false
-      name: test-import-peer
-      sshEnabled: true
-    options:
-      protect: true
-
+  # # pulumi import
+  # test-import-peer:
+  #   type: netbird:resource:Peer
+  #   properties:
+  #     inactivity_expiration_enabled: false
+  #     login_expiration_enabled: false
+  #     name: test-import-peer
+  #     sshEnabled: true
+  #   options:
+  #     protect: true
+  #
   policy-ssh-grp-src-net-dest:
     type: netbird:resource:Policy
     properties:
@@ -124,28 +124,28 @@ resources:
             type: subnet
             id: ${netres-r1-net-02.id}
 
-  policy-ssh-grp-src-host-dest:
-    type: netbird:resource:Policy
-    properties:
-      name: "SSH Policy - Group to Host"
-      description: "Allow SSH (22/TCP) from DevOps group to imported peer"
-      enabled: true
-      posture_checks: []
-      rules:
-        - name: "SSH Access - Group → Host"
-          description: "Allow SSH from DevOps to test-import-peer"
-          bidirectional: false
-          action: accept
-          enabled: true
-          protocol: tcp
-          ports:
-            - "22"
-          sources:
-            - ${group-devops.id}
-          destinationResource:
-            type: host
-            id: ${test-import-peer.id}
-
+  # policy-ssh-grp-src-host-dest:
+  #   type: netbird:resource:Policy
+  #   properties:
+  #     name: "SSH Policy - Group to Host"
+  #     description: "Allow SSH (22/TCP) from DevOps group to imported peer"
+  #     enabled: true
+  #     posture_checks: []
+  #     rules:
+  #       - name: "SSH Access - Group → Host"
+  #         description: "Allow SSH from DevOps to test-import-peer"
+  #         bidirectional: false
+  #         action: accept
+  #         enabled: true
+  #         protocol: tcp
+  #         ports:
+  #           - "22"
+  #         sources:
+  #           - ${group-devops.id}
+  #         destinationResource:
+  #           type: host
+  #           id: ${test-import-peer.id}
+  #
   policy-ssh-grp-src-grp-dest:
     type: netbird:resource:Policy
     properties:
@@ -167,9 +167,9 @@ resources:
           destinations:
             - ${group-backoffice.id}
 
-  component-acl-json:
-    type: netbird:component:ACLF
-    properties:
-      name: ACL File JSON
-      description: Generatated resource from ACL JSON
-      json_path: "./acls.json"
+  # component-acl-json:
+  #   type: netbird:component:ACLF
+  #   properties:
+  #     name: ACL File JSON
+  #     description: Generatated resource from ACL JSON
+  #     json_path: "./acls.json"

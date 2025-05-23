@@ -238,7 +238,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 
 			if rule.Destinations != nil {
 				groups := make([]RuleGroup, len(*rule.Destinations))
-				for j, g := range *rule.Sources {
+				for j, g := range *rule.Destinations {
 					groups[j] = RuleGroup{Name: "preview", ID: g}
 				}
 

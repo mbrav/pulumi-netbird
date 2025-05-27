@@ -117,9 +117,12 @@ down: ## Destroy stack
 lint: ## Run Go linters
 	GOFLAGS=-buildvcs=false golangci-lint run -c ./.golangci.yml
 
-install: ## Install provider into $GOPATH/bin
-	cp $(PROVIDER_BIN) $(GOPATH)/bin
-
 build: provider sdk_go sdk_python ## Build provider binary and SDK
+
+install: build ## Install provider into $GOPATH/bin
+	cp $(PROVIDER_BIN) $(GOPATH)/bin
+	pulumi plugin rm resource $$PACK -y || true
+	pulumi plugin install resource $(PACK) $(VERSION) -f $(PROVIDER_BIN) || exit 1
+	@echo "✅ Installed plugin $(PACK)@$(VERSION)"
 
 only_build: build ## Alias for build used by CI

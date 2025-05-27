@@ -12,7 +12,7 @@ import (
 // Define provider-level configuration.
 type Config struct {
 	NetBirdUrl   string `pulumi:"netbirdUrl"`
-	NetBirdToken string `pulumi:"netbirdToken" provider:"secret"`
+	NetBirdToken string `provider:"secret"   pulumi:"netbirdToken"`
 }
 
 // Annotate provider configuration.
@@ -50,11 +50,13 @@ func GetNetBirdClient(ctx context.Context) (*rest.Client, error) {
 	if config.NetBirdToken == "" {
 		return nil, ErrMissingNetBirdToken
 	}
+
 	if config.NetBirdUrl == "" {
 		return nil, ErrMissingNetBirdURL
 	}
 
 	client := rest.NewWithBearerToken(config.NetBirdUrl, config.NetBirdToken)
+
 	return client, nil
 }
 

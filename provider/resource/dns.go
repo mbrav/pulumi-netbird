@@ -33,8 +33,8 @@ type DNSArgs struct {
 
 // Annotate provides documentation for DNSArgs fields.
 func (n *DNSArgs) Annotate(a infer.Annotator) {
-	a.Describe(&n.Name, "Name Name of nameserver group name")
-	a.Describe(&n.Description, "Description Description of the nameserver group")
+	a.Describe(&n.Name, "Name of nameserver group name")
+	a.Describe(&n.Description, "Description of the nameserver group")
 	a.Describe(&n.Domains, "Domains Match domain list. It should be empty only if primary is true.")
 	a.Describe(&n.Enabled, "Enabled Nameserver group status")
 	a.Describe(&n.Groups, "Groups Distribution group IDs that defines group of peers that will use this nameserver group")
@@ -57,8 +57,8 @@ type DNSState struct {
 
 // Annotate provides documentation for DNSState fields.
 func (n *DNSState) Annotate(a infer.Annotator) {
-	a.Describe(&n.Name, "Name Name of nameserver group name")
-	a.Describe(&n.Description, "Description Description of the nameserver group")
+	a.Describe(&n.Name, "Name of nameserver group name")
+	a.Describe(&n.Description, "Description of the nameserver group")
 	a.Describe(&n.Domains, "Domains Match domain list. It should be empty only if primary is true.")
 	a.Describe(&n.Enabled, "Enabled Nameserver group status")
 	a.Describe(&n.Groups, "Groups Distribution group IDs that defines group of peers that will use this nameserver group")
@@ -254,7 +254,7 @@ func (*DNS) Update(ctx context.Context, req infer.UpdateRequest[DNSArgs, DNSStat
 	}, nil
 }
 
-// Converts a slice of internal Nameserver to API Nameserver
+// Converts a slice of internal Nameserver to API Nameserver.
 func toAPINameservers(in []Nameserver) []nbapi.Nameserver {
 	apiNameservers := make([]nbapi.Nameserver, len(in))
 	for i, ns := range in {
@@ -264,10 +264,11 @@ func toAPINameservers(in []Nameserver) []nbapi.Nameserver {
 			Port:   ns.Port,
 		}
 	}
+
 	return apiNameservers
 }
 
-// Converts a slice of API Nameserver to internal Nameserver
+// Converts a slice of API Nameserver to internal Nameserver.
 func fromAPINameservers(in []nbapi.Nameserver) []Nameserver {
 	nameservers := make([]Nameserver, len(in))
 	for i, ns := range in {
@@ -277,6 +278,7 @@ func fromAPINameservers(in []nbapi.Nameserver) []Nameserver {
 			Port:   ns.Port,
 		}
 	}
+
 	return nameservers
 }
 
@@ -341,6 +343,7 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 
 			if in.Ip != st.Ip || in.NsType != st.NsType || in.Port != st.Port {
 				diff["nameservers"] = p.PropertyDiff{Kind: p.Update}
+
 				break
 			}
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 // Change to const to disable semver Version management
-// Change to var to enable semver Version management
+// Change to var to enable semver Version management.
 const (
 	Name    string = "netbird"
 	Version string = "0.0.16"

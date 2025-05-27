@@ -34,7 +34,7 @@ type NetworkResourceState struct {
 	GroupIDs    []string `pulumi:"group_ids"`
 }
 
-// NetworkResource annotation
+// NetworkResource annotation.
 func (NetworkResource) Annotate(a infer.Annotator) {
 	a.Describe(&NetworkResource{}, "A NetBird network resource, such as a CIDR range assigned to the network.")
 }
@@ -265,9 +265,9 @@ func (*NetworkResource) Check(ctx context.Context, req infer.CheckRequest) (infe
 	}, err
 }
 
-// Extract and sort group IDs
+// Extract and sort group IDs.
 func getNetworkResourceGroupIDs(net *nbapi.NetworkResource) []string {
-	var groupIDs []string
+	groupIDs := make([]string, 0, len(net.Groups))
 	for _, g := range net.Groups {
 		groupIDs = append(groupIDs, g.Id)
 	}

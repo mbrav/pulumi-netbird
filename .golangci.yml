@@ -24,36 +24,59 @@ run:
   # Default: use Go version from the go.mod file, fallback on the env var `GOVERSION`, fallback on 1.17
   go: "1.24"
 
+# output configuration options
+output:
+  # Add a prefix to the output file references.
+  # Default is no prefix.
+  path-prefix: ""
+  # Format: colored-line-number|line-number|json|tab|checkstyle|code-climate|junit-xml|github-actions
+  #
+  # Multiple can be specified by separating them by comma, output can be provided
+  # for each of them by separating format name and path by colon symbol.
+  # Output path can be either `stdout`, `stderr` or path to the file to write to.
+  # Example: "checkstyle:report.json,colored-line-number"
+  #
+  # Default: colored-line-number
+  formats:
+    text:
+      # Print lines of code with issue.
+      # Default: true
+      print-issued-lines: true
+      # Print linter name in the end of issue text.
+      # Default: true
+      print-linter-name: true
+      path: stdout
+    tab:
+      print-linter-name: true
+      path: stdout
+  sort-order:
+    - linter
+    - severity
+    - file # filepath, line, and column.
+
 linters:
   default: all
-  enable:
-    - errcheck
-    - goconst
-    # - gofmt
-    - revive
-    - gosec
-    # - gosimple
-    - govet
-    - ineffassign
-    - lll
-    - misspell
-    - nakedret
-    - unconvert
-    - paralleltest
-    - staticcheck
-    # - stylecheck
-    - unused
   disable:
-    - godot
-    - revive
+    # TODO: Allow cyclomatic complexity > 10
+    - cyclop
+    # TODO: Fix imports from Main
+    - depguard
+    # TODO: Fix duplicate code in functions
+    - dupl
+    # TODO: Fix dynamic errors
+    - err113
+    # TODO: Fix struct exhaustion
+    - exhaustruct
+    - forcetypeassert
+    # Allow long functions
+    - funlen
+    # Allow lines longer than 120 characters
     - lll
-  exclusions:
-    rules:
-      # Require that exported types and functions have comments.
-      - path: "^.*/internal/.*$"
-        linters:
-          - package-comments
-
-formatters:
-  enable:
-    - gofmt
+    - mnd
+    # FIX : the methods of "Policy" use pointer receiver and non-pointer receiver.
+    - recvcheck
+    - revive
+    # FIX: var len
+    - varnamelen
+    # FIX: Errors from external functions
+    - wrapcheck

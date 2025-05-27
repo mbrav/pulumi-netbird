@@ -223,7 +223,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 		// Convert PolicyRuleArgs to PolicyRuleState for preview
 		rules := make([]PolicyRuleState, len(req.Inputs.Rules))
 
-		for i, rule := range req.Inputs.Rules {
+		for ruleIndex, rule := range req.Inputs.Rules {
 			// Construct sources and destination groups
 			var sources, destinations *[]RuleGroup
 
@@ -245,14 +245,14 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 				destinations = &groups
 			}
 
-			rules[i] = PolicyRuleState{
+			rules[ruleIndex] = PolicyRuleState{
 				ID:                  rule.ID,
 				Name:                rule.Name,
 				Description:         rule.Description,
 				Bidirectional:       rule.Bidirectional,
-				Action:              RuleAction(rule.Action),
+				Action:              rule.Action,
 				Enabled:             rule.Enabled,
-				Protocol:            Protocol(rule.Protocol),
+				Protocol:            rule.Protocol,
 				Ports:               rule.Ports,
 				PortRanges:          rule.PortRanges,
 				Sources:             sources,
@@ -311,8 +311,8 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 
 	// Convert created rules to PolicyRuleState
 	rules := make([]PolicyRuleState, len(created.Rules))
-	for i, rule := range created.Rules {
-		rules[i] = PolicyRuleState{
+	for ruleIndex, rule := range created.Rules {
+		rules[ruleIndex] = PolicyRuleState{
 			ID:                  rule.Id,
 			Name:                rule.Name,
 			Description:         rule.Description,
@@ -356,8 +356,8 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 	}
 
 	rules := make([]PolicyRuleState, len(policy.Rules))
-	for i, rule := range policy.Rules {
-		rules[i] = PolicyRuleState{
+	for ruleIndex, rule := range policy.Rules {
+		rules[ruleIndex] = PolicyRuleState{
 			ID:                  rule.Id,
 			Name:                rule.Name,
 			Description:         rule.Description,
@@ -401,7 +401,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 		// Construct PolicyRuleState for preview output
 		rules := make([]PolicyRuleState, len(req.Inputs.Rules))
 
-		for i, rule := range req.Inputs.Rules {
+		for ruleIndex, rule := range req.Inputs.Rules {
 			var sources, destinations *[]RuleGroup
 
 			if rule.Sources != nil {
@@ -422,14 +422,14 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 				destinations = &groups
 			}
 
-			rules[i] = PolicyRuleState{
+			rules[ruleIndex] = PolicyRuleState{
 				ID:                  rule.ID,
 				Name:                rule.Name,
 				Description:         rule.Description,
 				Bidirectional:       rule.Bidirectional,
-				Action:              RuleAction(rule.Action),
+				Action:              rule.Action,
 				Enabled:             rule.Enabled,
-				Protocol:            Protocol(rule.Protocol),
+				Protocol:            rule.Protocol,
 				Ports:               rule.Ports,
 				PortRanges:          rule.PortRanges,
 				Sources:             sources,
@@ -457,8 +457,8 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 
 	// Convert input rules to nbapi.PolicyRuleUpdate
 	apiRules := make([]nbapi.PolicyRuleUpdate, len(req.Inputs.Rules))
-	for i, rule := range req.Inputs.Rules {
-		apiRules[i] = nbapi.PolicyRuleUpdate{
+	for ruleIndex, rule := range req.Inputs.Rules {
+		apiRules[ruleIndex] = nbapi.PolicyRuleUpdate{
 			Id:                  rule.ID,
 			Name:                rule.Name,
 			Description:         rule.Description,
@@ -488,8 +488,8 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 
 	// Convert updated rules to PolicyRuleState
 	rules := make([]PolicyRuleState, len(updated.Rules))
-	for i, rule := range updated.Rules {
-		rules[i] = PolicyRuleState{
+	for ruleIndex, rule := range updated.Rules {
+		rules[ruleIndex] = PolicyRuleState{
 			ID:                  rule.Id,
 			Name:                rule.Name,
 			Description:         rule.Description,
@@ -557,24 +557,24 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 	} else {
 		equal := true
 
-		for i := range req.Inputs.Rules {
-			in := req.Inputs.Rules[i]
-			st := req.State.Rules[i]
+		for ruleIndex := range req.Inputs.Rules {
+			input := req.Inputs.Rules[ruleIndex]
+			state := req.State.Rules[ruleIndex]
 
-			p.GetLogger(ctx).Debugf("Diff:Policy[%s]:Rules[%d] a=%+v b=%+v", req.ID, i, in, st)
+			p.GetLogger(ctx).Debugf("Diff:Policy[%s]:Rules[%d] a=%+v b=%+v", req.ID, ruleIndex, input, state)
 
-			if in.Name != st.Name ||
-				!equalPtr(in.Description, st.Description) ||
-				in.Bidirectional != st.Bidirectional ||
-				in.Action != RuleAction(st.Action) ||
-				in.Enabled != st.Enabled ||
-				in.Protocol != Protocol(st.Protocol) ||
-				!equalSlicePtr(in.Ports, st.Ports) ||
-				!equalPortRangePtr(in.PortRanges, st.PortRanges) ||
-				!equalSlicePtr(in.Sources, toGroupIds(st.Sources)) ||
-				!equalSlicePtr(in.Destinations, toGroupIds(st.Destinations)) ||
-				!equalResourcePtr(in.SourceResource, st.SourceResource) ||
-				!equalResourcePtr(in.DestinationResource, st.DestinationResource) {
+			if input.Name != state.Name ||
+				!equalPtr(input.Description, state.Description) ||
+				input.Bidirectional != state.Bidirectional ||
+				input.Action != state.Action ||
+				input.Enabled != state.Enabled ||
+				input.Protocol != state.Protocol ||
+				!equalSlicePtr(input.Ports, state.Ports) ||
+				!equalPortRangePtr(input.PortRanges, state.PortRanges) ||
+				!equalSlicePtr(input.Sources, toGroupIds(state.Sources)) ||
+				!equalSlicePtr(input.Destinations, toGroupIds(state.Destinations)) ||
+				!equalResourcePtr(input.SourceResource, state.SourceResource) ||
+				!equalResourcePtr(input.DestinationResource, state.DestinationResource) {
 				equal = false
 
 				break
@@ -599,49 +599,49 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 	}, nil
 }
 
-// Converts a slice of RulePortRange from state model to API model
+// Converts a slice of RulePortRange from state model to API model.
 func toAPIPortRanges(in *[]RulePortRange) *[]nbapi.RulePortRange {
 	if in == nil {
 		return nil
 	}
 
 	out := make([]nbapi.RulePortRange, len(*in))
-	for i, r := range *in {
-		out[i] = nbapi.RulePortRange{Start: r.Start, End: r.End}
+	for rulePRIndex, rulePR := range *in {
+		out[rulePRIndex] = nbapi.RulePortRange{Start: rulePR.Start, End: rulePR.End}
 	}
 
 	return &out
 }
 
-// Converts a slice of API RulePortRange to state model
+// Converts a slice of API RulePortRange to state model.
 func fromAPIPortRanges(in *[]nbapi.RulePortRange) *[]RulePortRange {
 	if in == nil {
 		return nil
 	}
 
 	out := make([]RulePortRange, len(*in))
-	for i, r := range *in {
-		out[i] = RulePortRange{Start: r.Start, End: r.End}
+	for rulePRIndex, rulePR := range *in {
+		out[rulePRIndex] = RulePortRange{Start: rulePR.Start, End: rulePR.End}
 	}
 
 	return &out
 }
 
-// Converts a slice of nbapi.GroupMinimum to state RuleGroup
+// Converts a slice of nbapi.GroupMinimum to state RuleGroup.
 func fromAPIGroupMinimums(in *[]nbapi.GroupMinimum) *[]RuleGroup {
 	if in == nil {
 		return nil
 	}
 
 	out := make([]RuleGroup, len(*in))
-	for i, r := range *in {
-		out[i] = RuleGroup{ID: r.Id, Name: r.Name}
+	for groupIndex, group := range *in {
+		out[groupIndex] = RuleGroup{ID: group.Id, Name: group.Name}
 	}
 
 	return &out
 }
 
-// Converts a single Resource to nbapi.Resource
+// Converts a single Resource to nbapi.Resource.
 func toAPIResource(in *Resource) *nbapi.Resource {
 	if in == nil {
 		return nil
@@ -653,7 +653,7 @@ func toAPIResource(in *Resource) *nbapi.Resource {
 	}
 }
 
-// Converts a single nbapi.Resource to Resource
+// Converts a single nbapi.Resource to Resource.
 func fromAPIResource(in *nbapi.Resource) *Resource {
 	if in == nil {
 		return nil
@@ -670,12 +670,12 @@ func toGroupIds(groups *[]RuleGroup) *[]string {
 		return nil
 	}
 
-	ids := make([]string, len(*groups))
+	iDs := make([]string, len(*groups))
 	for i, g := range *groups {
-		ids[i] = g.ID
+		iDs[i] = g.ID
 	}
 
-	return &ids
+	return &iDs
 }
 
 func equalPortRangePtr(a, b *[]RulePortRange) bool {

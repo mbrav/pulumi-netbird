@@ -121,10 +121,7 @@ down: ## Destroy stack
 	pulumi stack rm ${PACK}-dev --yes
 
 lint: ## Run Go linters
-	for DIR in "provider" "sdk/go" "tests" ; do \
-		echo $$DIR; \
-		pushd $$DIR && golangci-lint run -c ../.golangci.yml --timeout 10m && popd ; \
-	done
+	GOFLAGS=-buildvcs=false golangci-lint run -c ./.golangci.yml
 
 install: ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin

@@ -1,0 +1,12 @@
+name: Run Acceptance Tests on main
+
+permissions: read-all
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    uses: ./.github/workflows/stage-lint.yml

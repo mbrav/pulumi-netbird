@@ -4,7 +4,7 @@ import (
 	"slices"
 )
 
-// Helper to stringify a pointer safely
+// Helper to stringify a pointer safely.
 func strPtr(s *string) string {
 	if s == nil {
 		return ""
@@ -13,16 +13,7 @@ func strPtr(s *string) string {
 	return *s
 }
 
-// Helper to deref a string slice pointer safely
-func strSlicePtr(s *[]string) []string {
-	if s == nil {
-		return []string{}
-	}
-
-	return *s
-}
-
-// Helper to compare string pointers safely
+// Helper to compare string pointers safely.
 func equalPtr(a, b *string) bool {
 	if a == nil && b == nil {
 		return true
@@ -35,7 +26,7 @@ func equalPtr(a, b *string) bool {
 	return *a == *b
 }
 
-// helper function to compare optional []string values
+// helper function to compare optional []string values.
 func equalSlicePtr(a, b *[]string) bool {
 	if a == nil && b == nil {
 		return true

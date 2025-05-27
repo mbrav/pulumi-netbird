@@ -23,6 +23,7 @@ type ACLFArgs struct {
 
 func NewACLFileComponent(ctx *pulumi.Context, name string, compArgs ACLFArgs, opts ...pulumi.ResourceOption) (*ACLF, error) {
 	comp := &ACLF{}
+
 	err := ctx.RegisterComponentResource(p.GetTypeToken(ctx.Context()), name, comp, opts...)
 	if err != nil {
 		return nil, err

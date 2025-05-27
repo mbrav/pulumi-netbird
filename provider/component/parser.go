@@ -49,14 +49,17 @@ func parseGroupRules(groups GroupMap, srcRules map[string]*ACLRule) {
 		if dstRule == nil {
 			continue
 		}
+
 		dstKey := fmt.Sprintf("%s-%s", dstRule.Type, dstRule.Name)
 
 		for _, user := range users {
-			srcEntry := fmt.Sprintf("group:%s", user)
+			srcEntry := "group:" + user
+
 			srcRule := parseACLEntry(srcEntry)
 			if srcRule == nil {
 				continue
 			}
+
 			srcKey := fmt.Sprintf("%s-%s", srcRule.Type, srcRule.Name)
 
 			// Get or create the source rule
@@ -83,7 +86,9 @@ func parseGroupRules(groups GroupMap, srcRules map[string]*ACLRule) {
 // parseACLEntry parses a single ACL entry and returns an ACLRule.
 func parseACLEntry(entry string) *ACLRule {
 	var addr *string
+
 	var ports *[]string
+
 	var name string
 
 	// Check if the entry is a tag or group
@@ -106,6 +111,7 @@ func parseACLEntry(entry string) *ACLRule {
 	// Parse address and ports from the entry
 	addrStr, portsSlice := parseAddressAndPorts(entry)
 	addr = stringPtrIfNotEmpty(addrStr)
+
 	if len(portsSlice) > 0 {
 		ports = &portsSlice
 	}
@@ -126,8 +132,10 @@ func parseACLEntry(entry string) *ACLRule {
 func parsePorts(parts []string) *[]string {
 	if len(parts) == 3 && parts[2] != "*" {
 		split := strings.Split(parts[2], ",")
+
 		return &split
 	}
+
 	return nil
 }
 
@@ -135,9 +143,11 @@ func parsePorts(parts []string) *[]string {
 func parseAddressAndPorts(entry string) (string, []string) {
 	parts := strings.SplitN(entry, ":", 2)
 	addr := parts[0]
+
 	if len(parts) == 2 && parts[1] != "*" {
 		return addr, strings.Split(parts[1], ",")
 	}
+
 	return addr, nil
 }
 
@@ -145,9 +155,11 @@ func parseAddressAndPorts(entry string) (string, []string) {
 func generateNameFromAddress(addr string) (string, string) {
 	base := strings.ReplaceAll(addr, ".", "-")
 	base = strings.ReplaceAll(base, "/", "-")
+
 	if strings.HasSuffix(addr, "/32") {
 		return base[:len(base)-3], "host" // Remove the /32 suffix for host type
 	}
+
 	return base, "cidr" // Default to CIDR type
 }
 
@@ -156,5 +168,6 @@ func stringPtrIfNotEmpty(s string) *string {
 	if s == "" {
 		return nil
 	}
+
 	return &s
 }

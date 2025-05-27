@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+const nilStr = "<nil>"
+
 type ACLFile struct {
 	Groups GroupMap `json:"groups"`
 	ACLs   []ACL    `json:"acls"`
@@ -27,10 +29,10 @@ type Network struct {
 type NetworkResource struct {
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
-	NetworkID   string   `json:"network_id"`
+	NetworkID   string   `json:"networkId"`
 	Address     string   `json:"address"`
 	Enabled     bool     `json:"enabled"`
-	GroupIDs    []string `json:"group_ids"`
+	GroupIDs    []string `json:"groupIds"`
 }
 
 type Group struct {
@@ -62,7 +64,7 @@ type PolicyRule struct {
 	Destinations  []string `yaml:"destinations,omitempty"`
 }
 
-// ACLRule represents a decomposed ACL destination
+// ACLRule represents a decomposed ACL destination.
 type ACLRule struct {
 	Name    string              // Used as resource name
 	Address *string             // IP or CIDR
@@ -78,19 +80,19 @@ func (v ACLRule) String() string {
 	if v.Address != nil {
 		addr = *v.Address
 	} else {
-		addr = "<nil>"
+		addr = nilStr
 	}
 
 	if v.Group != nil {
 		group = *v.Group
 	} else {
-		group = "<nil>"
+		addr = nilStr
 	}
 
 	if v.Ports != nil {
 		ports = strings.Join(*v.Ports, ",")
 	} else {
-		ports = "<nil>"
+		addr = nilStr
 	}
 
 	return fmt.Sprintf("Type=%s Name=%s Address=%s, Group=%s, Ports=%s",

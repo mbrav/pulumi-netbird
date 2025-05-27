@@ -16,7 +16,7 @@ import (
 type DNS struct {
 	pulumi.CustomResourceState
 
-	// Description Description of the nameserver group
+	// Description of the nameserver group
 	Description pulumi.StringOutput `pulumi:"description"`
 	// Domains Match domain list. It should be empty only if primary is true.
 	Domains pulumi.StringArrayOutput `pulumi:"domains"`
@@ -24,7 +24,7 @@ type DNS struct {
 	Enabled pulumi.BoolOutput `pulumi:"enabled"`
 	// Groups Distribution group IDs that defines group of peers that will use this nameserver group
 	Groups pulumi.StringArrayOutput `pulumi:"groups"`
-	// Name Name of nameserver group name
+	// Name of nameserver group name
 	Name pulumi.StringOutput `pulumi:"name"`
 	// Nameservers Nameserver list
 	Nameservers NameserverArrayOutput `pulumi:"nameservers"`
@@ -98,7 +98,7 @@ func (DNSState) ElementType() reflect.Type {
 }
 
 type dnsArgs struct {
-	// Description Description of the nameserver group
+	// Description of the nameserver group
 	Description string `pulumi:"description"`
 	// Domains Match domain list. It should be empty only if primary is true.
 	Domains []string `pulumi:"domains"`
@@ -106,7 +106,7 @@ type dnsArgs struct {
 	Enabled bool `pulumi:"enabled"`
 	// Groups Distribution group IDs that defines group of peers that will use this nameserver group
 	Groups []string `pulumi:"groups"`
-	// Name Name of nameserver group name
+	// Name of nameserver group name
 	Name string `pulumi:"name"`
 	// Nameservers Nameserver list
 	Nameservers []Nameserver `pulumi:"nameservers"`
@@ -118,7 +118,7 @@ type dnsArgs struct {
 
 // The set of arguments for constructing a DNS resource.
 type DNSArgs struct {
-	// Description Description of the nameserver group
+	// Description of the nameserver group
 	Description pulumi.StringInput
 	// Domains Match domain list. It should be empty only if primary is true.
 	Domains pulumi.StringArrayInput
@@ -126,7 +126,7 @@ type DNSArgs struct {
 	Enabled pulumi.BoolInput
 	// Groups Distribution group IDs that defines group of peers that will use this nameserver group
 	Groups pulumi.StringArrayInput
-	// Name Name of nameserver group name
+	// Name of nameserver group name
 	Name pulumi.StringInput
 	// Nameservers Nameserver list
 	Nameservers NameserverArrayInput
@@ -223,7 +223,7 @@ func (o DNSOutput) ToDNSOutputWithContext(ctx context.Context) DNSOutput {
 	return o
 }
 
-// Description Description of the nameserver group
+// Description of the nameserver group
 func (o DNSOutput) Description() pulumi.StringOutput {
 	return o.ApplyT(func(v *DNS) pulumi.StringOutput { return v.Description }).(pulumi.StringOutput)
 }
@@ -243,7 +243,7 @@ func (o DNSOutput) Groups() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *DNS) pulumi.StringArrayOutput { return v.Groups }).(pulumi.StringArrayOutput)
 }
 
-// Name Name of nameserver group name
+// Name of nameserver group name
 func (o DNSOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v *DNS) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
 }

@@ -33,11 +33,11 @@ class DNSArgs:
                  search_domains_enabled: pulumi.Input[builtins.bool]):
         """
         The set of arguments for constructing a DNS resource.
-        :param pulumi.Input[builtins.str] description: Description Description of the nameserver group
+        :param pulumi.Input[builtins.str] description: Description of the nameserver group
         :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] domains: Domains Match domain list. It should be empty only if primary is true.
         :param pulumi.Input[builtins.bool] enabled: Enabled Nameserver group status
         :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] groups: Groups Distribution group IDs that defines group of peers that will use this nameserver group
-        :param pulumi.Input[builtins.str] name: Name Name of nameserver group name
+        :param pulumi.Input[builtins.str] name: Name of nameserver group name
         :param pulumi.Input[Sequence[pulumi.Input['NameserverArgs']]] nameservers: Nameservers Nameserver list
         :param pulumi.Input[builtins.bool] primary: Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.
         :param pulumi.Input[builtins.bool] search_domains_enabled: SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.
@@ -55,7 +55,7 @@ class DNSArgs:
     @pulumi.getter
     def description(self) -> pulumi.Input[builtins.str]:
         """
-        Description Description of the nameserver group
+        Description of the nameserver group
         """
         return pulumi.get(self, "description")
 
@@ -103,7 +103,7 @@ class DNSArgs:
     @pulumi.getter
     def name(self) -> pulumi.Input[builtins.str]:
         """
-        Name Name of nameserver group name
+        Name of nameserver group name
         """
         return pulumi.get(self, "name")
 
@@ -168,11 +168,11 @@ class DNS(pulumi.CustomResource):
 
         :param str resource_name: The name of the resource.
         :param pulumi.ResourceOptions opts: Options for the resource.
-        :param pulumi.Input[builtins.str] description: Description Description of the nameserver group
+        :param pulumi.Input[builtins.str] description: Description of the nameserver group
         :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] domains: Domains Match domain list. It should be empty only if primary is true.
         :param pulumi.Input[builtins.bool] enabled: Enabled Nameserver group status
         :param pulumi.Input[Sequence[pulumi.Input[builtins.str]]] groups: Groups Distribution group IDs that defines group of peers that will use this nameserver group
-        :param pulumi.Input[builtins.str] name: Name Name of nameserver group name
+        :param pulumi.Input[builtins.str] name: Name of nameserver group name
         :param pulumi.Input[Sequence[pulumi.Input[Union['NameserverArgs', 'NameserverArgsDict']]]] nameservers: Nameservers Nameserver list
         :param pulumi.Input[builtins.bool] primary: Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.
         :param pulumi.Input[builtins.bool] search_domains_enabled: SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.
@@ -278,7 +278,7 @@ class DNS(pulumi.CustomResource):
     @pulumi.getter
     def description(self) -> pulumi.Output[builtins.str]:
         """
-        Description Description of the nameserver group
+        Description of the nameserver group
         """
         return pulumi.get(self, "description")
 
@@ -310,7 +310,7 @@ class DNS(pulumi.CustomResource):
     @pulumi.getter
     def name(self) -> pulumi.Output[builtins.str]:
         """
-        Name Name of nameserver group name
+        Name of nameserver group name
         """
         return pulumi.get(self, "name")
 

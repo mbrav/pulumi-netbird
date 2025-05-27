@@ -431,7 +431,7 @@
       "properties": {
         "description": {
           "type": "string",
-          "description": "Description Description of the nameserver group"
+          "description": "Description of the nameserver group"
         },
         "domains": {
           "type": "array",
@@ -453,7 +453,7 @@
         },
         "name": {
           "type": "string",
-          "description": "Name Name of nameserver group name"
+          "description": "Name of nameserver group name"
         },
         "nameservers": {
           "type": "array",
@@ -485,7 +485,7 @@
       "inputProperties": {
         "description": {
           "type": "string",
-          "description": "Description Description of the nameserver group"
+          "description": "Description of the nameserver group"
         },
         "domains": {
           "type": "array",
@@ -507,7 +507,7 @@
         },
         "name": {
           "type": "string",
-          "description": "Name Name of nameserver group name"
+          "description": "Name of nameserver group name"
         },
         "nameservers": {
           "type": "array",

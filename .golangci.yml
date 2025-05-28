@@ -65,7 +65,6 @@ linters:
     - dupl
     # TODO: Fix dynamic errors
     - err113
-    - forcetypeassert
     # Allow long functions
     - funlen
     # Allow lines longer than 120 characters
@@ -76,5 +75,3 @@ linters:
     - revive
     # FIX: var len
     - varnamelen
-    # FIX: Errors from external functions
-    - wrapcheck

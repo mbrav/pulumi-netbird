@@ -85,7 +85,7 @@ func (*Peer) Read(ctx context.Context, req infer.ReadRequest[PeerArgs, PeerState
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.ReadResponse[PeerArgs, PeerState]{}, err
+		return infer.ReadResponse[PeerArgs, PeerState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	peer, err := client.Peers.Get(ctx, req.ID)
@@ -132,7 +132,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.UpdateResponse[PeerState]{}, err
+		return infer.UpdateResponse[PeerState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	_, err = client.Peers.Update(ctx, req.ID, nbapi.PeerRequest{

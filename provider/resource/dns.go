@@ -120,7 +120,7 @@ func (*DNS) Create(ctx context.Context, req infer.CreateRequest[DNSArgs]) (infer
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.CreateResponse[DNSState]{}, err
+		return infer.CreateResponse[DNSState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	// Build request payload
@@ -162,7 +162,7 @@ func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) 
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.ReadResponse[DNSArgs, DNSState]{}, err
+		return infer.ReadResponse[DNSArgs, DNSState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	group, err := client.DNS.GetNameserverGroup(ctx, req.ID)
@@ -227,7 +227,7 @@ func (*DNS) Update(ctx context.Context, req infer.UpdateRequest[DNSArgs, DNSStat
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.UpdateResponse[DNSState]{}, err
+		return infer.UpdateResponse[DNSState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	updated, err := client.DNS.UpdateNameserverGroup(ctx, req.ID, nbapi.NameserverGroupRequest{
@@ -292,7 +292,7 @@ func (*DNS) Delete(ctx context.Context, req infer.DeleteRequest[DNSState]) (infe
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.DeleteResponse{}, err
+		return infer.DeleteResponse{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	err = client.DNS.DeleteNameserverGroup(ctx, req.ID)

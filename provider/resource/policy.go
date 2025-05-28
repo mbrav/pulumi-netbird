@@ -247,7 +247,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.CreateResponse[PolicyState]{}, err
+		return infer.CreateResponse[PolicyState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	// Convert input rules to nbapi.PolicyRuleUpdate
@@ -319,7 +319,7 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.ReadResponse[PolicyArgs, PolicyState]{}, err
+		return infer.ReadResponse[PolicyArgs, PolicyState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	policy, err := client.Policies.Get(ctx, req.ID)
@@ -424,7 +424,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.UpdateResponse[PolicyState]{}, err
+		return infer.UpdateResponse[PolicyState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	// Convert input rules to nbapi.PolicyRuleUpdate
@@ -495,7 +495,7 @@ func (*Policy) Delete(ctx context.Context, req infer.DeleteRequest[PolicyState])
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.DeleteResponse{}, err
+		return infer.DeleteResponse{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	err = client.Policies.Delete(ctx, req.ID)

@@ -84,7 +84,7 @@ func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[Netw
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.CreateResponse[NetworkResourceState]{}, err
+		return infer.CreateResponse[NetworkResourceState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	net, err := client.Networks.Resources(req.Inputs.NetworkID).Create(ctx, nbapi.NetworkResourceRequest{
@@ -120,7 +120,7 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, err
+		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	net, err := client.Networks.Resources(req.State.NetworkID).Get(ctx, req.ID)
@@ -173,7 +173,7 @@ func (*NetworkResource) Update(ctx context.Context, req infer.UpdateRequest[Netw
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.UpdateResponse[NetworkResourceState]{}, err
+		return infer.UpdateResponse[NetworkResourceState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	net, err := client.Networks.Resources(req.Inputs.NetworkID).Update(ctx, req.ID, nbapi.NetworkResourceRequest{
@@ -205,7 +205,7 @@ func (*NetworkResource) Delete(ctx context.Context, req infer.DeleteRequest[Netw
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.DeleteResponse{}, err
+		return infer.DeleteResponse{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	err = client.Networks.Resources(req.State.NetworkID).Delete(ctx, req.ID)

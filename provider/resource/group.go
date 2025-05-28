@@ -62,7 +62,7 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.CreateResponse[GroupState]{}, err
+		return infer.CreateResponse[GroupState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	group, err := client.Groups.Create(ctx, nbapi.GroupRequest{
@@ -99,7 +99,7 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.ReadResponse[GroupArgs, GroupState]{}, err
+		return infer.ReadResponse[GroupArgs, GroupState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	group, err := client.Groups.Get(ctx, req.ID)
@@ -142,7 +142,7 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.UpdateResponse[GroupState]{}, err
+		return infer.UpdateResponse[GroupState]{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	updated, err := client.Groups.Update(ctx, req.ID, nbapi.GroupRequest{
@@ -173,7 +173,7 @@ func (*Group) Delete(ctx context.Context, req infer.DeleteRequest[GroupState]) (
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.DeleteResponse{}, err
+		return infer.DeleteResponse{}, fmt.Errorf("error getting Netbird client: %w", err)
 	}
 
 	err = client.Groups.Delete(ctx, req.ID)

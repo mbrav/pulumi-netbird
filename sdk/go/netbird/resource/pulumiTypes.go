@@ -539,6 +539,31 @@ func (i *resourcePtrType) ToResourcePtrOutputWithContext(ctx context.Context) Re
 	return pulumi.ToOutputWithContext(ctx, i).(ResourcePtrOutput)
 }
 
+// ResourceArrayInput is an input type that accepts ResourceArray and ResourceArrayOutput values.
+// You can construct a concrete instance of `ResourceArrayInput` via:
+//
+//	ResourceArray{ ResourceArgs{...} }
+type ResourceArrayInput interface {
+	pulumi.Input
+
+	ToResourceArrayOutput() ResourceArrayOutput
+	ToResourceArrayOutputWithContext(context.Context) ResourceArrayOutput
+}
+
+type ResourceArray []ResourceInput
+
+func (ResourceArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]Resource)(nil)).Elem()
+}
+
+func (i ResourceArray) ToResourceArrayOutput() ResourceArrayOutput {
+	return i.ToResourceArrayOutputWithContext(context.Background())
+}
+
+func (i ResourceArray) ToResourceArrayOutputWithContext(ctx context.Context) ResourceArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ResourceArrayOutput)
+}
+
 type ResourceOutput struct{ *pulumi.OutputState }
 
 func (ResourceOutput) ElementType() reflect.Type {
@@ -615,6 +640,26 @@ func (o ResourcePtrOutput) Type() ResourceTypePtrOutput {
 		}
 		return &v.Type
 	}).(ResourceTypePtrOutput)
+}
+
+type ResourceArrayOutput struct{ *pulumi.OutputState }
+
+func (ResourceArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]Resource)(nil)).Elem()
+}
+
+func (o ResourceArrayOutput) ToResourceArrayOutput() ResourceArrayOutput {
+	return o
+}
+
+func (o ResourceArrayOutput) ToResourceArrayOutputWithContext(ctx context.Context) ResourceArrayOutput {
+	return o
+}
+
+func (o ResourceArrayOutput) Index(i pulumi.IntInput) ResourceOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) Resource {
+		return vs[0].([]Resource)[vs[1].(int)]
+	}).(ResourceOutput)
 }
 
 type RuleGroup struct {
@@ -781,6 +826,7 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsArrayInput)(nil)).Elem(), PolicyRuleArgsArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourcePtrInput)(nil)).Elem(), ResourceArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ResourceArrayInput)(nil)).Elem(), ResourceArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeArrayInput)(nil)).Elem(), RulePortRangeArray{})
 	pulumi.RegisterOutputType(NameserverOutput{})
@@ -791,6 +837,7 @@ func init() {
 	pulumi.RegisterOutputType(PolicyRuleStateArrayOutput{})
 	pulumi.RegisterOutputType(ResourceOutput{})
 	pulumi.RegisterOutputType(ResourcePtrOutput{})
+	pulumi.RegisterOutputType(ResourceArrayOutput{})
 	pulumi.RegisterOutputType(RuleGroupOutput{})
 	pulumi.RegisterOutputType(RuleGroupArrayOutput{})
 	pulumi.RegisterOutputType(RulePortRangeOutput{})

@@ -549,6 +549,12 @@
             "type": "string"
           },
           "description": "An optional list of peer IDs associated with this group."
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:Resource"
+          }
         }
       },
       "type": "object",
@@ -566,6 +572,12 @@
             "type": "string"
           },
           "description": "An optional list of peer IDs to associate with this group."
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:Resource"
+          }
         }
       },
       "requiredInputs": [

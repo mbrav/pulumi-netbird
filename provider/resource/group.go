@@ -24,8 +24,9 @@ func (g *Group) Annotate(a infer.Annotator) {
 
 // GroupArgs defines input fields for creating or updating a group.
 type GroupArgs struct {
-	Name  string    `pulumi:"name"`
-	Peers *[]string `pulumi:"peers,optional"`
+	Name      string      `pulumi:"name"`
+	Peers     *[]string   `pulumi:"peers,optional"`
+	Resources *[]Resource `pulumi:"resources,optional"`
 }
 
 // Annotate provides documentation for GroupArgs fields.
@@ -36,8 +37,9 @@ func (g *GroupArgs) Annotate(a infer.Annotator) {
 
 // GroupState represents the output state of a group resource.
 type GroupState struct {
-	Name  string    `pulumi:"name"`
-	Peers *[]string `pulumi:"peers,optional"`
+	Name      string      `pulumi:"name"`
+	Peers     *[]string   `pulumi:"peers,optional"`
+	Resources *[]Resource `pulumi:"resources,optional"`
 }
 
 // Annotate provides documentation for GroupState fields.
@@ -54,21 +56,22 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 		return infer.CreateResponse[GroupState]{
 			ID: "preview",
 			Output: GroupState{
-				Name:  req.Inputs.Name,
-				Peers: req.Inputs.Peers,
+				Name:      req.Inputs.Name,
+				Peers:     req.Inputs.Peers,
+				Resources: req.Inputs.Resources,
 			},
 		}, nil
 	}
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.CreateResponse[GroupState]{}, fmt.Errorf("error getting Netbird client: %w", err)
+		return infer.CreateResponse[GroupState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
 	group, err := client.Groups.Create(ctx, nbapi.GroupRequest{
 		Name:      req.Inputs.Name,
 		Peers:     req.Inputs.Peers,
-		Resources: nil,
+		Resources: toAPIResourceList(req.Inputs.Resources),
 	})
 	if err != nil {
 		return infer.CreateResponse[GroupState]{}, fmt.Errorf("creating group failed: %w", err)
@@ -80,14 +83,15 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 	for i, peer := range group.Peers {
 		peerIDs[i] = peer.Id
 	}
-	// Always sort peer IDs before comparison or use
+
 	slices.Sort(peerIDs)
 
 	return infer.CreateResponse[GroupState]{
 		ID: group.Id,
 		Output: GroupState{
-			Name:  group.Name,
-			Peers: &peerIDs,
+			Name:      group.Name,
+			Peers:     &peerIDs,
+			Resources: fromAPIResourceList(&group.Resources),
 		},
 	}, nil
 }
@@ -99,7 +103,7 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.ReadResponse[GroupArgs, GroupState]{}, fmt.Errorf("error getting Netbird client: %w", err)
+		return infer.ReadResponse[GroupArgs, GroupState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
 	group, err := client.Groups.Get(ctx, req.ID)
@@ -117,12 +121,14 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 	return infer.ReadResponse[GroupArgs, GroupState]{
 		ID: req.ID,
 		Inputs: GroupArgs{
-			Name:  group.Name,
-			Peers: &peerIDs,
+			Name:      group.Name,
+			Peers:     &peerIDs,
+			Resources: req.Inputs.Resources,
 		},
 		State: GroupState{
-			Name:  group.Name,
-			Peers: &peerIDs,
+			Name:      group.Name,
+			Peers:     &peerIDs,
+			Resources: fromAPIResourceList(&group.Resources),
 		},
 	}, nil
 }
@@ -134,21 +140,22 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 	if req.DryRun {
 		return infer.UpdateResponse[GroupState]{
 			Output: GroupState{
-				Name:  req.Inputs.Name,
-				Peers: req.Inputs.Peers,
+				Name:      req.Inputs.Name,
+				Peers:     req.Inputs.Peers,
+				Resources: req.Inputs.Resources,
 			},
 		}, nil
 	}
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.UpdateResponse[GroupState]{}, fmt.Errorf("error getting Netbird client: %w", err)
+		return infer.UpdateResponse[GroupState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
 	updated, err := client.Groups.Update(ctx, req.ID, nbapi.GroupRequest{
 		Name:      req.Inputs.Name,
 		Peers:     req.Inputs.Peers,
-		Resources: nil,
+		Resources: toAPIResourceList(req.Inputs.Resources),
 	})
 	if err != nil {
 		return infer.UpdateResponse[GroupState]{}, fmt.Errorf("updating group failed: %w", err)
@@ -161,8 +168,9 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 
 	return infer.UpdateResponse[GroupState]{
 		Output: GroupState{
-			Name:  updated.Name,
-			Peers: &peerIDs,
+			Name:      updated.Name,
+			Peers:     &peerIDs,
+			Resources: fromAPIResourceList(&updated.Resources),
 		},
 	}, nil
 }
@@ -173,7 +181,7 @@ func (*Group) Delete(ctx context.Context, req infer.DeleteRequest[GroupState]) (
 
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
-		return infer.DeleteResponse{}, fmt.Errorf("error getting Netbird client: %w", err)
+		return infer.DeleteResponse{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
 	err = client.Groups.Delete(ctx, req.ID)
@@ -190,6 +198,7 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 
 	diff := map[string]p.PropertyDiff{}
 
+	// Name is reflected in state — normal comparison
 	if req.Inputs.Name != req.State.Name {
 		diff["name"] = p.PropertyDiff{
 			InputDiff: false,
@@ -197,12 +206,31 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 		}
 	}
 
+	// Peers: compare if both are non-nil
 	if req.Inputs.Peers != nil && req.State.Peers != nil {
-		if !slices.Equal(*req.Inputs.Peers, *req.State.Peers) {
+		inPeers := slices.Clone(*req.Inputs.Peers)
+		stPeers := slices.Clone(*req.State.Peers)
+		slices.Sort(inPeers)
+		slices.Sort(stPeers)
+
+		if !slices.Equal(inPeers, stPeers) {
 			diff["peers"] = p.PropertyDiff{
 				InputDiff: false,
 				Kind:      p.Update,
 			}
+		}
+	} else if (req.Inputs.Peers == nil) != (req.State.Peers == nil) {
+		diff["peers"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
+	}
+
+	// Resources: input-only field — always tracked as an input diff
+	if req.Inputs.Resources != nil {
+		diff["resources"] = p.PropertyDiff{
+			InputDiff: true,
+			Kind:      p.Update,
 		}
 	}
 

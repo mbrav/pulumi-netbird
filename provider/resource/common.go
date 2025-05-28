@@ -48,6 +48,21 @@ func toAPIResource(resource *Resource) *nbapi.Resource {
 	}
 }
 
+// Converts a slice of *Resource to a pointer to a slice of nbapi.Resource.
+// Returns nil if the input is nil.
+func toAPIResourceList(resources *[]Resource) *[]nbapi.Resource {
+	if resources == nil {
+		return nil
+	}
+
+	converted := make([]nbapi.Resource, len(*resources))
+	for i, r := range *resources {
+		converted[i] = *toAPIResource(&r)
+	}
+
+	return &converted
+}
+
 // Converts a single nbapi.Resource to Resource.
 func fromAPIResource(apiResource *nbapi.Resource) *Resource {
 	if apiResource == nil {
@@ -58,6 +73,21 @@ func fromAPIResource(apiResource *nbapi.Resource) *Resource {
 		Id:   apiResource.Id,
 		Type: ResourceType(apiResource.Type),
 	}
+}
+
+// Converts a slice of nbapi.Resource to a pointer to a slice of Resource.
+// Returns nil if the input is nil.
+func fromAPIResourceList(apiResources *[]nbapi.Resource) *[]Resource {
+	if apiResources == nil {
+		return nil
+	}
+
+	converted := make([]Resource, len(*apiResources))
+	for i, r := range *apiResources {
+		converted[i] = *fromAPIResource(&r)
+	}
+
+	return &converted
 }
 
 // Refactored equalResourcePtr to explicitly check for both pointers being nil

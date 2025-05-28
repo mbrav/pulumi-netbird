@@ -14,6 +14,9 @@ if sys.version_info >= (3, 11):
 else:
     from typing_extensions import NotRequired, TypedDict, TypeAlias
 from .. import _utilities
+from . import outputs
+from ._enums import *
+from ._inputs import *
 
 __all__ = ['GroupArgs', 'Group']
 
@@ -21,7 +24,8 @@ __all__ = ['GroupArgs', 'Group']
 class GroupArgs:
     def __init__(__self__, *,
                  name: pulumi.Input[builtins.str],
-                 peers: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None):
+                 peers: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None,
+                 resources: Optional[pulumi.Input[Sequence[pulumi.Input['ResourceArgs']]]] = None):
         """
         The set of arguments for constructing a Group resource.
         :param pulumi.Input[builtins.str] name: The name of the NetBird group.
@@ -30,6 +34,8 @@ class GroupArgs:
         pulumi.set(__self__, "name", name)
         if peers is not None:
             pulumi.set(__self__, "peers", peers)
+        if resources is not None:
+            pulumi.set(__self__, "resources", resources)
 
     @property
     @pulumi.getter
@@ -55,6 +61,15 @@ class GroupArgs:
     def peers(self, value: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]):
         pulumi.set(self, "peers", value)
 
+    @property
+    @pulumi.getter
+    def resources(self) -> Optional[pulumi.Input[Sequence[pulumi.Input['ResourceArgs']]]]:
+        return pulumi.get(self, "resources")
+
+    @resources.setter
+    def resources(self, value: Optional[pulumi.Input[Sequence[pulumi.Input['ResourceArgs']]]]):
+        pulumi.set(self, "resources", value)
+
 
 @pulumi.type_token("netbird:resource:Group")
 class Group(pulumi.CustomResource):
@@ -64,6 +79,7 @@ class Group(pulumi.CustomResource):
                  opts: Optional[pulumi.ResourceOptions] = None,
                  name: Optional[pulumi.Input[builtins.str]] = None,
                  peers: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None,
+                 resources: Optional[pulumi.Input[Sequence[pulumi.Input[Union['ResourceArgs', 'ResourceArgsDict']]]]] = None,
                  __props__=None):
         """
         A NetBird group, which represents a collection of peers.
@@ -99,6 +115,7 @@ class Group(pulumi.CustomResource):
                  opts: Optional[pulumi.ResourceOptions] = None,
                  name: Optional[pulumi.Input[builtins.str]] = None,
                  peers: Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]] = None,
+                 resources: Optional[pulumi.Input[Sequence[pulumi.Input[Union['ResourceArgs', 'ResourceArgsDict']]]]] = None,
                  __props__=None):
         opts = pulumi.ResourceOptions.merge(_utilities.get_resource_opts_defaults(), opts)
         if not isinstance(opts, pulumi.ResourceOptions):
@@ -112,6 +129,7 @@ class Group(pulumi.CustomResource):
                 raise TypeError("Missing required property 'name'")
             __props__.__dict__["name"] = name
             __props__.__dict__["peers"] = peers
+            __props__.__dict__["resources"] = resources
         super(Group, __self__).__init__(
             'netbird:resource:Group',
             resource_name,
@@ -136,6 +154,7 @@ class Group(pulumi.CustomResource):
 
         __props__.__dict__["name"] = None
         __props__.__dict__["peers"] = None
+        __props__.__dict__["resources"] = None
         return Group(resource_name, opts=opts, __props__=__props__)
 
     @property
@@ -153,4 +172,9 @@ class Group(pulumi.CustomResource):
         An optional list of peer IDs associated with this group.
         """
         return pulumi.get(self, "peers")
+
+    @property
+    @pulumi.getter
+    def resources(self) -> pulumi.Output[Optional[Sequence['outputs.Resource']]]:
+        return pulumi.get(self, "resources")
 

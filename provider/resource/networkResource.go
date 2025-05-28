@@ -11,6 +11,8 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
+// TEST: InputDiff: false
+
 // NetworkResource represents a Pulumi resource for NetBird network resources.
 type NetworkResource struct{}
 
@@ -68,6 +70,7 @@ func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[Netw
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkResourceState]{
+			ID: "preview",
 			Output: NetworkResourceState{
 				Name:        req.Inputs.Name,
 				Description: req.Inputs.Description,
@@ -220,19 +223,31 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
-		diff["name"] = p.PropertyDiff{Kind: p.Update}
+		diff["name"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if !equalPtr(req.Inputs.Description, req.State.Description) {
-		diff["description"] = p.PropertyDiff{Kind: p.Update}
+		diff["description"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Address != req.State.Address {
-		diff["address"] = p.PropertyDiff{Kind: p.Update}
+		diff["address"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Enabled != req.State.Enabled {
-		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
+		diff["enabled"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.GroupIDs != nil && req.State.GroupIDs != nil {
@@ -240,7 +255,11 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 		slices.Sort(req.State.GroupIDs)
 
 		if !slices.Equal(req.Inputs.GroupIDs, req.State.GroupIDs) {
-			diff["group_ids"] = p.PropertyDiff{Kind: p.Update}
+			diff["group_ids"] = p.PropertyDiff{
+				InputDiff: false,
+				Kind:      p.Update,
+			}
+
 			p.GetLogger(ctx).Debugf("Diff:NetworkResource group_ids input=%s output=%s", req.Inputs.GroupIDs, req.State.GroupIDs)
 		}
 	}

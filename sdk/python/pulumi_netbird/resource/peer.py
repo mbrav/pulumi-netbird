@@ -20,6 +20,7 @@ __all__ = ['PeerArgs', 'Peer']
 @pulumi.input_type
 class PeerArgs:
     def __init__(__self__, *,
+                 approval_required: pulumi.Input[builtins.bool],
                  inactivity_expiration_enabled: pulumi.Input[builtins.bool],
                  login_expiration_enabled: pulumi.Input[builtins.bool],
                  name: pulumi.Input[builtins.str],
@@ -31,13 +32,27 @@ class PeerArgs:
         :param pulumi.Input[builtins.str] name: The name of the peer.
         :param pulumi.Input[builtins.bool] ssh_enabled: Whether SSH is enabled.
         """
+        if approval_required is not None:
+            warnings.warn("""Cloud only, not maintained in this provider""", DeprecationWarning)
+            pulumi.log.warn("""approval_required is deprecated: Cloud only, not maintained in this provider""")
+        pulumi.set(__self__, "approval_required", approval_required)
         pulumi.set(__self__, "inactivity_expiration_enabled", inactivity_expiration_enabled)
         pulumi.set(__self__, "login_expiration_enabled", login_expiration_enabled)
         pulumi.set(__self__, "name", name)
         pulumi.set(__self__, "ssh_enabled", ssh_enabled)
 
     @property
-    @pulumi.getter
+    @pulumi.getter(name="approvalRequired")
+    @_utilities.deprecated("""Cloud only, not maintained in this provider""")
+    def approval_required(self) -> pulumi.Input[builtins.bool]:
+        return pulumi.get(self, "approval_required")
+
+    @approval_required.setter
+    def approval_required(self, value: pulumi.Input[builtins.bool]):
+        pulumi.set(self, "approval_required", value)
+
+    @property
+    @pulumi.getter(name="inactivityExpirationEnabled")
     def inactivity_expiration_enabled(self) -> pulumi.Input[builtins.bool]:
         """
         Whether Inactivity Expiration is enabled.
@@ -49,7 +64,7 @@ class PeerArgs:
         pulumi.set(self, "inactivity_expiration_enabled", value)
 
     @property
-    @pulumi.getter
+    @pulumi.getter(name="loginExpirationEnabled")
     def login_expiration_enabled(self) -> pulumi.Input[builtins.bool]:
         """
         Whether Login Expiration is enabled.
@@ -91,6 +106,7 @@ class Peer(pulumi.CustomResource):
     def __init__(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
+                 approval_required: Optional[pulumi.Input[builtins.bool]] = None,
                  inactivity_expiration_enabled: Optional[pulumi.Input[builtins.bool]] = None,
                  login_expiration_enabled: Optional[pulumi.Input[builtins.bool]] = None,
                  name: Optional[pulumi.Input[builtins.str]] = None,
@@ -130,6 +146,7 @@ class Peer(pulumi.CustomResource):
     def _internal_init(__self__,
                  resource_name: str,
                  opts: Optional[pulumi.ResourceOptions] = None,
+                 approval_required: Optional[pulumi.Input[builtins.bool]] = None,
                  inactivity_expiration_enabled: Optional[pulumi.Input[builtins.bool]] = None,
                  login_expiration_enabled: Optional[pulumi.Input[builtins.bool]] = None,
                  name: Optional[pulumi.Input[builtins.str]] = None,
@@ -143,6 +160,9 @@ class Peer(pulumi.CustomResource):
                 raise TypeError('__props__ is only valid when passed in combination with a valid opts.id to get an existing resource')
             __props__ = PeerArgs.__new__(PeerArgs)
 
+            if approval_required is None and not opts.urn:
+                raise TypeError("Missing required property 'approval_required'")
+            __props__.__dict__["approval_required"] = approval_required
             if inactivity_expiration_enabled is None and not opts.urn:
                 raise TypeError("Missing required property 'inactivity_expiration_enabled'")
             __props__.__dict__["inactivity_expiration_enabled"] = inactivity_expiration_enabled
@@ -177,6 +197,7 @@ class Peer(pulumi.CustomResource):
 
         __props__ = PeerArgs.__new__(PeerArgs)
 
+        __props__.__dict__["approval_required"] = None
         __props__.__dict__["inactivity_expiration_enabled"] = None
         __props__.__dict__["login_expiration_enabled"] = None
         __props__.__dict__["name"] = None
@@ -184,7 +205,13 @@ class Peer(pulumi.CustomResource):
         return Peer(resource_name, opts=opts, __props__=__props__)
 
     @property
-    @pulumi.getter
+    @pulumi.getter(name="approvalRequired")
+    @_utilities.deprecated("""Cloud only, not maintained in this provider""")
+    def approval_required(self) -> pulumi.Output[builtins.bool]:
+        return pulumi.get(self, "approval_required")
+
+    @property
+    @pulumi.getter(name="inactivityExpirationEnabled")
     def inactivity_expiration_enabled(self) -> pulumi.Output[builtins.bool]:
         """
         Whether Inactivity Expiration is enabled.
@@ -192,7 +219,7 @@ class Peer(pulumi.CustomResource):
         return pulumi.get(self, "inactivity_expiration_enabled")
 
     @property
-    @pulumi.getter
+    @pulumi.getter(name="loginExpirationEnabled")
     def login_expiration_enabled(self) -> pulumi.Output[builtins.bool]:
         """
         Whether Login Expiration is enabled.

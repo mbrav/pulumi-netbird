@@ -93,7 +93,7 @@ class PolicyArgs:
         pulumi.set(self, "description", value)
 
     @property
-    @pulumi.getter
+    @pulumi.getter(name="postureChecks")
     def posture_checks(self) -> Optional[pulumi.Input[Sequence[pulumi.Input[builtins.str]]]]:
         """
         SourcePostureChecks Posture checks ID's applied to policy source groups, optional
@@ -231,7 +231,7 @@ class Policy(pulumi.CustomResource):
         return pulumi.get(self, "name")
 
     @property
-    @pulumi.getter
+    @pulumi.getter(name="postureChecks")
     def posture_checks(self) -> pulumi.Output[Optional[Sequence[builtins.str]]]:
         """
         SourcePostureChecks Posture checks ID's applied to policy source groups, optional

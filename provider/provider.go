@@ -34,7 +34,7 @@ func Provider() p.Provider {
 		WithLogoURL("https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp").
 		WithNamespace("pulumi").
 		// WithWrapped(provider p.Provider),
-		WithConfig(infer.Config(&config.Config{})).
+		WithConfig(infer.Config(&config.Config{})). //nolint:exhaustruct
 		WithResources(
 			infer.Resource(&resource.DNS{}),
 			infer.Resource(&resource.Group{}),

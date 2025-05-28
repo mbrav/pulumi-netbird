@@ -10,6 +10,8 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
+// TEST: InputDiff: false
+
 // Network represents a resource for managing NetBird networks.
 type Network struct{}
 
@@ -48,6 +50,7 @@ func (*Network) Create(ctx context.Context, req infer.CreateRequest[NetworkArgs]
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkState]{
+			ID: "preview",
 			Output: NetworkState{
 				Name:        req.Inputs.Name,
 				Description: req.Inputs.Description,
@@ -167,11 +170,17 @@ func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, Net
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
-		diff["name"] = p.PropertyDiff{Kind: p.Update}
+		diff["name"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if !equalPtr(req.Inputs.Description, req.State.Description) {
-		diff["description"] = p.PropertyDiff{Kind: p.Update}
+		diff["description"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	p.GetLogger(ctx).Debugf("Diff:Network[%s] diff=%d", req.ID, len(diff))

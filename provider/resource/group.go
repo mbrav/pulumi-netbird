@@ -11,6 +11,9 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
+// NOTE: Implement Resources
+// TEST: InputDiff: false
+
 // Group represents a resource for managing NetBird groups.
 type Group struct{}
 
@@ -49,6 +52,7 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 
 	if req.DryRun {
 		return infer.CreateResponse[GroupState]{
+			ID: "preview",
 			Output: GroupState{
 				Name:  req.Inputs.Name,
 				Peers: req.Inputs.Peers,
@@ -62,8 +66,9 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 	}
 
 	group, err := client.Groups.Create(ctx, nbapi.GroupRequest{
-		Name:  req.Inputs.Name,
-		Peers: req.Inputs.Peers,
+		Name:      req.Inputs.Name,
+		Peers:     req.Inputs.Peers,
+		Resources: nil,
 	})
 	if err != nil {
 		return infer.CreateResponse[GroupState]{}, fmt.Errorf("creating group failed: %w", err)
@@ -141,8 +146,9 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 	}
 
 	updated, err := client.Groups.Update(ctx, req.ID, nbapi.GroupRequest{
-		Name:  req.Inputs.Name,
-		Peers: req.Inputs.Peers,
+		Name:      req.Inputs.Name,
+		Peers:     req.Inputs.Peers,
+		Resources: nil,
 	})
 	if err != nil {
 		return infer.UpdateResponse[GroupState]{}, fmt.Errorf("updating group failed: %w", err)
@@ -185,12 +191,18 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
-		diff["name"] = p.PropertyDiff{Kind: p.Update}
+		diff["name"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Peers != nil && req.State.Peers != nil {
 		if !slices.Equal(*req.Inputs.Peers, *req.State.Peers) {
-			diff["peers"] = p.PropertyDiff{Kind: p.Update}
+			diff["peers"] = p.PropertyDiff{
+				InputDiff: false,
+				Kind:      p.Update,
+			}
 		}
 	}
 

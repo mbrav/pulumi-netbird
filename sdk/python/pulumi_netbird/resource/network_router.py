@@ -195,7 +195,6 @@ class NetworkRouter(pulumi.CustomResource):
             __props__.__dict__["network_id"] = network_id
             __props__.__dict__["peer"] = peer
             __props__.__dict__["peer_groups"] = peer_groups
-            __props__.__dict__["nb_id"] = None
         super(NetworkRouter, __self__).__init__(
             'netbird:resource:NetworkRouter',
             resource_name,
@@ -221,7 +220,6 @@ class NetworkRouter(pulumi.CustomResource):
         __props__.__dict__["enabled"] = None
         __props__.__dict__["masquerade"] = None
         __props__.__dict__["metric"] = None
-        __props__.__dict__["nb_id"] = None
         __props__.__dict__["network_id"] = None
         __props__.__dict__["peer"] = None
         __props__.__dict__["peer_groups"] = None
@@ -250,11 +248,6 @@ class NetworkRouter(pulumi.CustomResource):
         Routing metric value.
         """
         return pulumi.get(self, "metric")
-
-    @property
-    @pulumi.getter(name="nbId")
-    def nb_id(self) -> pulumi.Output[builtins.str]:
-        return pulumi.get(self, "nb_id")
 
     @property
     @pulumi.getter

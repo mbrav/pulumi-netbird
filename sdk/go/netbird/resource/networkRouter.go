@@ -21,8 +21,7 @@ type NetworkRouter struct {
 	// Whether masquerading is enabled.
 	Masquerade pulumi.BoolOutput `pulumi:"masquerade"`
 	// Routing metric value.
-	Metric pulumi.IntOutput    `pulumi:"metric"`
-	NbId   pulumi.StringOutput `pulumi:"nbId"`
+	Metric pulumi.IntOutput `pulumi:"metric"`
 	// ID of the network this router belongs to.
 	Network_id pulumi.StringOutput `pulumi:"network_id"`
 	// Optional peer ID associated with this router.
@@ -213,10 +212,6 @@ func (o NetworkRouterOutput) Masquerade() pulumi.BoolOutput {
 // Routing metric value.
 func (o NetworkRouterOutput) Metric() pulumi.IntOutput {
 	return o.ApplyT(func(v *NetworkRouter) pulumi.IntOutput { return v.Metric }).(pulumi.IntOutput)
-}
-
-func (o NetworkRouterOutput) NbId() pulumi.StringOutput {
-	return o.ApplyT(func(v *NetworkRouter) pulumi.StringOutput { return v.NbId }).(pulumi.StringOutput)
 }
 
 // ID of the network this router belongs to.

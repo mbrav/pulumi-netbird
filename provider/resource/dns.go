@@ -11,6 +11,8 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
+// TEST: InputDiff: false
+
 // DNS represents a DNS Group.
 type DNS struct{}
 
@@ -102,6 +104,7 @@ func (*DNS) Create(ctx context.Context, req infer.CreateRequest[DNSArgs]) (infer
 
 	if req.DryRun {
 		return infer.CreateResponse[DNSState]{
+			ID: "preview",
 			Output: DNSState{
 				Name:                 req.Inputs.Name,
 				Description:          req.Inputs.Description,
@@ -248,6 +251,7 @@ func (*DNS) Update(ctx context.Context, req infer.UpdateRequest[DNSArgs, DNSStat
 			Enabled:              updated.Enabled,
 			Domains:              updated.Domains,
 			Groups:               updated.Groups,
+			Primary:              updated.Primary,
 			Nameservers:          fromAPINameservers(updated.Nameservers),
 			SearchDomainsEnabled: updated.SearchDomainsEnabled,
 		},
@@ -306,43 +310,70 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
-		diff["name"] = p.PropertyDiff{Kind: p.Update}
+		diff["name"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Description != req.State.Description {
-		diff["description"] = p.PropertyDiff{Kind: p.Update}
+		diff["description"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if !slices.Equal(req.Inputs.Domains, req.State.Domains) {
-		diff["domains"] = p.PropertyDiff{Kind: p.Update}
+		diff["domains"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Enabled != req.State.Enabled {
-		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
+		diff["enabled"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if !slices.Equal(req.Inputs.Groups, req.State.Groups) {
-		diff["groups"] = p.PropertyDiff{Kind: p.Update}
+		diff["groups"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Primary != req.State.Primary {
-		diff["primary"] = p.PropertyDiff{Kind: p.Update}
+		diff["primary"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.SearchDomainsEnabled != req.State.SearchDomainsEnabled {
-		diff["search_domains_enabled"] = p.PropertyDiff{Kind: p.Update}
+		diff["search_domains_enabled"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	// Compare nameservers
 	if len(req.Inputs.Nameservers) != len(req.State.Nameservers) {
-		diff["nameservers"] = p.PropertyDiff{Kind: p.Update}
+		diff["nameservers"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	} else {
 		for i := range req.Inputs.Nameservers {
 			in := req.Inputs.Nameservers[i]
 			st := req.State.Nameservers[i]
 
 			if in.Ip != st.Ip || in.NsType != st.NsType || in.Port != st.Port {
-				diff["nameservers"] = p.PropertyDiff{Kind: p.Update}
+				diff["nameservers"] = p.PropertyDiff{
+					InputDiff: false,
+					Kind:      p.Update,
+				}
 
 				break
 			}

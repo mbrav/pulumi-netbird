@@ -10,6 +10,8 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
+// TEST: InputDiff: false
+
 // Policy defines the Pulumi resource handler for NetBird policy resources.
 type Policy struct{}
 
@@ -20,11 +22,11 @@ func (Policy) Annotate(a infer.Annotator) {
 
 // PolicyArgs defines the user-supplied arguments for creating/updating a Policy resource.
 type PolicyArgs struct {
-	Name                string           `pulumi:"name"`                    // Policy name (required)
-	Description         *string          `pulumi:"description,optional"`    // Optional description
-	Enabled             bool             `pulumi:"enabled"`                 // Whether the policy is enabled
-	Rules               []PolicyRuleArgs `pulumi:"rules"`                   // List of rules defined in the policy
-	SourcePostureChecks *[]string        `pulumi:"posture_checks,optional"` // Optional list of posture check IDs
+	Name                string           `pulumi:"name"`                   // Policy name (required)
+	Description         *string          `pulumi:"description,optional"`   // Optional description
+	Enabled             bool             `pulumi:"enabled"`                // Whether the policy is enabled
+	Rules               []PolicyRuleArgs `pulumi:"rules"`                  // List of rules defined in the policy
+	SourcePostureChecks *[]string        `pulumi:"postureChecks,optional"` // Optional list of posture check IDs
 }
 
 // Annotation for PolicyArgs for generated SDKs.
@@ -42,7 +44,7 @@ type PolicyState struct {
 	Description         *string           `pulumi:"description,optional"`
 	Enabled             bool              `pulumi:"enabled"`
 	Rules               []PolicyRuleState `pulumi:"rules"`
-	SourcePostureChecks *[]string         `pulumi:"posture_checks,optional"`
+	SourcePostureChecks *[]string         `pulumi:"postureChecks,optional"`
 }
 
 // Annotation for PolicyState for generated SDKs.
@@ -184,37 +186,6 @@ func (Protocol) Values() []infer.EnumValue[Protocol] {
 	}
 }
 
-// Resource represents a single NetBird resource used in a rule (e.g., domain, host, subnet).
-type Resource struct {
-	Id   string       `pulumi:"id"`   // The unique ID of the resource
-	Type ResourceType `pulumi:"type"` // The type of the resource (domain, host, subnet)
-}
-
-// Annotation for Resource for generated SDKs.
-func (r *Resource) Annotate(a infer.Annotator) {
-	a.Describe(&r.Id, "The unique identifier of the resource.")
-	a.Describe(&r.Type, "The type of resource: 'domain', 'host', or 'subnet'.")
-}
-
-// ResourceType defines the allowed resource types for a policy rule.
-type ResourceType string
-
-// Enum constants for resource types.
-const (
-	ResourceTypeDomain ResourceType = ResourceType(nbapi.ResourceTypeDomain)
-	ResourceTypeHost   ResourceType = ResourceType(nbapi.ResourceTypeHost)
-	ResourceTypeSubnet ResourceType = ResourceType(nbapi.ResourceTypeSubnet)
-)
-
-// Values returns the list of supported ResourceType values for Pulumi enum generation.
-func (ResourceType) Values() []infer.EnumValue[ResourceType] {
-	return []infer.EnumValue[ResourceType]{
-		{Name: "Domain", Value: ResourceTypeDomain, Description: "A domain resource (e.g., example.com)."},
-		{Name: "Host", Value: ResourceTypeHost, Description: "A host resource (e.g., peer or device)."},
-		{Name: "Subnet", Value: ResourceTypeSubnet, Description: "A subnet resource (e.g., 192.168.0.0/24)."},
-	}
-}
-
 // Create creates a new NetBird policy.
 func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) (infer.CreateResponse[PolicyState], error) {
 	p.GetLogger(ctx).Debugf("Create:Policy")
@@ -263,6 +234,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 		}
 
 		return infer.CreateResponse[PolicyState]{
+			ID: "preview",
 			Output: PolicyState{
 				Name:                req.Inputs.Name,
 				Description:         req.Inputs.Description,
@@ -541,19 +513,31 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Name != req.State.Name {
-		diff["name"] = p.PropertyDiff{Kind: p.Update}
+		diff["name"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if strPtr(req.Inputs.Description) != strPtr(req.State.Description) {
-		diff["description"] = p.PropertyDiff{Kind: p.Update}
+		diff["description"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Enabled != req.State.Enabled {
-		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
+		diff["enabled"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 	// Rules Diff
 	if len(req.Inputs.Rules) != len(req.State.Rules) {
-		diff["rules"] = p.PropertyDiff{Kind: p.Update}
+		diff["rules"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	} else {
 		equal := true
 
@@ -582,12 +566,18 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 		}
 
 		if !equal {
-			diff["rules"] = p.PropertyDiff{Kind: p.Update}
+			diff["rules"] = p.PropertyDiff{
+				InputDiff: false,
+				Kind:      p.Update,
+			}
 		}
 	}
 
 	if !equalSlicePtr(req.Inputs.SourcePostureChecks, req.State.SourcePostureChecks) {
-		diff["posture_checks"] = p.PropertyDiff{Kind: p.Update}
+		diff["postureChecks"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	p.GetLogger(ctx).Debugf("Diff:Policy[%s] diff=%d", req.ID, len(diff))
@@ -641,30 +631,6 @@ func fromAPIGroupMinimums(in *[]nbapi.GroupMinimum) *[]RuleGroup {
 	return &out
 }
 
-// Converts a single Resource to nbapi.Resource.
-func toAPIResource(in *Resource) *nbapi.Resource {
-	if in == nil {
-		return nil
-	}
-
-	return &nbapi.Resource{
-		Id:   in.Id,
-		Type: nbapi.ResourceType(in.Type),
-	}
-}
-
-// Converts a single nbapi.Resource to Resource.
-func fromAPIResource(in *nbapi.Resource) *Resource {
-	if in == nil {
-		return nil
-	}
-
-	return &Resource{
-		Id:   in.Id,
-		Type: ResourceType(in.Type),
-	}
-}
-
 func toGroupIds(groups *[]RuleGroup) *[]string {
 	if groups == nil {
 		return nil
@@ -694,16 +660,4 @@ func equalPortRangePtr(a, b *[]RulePortRange) bool {
 	}
 
 	return true
-}
-
-func equalResourcePtr(a, b *Resource) bool {
-	if a == nil && b == nil {
-		return true
-	}
-
-	if a == nil || b == nil {
-		return false
-	}
-
-	return a.Type == b.Type && a.Id == b.Id
 }

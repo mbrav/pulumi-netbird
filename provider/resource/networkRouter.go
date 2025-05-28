@@ -10,6 +10,8 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
+// TEST: InputDiff: false
+
 // NetworkRouter represents a Pulumi resource for NetBird network routers.
 type NetworkRouter struct{}
 
@@ -31,7 +33,6 @@ type NetworkRouterState struct {
 	Metric     int       `pulumi:"metric"`
 	Peer       *string   `pulumi:"peer,optional"`
 	PeerGroups *[]string `pulumi:"peer_groups,optional"`
-	NbID       string    `pulumi:"nbId"`
 }
 
 // Annotate provides documentation for NetworkRouter.
@@ -65,6 +66,7 @@ func (*NetworkRouter) Create(ctx context.Context, req infer.CreateRequest[Networ
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkRouterState]{
+			ID: "preview",
 			Output: NetworkRouterState{
 				NetworkID:  req.Inputs.NetworkID,
 				Enabled:    req.Inputs.Enabled,
@@ -103,7 +105,6 @@ func (*NetworkRouter) Create(ctx context.Context, req infer.CreateRequest[Networ
 			Metric:     router.Metric,
 			Peer:       router.Peer,
 			PeerGroups: router.PeerGroups,
-			NbID:       router.Id,
 		},
 	}, nil
 }
@@ -141,7 +142,6 @@ func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRou
 			Metric:     router.Metric,
 			Peer:       router.Peer,
 			PeerGroups: router.PeerGroups,
-			NbID:       router.Id,
 		},
 	}, nil
 }
@@ -159,7 +159,6 @@ func (*NetworkRouter) Update(ctx context.Context, req infer.UpdateRequest[Networ
 				Metric:     req.Inputs.Metric,
 				Peer:       req.Inputs.Peer,
 				PeerGroups: req.Inputs.PeerGroups,
-				NbID:       req.ID,
 			},
 		}, nil
 	}
@@ -188,7 +187,6 @@ func (*NetworkRouter) Update(ctx context.Context, req infer.UpdateRequest[Networ
 			Metric:     router.Metric,
 			Peer:       router.Peer,
 			PeerGroups: router.PeerGroups,
-			NbID:       router.Id,
 		},
 	}, nil
 }
@@ -217,23 +215,38 @@ func (*NetworkRouter) Diff(ctx context.Context, req infer.DiffRequest[NetworkRou
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.Enabled != req.State.Enabled {
-		diff["enabled"] = p.PropertyDiff{Kind: p.Update}
+		diff["enabled"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Masquerade != req.State.Masquerade {
-		diff["masquerade"] = p.PropertyDiff{Kind: p.Update}
+		diff["masquerade"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if req.Inputs.Metric != req.State.Metric {
-		diff["metric"] = p.PropertyDiff{Kind: p.Update}
+		diff["metric"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if !equalPtr(req.Inputs.Peer, req.State.Peer) {
-		diff["peer"] = p.PropertyDiff{Kind: p.Update}
+		diff["peer"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	if !equalSlicePtr(req.Inputs.PeerGroups, req.State.PeerGroups) {
-		diff["peer_groups"] = p.PropertyDiff{Kind: p.Update}
+		diff["peer_groups"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
 	}
 
 	p.GetLogger(ctx).Debugf("Diff:NetworkRouter[%s] diff=%d", req.ID, len(diff))

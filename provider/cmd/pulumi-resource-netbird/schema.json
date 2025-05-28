@@ -693,9 +693,6 @@
           "type": "integer",
           "description": "Routing metric value."
         },
-        "nbId": {
-          "type": "string"
-        },
         "network_id": {
           "type": "string",
           "description": "ID of the network this router belongs to."
@@ -717,7 +714,6 @@
         "enabled",
         "masquerade",
         "metric",
-        "nbId",
         "network_id"
       ],
       "inputProperties": {
@@ -759,11 +755,15 @@
     "netbird:resource:Peer": {
       "description": "A NetBird peer representing a connected device.",
       "properties": {
-        "inactivity_expiration_enabled": {
+        "approvalRequired": {
+          "type": "boolean",
+          "deprecationMessage": "Cloud only, not maintained in this provider"
+        },
+        "inactivityExpirationEnabled": {
           "type": "boolean",
           "description": "Whether Inactivity Expiration is enabled."
         },
-        "login_expiration_enabled": {
+        "loginExpirationEnabled": {
           "type": "boolean",
           "description": "Whether Login Expiration is enabled."
         },
@@ -778,17 +778,22 @@
       },
       "type": "object",
       "required": [
-        "inactivity_expiration_enabled",
-        "login_expiration_enabled",
+        "approvalRequired",
+        "inactivityExpirationEnabled",
+        "loginExpirationEnabled",
         "name",
         "sshEnabled"
       ],
       "inputProperties": {
-        "inactivity_expiration_enabled": {
+        "approvalRequired": {
+          "type": "boolean",
+          "deprecationMessage": "Cloud only, not maintained in this provider"
+        },
+        "inactivityExpirationEnabled": {
           "type": "boolean",
           "description": "Whether Inactivity Expiration is enabled."
         },
-        "login_expiration_enabled": {
+        "loginExpirationEnabled": {
           "type": "boolean",
           "description": "Whether Login Expiration is enabled."
         },
@@ -802,8 +807,9 @@
         }
       },
       "requiredInputs": [
-        "inactivity_expiration_enabled",
-        "login_expiration_enabled",
+        "approvalRequired",
+        "inactivityExpirationEnabled",
+        "loginExpirationEnabled",
         "name",
         "sshEnabled"
       ]
@@ -823,7 +829,7 @@
           "type": "string",
           "description": "Name Policy name identifier"
         },
-        "posture_checks": {
+        "postureChecks": {
           "type": "array",
           "items": {
             "type": "string"
@@ -857,7 +863,7 @@
           "type": "string",
           "description": "Name Policy name identifier"
         },
-        "posture_checks": {
+        "postureChecks": {
           "type": "array",
           "items": {
             "type": "string"

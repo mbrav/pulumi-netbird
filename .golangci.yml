@@ -65,8 +65,6 @@ linters:
     - dupl
     # TODO: Fix dynamic errors
     - err113
-    # TODO: Fix struct exhaustion
-    - exhaustruct
     - forcetypeassert
     # Allow long functions
     - funlen

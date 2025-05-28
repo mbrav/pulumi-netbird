@@ -23,7 +23,7 @@ type Policy struct {
 	// Name Policy name identifier
 	Name pulumi.StringOutput `pulumi:"name"`
 	// SourcePostureChecks Posture checks ID's applied to policy source groups, optional
-	PostureChecks pulumi.StringArrayOutput `pulumi:"postureChecks"`
+	Posture_checks pulumi.StringArrayOutput `pulumi:"posture_checks"`
 	// Rules Policy rule object for policy UI editor
 	Rules PolicyRuleStateArrayOutput `pulumi:"rules"`
 }
@@ -84,7 +84,7 @@ type policyArgs struct {
 	// Name Policy name identifier
 	Name string `pulumi:"name"`
 	// SourcePostureChecks Posture checks ID's applied to policy source groups, optional
-	PostureChecks []string `pulumi:"postureChecks"`
+	Posture_checks []string `pulumi:"posture_checks"`
 	// Rules Policy rule object for policy UI editor
 	Rules []PolicyRuleArgs `pulumi:"rules"`
 }
@@ -98,7 +98,7 @@ type PolicyArgs struct {
 	// Name Policy name identifier
 	Name pulumi.StringInput
 	// SourcePostureChecks Posture checks ID's applied to policy source groups, optional
-	PostureChecks pulumi.StringArrayInput
+	Posture_checks pulumi.StringArrayInput
 	// Rules Policy rule object for policy UI editor
 	Rules PolicyRuleArgsArrayInput
 }
@@ -206,8 +206,8 @@ func (o PolicyOutput) Name() pulumi.StringOutput {
 }
 
 // SourcePostureChecks Posture checks ID's applied to policy source groups, optional
-func (o PolicyOutput) PostureChecks() pulumi.StringArrayOutput {
-	return o.ApplyT(func(v *Policy) pulumi.StringArrayOutput { return v.PostureChecks }).(pulumi.StringArrayOutput)
+func (o PolicyOutput) Posture_checks() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *Policy) pulumi.StringArrayOutput { return v.Posture_checks }).(pulumi.StringArrayOutput)
 }
 
 // Rules Policy rule object for policy UI editor

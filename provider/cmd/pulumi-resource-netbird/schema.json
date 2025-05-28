@@ -841,7 +841,7 @@
           "type": "string",
           "description": "Name Policy name identifier"
         },
-        "postureChecks": {
+        "posture_checks": {
           "type": "array",
           "items": {
             "type": "string"
@@ -875,7 +875,7 @@
           "type": "string",
           "description": "Name Policy name identifier"
         },
-        "postureChecks": {
+        "posture_checks": {
           "type": "array",
           "items": {
             "type": "string"

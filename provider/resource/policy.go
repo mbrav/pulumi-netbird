@@ -22,11 +22,11 @@ func (Policy) Annotate(annotator infer.Annotator) {
 
 // PolicyArgs defines the user-supplied arguments for creating/updating a Policy resource.
 type PolicyArgs struct {
-	Name                string           `pulumi:"name"`                   // Policy name (required)
-	Description         *string          `pulumi:"description,optional"`   // Optional description
-	Enabled             bool             `pulumi:"enabled"`                // Whether the policy is enabled
-	Rules               []PolicyRuleArgs `pulumi:"rules"`                  // List of rules defined in the policy
-	SourcePostureChecks *[]string        `pulumi:"postureChecks,optional"` // Optional list of posture check IDs
+	Name                string           `pulumi:"name"`                    // Policy name (required)
+	Description         *string          `pulumi:"description,optional"`    // Optional description
+	Enabled             bool             `pulumi:"enabled"`                 // Whether the policy is enabled
+	Rules               []PolicyRuleArgs `pulumi:"rules"`                   // List of rules defined in the policy
+	SourcePostureChecks *[]string        `pulumi:"posture_checks,optional"` // Optional list of posture check IDs
 }
 
 // Annotation for PolicyArgs for generated SDKs.
@@ -44,7 +44,7 @@ type PolicyState struct {
 	Description         *string           `pulumi:"description,optional"`
 	Enabled             bool              `pulumi:"enabled"`
 	Rules               []PolicyRuleState `pulumi:"rules"`
-	SourcePostureChecks *[]string         `pulumi:"postureChecks,optional"`
+	SourcePostureChecks *[]string         `pulumi:"posture_checks,optional"`
 }
 
 // Annotation for PolicyState for generated SDKs.

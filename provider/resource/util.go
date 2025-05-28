@@ -5,40 +5,40 @@ import (
 )
 
 // Helper to stringify a pointer safely.
-func strPtr(s *string) string {
-	if s == nil {
+func strPtr(str *string) string {
+	if str == nil {
 		return ""
 	}
 
-	return *s
+	return *str
 }
 
 // Helper to compare string pointers safely.
-func equalPtr(a, b *string) bool {
-	if a == nil && b == nil {
+func equalPtr(atrA, strB *string) bool {
+	if atrA == nil && strB == nil {
 		return true
 	}
 
-	if a == nil || b == nil {
+	if atrA == nil || strB == nil {
 		return false
 	}
 
-	return *a == *b
+	return *atrA == *strB
 }
 
 // helper function to compare optional []string values.
-func equalSlicePtr(a, b *[]string) bool {
-	if a == nil && b == nil {
+func equalSlicePtr(sliceA, sliceB *[]string) bool {
+	if sliceA == nil && sliceB == nil {
 		return true
 	}
 
-	if a == nil || b == nil {
+	if sliceA == nil || sliceB == nil {
 		return false
 	}
 
 	// Copy and sort both before comparing
-	aSorted := slices.Clone(*a)
-	bSorted := slices.Clone(*b)
+	aSorted := slices.Clone(*sliceA)
+	bSorted := slices.Clone(*sliceB)
 	slices.Sort(aSorted)
 	slices.Sort(bSorted)
 

@@ -37,40 +37,40 @@ func (ResourceType) Values() []infer.EnumValue[ResourceType] {
 }
 
 // Converts a single Resource to nbapi.Resource.
-func toAPIResource(in *Resource) *nbapi.Resource {
-	if in == nil {
+func toAPIResource(resource *Resource) *nbapi.Resource {
+	if resource == nil {
 		return nil
 	}
 
 	return &nbapi.Resource{
-		Id:   in.Id,
-		Type: nbapi.ResourceType(in.Type),
+		Id:   resource.Id,
+		Type: nbapi.ResourceType(resource.Type),
 	}
 }
 
 // Converts a single nbapi.Resource to Resource.
-func fromAPIResource(in *nbapi.Resource) *Resource {
-	if in == nil {
+func fromAPIResource(apiResource *nbapi.Resource) *Resource {
+	if apiResource == nil {
 		return nil
 	}
 
 	return &Resource{
-		Id:   in.Id,
-		Type: ResourceType(in.Type),
+		Id:   apiResource.Id,
+		Type: ResourceType(apiResource.Type),
 	}
 }
 
 // Refactored equalResourcePtr to explicitly check for both pointers being nil
 // before comparing their fields. This ensures correct equality checks and
 // prevents potential nil pointer dereference issues.
-func equalResourcePtr(a, b *Resource) bool {
-	if a == nil && b == nil {
+func equalResourcePtr(resourceA, resourceB *Resource) bool {
+	if resourceA == nil && resourceB == nil {
 		return true
 	}
 
-	if a == nil || b == nil {
+	if resourceA == nil || resourceB == nil {
 		return false
 	}
 
-	return a.Type == b.Type && a.Id == b.Id
+	return resourceA.Type == resourceB.Type && resourceA.Id == resourceB.Id
 }

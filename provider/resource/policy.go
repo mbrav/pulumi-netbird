@@ -16,8 +16,8 @@ import (
 type Policy struct{}
 
 // Annotation for Policy for generated SDKs.
-func (Policy) Annotate(a infer.Annotator) {
-	a.Describe(&Policy{}, "A NetBird policy defining rules for communication between peers.")
+func (Policy) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&Policy{}, "A NetBird policy defining rules for communication between peers.")
 }
 
 // PolicyArgs defines the user-supplied arguments for creating/updating a Policy resource.
@@ -30,12 +30,12 @@ type PolicyArgs struct {
 }
 
 // Annotation for PolicyArgs for generated SDKs.
-func (p *PolicyArgs) Annotate(a infer.Annotator) {
-	a.Describe(&p.Name, "Name Policy name identifier")
-	a.Describe(&p.Description, "Description Policy friendly description, optional")
-	a.Describe(&p.Enabled, "Enabled Policy status")
-	a.Describe(&p.Rules, "Rules Policy rule object for policy UI editor")
-	a.Describe(&p.SourcePostureChecks, "SourcePostureChecks Posture checks ID's applied to policy source groups, optional")
+func (policy *PolicyArgs) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&policy.Name, "Name Policy name identifier")
+	annotator.Describe(&policy.Description, "Description Policy friendly description, optional")
+	annotator.Describe(&policy.Enabled, "Enabled Policy status")
+	annotator.Describe(&policy.Rules, "Rules Policy rule object for policy UI editor")
+	annotator.Describe(&policy.SourcePostureChecks, "SourcePostureChecks Posture checks ID's applied to policy source groups, optional")
 }
 
 // PolicyState represents the state of a Policy resource stored in Pulumi state.
@@ -48,12 +48,12 @@ type PolicyState struct {
 }
 
 // Annotation for PolicyState for generated SDKs.
-func (p *PolicyState) Annotate(a infer.Annotator) {
-	a.Describe(&p.Name, "Name Policy name identifier")
-	a.Describe(&p.Description, "Description Policy friendly description, optional")
-	a.Describe(&p.Enabled, "Enabled Policy status")
-	a.Describe(&p.Rules, "Rules Policy rule object for policy UI editor")
-	a.Describe(&p.SourcePostureChecks, "SourcePostureChecks Posture checks ID's applied to policy source groups, optional")
+func (policy *PolicyState) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&policy.Name, "Name Policy name identifier")
+	annotator.Describe(&policy.Description, "Description Policy friendly description, optional")
+	annotator.Describe(&policy.Enabled, "Enabled Policy status")
+	annotator.Describe(&policy.Rules, "Rules Policy rule object for policy UI editor")
+	annotator.Describe(&policy.SourcePostureChecks, "SourcePostureChecks Posture checks ID's applied to policy source groups, optional")
 }
 
 // PolicyRuleArgs represents user input for an individual rule in a policy.
@@ -74,20 +74,20 @@ type PolicyRuleArgs struct {
 }
 
 // Annotation for PolicyRuleArgs for generated SDKs.
-func (p *PolicyRuleArgs) Annotate(a infer.Annotator) {
-	a.Describe(&p.ID, "ID Policy rule.")
-	a.Describe(&p.Name, "Name Policy rule name identifier")
-	a.Describe(&p.Description, "Description Policy rule friendly description")
-	a.Describe(&p.Bidirectional, "Bidirectional Define if the rule is applicable in both directions, sources, and destinations.")
-	a.Describe(&p.Action, "Action Policy rule accept or drops packets")
-	a.Describe(&p.Enabled, "Enabled Policy rule status")
-	a.Describe(&p.Protocol, "Protocol Policy rule type of the traffic")
-	a.Describe(&p.Ports, "Ports Policy rule affected ports")
-	a.Describe(&p.PortRanges, "PortRanges Policy rule affected ports ranges list")
-	a.Describe(&p.Sources, "Sources Policy rule source group IDs")
-	a.Describe(&p.Destinations, "Destinations Policy rule destination group IDs")
-	a.Describe(&p.SourceResource, "SourceResource for the rule")
-	a.Describe(&p.DestinationResource, "DestinationResource for the rule ")
+func (policy *PolicyRuleArgs) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&policy.ID, "ID Policy rule.")
+	annotator.Describe(&policy.Name, "Name Policy rule name identifier")
+	annotator.Describe(&policy.Description, "Description Policy rule friendly description")
+	annotator.Describe(&policy.Bidirectional, "Bidirectional Define if the rule is applicable in both directions, sources, and destinations.")
+	annotator.Describe(&policy.Action, "Action Policy rule accept or drops packets")
+	annotator.Describe(&policy.Enabled, "Enabled Policy rule status")
+	annotator.Describe(&policy.Protocol, "Protocol Policy rule type of the traffic")
+	annotator.Describe(&policy.Ports, "Ports Policy rule affected ports")
+	annotator.Describe(&policy.PortRanges, "PortRanges Policy rule affected ports ranges list")
+	annotator.Describe(&policy.Sources, "Sources Policy rule source group IDs")
+	annotator.Describe(&policy.Destinations, "Destinations Policy rule destination group IDs")
+	annotator.Describe(&policy.SourceResource, "SourceResource for the rule")
+	annotator.Describe(&policy.DestinationResource, "DestinationResource for the rule ")
 }
 
 // PolicyRuleState represents the state of an individual rule within a policy.
@@ -108,20 +108,20 @@ type PolicyRuleState struct {
 }
 
 // Annotation for PolicyRuleState for generated SDKs.
-func (p *PolicyRuleState) Annotate(a infer.Annotator) {
-	a.Describe(&p.ID, "ID Policy rule.")
-	a.Describe(&p.Name, "Name Policy rule name identifier")
-	a.Describe(&p.Description, "Description Policy rule friendly description")
-	a.Describe(&p.Bidirectional, "Bidirectional Define if the rule is applicable in both directions, sources, and destinations.")
-	a.Describe(&p.Action, "Action Policy rule accept or drops packets")
-	a.Describe(&p.Enabled, "Enabled Policy rule status")
-	a.Describe(&p.Protocol, "Protocol Policy rule type of the traffic")
-	a.Describe(&p.Ports, "Ports Policy rule affected ports")
-	a.Describe(&p.PortRanges, "PortRanges Policy rule affected ports ranges list")
-	a.Describe(&p.Sources, "Sources Policy rule source group IDs")
-	a.Describe(&p.Destinations, "Destinations Policy rule destination group IDs")
-	a.Describe(&p.SourceResource, "SourceResource for the rule")
-	a.Describe(&p.DestinationResource, "DestinationResource for the rule ")
+func (policy *PolicyRuleState) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&policy.ID, "ID Policy rule.")
+	annotator.Describe(&policy.Name, "Name Policy rule name identifier")
+	annotator.Describe(&policy.Description, "Description Policy rule friendly description")
+	annotator.Describe(&policy.Bidirectional, "Bidirectional Define if the rule is applicable in both directions, sources, and destinations.")
+	annotator.Describe(&policy.Action, "Action Policy rule accept or drops packets")
+	annotator.Describe(&policy.Enabled, "Enabled Policy rule status")
+	annotator.Describe(&policy.Protocol, "Protocol Policy rule type of the traffic")
+	annotator.Describe(&policy.Ports, "Ports Policy rule affected ports")
+	annotator.Describe(&policy.PortRanges, "PortRanges Policy rule affected ports ranges list")
+	annotator.Describe(&policy.Sources, "Sources Policy rule source group IDs")
+	annotator.Describe(&policy.Destinations, "Destinations Policy rule destination group IDs")
+	annotator.Describe(&policy.SourceResource, "SourceResource for the rule")
+	annotator.Describe(&policy.DestinationResource, "DestinationResource for the rule ")
 }
 
 // RulePortRange type.
@@ -590,13 +590,13 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 }
 
 // Converts a slice of RulePortRange from state model to API model.
-func toAPIPortRanges(in *[]RulePortRange) *[]nbapi.RulePortRange {
-	if in == nil {
+func toAPIPortRanges(rulePortRange *[]RulePortRange) *[]nbapi.RulePortRange {
+	if rulePortRange == nil {
 		return nil
 	}
 
-	out := make([]nbapi.RulePortRange, len(*in))
-	for rulePRIndex, rulePR := range *in {
+	out := make([]nbapi.RulePortRange, len(*rulePortRange))
+	for rulePRIndex, rulePR := range *rulePortRange {
 		out[rulePRIndex] = nbapi.RulePortRange{Start: rulePR.Start, End: rulePR.End}
 	}
 
@@ -604,13 +604,13 @@ func toAPIPortRanges(in *[]RulePortRange) *[]nbapi.RulePortRange {
 }
 
 // Converts a slice of API RulePortRange to state model.
-func fromAPIPortRanges(in *[]nbapi.RulePortRange) *[]RulePortRange {
-	if in == nil {
+func fromAPIPortRanges(reulePortRangeAPI *[]nbapi.RulePortRange) *[]RulePortRange {
+	if reulePortRangeAPI == nil {
 		return nil
 	}
 
-	out := make([]RulePortRange, len(*in))
-	for rulePRIndex, rulePR := range *in {
+	out := make([]RulePortRange, len(*reulePortRangeAPI))
+	for rulePRIndex, rulePR := range *reulePortRangeAPI {
 		out[rulePRIndex] = RulePortRange{Start: rulePR.Start, End: rulePR.End}
 	}
 
@@ -618,13 +618,13 @@ func fromAPIPortRanges(in *[]nbapi.RulePortRange) *[]RulePortRange {
 }
 
 // Converts a slice of nbapi.GroupMinimum to state RuleGroup.
-func fromAPIGroupMinimums(in *[]nbapi.GroupMinimum) *[]RuleGroup {
-	if in == nil {
+func fromAPIGroupMinimums(group *[]nbapi.GroupMinimum) *[]RuleGroup {
+	if group == nil {
 		return nil
 	}
 
-	out := make([]RuleGroup, len(*in))
-	for groupIndex, group := range *in {
+	out := make([]RuleGroup, len(*group))
+	for groupIndex, group := range *group {
 		out[groupIndex] = RuleGroup{ID: group.Id, Name: group.Name}
 	}
 
@@ -644,17 +644,17 @@ func toGroupIds(groups *[]RuleGroup) *[]string {
 	return &iDs
 }
 
-func equalPortRangePtr(a, b *[]RulePortRange) bool {
-	if a == nil && b == nil {
+func equalPortRangePtr(portRangeA, portRangeB *[]RulePortRange) bool {
+	if portRangeA == nil && portRangeB == nil {
 		return true
 	}
 
-	if a == nil || b == nil || len(*a) != len(*b) {
+	if portRangeA == nil || portRangeB == nil || len(*portRangeA) != len(*portRangeB) {
 		return false
 	}
 
-	for i := range *a {
-		if (*a)[i] != (*b)[i] {
+	for i := range *portRangeA {
+		if (*portRangeA)[i] != (*portRangeB)[i] {
 			return false
 		}
 	}

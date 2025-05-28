@@ -17,8 +17,8 @@ import (
 type DNS struct{}
 
 // Annotate adds a description to the DNS resource type.
-func (n *DNS) Annotate(a infer.Annotator) {
-	a.Describe(&n, "A NetBird network.")
+func (n *DNS) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&n, "A NetBird network.")
 }
 
 // DNSArgs defines input fields for creating or updating a network.
@@ -34,15 +34,15 @@ type DNSArgs struct {
 }
 
 // Annotate provides documentation for DNSArgs fields.
-func (n *DNSArgs) Annotate(a infer.Annotator) {
-	a.Describe(&n.Name, "Name of nameserver group name")
-	a.Describe(&n.Description, "Description of the nameserver group")
-	a.Describe(&n.Domains, "Domains Match domain list. It should be empty only if primary is true.")
-	a.Describe(&n.Enabled, "Enabled Nameserver group status")
-	a.Describe(&n.Groups, "Groups Distribution group IDs that defines group of peers that will use this nameserver group")
-	a.Describe(&n.Primary, "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.")
-	a.Describe(&n.Nameservers, "Nameservers Nameserver list")
-	a.Describe(&n.SearchDomainsEnabled, "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.")
+func (n *DNSArgs) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&n.Name, "Name of nameserver group name")
+	annotator.Describe(&n.Description, "Description of the nameserver group")
+	annotator.Describe(&n.Domains, "Domains Match domain list. It should be empty only if primary is true.")
+	annotator.Describe(&n.Enabled, "Enabled Nameserver group status")
+	annotator.Describe(&n.Groups, "Groups Distribution group IDs that defines group of peers that will use this nameserver group")
+	annotator.Describe(&n.Primary, "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.")
+	annotator.Describe(&n.Nameservers, "Nameservers Nameserver list")
+	annotator.Describe(&n.SearchDomainsEnabled, "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.")
 }
 
 // DNSState represents the output state of a network resource.
@@ -58,15 +58,15 @@ type DNSState struct {
 }
 
 // Annotate provides documentation for DNSState fields.
-func (n *DNSState) Annotate(a infer.Annotator) {
-	a.Describe(&n.Name, "Name of nameserver group name")
-	a.Describe(&n.Description, "Description of the nameserver group")
-	a.Describe(&n.Domains, "Domains Match domain list. It should be empty only if primary is true.")
-	a.Describe(&n.Enabled, "Enabled Nameserver group status")
-	a.Describe(&n.Groups, "Groups Distribution group IDs that defines group of peers that will use this nameserver group")
-	a.Describe(&n.Primary, "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.")
-	a.Describe(&n.Nameservers, "Nameservers Nameserver list")
-	a.Describe(&n.SearchDomainsEnabled, "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.")
+func (nameserver *DNSState) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&nameserver.Name, "Name of nameserver group name")
+	annotator.Describe(&nameserver.Description, "Description of the nameserver group")
+	annotator.Describe(&nameserver.Domains, "Domains Match domain list. It should be empty only if primary is true.")
+	annotator.Describe(&nameserver.Enabled, "Enabled Nameserver group status")
+	annotator.Describe(&nameserver.Groups, "Groups Distribution group IDs that defines group of peers that will use this nameserver group")
+	annotator.Describe(&nameserver.Primary, "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.")
+	annotator.Describe(&nameserver.Nameservers, "Nameservers Nameserver list")
+	annotator.Describe(&nameserver.SearchDomainsEnabled, "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.")
 }
 
 // Nameserver defines model for Nameserver.
@@ -77,10 +77,10 @@ type Nameserver struct {
 }
 
 // Annotate provides documentation for DNSState fields.
-func (n *Nameserver) Annotate(a infer.Annotator) {
-	a.Describe(&n.Ip, "Ip Nameserver IP")
-	a.Describe(&n.NsType, "NsType Nameserver Type")
-	a.Describe(&n.Port, "Port Nameserver Port")
+func (nameserver *Nameserver) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&nameserver.Ip, "Ip Nameserver IP")
+	annotator.Describe(&nameserver.NsType, "NsType Nameserver Type")
+	annotator.Describe(&nameserver.Port, "Port Nameserver Port")
 }
 
 // NameserverNsType defines the allowed DNS types

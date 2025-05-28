@@ -71,5 +71,3 @@ linters:
     # FIX : the methods of "Policy" use pointer receiver and non-pointer receiver.
     - recvcheck
     - revive
-    # FIX: var len
-    - varnamelen

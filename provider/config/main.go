@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"errors"
 
 	"github.com/netbirdio/netbird/management/client/rest"
 	p "github.com/pulumi/pulumi-go-provider"
@@ -30,11 +29,11 @@ func (c *Config) Configure(ctx context.Context) error {
 	// p.GetLogger(ctx).Debugf("Config netbirdToken=%s, netbirdUrl=%s", c.NetBirdUrl, c.NetBirdToken)
 
 	if c.NetBirdToken == "" {
-		return errors.New("netbirdToken must be set in provider configuration")
+		return ErrMissingNetBirdToken
 	}
 
 	if c.NetBirdUrl == "" {
-		return errors.New("netbirdUrl must be set in provider configuration")
+		return ErrMissingNetBirdURL
 	}
 
 	return nil

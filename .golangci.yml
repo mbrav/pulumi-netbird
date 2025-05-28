@@ -63,8 +63,6 @@ linters:
     - depguard
     # TODO: Fix duplicate code in functions
     - dupl
-    # TODO: Fix dynamic errors
-    - err113
     # Allow long functions
     - funlen
     # Allow lines longer than 120 characters

@@ -5,7 +5,7 @@
   keywords = ["category/networking", "category/security", "kind/native"]
   readme = "README.md"
   requires-python = ">=3.9"
-  version = "0.0.16"
+  version = "0.0.18"
   [project.license]
     text = "AGPL-3.0"
   [project.urls]

@@ -15,14 +15,28 @@ import (
 // Peer represents a resource for managing NetBird peers.
 type Peer struct{}
 
+// Annotate describes the resource and its fields.
+func (peer *Peer) Annotate(a infer.Annotator) {
+	a.Describe(peer, "A NetBird peer representing a connected device.")
+}
+
 // PeerArgs represents the input arguments for a peer resource.
 type PeerArgs struct {
 	Name                        string `pulumi:"name"`
 	InactivityExpirationEnabled bool   `pulumi:"inactivityExpirationEnabled"`
 	LoginExpirationEnabled      bool   `pulumi:"loginExpirationEnabled"`
-	SshEnabled                  bool   `pulumi:"sshEnabled"`
+	SSHEnabled                  bool   `pulumi:"sshEnabled"`
 	// Cloud Only
 	ApprovalRequired *bool `pulumi:"approvalRequired"`
+}
+
+// Annotate adds descriptive annotations to the PeerArgs fields for use in generated SDKs.
+func (p *PeerArgs) Annotate(a infer.Annotator) {
+	a.Describe(&p.Name, "The name of the peer.")
+	a.Describe(&p.InactivityExpirationEnabled, "Whether Inactivity Expiration is enabled.")
+	a.Describe(&p.LoginExpirationEnabled, "Whether Login Expiration is enabled.")
+	a.Describe(&p.SSHEnabled, "Whether SSH is enabled.")
+	a.Deprecate(&p.ApprovalRequired, "Cloud only, not maintained in this provider")
 }
 
 // PeerState represents the state of the peer resource.
@@ -30,39 +44,27 @@ type PeerState struct {
 	Name                        string `pulumi:"name"`
 	InactivityExpirationEnabled bool   `pulumi:"inactivityExpirationEnabled"`
 	LoginExpirationEnabled      bool   `pulumi:"loginExpirationEnabled"`
-	SshEnabled                  bool   `pulumi:"sshEnabled"`
+	SSHEnabled                  bool   `pulumi:"sshEnabled"`
 	// Cloud Only
 	ApprovalRequired *bool `pulumi:"approvalRequired"`
 }
 
-// Annotate describes the resource and its fields.
-func (Peer) Annotate(a infer.Annotator) {
-	a.Describe(&Peer{}, "A NetBird peer representing a connected device.")
-}
-
-func (p *PeerArgs) Annotate(a infer.Annotator) {
-	a.Describe(&p.Name, "The name of the peer.")
-	a.Describe(&p.InactivityExpirationEnabled, "Whether Inactivity Expiration is enabled.")
-	a.Describe(&p.LoginExpirationEnabled, "Whether Login Expiration is enabled.")
-	a.Describe(&p.SshEnabled, "Whether SSH is enabled.")
-	a.Deprecate(&p.ApprovalRequired, "Cloud only, not maintained in this provider")
-}
-
+// Annotate adds descriptive annotations to the PeerState fields for use in generated SDKs.
 func (p *PeerState) Annotate(a infer.Annotator) {
 	a.Describe(&p.Name, "The name of the peer.")
 	a.Describe(&p.InactivityExpirationEnabled, "Whether Inactivity Expiration is enabled.")
 	a.Describe(&p.LoginExpirationEnabled, "Whether Login Expiration is enabled.")
-	a.Describe(&p.SshEnabled, "Whether SSH is enabled.")
+	a.Describe(&p.SSHEnabled, "Whether SSH is enabled.")
 	a.Deprecate(&p.ApprovalRequired, "Cloud only, not maintained in this provider")
 }
 
 // Create is a no-op; peers must be imported.
-func (*Peer) Create(ctx context.Context, req infer.CreateRequest[PeerArgs]) (infer.CreateResponse[PeerState], error) {
+func (*Peer) Create(_ context.Context, req infer.CreateRequest[PeerArgs]) (infer.CreateResponse[PeerState], error) {
 	state := PeerState{
 		Name:                        req.Inputs.Name,
 		InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
 		LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
-		SshEnabled:                  req.Inputs.SshEnabled,
+		SSHEnabled:                  req.Inputs.SSHEnabled,
 		ApprovalRequired:            nil,
 	}
 
@@ -101,14 +103,14 @@ func (*Peer) Read(ctx context.Context, req infer.ReadRequest[PeerArgs, PeerState
 			Name:                        peer.Name,
 			InactivityExpirationEnabled: peer.InactivityExpirationEnabled,
 			LoginExpirationEnabled:      peer.LoginExpirationEnabled,
-			SshEnabled:                  peer.SshEnabled,
+			SSHEnabled:                  peer.SshEnabled,
 			ApprovalRequired:            nil,
 		},
 		State: PeerState{
 			Name:                        peer.Name,
 			InactivityExpirationEnabled: peer.InactivityExpirationEnabled,
 			LoginExpirationEnabled:      peer.LoginExpirationEnabled,
-			SshEnabled:                  peer.SshEnabled,
+			SSHEnabled:                  peer.SshEnabled,
 			ApprovalRequired:            nil,
 		},
 	}, nil
@@ -124,7 +126,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 				Name:                        req.Inputs.Name,
 				InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
 				LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
-				SshEnabled:                  req.Inputs.SshEnabled,
+				SSHEnabled:                  req.Inputs.SSHEnabled,
 				ApprovalRequired:            nil,
 			},
 		}, nil
@@ -139,7 +141,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 		Name:                        req.Inputs.Name,
 		InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
 		LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
-		SshEnabled:                  req.Inputs.SshEnabled,
+		SshEnabled:                  req.Inputs.SSHEnabled,
 		ApprovalRequired:            nil, // ApprovalRequired is not supported in for Cloud version only
 	})
 	if err != nil {
@@ -151,7 +153,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 			Name:                        req.Inputs.Name,
 			InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
 			LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
-			SshEnabled:                  req.Inputs.SshEnabled,
+			SSHEnabled:                  req.Inputs.SSHEnabled,
 			ApprovalRequired:            nil,
 		},
 	}, nil
@@ -191,7 +193,7 @@ func (*Peer) Diff(ctx context.Context, req infer.DiffRequest[PeerArgs, PeerState
 		}
 	}
 
-	if req.Inputs.SshEnabled != req.State.SshEnabled {
+	if req.Inputs.SSHEnabled != req.State.SSHEnabled {
 		diff["sshEnabled"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,

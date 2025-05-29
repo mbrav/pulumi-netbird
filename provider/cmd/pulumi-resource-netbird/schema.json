@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -86,7 +86,7 @@
       "properties": {
         "ip": {
           "type": "string",
-          "description": "Ip Nameserver IP"
+          "description": "IP of Nameserver"
         },
         "port": {
           "type": "integer",
@@ -293,7 +293,7 @@
           "description": "The unique identifier of the resource."
         },
         "type": {
-          "$ref": "#/types/netbird:resource:ResourceType",
+          "$ref": "#/types/netbird:resource:Type",
           "description": "The type of resource: 'domain', 'host', or 'subnet'."
         }
       },
@@ -301,23 +301,6 @@
       "required": [
         "id",
         "type"
-      ]
-    },
-    "netbird:resource:ResourceType": {
-      "type": "string",
-      "enum": [
-        {
-          "description": "A domain resource (e.g., example.com).",
-          "value": "domain"
-        },
-        {
-          "description": "A host resource (e.g., peer or device).",
-          "value": "host"
-        },
-        {
-          "description": "A subnet resource (e.g., 192.168.0.0/24).",
-          "value": "subnet"
-        }
       ]
     },
     "netbird:resource:RuleAction": {
@@ -365,6 +348,23 @@
       "required": [
         "end",
         "start"
+      ]
+    },
+    "netbird:resource:Type": {
+      "type": "string",
+      "enum": [
+        {
+          "description": "A domain resource (e.g., example.com).",
+          "value": "domain"
+        },
+        {
+          "description": "A host resource (e.g., peer or device).",
+          "value": "host"
+        },
+        {
+          "description": "A subnet resource (e.g., 192.168.0.0/24).",
+          "value": "subnet"
+        }
       ]
     }
   },

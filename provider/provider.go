@@ -1,3 +1,4 @@
+// Package provider package provider provides the NetBird Pulumi provider implementation.
 package provider
 
 import (
@@ -12,11 +13,11 @@ import (
 // Change to var to enable semver Version management.
 const (
 	Name    string = "netbird"
-	Version string = "0.0.16"
+	Version string = "0.0.18"
 )
 
-// Define Provider.
-func Provider() p.Provider {
+// Provider creates and returns a new Pulumi provider for managing NetBird resources.
+func Provider() p.Provider { //nolint:funlen
 	// Build provider
 	provider, err := infer.NewProviderBuilder().
 		WithDisplayName(Name).

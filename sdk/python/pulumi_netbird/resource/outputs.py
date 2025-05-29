@@ -32,7 +32,7 @@ class Nameserver(dict):
                  port: builtins.int,
                  type: 'NameserverNsType'):
         """
-        :param builtins.str ip: Ip Nameserver IP
+        :param builtins.str ip: IP of Nameserver
         :param builtins.int port: Port Nameserver Port
         :param 'NameserverNsType' type: NsType Nameserver Type
         """
@@ -44,7 +44,7 @@ class Nameserver(dict):
     @pulumi.getter
     def ip(self) -> builtins.str:
         """
-        Ip Nameserver IP
+        IP of Nameserver
         """
         return pulumi.get(self, "ip")
 
@@ -248,10 +248,10 @@ class PolicyRuleState(dict):
 class Resource(dict):
     def __init__(__self__, *,
                  id: builtins.str,
-                 type: 'ResourceType'):
+                 type: 'Type'):
         """
         :param builtins.str id: The unique identifier of the resource.
-        :param 'ResourceType' type: The type of resource: 'domain', 'host', or 'subnet'.
+        :param 'Type' type: The type of resource: 'domain', 'host', or 'subnet'.
         """
         pulumi.set(__self__, "id", id)
         pulumi.set(__self__, "type", type)
@@ -266,7 +266,7 @@ class Resource(dict):
 
     @property
     @pulumi.getter
-    def type(self) -> 'ResourceType':
+    def type(self) -> 'Type':
         """
         The type of resource: 'domain', 'host', or 'subnet'.
         """

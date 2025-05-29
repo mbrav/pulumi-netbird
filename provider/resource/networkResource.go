@@ -16,6 +16,11 @@ import (
 // NetworkResource represents a Pulumi resource for NetBird network resources.
 type NetworkResource struct{}
 
+// Annotate adds a description annotation for the NetworkResource type for generated SDKs.
+func (net *NetworkResource) Annotate(a infer.Annotator) {
+	a.Describe(net, "A NetBird network resource, such as a CIDR range assigned to the network.")
+}
+
 // NetworkResourceArgs represents the input arguments for creating or updating a network resource.
 type NetworkResourceArgs struct {
 	Name        string   `pulumi:"name"`
@@ -26,21 +31,6 @@ type NetworkResourceArgs struct {
 	GroupIDs    []string `pulumi:"group_ids"`
 }
 
-// NetworkResourceState represents the state of a network resource.
-type NetworkResourceState struct {
-	Name        string   `pulumi:"name"`
-	Description *string  `pulumi:"description,optional"`
-	NetworkID   string   `pulumi:"network_id"`
-	Address     string   `pulumi:"address"`
-	Enabled     bool     `pulumi:"enabled"`
-	GroupIDs    []string `pulumi:"group_ids"`
-}
-
-// NetworkResource annotation.
-func (NetworkResource) Annotate(a infer.Annotator) {
-	a.Describe(&NetworkResource{}, "A NetBird network resource, such as a CIDR range assigned to the network.")
-}
-
 // Annotate provides documentation for NetworkResourceArgs fields.
 func (a *NetworkResourceArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&a.Name, "Name of the network resource.")
@@ -49,6 +39,16 @@ func (a *NetworkResourceArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&a.Address, "CIDR or IP address block assigned to the resource.")
 	annotator.Describe(&a.Enabled, "Whether the resource is enabled.")
 	annotator.Describe(&a.GroupIDs, "List of group IDs associated with this resource.")
+}
+
+// NetworkResourceState represents the state of a network resource.
+type NetworkResourceState struct {
+	Name        string   `pulumi:"name"`
+	Description *string  `pulumi:"description,optional"`
+	NetworkID   string   `pulumi:"network_id"`
+	Address     string   `pulumi:"address"`
+	Enabled     bool     `pulumi:"enabled"`
+	GroupIDs    []string `pulumi:"group_ids"`
 }
 
 // Annotate provides documentation for NetworkResourceState fields.

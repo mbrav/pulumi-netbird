@@ -1,3 +1,4 @@
+// Package resource provides the NetBird resource types
 package resource
 
 import (
@@ -7,29 +8,29 @@ import (
 
 // Resource represents a single NetBird resource used in a rule (e.g., domain, host, subnet).
 type Resource struct {
-	Id   string       `pulumi:"id"`   // The unique ID of the resource
-	Type ResourceType `pulumi:"type"` // The type of the resource (domain, host, subnet)
+	ID   string `pulumi:"id"`   // The unique ID of the resource
+	Type Type   `pulumi:"type"` // The type of the resource (domain, host, subnet)
 }
 
-// Annotation for Resource for generated SDKs.
+// Annotate adds descriptive annotations to the Resource fields for use in generated SDKs.
 func (r *Resource) Annotate(a infer.Annotator) {
-	a.Describe(&r.Id, "The unique identifier of the resource.")
+	a.Describe(&r.ID, "The unique identifier of the resource.")
 	a.Describe(&r.Type, "The type of resource: 'domain', 'host', or 'subnet'.")
 }
 
-// ResourceType defines the allowed resource types for a policy rule.
-type ResourceType string
+// Type defines the allowed resource types for a policy rule.
+type Type string
 
-// Enum constants for resource types.
+// ResourceTypeDomain, ResourceTypeHost, and ResourceTypeSyyubnet represent different types of network resources.
 const (
-	ResourceTypeDomain ResourceType = ResourceType(nbapi.ResourceTypeDomain)
-	ResourceTypeHost   ResourceType = ResourceType(nbapi.ResourceTypeHost)
-	ResourceTypeSubnet ResourceType = ResourceType(nbapi.ResourceTypeSubnet)
+	ResourceTypeDomain Type = Type(nbapi.ResourceTypeDomain)
+	ResourceTypeHost   Type = Type(nbapi.ResourceTypeHost)
+	ResourceTypeSubnet Type = Type(nbapi.ResourceTypeSubnet)
 )
 
 // Values returns the list of supported ResourceType values for Pulumi enum generation.
-func (ResourceType) Values() []infer.EnumValue[ResourceType] {
-	return []infer.EnumValue[ResourceType]{
+func (Type) Values() []infer.EnumValue[Type] {
+	return []infer.EnumValue[Type]{
 		{Name: "Domain", Value: ResourceTypeDomain, Description: "A domain resource (e.g., example.com)."},
 		{Name: "Host", Value: ResourceTypeHost, Description: "A host resource (e.g., peer or device)."},
 		{Name: "Subnet", Value: ResourceTypeSubnet, Description: "A subnet resource (e.g., 192.168.0.0/24)."},
@@ -43,7 +44,7 @@ func toAPIResource(resource *Resource) *nbapi.Resource {
 	}
 
 	return &nbapi.Resource{
-		Id:   resource.Id,
+		Id:   resource.ID,
 		Type: nbapi.ResourceType(resource.Type),
 	}
 }
@@ -70,8 +71,8 @@ func fromAPIResource(apiResource *nbapi.Resource) *Resource {
 	}
 
 	return &Resource{
-		Id:   apiResource.Id,
-		Type: ResourceType(apiResource.Type),
+		ID:   apiResource.Id,
+		Type: Type(apiResource.Type),
 	}
 }
 
@@ -102,5 +103,5 @@ func equalResourcePtr(resourceA, resourceB *Resource) bool {
 		return false
 	}
 
-	return resourceA.Type == resourceB.Type && resourceA.Id == resourceB.Id
+	return resourceA.Type == resourceB.Type && resourceA.ID == resourceB.ID
 }

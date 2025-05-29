@@ -8,18 +8,18 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// Define provider-level configuration.
+// Config holds the provider configuration for NetBiryyd.
 type Config struct {
-	NetBirdUrl   string `pulumi:"netbirdUrl"`
+	NetBirdURL   string `pulumi:"netbirdUrl"`
 	NetBirdToken string `provider:"secret"   pulumi:"netbirdToken"`
 }
 
 // Annotate provider configuration.
 func (c *Config) Annotate(a infer.Annotator) {
-	a.Describe(&c.NetBirdUrl, "URL to Netbird API, example: https://api.netbird.io")
+	a.Describe(&c.NetBirdURL, "URL to Netbird API, example: https://api.netbird.io")
 	a.Describe(&c.NetBirdToken, "Netbird API Token")
 
-	a.SetDefault(&c.NetBirdUrl, "https://api.netbird.io", "NETBIRD_URL")
+	a.SetDefault(&c.NetBirdURL, "https://api.netbird.io", "NETBIRD_URL")
 	a.SetDefault(&c.NetBirdToken, "", "NETBIRD_TOKEN")
 }
 
@@ -32,14 +32,14 @@ func (c *Config) Configure(ctx context.Context) error {
 		return ErrMissingNetBirdToken
 	}
 
-	if c.NetBirdUrl == "" {
+	if c.NetBirdURL == "" {
 		return ErrMissingNetBirdURL
 	}
 
 	return nil
 }
 
-// Retrieve the NetBird client using the provider configuration.
+// GetNetBirdClient creates and returns a new NetBird REST client using the provider configuration from the given context.
 func GetNetBirdClient(ctx context.Context) (*rest.Client, error) {
 	config := infer.GetConfig[*Config](ctx)
 	if config == nil {
@@ -50,25 +50,25 @@ func GetNetBirdClient(ctx context.Context) (*rest.Client, error) {
 		return nil, ErrMissingNetBirdToken
 	}
 
-	if config.NetBirdUrl == "" {
+	if config.NetBirdURL == "" {
 		return nil, ErrMissingNetBirdURL
 	}
 
-	client := rest.NewWithBearerToken(config.NetBirdUrl, config.NetBirdToken)
+	client := rest.NewWithBearerToken(config.NetBirdURL, config.NetBirdToken)
 
 	return client, nil
 }
 
-// Retrieve the NetBird URL using the provider configuration.
+// GetNetBirdURL retrieves the NetBird URL from the provider configuration in the given context.
 func GetNetBirdURL(ctx context.Context) (string, error) {
 	config := infer.GetConfig[*Config](ctx)
 	if config == nil {
 		return "", ErrNilProviderConfig
 	}
 
-	if config.NetBirdUrl == "" {
+	if config.NetBirdURL == "" {
 		return "", ErrMissingNetBirdURL
 	}
 
-	return config.NetBirdUrl, nil
+	return config.NetBirdURL, nil
 }

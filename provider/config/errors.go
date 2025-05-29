@@ -1,3 +1,4 @@
+// Package config provideds configuration and error handling for the NetBird Pulumi provider.
 package config
 
 import "errors"

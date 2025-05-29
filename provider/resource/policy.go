@@ -15,9 +15,9 @@ import (
 // Policy defines the Pulumi resource handler for NetBird policy resources.
 type Policy struct{}
 
-// Annotation for Policy for generated SDKs.
-func (Policy) Annotate(annotator infer.Annotator) {
-	annotator.Describe(&Policy{}, "A NetBird policy defining rules for communication between peers.")
+// Annotate adds a description annotation for the Policy type for generated SDKs.
+func (policy *Policy) Annotate(annotator infer.Annotator) {
+	annotator.Describe(policy, "A NetBird policy defining rules for communication between peers.")
 }
 
 // PolicyArgs defines the user-supplied arguments for creating/updating a Policy resource.
@@ -29,7 +29,7 @@ type PolicyArgs struct {
 	SourcePostureChecks *[]string        `pulumi:"posture_checks,optional"` // Optional list of posture check IDs
 }
 
-// Annotation for PolicyArgs for generated SDKs.
+// Annotate adds field descriptions to PolicyArgs for generated SDKs.
 func (policy *PolicyArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&policy.Name, "Name Policy name identifier")
 	annotator.Describe(&policy.Description, "Description Policy friendly description, optional")
@@ -47,7 +47,7 @@ type PolicyState struct {
 	SourcePostureChecks *[]string         `pulumi:"posture_checks,optional"`
 }
 
-// Annotation for PolicyState for generated SDKs.
+// Annotate adds descriptive annotations to the PolicyState fields for use in generated SDKs.
 func (policy *PolicyState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&policy.Name, "Name Policy name identifier")
 	annotator.Describe(&policy.Description, "Description Policy friendly description, optional")
@@ -73,7 +73,7 @@ type PolicyRuleArgs struct {
 	DestinationResource *Resource        `pulumi:"destinationResource,optional"` // Optional single destination resource
 }
 
-// Annotation for PolicyRuleArgs for generated SDKs.
+// Annotate adds descriptive annotations to the PolicyRuleArgs fields for use in generated SDKs.
 func (policy *PolicyRuleArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&policy.ID, "ID Policy rule.")
 	annotator.Describe(&policy.Name, "Name Policy rule name identifier")
@@ -107,7 +107,7 @@ type PolicyRuleState struct {
 	DestinationResource *Resource        `pulumi:"destinationResource,optional"`
 }
 
-// Annotation for PolicyRuleState for generated SDKs.
+// Annotate adds descriptive annotations to the PolicyRuleState fields for use in generated SDKs.
 func (policy *PolicyRuleState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&policy.ID, "ID Policy rule.")
 	annotator.Describe(&policy.Name, "Name Policy rule name identifier")
@@ -130,7 +130,7 @@ type RulePortRange struct {
 	End   int `pulumi:"end"`
 }
 
-// Annotation for Resource for generated SDKs.
+// Annotate adds descriptive annotations to the RulePortRange fields for use in generated SDKs.
 func (r *RulePortRange) Annotate(a infer.Annotator) {
 	a.Describe(&r.Start, "Start of port range")
 	a.Describe(&r.End, "End of port range")
@@ -142,7 +142,7 @@ type RuleGroup struct {
 	Name string `pulumi:"name"`
 }
 
-// Annotation for RuleGroup for generated SDKs.
+// Annotate adds descriptive annotations to the RuleGroup fields for use in generated SDKs.
 func (g *RuleGroup) Annotate(a infer.Annotator) {
 	a.Describe(&g.ID, "The unique identifier of the group.")
 	a.Describe(&g.Name, "The name of the group.")
@@ -152,6 +152,8 @@ func (g *RuleGroup) Annotate(a infer.Annotator) {
 // This wraps the nbapi type to allow method definitions (like Values()).
 type RuleAction string
 
+// RuleActi2yyonAccept and RuleActionDrop represent possible actions for a policy rule.
+// RuleActionAccept allows traffic, while RuleActionDrop blocks traffic.
 const (
 	RuleActionAccept RuleAction = RuleAction(nbapi.PolicyRuleActionAccept)
 	RuleActionDrop   RuleAction = RuleAction(nbapi.PolicyRuleActionDrop)
@@ -172,8 +174,8 @@ type Protocol string
 const (
 	ProtocolAll  Protocol = Protocol(nbapi.PolicyRuleProtocolAll)
 	ProtocolIcmp Protocol = Protocol(nbapi.PolicyRuleProtocolIcmp)
-	ProtocolTcp  Protocol = Protocol(nbapi.PolicyRuleProtocolTcp)
-	ProtocolUdp  Protocol = Protocol(nbapi.PolicyRuleProtocolUdp)
+	ProtocolTCP  Protocol = Protocol(nbapi.PolicyRuleProtocolTcp)
+	ProtocolUDP  Protocol = Protocol(nbapi.PolicyRuleProtocolUdp)
 )
 
 // Values returns valid protocol values for Pulumi enum support.
@@ -181,8 +183,8 @@ func (Protocol) Values() []infer.EnumValue[Protocol] {
 	return []infer.EnumValue[Protocol]{
 		{Name: "All", Value: ProtocolAll, Description: "All protocols"},
 		{Name: "ICMP", Value: ProtocolIcmp, Description: "ICMP protocol"},
-		{Name: "TCP", Value: ProtocolTcp, Description: "TCP protocol"},
-		{Name: "UDP", Value: ProtocolUdp, Description: "UDP protocol"},
+		{Name: "TCP", Value: ProtocolTCP, Description: "TCP protocol"},
+		{Name: "UDP", Value: ProtocolUDP, Description: "UDP protocol"},
 	}
 }
 
@@ -190,6 +192,7 @@ func (Protocol) Values() []infer.EnumValue[Protocol] {
 func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) (infer.CreateResponse[PolicyState], error) {
 	p.GetLogger(ctx).Debugf("Create:Policy")
 
+	// Handle dry-run (preview) mode by constructing a preview PolicyState.
 	if req.DryRun {
 		// Convert PolicyRuleArgs to PolicyRuleState for preview
 		rules := make([]PolicyRuleState, len(req.Inputs.Rules))
@@ -203,7 +206,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 				for j, g := range *rule.Sources {
 					groups[j] = RuleGroup{Name: "preview", ID: g}
 				}
-
+				// Assign the address of the groups slice to sources
 				sources = &groups
 			}
 
@@ -212,7 +215,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 				for j, g := range *rule.Destinations {
 					groups[j] = RuleGroup{Name: "preview", ID: g}
 				}
-
+				// Assign the address of the groups slice to destinations
 				destinations = &groups
 			}
 
@@ -555,8 +558,8 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 				input.Protocol != state.Protocol ||
 				!equalSlicePtr(input.Ports, state.Ports) ||
 				!equalPortRangePtr(input.PortRanges, state.PortRanges) ||
-				!equalSlicePtr(input.Sources, toGroupIds(state.Sources)) ||
-				!equalSlicePtr(input.Destinations, toGroupIds(state.Destinations)) ||
+				!equalSlicePtr(input.Sources, toGroupIDs(state.Sources)) ||
+				!equalSlicePtr(input.Destinations, toGroupIDs(state.Destinations)) ||
 				!equalResourcePtr(input.SourceResource, state.SourceResource) ||
 				!equalResourcePtr(input.DestinationResource, state.DestinationResource) {
 				equal = false
@@ -631,7 +634,7 @@ func fromAPIGroupMinimums(group *[]nbapi.GroupMinimum) *[]RuleGroup {
 	return &out
 }
 
-func toGroupIds(groups *[]RuleGroup) *[]string {
+func toGroupIDs(groups *[]RuleGroup) *[]string {
 	if groups == nil {
 		return nil
 	}

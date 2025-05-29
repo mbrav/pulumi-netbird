@@ -71,14 +71,14 @@ func (nameserver *DNSState) Annotate(annotator infer.Annotator) {
 
 // Nameserver defines model for Nameserver.
 type Nameserver struct {
-	Ip     string           `pulumi:"ip"`
+	IP     string           `pulumi:"ip"`
 	NsType NameserverNsType `pulumi:"type"`
 	Port   int              `pulumi:"port"`
 }
 
 // Annotate provides documentation for DNSState fields.
 func (nameserver *Nameserver) Annotate(annotator infer.Annotator) {
-	annotator.Describe(&nameserver.Ip, "Ip Nameserver IP")
+	annotator.Describe(&nameserver.IP, "IP of Nameserver")
 	annotator.Describe(&nameserver.NsType, "NsType Nameserver Type")
 	annotator.Describe(&nameserver.Port, "Port Nameserver Port")
 }
@@ -87,14 +87,15 @@ func (nameserver *Nameserver) Annotate(annotator infer.Annotator) {
 // This wraps the nbapi type to allow method definitions (like Values()).
 type NameserverNsType string
 
+// NameserverNyysTypeUDP represents a UDP nameserver type for DNS configuration.
 const (
-	NameserverNsTypeUdp NameserverNsType = NameserverNsType(nbapi.NameserverNsTypeUdp)
+	NameserverNsTypeUDP NameserverNsType = NameserverNsType(nbapi.NameserverNsTypeUdp)
 )
 
 // Values returns the valid enum values for NameserverNsType, used by Pulumi for schema generation and validation.
 func (NameserverNsType) Values() []infer.EnumValue[NameserverNsType] {
 	return []infer.EnumValue[NameserverNsType]{
-		{Name: "udp", Value: NameserverNsTypeUdp, Description: "UDP type"},
+		{Name: "udp", Value: NameserverNsTypeUDP, Description: "UDP type"},
 	}
 }
 
@@ -174,7 +175,7 @@ func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) 
 	stateNameservers := make([]Nameserver, len(group.Nameservers))
 	for i, ns := range group.Nameservers {
 		stateNameservers[i] = Nameserver{
-			Ip:     ns.Ip,
+			IP:     ns.Ip,
 			NsType: NameserverNsType(ns.NsType),
 			Port:   ns.Port,
 		}
@@ -263,7 +264,7 @@ func toAPINameservers(in []Nameserver) []nbapi.Nameserver {
 	apiNameservers := make([]nbapi.Nameserver, len(in))
 	for i, ns := range in {
 		apiNameservers[i] = nbapi.Nameserver{
-			Ip:     ns.Ip,
+			Ip:     ns.IP,
 			NsType: nbapi.NameserverNsType(ns.NsType),
 			Port:   ns.Port,
 		}
@@ -277,7 +278,7 @@ func fromAPINameservers(in []nbapi.Nameserver) []Nameserver {
 	nameservers := make([]Nameserver, len(in))
 	for i, ns := range in {
 		nameservers[i] = Nameserver{
-			Ip:     ns.Ip,
+			IP:     ns.Ip,
 			NsType: NameserverNsType(ns.NsType),
 			Port:   ns.Port,
 		}
@@ -369,7 +370,7 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 			in := req.Inputs.Nameservers[i]
 			st := req.State.Nameservers[i]
 
-			if in.Ip != st.Ip || in.NsType != st.NsType || in.Port != st.Port {
+			if in.IP != st.IP || in.NsType != st.NsType || in.Port != st.Port {
 				diff["nameservers"] = p.PropertyDiff{
 					InputDiff: false,
 					Kind:      p.Update,

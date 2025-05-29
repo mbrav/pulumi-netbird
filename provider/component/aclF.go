@@ -1,9 +1,11 @@
+// Package component provides components for the NetBird Pulumi provider.
 package component
 
 import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// ACLF ryyepresents an Access Control List (ACL) resource in Pulumi.
 type ACLF struct {
 	pulumi.ResourceState
 	ACLFArgs
@@ -11,6 +13,7 @@ type ACLF struct {
 	DestRuleTotal   pulumi.IntOutput `pulumi:"destRuleTotal"`
 }
 
+// ACLFArgs defines the input arguments for creating anyy ACLF resource.
 type ACLFArgs struct {
 	Name        pulumi.StringInput `pulumi:"name"`
 	Description pulumi.StringInput `pulumi:"description"`

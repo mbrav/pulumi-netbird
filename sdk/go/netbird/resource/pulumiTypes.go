@@ -14,7 +14,7 @@ import (
 var _ = internal.GetEnvOrDefault
 
 type Nameserver struct {
-	// Ip Nameserver IP
+	// IP of Nameserver
 	Ip string `pulumi:"ip"`
 	// Port Nameserver Port
 	Port int `pulumi:"port"`
@@ -34,7 +34,7 @@ type NameserverInput interface {
 }
 
 type NameserverArgs struct {
-	// Ip Nameserver IP
+	// IP of Nameserver
 	Ip pulumi.StringInput `pulumi:"ip"`
 	// Port Nameserver Port
 	Port pulumi.IntInput `pulumi:"port"`
@@ -93,7 +93,7 @@ func (o NameserverOutput) ToNameserverOutputWithContext(ctx context.Context) Nam
 	return o
 }
 
-// Ip Nameserver IP
+// IP of Nameserver
 func (o NameserverOutput) Ip() pulumi.StringOutput {
 	return o.ApplyT(func(v Nameserver) string { return v.Ip }).(pulumi.StringOutput)
 }
@@ -465,7 +465,7 @@ type Resource struct {
 	// The unique identifier of the resource.
 	Id string `pulumi:"id"`
 	// The type of resource: 'domain', 'host', or 'subnet'.
-	Type ResourceType `pulumi:"type"`
+	Type Type `pulumi:"type"`
 }
 
 // ResourceInput is an input type that accepts ResourceArgs and ResourceOutput values.
@@ -483,7 +483,7 @@ type ResourceArgs struct {
 	// The unique identifier of the resource.
 	Id pulumi.StringInput `pulumi:"id"`
 	// The type of resource: 'domain', 'host', or 'subnet'.
-	Type ResourceTypeInput `pulumi:"type"`
+	Type TypeInput `pulumi:"type"`
 }
 
 func (ResourceArgs) ElementType() reflect.Type {
@@ -594,8 +594,8 @@ func (o ResourceOutput) Id() pulumi.StringOutput {
 }
 
 // The type of resource: 'domain', 'host', or 'subnet'.
-func (o ResourceOutput) Type() ResourceTypeOutput {
-	return o.ApplyT(func(v Resource) ResourceType { return v.Type }).(ResourceTypeOutput)
+func (o ResourceOutput) Type() TypeOutput {
+	return o.ApplyT(func(v Resource) Type { return v.Type }).(TypeOutput)
 }
 
 type ResourcePtrOutput struct{ *pulumi.OutputState }
@@ -633,13 +633,13 @@ func (o ResourcePtrOutput) Id() pulumi.StringPtrOutput {
 }
 
 // The type of resource: 'domain', 'host', or 'subnet'.
-func (o ResourcePtrOutput) Type() ResourceTypePtrOutput {
-	return o.ApplyT(func(v *Resource) *ResourceType {
+func (o ResourcePtrOutput) Type() TypePtrOutput {
+	return o.ApplyT(func(v *Resource) *Type {
 		if v == nil {
 			return nil
 		}
 		return &v.Type
-	}).(ResourceTypePtrOutput)
+	}).(TypePtrOutput)
 }
 
 type ResourceArrayOutput struct{ *pulumi.OutputState }

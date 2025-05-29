@@ -1,3 +1,4 @@
+// Package main is the entry point for the Pulumi NetBird provider.
 package main
 
 import (

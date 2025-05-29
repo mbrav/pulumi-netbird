@@ -57,17 +57,15 @@ output:
 linters:
   default: all
   disable:
-    # TODO: Allow cyclomatic complexity > 10
-    - cyclop
     # TODO: Fix imports from Main
     - depguard
-    # TODO: Fix duplicate code in functions
-    - dupl
-    # Allow long functions
-    - funlen
     # Allow lines longer than 120 characters
     - lll
+    - err113
     - mnd
-    # FIX : the methods of "Policy" use pointer receiver and non-pointer receiver.
-    - recvcheck
-    - revive
+    # TODO: Fix duplicate code in functions
+    - dupl
+    # TODO: Allow cyclomatic complexity > 10
+    - cyclop
+    # Allow long functions
+    - funlen

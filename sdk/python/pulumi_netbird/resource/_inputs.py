@@ -33,7 +33,7 @@ if not MYPY:
     class NameserverArgsDict(TypedDict):
         ip: pulumi.Input[builtins.str]
         """
-        Ip Nameserver IP
+        IP of Nameserver
         """
         port: pulumi.Input[builtins.int]
         """
@@ -53,7 +53,7 @@ class NameserverArgs:
                  port: pulumi.Input[builtins.int],
                  type: pulumi.Input['NameserverNsType']):
         """
-        :param pulumi.Input[builtins.str] ip: Ip Nameserver IP
+        :param pulumi.Input[builtins.str] ip: IP of Nameserver
         :param pulumi.Input[builtins.int] port: Port Nameserver Port
         :param pulumi.Input['NameserverNsType'] type: NsType Nameserver Type
         """
@@ -65,7 +65,7 @@ class NameserverArgs:
     @pulumi.getter
     def ip(self) -> pulumi.Input[builtins.str]:
         """
-        Ip Nameserver IP
+        IP of Nameserver
         """
         return pulumi.get(self, "ip")
 
@@ -371,7 +371,7 @@ if not MYPY:
         """
         The unique identifier of the resource.
         """
-        type: pulumi.Input['ResourceType']
+        type: pulumi.Input['Type']
         """
         The type of resource: 'domain', 'host', or 'subnet'.
         """
@@ -382,10 +382,10 @@ elif False:
 class ResourceArgs:
     def __init__(__self__, *,
                  id: pulumi.Input[builtins.str],
-                 type: pulumi.Input['ResourceType']):
+                 type: pulumi.Input['Type']):
         """
         :param pulumi.Input[builtins.str] id: The unique identifier of the resource.
-        :param pulumi.Input['ResourceType'] type: The type of resource: 'domain', 'host', or 'subnet'.
+        :param pulumi.Input['Type'] type: The type of resource: 'domain', 'host', or 'subnet'.
         """
         pulumi.set(__self__, "id", id)
         pulumi.set(__self__, "type", type)
@@ -404,14 +404,14 @@ class ResourceArgs:
 
     @property
     @pulumi.getter
-    def type(self) -> pulumi.Input['ResourceType']:
+    def type(self) -> pulumi.Input['Type']:
         """
         The type of resource: 'domain', 'host', or 'subnet'.
         """
         return pulumi.get(self, "type")
 
     @type.setter
-    def type(self, value: pulumi.Input['ResourceType']):
+    def type(self, value: pulumi.Input['Type']):
         pulumi.set(self, "type", value)
 
 

@@ -9,8 +9,8 @@ from enum import Enum
 __all__ = [
     'NameserverNsType',
     'Protocol',
-    'ResourceType',
     'RuleAction',
+    'Type',
 ]
 
 
@@ -42,8 +42,20 @@ class Protocol(builtins.str, Enum):
     """
 
 
-@pulumi.type_token("netbird:resource:ResourceType")
-class ResourceType(builtins.str, Enum):
+@pulumi.type_token("netbird:resource:RuleAction")
+class RuleAction(builtins.str, Enum):
+    ACCEPT = "accept"
+    """
+    Accept action
+    """
+    DROP = "drop"
+    """
+    Drop action
+    """
+
+
+@pulumi.type_token("netbird:resource:Type")
+class Type(builtins.str, Enum):
     DOMAIN = "domain"
     """
     A domain resource (e.g., example.com).
@@ -55,16 +67,4 @@ class ResourceType(builtins.str, Enum):
     SUBNET = "subnet"
     """
     A subnet resource (e.g., 192.168.0.0/24).
-    """
-
-
-@pulumi.type_token("netbird:resource:RuleAction")
-class RuleAction(builtins.str, Enum):
-    ACCEPT = "accept"
-    """
-    Accept action
-    """
-    DROP = "drop"
-    """
-    Drop action
     """

@@ -15,6 +15,11 @@ import (
 // NetworkRouter represents a Pulumi resource for NetBird network routers.
 type NetworkRouter struct{}
 
+// Annotate provides documentation for NetworkRouter.
+func (netR *NetworkRouter) Annotate(a infer.Annotator) {
+	a.Describe(netR, "A NetBird network router resource.")
+}
+
 // NetworkRouterArgs represents the input arguments for creating or updating a network router.
 type NetworkRouterArgs struct {
 	NetworkID  string    `pulumi:"network_id"`
@@ -25,21 +30,6 @@ type NetworkRouterArgs struct {
 	PeerGroups *[]string `pulumi:"peer_groups,optional"`
 }
 
-// NetworkRouterState represents the state of a network router.
-type NetworkRouterState struct {
-	NetworkID  string    `pulumi:"network_id"`
-	Enabled    bool      `pulumi:"enabled"`
-	Masquerade bool      `pulumi:"masquerade"`
-	Metric     int       `pulumi:"metric"`
-	Peer       *string   `pulumi:"peer,optional"`
-	PeerGroups *[]string `pulumi:"peer_groups,optional"`
-}
-
-// Annotate provides documentation for NetworkRouter.
-func (NetworkRouter) Annotate(a infer.Annotator) {
-	a.Describe(&NetworkRouter{}, "A NetBird network router resource.")
-}
-
 // Annotate provides documentation for NetworkRouterArgs fields.
 func (a *NetworkRouterArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&a.NetworkID, "ID of the network this router belongs to.")
@@ -48,6 +38,16 @@ func (a *NetworkRouterArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&a.Metric, "Routing metric value.")
 	annotator.Describe(&a.Peer, "Optional peer ID associated with this router.")
 	annotator.Describe(&a.PeerGroups, "Optional list of peer group IDs associated with this router.")
+}
+
+// NetworkRouterState represents the state of a network router.
+type NetworkRouterState struct {
+	NetworkID  string    `pulumi:"network_id"`
+	Enabled    bool      `pulumi:"enabled"`
+	Masquerade bool      `pulumi:"masquerade"`
+	Metric     int       `pulumi:"metric"`
+	Peer       *string   `pulumi:"peer,optional"`
+	PeerGroups *[]string `pulumi:"peer_groups,optional"`
 }
 
 // Annotate provides documentation for NetworkRouterState fields.

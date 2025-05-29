@@ -18,7 +18,7 @@ OS                := $(shell uname)
 SHELL             := /bin/bash
 GO_TEST           := go test -v -count=1 -cover -timeout 2h -parallel ${TESTPARALLELISM}
 
-.PHONY: help prepare ensure build only_build lint install install_provider_symlink \
+.PHONY: help ensure cov build only_build lint install install_provider_symlink \
         provider provider_symlink provider_debug go_sdk test_provider test_all \
         install_go_sdk pulumi_init up down
 
@@ -26,11 +26,6 @@ help: ## Show help
 	@echo "Available Makefile targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
-
-prepare:: ## Prepare renamed project structure
-	@if [ -d "provider/cmd/pulumi-resource-${PACK}" ]; then \
-		mv "provider/cmd/pulumi-resource-${PACK}" "provider/cmd/pulumi-resource-${NAME}"; \
-	fi
 
 ensure: ## Ensure Go modules are tidy
 	cd provider && go mod tidy
@@ -43,6 +38,14 @@ ensure-update: ## Ensure Go modules are tidy and update
 	cd sdk && go get -u ./... && go mod tidy
 	cd tests && go get -u ./... && go mod tidy
 	cd examples/go && go get -u ./... && go mod tidy
+
+cov: ## Generate coverage report
+	rm ./coverage.out || true
+	go test -coverprofile=coverage.out ./...
+	go tool cover -func coverage.out
+
+cov-html: cov ## View coverage HTML report
+	go tool cover -html=coverage.out
 
 schema: $(PROVIDER_BIN) ## Generate schema.json from provider binary
 	@echo "Generating schema.json..."

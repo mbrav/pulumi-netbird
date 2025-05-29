@@ -127,7 +127,7 @@ func main() {
 						groupDev.ID(),
 					},
 					DestinationResource: &resource.ResourceArgs{
-						Type: resource.ResourceTypeSubnet,
+						Type: resource.TypeSubnet,
 						Id:   netresR1Net02.ID(),
 					},
 				},

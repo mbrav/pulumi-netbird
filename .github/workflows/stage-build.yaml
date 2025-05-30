@@ -3,15 +3,11 @@ name: Build
 on:
   workflow_call:
 
-permissions: read-all
-
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   build:
     name: Build Binary
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
@@ -23,26 +19,27 @@ jobs:
           cache-dependency-path: |
             go.sum
 
-      - name: Install Pulumi CLI
+      - name: Install Pulumi CLI 🚀
         uses: pulumi/actions@v6
         with:
           pulumi-version: ^3
 
-      - name: Output Makefile variables
+      - name: Install pulumictl
         run: |
-          make print
+          go install github.com/pulumi/pulumictl/cmd/pulumictl@latest
         shell: bash
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: 3.13
+      - name: Cross build binaries 📦
+        run: make cross_build
 
-      - name: Build binary and SDK 📦
-        run: make build
-
-      - name: Upload binary artifact 🗃️
-        uses: actions/upload-artifact@v4
+      - name: Publish release with assets
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
         with:
-          name: pulumi-resource-netbird
-          path: bin/pulumi-resource-netbird
+          generate_release_notes: true
+          draft: true
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          files: dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

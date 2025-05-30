@@ -135,6 +135,22 @@ lint: ## Run Go linters
 
 build: provider sdk_go ## Build provider binary and SDK
 
+cross_build: ## Build binaries for multiple OS/ARCH targets
+	@mkdir -p dist
+	@mkdir -p bin
+	@rm -rf dist/* bin/*
+	@for os in linux darwin; do \
+		for arch in amd64 arm64; do \
+			BIN_NAME=pulumi-resource-${PACK}-${VERSION}-$$os-$$arch; \
+			GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 \
+			go build -o bin/$$BIN_NAME -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" \
+				$(PROJECT)/${PROVIDER_PATH}/cmd/$(PROVIDER); \
+			cp bin/$$BIN_NAME dist/; \
+			tar -czf dist/$$BIN_NAME.tar.gz -C dist $$BIN_NAME; \
+			rm dist/$$BIN_NAME; \
+		done; \
+	done
+
 install: build ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin
 	pulumi plugin rm resource $$PACK -y || true

@@ -1,14 +1,32 @@
-name: Run Acceptance Tests on main
-
-permissions: read-all
+name: CI Pipeline
 
 on:
   push:
     branches:
       - main
+    tags:
+      - "*"
 
 jobs:
   lint:
+    name: Lint Code
     uses: ./.github/workflows/stage-lint.yaml
+  #
+  # acceptance:
+  #   name: Acceptance Tests
+  #   needs: lint
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #     - name: Run acceptance tests
+  #       run: |
+  #         # Your acceptance test commands here
+  #         echo "Running acceptance tests"
+
   build:
+    name: Build and Release
+    # needs: acceptance
+    needs: lint
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '.')
     uses: ./.github/workflows/stage-build.yaml

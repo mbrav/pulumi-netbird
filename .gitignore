@@ -37,3 +37,4 @@ provider/**/schema-embed
 ./pulumi-go-provider
 schema-*.json
 tools
+dist/

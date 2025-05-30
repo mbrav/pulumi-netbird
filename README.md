@@ -6,8 +6,6 @@
     </a>
 </p>
 
-**🚧 Project still in WIP (wait for `v0.1.0` tag)**
-
 [NetBird](https://github.com/netbirdio/netbird) is a modern, WireGuard-based mesh VPN. This provider integrates NetBird into Pulumi for seamless infrastructure automation.
 
 This repository contains the **Pulumi NetBird Provider**, a native Pulumi provider built in Go using the [`pulumi-go-provider`](https://github.com/pulumi/pulumi-go-provider) SDK. It enables you to manage **NetBird** resources—like networks, peers, groups, and access rules—declaratively using Pulumi's infrastructure-as-code framework.
@@ -17,6 +15,14 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 - Manage NetBird resources using Pulumi in Go or YAML
 - Built natively with Pulumi's Go SDK
 - Includes example configurations for local testing
+
+## 📦 Installing plugin
+
+To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.19`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
+
+```bash
+pulumi plugin install resource netbird 0.0.19 --server github://api.github.com/mbrav/pulumi-netbird
+````
 
 ## 🧪 Build and Test
 

@@ -30,7 +30,7 @@ func Provider() p.Provider { //nolint:funlen
 		WithHomepage("https://pulumi.com").
 		WithLicense("AGPL-3.0").
 		WithRepository("https://github.com/mbrav/pulumi-netbird").
-		WithPluginDownloadURL("github://api.github.com/mbrav").
+		WithPluginDownloadURL("github://api.github.com/mbrav/pulumi-netbird").
 		WithPublisher("mbrav").
 		WithLogoURL("https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp").
 		WithNamespace("pulumi").

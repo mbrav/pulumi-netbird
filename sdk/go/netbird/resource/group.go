@@ -19,8 +19,9 @@ type Group struct {
 	// The name of the NetBird group.
 	Name pulumi.StringOutput `pulumi:"name"`
 	// An optional list of peer IDs associated with this group.
-	Peers     pulumi.StringArrayOutput `pulumi:"peers"`
-	Resources ResourceArrayOutput      `pulumi:"resources"`
+	Peers pulumi.StringArrayOutput `pulumi:"peers"`
+	// An optional list of resources to associate with this group.
+	Resources ResourceArrayOutput `pulumi:"resources"`
 }
 
 // NewGroup registers a new resource with the given unique name, arguments, and options.
@@ -69,7 +70,8 @@ type groupArgs struct {
 	// The name of the NetBird group.
 	Name string `pulumi:"name"`
 	// An optional list of peer IDs to associate with this group.
-	Peers     []string   `pulumi:"peers"`
+	Peers []string `pulumi:"peers"`
+	// An optional list of resources to associate with this group.
 	Resources []Resource `pulumi:"resources"`
 }
 
@@ -78,7 +80,8 @@ type GroupArgs struct {
 	// The name of the NetBird group.
 	Name pulumi.StringInput
 	// An optional list of peer IDs to associate with this group.
-	Peers     pulumi.StringArrayInput
+	Peers pulumi.StringArrayInput
+	// An optional list of resources to associate with this group.
 	Resources ResourceArrayInput
 }
 
@@ -179,6 +182,7 @@ func (o GroupOutput) Peers() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *Group) pulumi.StringArrayOutput { return v.Peers }).(pulumi.StringArrayOutput)
 }
 
+// An optional list of resources to associate with this group.
 func (o GroupOutput) Resources() ResourceArrayOutput {
 	return o.ApplyT(func(v *Group) ResourceArrayOutput { return v.Resources }).(ResourceArrayOutput)
 }

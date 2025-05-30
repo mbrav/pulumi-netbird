@@ -141,7 +141,7 @@ cross_build: ## Build binaries for multiple OS/ARCH targets
 	@rm -rf dist/* bin/*
 	@for os in linux darwin; do \
 		for arch in amd64 arm64; do \
-			BIN_NAME=pulumi-resource-${PACK}-${VERSION}-$$os-$$arch; \
+			BIN_NAME=pulumi-resource-${PACK}-v${VERSION}-$$os-$$arch; \
 			GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 \
 			go build -o bin/$$BIN_NAME -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" \
 				$(PROJECT)/${PROVIDER_PATH}/cmd/$(PROVIDER); \

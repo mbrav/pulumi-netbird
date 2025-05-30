@@ -11,7 +11,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// NOTE: Implement Resources
 // TEST: InputDiff: false
 
 // Group represents a resource for managing NetBird groups.
@@ -33,6 +32,7 @@ type GroupArgs struct {
 func (g *GroupArgs) Annotate(a infer.Annotator) {
 	a.Describe(&g.Name, "The name of the NetBird group.")
 	a.Describe(&g.Peers, "An optional list of peer IDs to associate with this group.")
+	a.Describe(&g.Resources, "An optional list of resources to associate with this group.")
 }
 
 // GroupState represents the output state of a group resource.
@@ -46,6 +46,7 @@ type GroupState struct {
 func (g *GroupState) Annotate(a infer.Annotator) {
 	a.Describe(&g.Name, "The name of the NetBird group.")
 	a.Describe(&g.Peers, "An optional list of peer IDs associated with this group.")
+	a.Describe(&g.Resources, "An optional list of resources to associate with this group.")
 }
 
 // Create creates a new NetBird group.

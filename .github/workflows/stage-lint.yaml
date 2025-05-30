@@ -13,7 +13,8 @@ jobs:
     container: golangci/golangci-lint:v2.1.6
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-      - name: Lint
+      - name: Checkout Repo ✅
+        uses: actions/checkout@v3
+
+      - name: Lint 🧹
         run: make lint

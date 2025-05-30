@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  workflow_call:
+
+permissions: read-all
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    name: Build Binary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Setup Go ✨
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache-dependency-path: |
+            go.sum
+
+      - name: Install Pulumi CLI
+        uses: pulumi/actions@v6
+        with:
+          pulumi-version: ^3
+
+      - name: Output Makefile variables
+        run: |
+          make print
+        shell: bash
+
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: 3.13
+
+      - name: Build binary and SDK 📦
+        run: make build
+
+      - name: Upload binary artifact 🗃️
+        uses: actions/upload-artifact@v4
+        with:
+          name: pulumi-resource-netbird
+          path: bin/pulumi-resource-netbird

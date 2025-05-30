@@ -4,7 +4,7 @@ PROJECT           := github.com/mbrav/pulumi-netbird
 
 GOPATH            := $(shell go env GOPATH)
 WORKING_DIR       := $(shell pwd)
-EXAMPLES_DIR      := $(WORKING_DIR)/examples/yaml
+EXAMPLES_DIR      := $(WORKING_DIR)/examples
 TESTPARALLELISM   := 4
 
 PROVIDER          := pulumi-resource-$(PACK)
@@ -26,6 +26,17 @@ help: ## Show help
 	@echo "Available Makefile targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## ' Makefile | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
+
+print: ## Print variable values
+	@echo "PACK: ${PACK}"
+	@echo "PACKDIR: ${PACKDIR}"
+	@echo "PROJECT: ${PROJECT}"
+	@echo "GOPATH: ${GOPATH}"
+	@echo "WORKING_DIR: ${WORKING_DIR}"
+	@echo "EXAMPLES_DIR: ${EXAMPLES_DIR}"
+	@echo "PROVIDER_BIN: ${PROVIDER_BIN}"
+	@echo "VERSION: ${VERSION}"
+	@echo "OS: ${OS}"
 
 ensure: ## Ensure Go modules are tidy
 	cd provider && go mod tidy
@@ -93,27 +104,27 @@ endef
 
 up: ## Deploy stack
 	$(call pulumi_login) \
-	cd ${EXAMPLES_DIR} && \
+	cd ${EXAMPLES_DIR}/yaml && \
 	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
 	pulumi up --yes -d -v 3
 
 refresh: ## Refresh the stack state from the actual resources
 	$(call pulumi_login) \
-	cd ${EXAMPLES_DIR} && \
+	cd ${EXAMPLES_DIR}/yaml && \
 	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
 	pulumi refresh --yes -d -v 3
 
 plan: ## Preview stack changes without applying
 	$(call pulumi_login) \
-	cd ${EXAMPLES_DIR} && \
+	cd ${EXAMPLES_DIR}/yaml && \
 	pulumi cancel --stack ${PACK}-dev --yes >/dev/null 2>&1 || true && \
 	(pulumi stack init ${PACK}-dev || pulumi stack select ${PACK}-dev) && \
 	pulumi preview -d -v 3
 
 down: ## Destroy stack
-	$(call pulumi_login) \
+	$(call pulumi_login)/yaml \
 	cd ${EXAMPLES_DIR} && \
 	pulumi stack select ${PACK}-dev && \
 	pulumi destroy --yes && \

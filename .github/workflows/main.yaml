@@ -9,4 +9,6 @@ on:
 
 jobs:
   lint:
-    uses: ./.github/workflows/stage-lint.yml
+    uses: ./.github/workflows/stage-lint.yaml
+  build:
+    uses: ./.github/workflows/stage-build.yaml

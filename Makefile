@@ -122,7 +122,7 @@ down: ## Destroy stack
 lint: ## Run Go linters
 	GOFLAGS=-buildvcs=false golangci-lint run -c ./.golangci.yml
 
-build: provider sdk_go sdk_python ## Build provider binary and SDK
+build: provider sdk_go ## Build provider binary and SDK
 
 install: build ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin

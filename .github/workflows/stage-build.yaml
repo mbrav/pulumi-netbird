@@ -37,8 +37,7 @@ jobs:
         if: github.ref_type == 'tag'
         with:
           generate_release_notes: true
-          draft: true
-          tag_name: ${{ github.ref_name }}
+          # draft: true
           name: Release ${{ github.ref_name }}
           files: dist/*.tar.gz
         env:

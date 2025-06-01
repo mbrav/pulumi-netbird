@@ -23,14 +23,44 @@ jobs:
         uses: pulumi/actions@v6
         with:
           pulumi-version: ^3
+      #
+      # - name: Install pulumictl
+      #   run: |
+      #     go install github.com/pulumi/pulumictl/cmd/pulumictl@latest
+      #   shell: bash
+      #
 
       - name: Install pulumictl
-        run: |
-          go install github.com/pulumi/pulumictl/cmd/pulumictl@latest
         shell: bash
+        run: |
+          set -e
+
+          VERSION="v0.0.49"
+          OS="$(uname | tr '[:upper:]' '[:lower:]')"
+          ARCH="$(uname -m)"
+
+          case "$ARCH" in
+            x86_64) ARCH="amd64" ;;
+            arm64|aarch64) ARCH="arm64" ;;
+            *) echo "Unsupported architecture: $ARCH" && exit 1 ;;
+          esac
+
+          FILENAME="pulumictl-${VERSION}-${OS}-${ARCH}.tar.gz"
+          DOWNLOAD_URL="https://github.com/pulumi/pulumictl/releases/download/${VERSION}/${FILENAME}"
+
+          echo "Downloading ${DOWNLOAD_URL}"
+          curl -sSL "${DOWNLOAD_URL}" -o "/tmp/${FILENAME}"
+
+          mkdir -p /tmp/pulumictl-bin
+          tar -xzf "/tmp/${FILENAME}" -C /tmp/pulumictl-bin
+          sudo mv /tmp/pulumictl-bin/pulumictl /usr/local/bin/
+
+          pulumictl version
 
       - name: Cross build binaries 📦
-        run: make cross_build
+        run: |
+          make cross_build
+          make checksums
 
       - name: Publish release with assets
         uses: softprops/action-gh-release@v2
@@ -39,6 +69,8 @@ jobs:
           generate_release_notes: true
           # draft: true
           name: Release ${{ github.ref_name }}
-          files: dist/*.tar.gz
+          files: |
+            dist/*.tar.gz
+            dist/checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

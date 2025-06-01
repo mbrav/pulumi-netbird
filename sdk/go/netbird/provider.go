@@ -16,9 +16,9 @@ type Provider struct {
 	pulumi.ProviderResourceState
 
 	// Netbird API Token
-	NetbirdToken pulumi.StringOutput `pulumi:"netbirdToken"`
+	Token pulumi.StringOutput `pulumi:"token"`
 	// URL to Netbird API, example: https://api.netbird.io
-	NetbirdUrl pulumi.StringOutput `pulumi:"netbirdUrl"`
+	Url pulumi.StringOutput `pulumi:"url"`
 }
 
 // NewProvider registers a new resource with the given unique name, arguments, and options.
@@ -28,21 +28,21 @@ func NewProvider(ctx *pulumi.Context,
 		return nil, errors.New("missing one or more required arguments")
 	}
 
-	if args.NetbirdToken == nil {
+	if args.Token == nil {
 		if d := internal.GetEnvOrDefault("", nil, "NETBIRD_TOKEN"); d != nil {
-			args.NetbirdToken = pulumi.String(d.(string))
+			args.Token = pulumi.String(d.(string))
 		}
 	}
-	if args.NetbirdUrl == nil {
+	if args.Url == nil {
 		if d := internal.GetEnvOrDefault("https://api.netbird.io", nil, "NETBIRD_URL"); d != nil {
-			args.NetbirdUrl = pulumi.String(d.(string))
+			args.Url = pulumi.String(d.(string))
 		}
 	}
-	if args.NetbirdToken != nil {
-		args.NetbirdToken = pulumi.ToSecret(args.NetbirdToken).(pulumi.StringInput)
+	if args.Token != nil {
+		args.Token = pulumi.ToSecret(args.Token).(pulumi.StringInput)
 	}
 	secrets := pulumi.AdditionalSecretOutputs([]string{
-		"netbirdToken",
+		"token",
 	})
 	opts = append(opts, secrets)
 	opts = internal.PkgResourceDefaultOpts(opts)
@@ -56,17 +56,17 @@ func NewProvider(ctx *pulumi.Context,
 
 type providerArgs struct {
 	// Netbird API Token
-	NetbirdToken string `pulumi:"netbirdToken"`
+	Token string `pulumi:"token"`
 	// URL to Netbird API, example: https://api.netbird.io
-	NetbirdUrl string `pulumi:"netbirdUrl"`
+	Url string `pulumi:"url"`
 }
 
 // The set of arguments for constructing a Provider resource.
 type ProviderArgs struct {
 	// Netbird API Token
-	NetbirdToken pulumi.StringInput
+	Token pulumi.StringInput
 	// URL to Netbird API, example: https://api.netbird.io
-	NetbirdUrl pulumi.StringInput
+	Url pulumi.StringInput
 }
 
 func (ProviderArgs) ElementType() reflect.Type {
@@ -107,13 +107,13 @@ func (o ProviderOutput) ToProviderOutputWithContext(ctx context.Context) Provide
 }
 
 // Netbird API Token
-func (o ProviderOutput) NetbirdToken() pulumi.StringOutput {
-	return o.ApplyT(func(v *Provider) pulumi.StringOutput { return v.NetbirdToken }).(pulumi.StringOutput)
+func (o ProviderOutput) Token() pulumi.StringOutput {
+	return o.ApplyT(func(v *Provider) pulumi.StringOutput { return v.Token }).(pulumi.StringOutput)
 }
 
 // URL to Netbird API, example: https://api.netbird.io
-func (o ProviderOutput) NetbirdUrl() pulumi.StringOutput {
-	return o.ApplyT(func(v *Provider) pulumi.StringOutput { return v.NetbirdUrl }).(pulumi.StringOutput)
+func (o ProviderOutput) Url() pulumi.StringOutput {
+	return o.ApplyT(func(v *Provider) pulumi.StringOutput { return v.Url }).(pulumi.StringOutput)
 }
 
 func init() {

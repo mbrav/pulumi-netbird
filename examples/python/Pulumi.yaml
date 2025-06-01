@@ -6,5 +6,5 @@ plugins:
       path: ../../bin
 
 config:
-  netbird:netbirdToken: token
-  netbird:netbirdUrl: https://nb.domain:33073
+  netbird:token: token
+  netbird:url: https://nb.domain:33073

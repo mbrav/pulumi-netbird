@@ -46,8 +46,8 @@ Initialize a new stack and configure your credentials:
 
 ```bash
 pulumi stack init test
-pulumi config set netbird:netbirdToken YOUR_TOKEN
-pulumi config set netbird:netbirdUrl https://nb.domain:33073
+pulumi config set netbird:token YOUR_TOKEN
+pulumi config set netbird:url https://nb.domain:33073
 ```
 
 ### 2. Deploy

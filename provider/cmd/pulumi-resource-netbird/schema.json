@@ -54,7 +54,7 @@
   },
   "config": {
     "variables": {
-      "netbirdToken": {
+      "token": {
         "type": "string",
         "description": "Netbird API Token",
         "default": "",
@@ -65,7 +65,7 @@
         },
         "secret": true
       },
-      "netbirdUrl": {
+      "url": {
         "type": "string",
         "description": "URL to Netbird API, example: https://api.netbird.io",
         "default": "https://api.netbird.io",
@@ -77,8 +77,8 @@
       }
     },
     "defaults": [
-      "netbirdToken",
-      "netbirdUrl"
+      "token",
+      "url"
     ]
   },
   "types": {
@@ -370,7 +370,7 @@
   },
   "provider": {
     "properties": {
-      "netbirdToken": {
+      "token": {
         "type": "string",
         "description": "Netbird API Token",
         "default": "",
@@ -381,7 +381,7 @@
         },
         "secret": true
       },
-      "netbirdUrl": {
+      "url": {
         "type": "string",
         "description": "URL to Netbird API, example: https://api.netbird.io",
         "default": "https://api.netbird.io",
@@ -394,11 +394,11 @@
     },
     "type": "object",
     "required": [
-      "netbirdToken",
-      "netbirdUrl"
+      "token",
+      "url"
     ],
     "inputProperties": {
-      "netbirdToken": {
+      "token": {
         "type": "string",
         "description": "Netbird API Token",
         "default": "",
@@ -409,7 +409,7 @@
         },
         "secret": true
       },
-      "netbirdUrl": {
+      "url": {
         "type": "string",
         "description": "URL to Netbird API, example: https://api.netbird.io",
         "default": "https://api.netbird.io",
@@ -421,8 +421,8 @@
       }
     },
     "requiredInputs": [
-      "netbirdToken",
-      "netbirdUrl"
+      "token",
+      "url"
     ]
   },
   "resources": {

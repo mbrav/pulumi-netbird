@@ -10,8 +10,8 @@ import (
 
 // Config holds the provider configuration for NetBiryyd.
 type Config struct {
-	NetBirdURL   string `pulumi:"netbirdUrl"`
-	NetBirdToken string `provider:"secret"   pulumi:"netbirdToken"`
+	NetBirdURL   string `pulumi:"url"`
+	NetBirdToken string `provider:"secret" pulumi:"token"`
 }
 
 // Annotate provider configuration.

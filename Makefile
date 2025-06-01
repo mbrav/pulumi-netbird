@@ -151,6 +151,10 @@ cross_build: ## Build binaries for multiple OS/ARCH targets
 		done; \
 	done
 
+checksums: ## Generate SHA512 checksums for release tarballs
+	@echo "Generating SHA512 checksums..."
+	@cd dist && shasum -a 512 *.tar.gz > checksums.txt
+
 install: build ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin
 	pulumi plugin rm resource $$PACK -y || true

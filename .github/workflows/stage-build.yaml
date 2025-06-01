@@ -58,9 +58,7 @@ jobs:
           pulumictl version
 
       - name: Cross build binaries 📦
-        run: |
-          make cross_build
-          make checksums
+        run: make cross_build
 
       - name: Publish release with assets
         uses: softprops/action-gh-release@v2

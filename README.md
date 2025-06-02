@@ -14,14 +14,13 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 - Manage NetBird resources using Pulumi in Go or YAML
 - Built natively with Pulumi's Go SDK
-- Includes example configurations for local testing
 
 ## 📦 Installing plugin
 
-To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.19`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
+To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.20`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.0.19 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.0.20 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -70,8 +69,8 @@ plugins:
 
 # You can also define creds here
 config:
-  netbird:netbirdToken: token
-  netbird:netbirdUrl: https://nb.domain:33073
+  netbird:token: token
+  netbird:url: https://nb.domain:33073
 
 outputs:
   networkManagement:
@@ -201,7 +200,7 @@ go list -m -versions github.com/mbrav/pulumi-netbird/sdk
 Output:
 
 ```text
-github.com/mbrav/pulumi-netbird/sdk v0.0.11
+github.com/mbrav/pulumi-netbird/sdk v0.0.11 v0.0.12 v0.0.13 v0.0.14 v0.0.15 v0.0.16 v0.0.17 v0.0.18 v0.0.19 v0.0.20
 ```
 
 ### 1. Setup
@@ -216,8 +215,8 @@ Initialize a new stack and configure your credentials:
 
 ```bash
 pulumi stack init test
-pulumi config set netbird:netbirdToken YOUR_TOKEN
-pulumi config set netbird:netbirdUrl https://nb.domain:33073
+pulumi config set netbird:token YOUR_TOKEN
+pulumi config set netbird:url https://nb.domain:33073
 ```
 
 ### 2. Deploy
@@ -242,7 +241,7 @@ make sdk_python
 Then install the wheel:
 
 ```bash
-pip install sdk/python/bin/dist/pulumi_netbird-0.0.12a1747213794+dirty.tar.gz
+pip install sdk/python/bin/dist/pulumi_netbird-0.0.20.tar.gz
 ```
 
 Navigate to the Python example directory:
@@ -255,8 +254,8 @@ Initialize a new stack and configure your credentials:
 
 ```bash
 pulumi stack init test
-pulumi config set netbird:netbirdToken YOUR_TOKEN
-pulumi config set netbird:netbirdUrl https://nb.domain:33073
+pulumi config set netbird:token YOUR_TOKEN
+pulumi config set netbird:url https://nb.domain:33073
 ```
 
 ### 2. Deploy

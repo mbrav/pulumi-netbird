@@ -1,6 +1,6 @@
 ---
-title: Netbird
-meta_desc: Provides an overview of the Netbird Provider for Pulumi.
+title: netbird
+meta_desc: Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.
 layout: overview
 ---
 

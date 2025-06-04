@@ -17,10 +17,10 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## 📦 Installing plugin
 
-To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.20`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
+To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.21`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.0.20 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.0.21 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -67,34 +67,27 @@ plugins:
     - name: netbird
       path: ../../bin
 
-# You can also define creds here
 config:
   netbird:token: token
   netbird:url: https://nb.domain:33073
 
 outputs:
-  networkManagement:
+  networkR1:
     value:
-      name: ${net-management.name}
-      id: ${net-management.Id}
+      name: ${net-r1.name}
+      id: ${net-r1.id}
 
 resources:
-  net-management:
-    type: netbird:resource:Network
-    properties:
-      name: Management
-      description: Network for Management
-
-  net-r1:
-    type: netbird:resource:Network
-    properties:
-      name: R1
-      description: Network for Region 1
-
   group-devops:
     type: netbird:resource:Group
     properties:
       name: DevOps
+      peers: []
+
+  group-dev:
+    type: netbird:resource:Group
+    properties:
+      name: Dev
       peers: []
 
   group-backoffice:
@@ -109,11 +102,17 @@ resources:
       name: HR
       peers: []
 
+  net-r1:
+    type: netbird:resource:Network
+    properties:
+      name: R1
+      description: Network for Region 1
+
   netres-r1-net-01:
     type: netbird:resource:NetworkResource
     properties:
-      name: S1 Franfurt Net 01
-      description: Network 01 in S1 Franfurt
+      name: Region 1 Net 01
+      description: Network 01 in Region 1
       network_id: ${net-r1.id}
       address: 10.10.1.0/24
       enabled: true
@@ -123,8 +122,8 @@ resources:
   netres-r1-net-02:
     type: netbird:resource:NetworkResource
     properties:
-      name: S1 Franfurt Net 02
-      description: Network 02 in S1 Franfurt
+      name: Region 1 Net 02
+      description: Network 02 in S1 Region 1
       network_id: ${net-r1.id}
       address: 10.10.2.0/24
       enabled: true
@@ -134,8 +133,8 @@ resources:
   netres-r1-net-03:
     type: netbird:resource:NetworkResource
     properties:
-      name: S1 Franfurt Net 03
-      description: Network 03 in S1 Franfurt
+      name: Region 1 Net 03
+      description: Network 03 in Region 1
       network_id: ${net-r1.id}
       address: 10.10.3.0/24
       enabled: true
@@ -153,36 +152,50 @@ resources:
       peer_groups:
         - ${group-devops.id}
 
-  test-import-peer:
-    type: netbird:resource:Peer
-    properties:
-      inactivity_expiration_enabled: false
-      login_expiration_enabled: false
-      name: test-import-peer
-      sshEnabled: true
-    options:
-      protect: true
-
-  test-ssh-policy:
+  policy-ssh-grp-src-net-dest:
     type: netbird:resource:Policy
     properties:
-      name: "Test SSH Policy"
-      description: "Allow SSH access from admin group to servers"
+      name: "SSH Policy - Group to Subnet"
+      description: "Allow SSH (22/TCP) from DevOps and Dev groups to Region 1 Net 02"
       enabled: true
       posture_checks: []
       rules:
-        - name: "SSH Access"
-          description: "Allow inbound SSH from Admins to Servers"
+        - name: "SSH Access - Group → Subnet"
+          description: "Allow unidirectional SSH from DevOps & Dev groups to Net 02"
           bidirectional: false
           action: accept
           enabled: true
           protocol: tcp
           ports:
             - "22"
-          # sources:
-          #   - "group-admins"
-          # destinations:
-          #   - "group-servers"
+          sources:
+            - ${group-devops.id}
+            - ${group-dev.id}
+          destinationResource:
+            type: subnet
+            id: ${netres-r1-net-02.id}
+
+  policy-ssh-grp-src-grp-dest:
+    type: netbird:resource:Policy
+    properties:
+      name: "SSH Policy - Group to Group"
+      description: "Allow SSH (22/TCP) from DevOps to Backoffice group resources"
+      enabled: true
+      posture_checks: []
+      rules:
+        - name: "SSH Access - Group → Group"
+          description: "SSH from DevOps group to Backoffice group"
+          bidirectional: false
+          action: accept
+          enabled: true
+          protocol: tcp
+          ports:
+            - "22"
+          sources:
+            - ${group-devops.id}
+          destinations:
+            - ${group-backoffice.id}
+
 ```
 
 ## 🦫 Example Usage with Pulumi Go

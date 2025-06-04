@@ -13,7 +13,7 @@ import (
 // Change to var to enable semver Version management.
 const (
 	Name    string = "netbird"
-	Version string = "0.0.19"
+	Version string = "0.0.21"
 )
 
 // Provider creates and returns a new Pulumi provider for managing NetBird resources.
@@ -44,6 +44,7 @@ func Provider() p.Provider { //nolint:funlen
 			infer.Resource(&resource.NetworkRouter{}),
 			infer.Resource(&resource.Peer{}),
 			infer.Resource(&resource.Policy{}),
+			infer.Resource(&resource.User{}),
 		).
 		// WithComponents(
 		// 	infer.ComponentF(component.NewACLFileComponent),

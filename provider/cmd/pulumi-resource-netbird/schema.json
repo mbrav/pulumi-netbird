@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.19",
+  "version": "0.0.21",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -896,6 +896,74 @@
         "enabled",
         "name",
         "rules"
+      ]
+    },
+    "netbird:resource:User": {
+      "description": "A NetBird user that receives an invite and is optionally assigned groups and roles.",
+      "properties": {
+        "autoGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Groups this user’s peers are automatically assigned to."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user."
+        },
+        "isServiceUser": {
+          "type": "boolean",
+          "description": "Whether this user is a service identity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the user."
+        },
+        "role": {
+          "type": "string",
+          "description": "NetBird account role assigned to the user."
+        }
+      },
+      "type": "object",
+      "required": [
+        "autoGroups",
+        "email",
+        "isServiceUser",
+        "name",
+        "role"
+      ],
+      "inputProperties": {
+        "auto_groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of group IDs to auto-assign this user’s peers to."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address to send user invite to."
+        },
+        "is_service_user": {
+          "type": "boolean",
+          "description": "Whether this user is a service identity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the user."
+        },
+        "role": {
+          "type": "string",
+          "description": "NetBird account role (e.g., 'admin', 'user')."
+        }
+      },
+      "requiredInputs": [
+        "auto_groups",
+        "email",
+        "is_service_user",
+        "name",
+        "role"
       ]
     }
   }

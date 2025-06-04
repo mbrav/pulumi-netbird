@@ -133,6 +133,9 @@ down: ## Destroy stack
 lint: ## Run Go linters
 	GOFLAGS=-buildvcs=false golangci-lint run -c ./.golangci.yml
 
+lint-fix: ## Run Go linters and fix
+	GOFLAGS=-buildvcs=false golangci-lint run -c ./.golangci.yml --fix
+
 build: provider sdk_go ## Build provider binary and SDK
 
 cross_build: ## Build binaries for multiple OS/ARCH targets

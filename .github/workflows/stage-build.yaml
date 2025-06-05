@@ -30,7 +30,7 @@ jobs:
       #   shell: bash
       #
 
-      - name: Install pulumictl
+      - name: Install pulumictl 💿
         shell: bash
         run: |
           set -e
@@ -42,25 +42,26 @@ jobs:
           case "$ARCH" in
             x86_64) ARCH="amd64" ;;
             arm64|aarch64) ARCH="arm64" ;;
-            *) echo "Unsupported architecture: $ARCH" && exit 1 ;;
+            *) echo "❌ Unsupported architecture: $ARCH" && exit 1 ;;
           esac
 
           FILENAME="pulumictl-${VERSION}-${OS}-${ARCH}.tar.gz"
           DOWNLOAD_URL="https://github.com/pulumi/pulumictl/releases/download/${VERSION}/${FILENAME}"
 
-          echo "Downloading ${DOWNLOAD_URL}"
+          echo "⬇️ Downloading ${DOWNLOAD_URL}"
           curl -sSL "${DOWNLOAD_URL}" -o "/tmp/${FILENAME}"
 
           mkdir -p /tmp/pulumictl-bin
           tar -xzf "/tmp/${FILENAME}" -C /tmp/pulumictl-bin
           sudo mv /tmp/pulumictl-bin/pulumictl /usr/local/bin/
 
-          pulumictl version
+          RESULT_VERSION=$(pulumictl version)
+          echo "✅ Succesfully installed pulumictl v${RESULT_VERSION}"
 
       - name: Cross build binaries 📦
         run: make cross_build
 
-      - name: Publish release with assets
+      - name: Publish release with assets 📢
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:

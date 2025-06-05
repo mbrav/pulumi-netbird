@@ -270,11 +270,11 @@ func (*NetworkRouter) Check(ctx context.Context, req infer.CheckRequest) (infer.
 }
 
 // WireDependencies explicitly defines input/output relationships.
-func (*NetworkRouter) WireDependencies(f infer.FieldSelector, args *NetworkRouterArgs, state *NetworkRouterState) {
-	f.OutputField(&state.NetworkID).DependsOn(f.InputField(&args.NetworkID))
-	f.OutputField(&state.Enabled).DependsOn(f.InputField(&args.Enabled))
-	f.OutputField(&state.Masquerade).DependsOn(f.InputField(&args.Masquerade))
-	f.OutputField(&state.Metric).DependsOn(f.InputField(&args.Metric))
-	f.OutputField(&state.Peer).DependsOn(f.InputField(&args.Peer))
-	f.OutputField(&state.PeerGroups).DependsOn(f.InputField(&args.PeerGroups))
+func (*NetworkRouter) WireDependencies(field infer.FieldSelector, args *NetworkRouterArgs, state *NetworkRouterState) {
+	field.OutputField(&state.NetworkID).DependsOn(field.InputField(&args.NetworkID))
+	field.OutputField(&state.Enabled).DependsOn(field.InputField(&args.Enabled))
+	field.OutputField(&state.Masquerade).DependsOn(field.InputField(&args.Masquerade))
+	field.OutputField(&state.Metric).DependsOn(field.InputField(&args.Metric))
+	field.OutputField(&state.Peer).DependsOn(field.InputField(&args.Peer))
+	field.OutputField(&state.PeerGroups).DependsOn(field.InputField(&args.PeerGroups))
 }

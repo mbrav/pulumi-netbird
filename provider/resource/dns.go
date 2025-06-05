@@ -402,13 +402,13 @@ func (*DNS) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckRespo
 }
 
 // WireDependencies explicitly defines input/output relationships.
-func (*DNS) WireDependencies(f infer.FieldSelector, args *DNSArgs, state *DNSState) {
-	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
-	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
-	f.OutputField(&state.Domains).DependsOn(f.InputField(&args.Domains))
-	f.OutputField(&state.Enabled).DependsOn(f.InputField(&args.Enabled))
-	f.OutputField(&state.Groups).DependsOn(f.InputField(&args.Groups))
-	f.OutputField(&state.Primary).DependsOn(f.InputField(&args.Primary))
-	f.OutputField(&state.Nameservers).DependsOn(f.InputField(&args.Nameservers))
-	f.OutputField(&state.SearchDomainsEnabled).DependsOn(f.InputField(&args.SearchDomainsEnabled))
+func (*DNS) WireDependencies(field infer.FieldSelector, args *DNSArgs, state *DNSState) {
+	field.OutputField(&state.Name).DependsOn(field.InputField(&args.Name))
+	field.OutputField(&state.Description).DependsOn(field.InputField(&args.Description))
+	field.OutputField(&state.Domains).DependsOn(field.InputField(&args.Domains))
+	field.OutputField(&state.Enabled).DependsOn(field.InputField(&args.Enabled))
+	field.OutputField(&state.Groups).DependsOn(field.InputField(&args.Groups))
+	field.OutputField(&state.Primary).DependsOn(field.InputField(&args.Primary))
+	field.OutputField(&state.Nameservers).DependsOn(field.InputField(&args.Nameservers))
+	field.OutputField(&state.SearchDomainsEnabled).DependsOn(field.InputField(&args.SearchDomainsEnabled))
 }

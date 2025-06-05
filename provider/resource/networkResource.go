@@ -285,13 +285,13 @@ func (*NetworkResource) Check(ctx context.Context, req infer.CheckRequest) (infe
 }
 
 // WireDependencies explicitly defines input/output relationships.
-func (*NetworkResource) WireDependencies(f infer.FieldSelector, args *NetworkResourceArgs, state *NetworkResourceState) {
-	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
-	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
-	f.OutputField(&state.NetworkID).DependsOn(f.InputField(&args.NetworkID))
-	f.OutputField(&state.Address).DependsOn(f.InputField(&args.Address))
-	f.OutputField(&state.Enabled).DependsOn(f.InputField(&args.Enabled))
-	f.OutputField(&state.GroupIDs).DependsOn(f.InputField(&args.GroupIDs))
+func (*NetworkResource) WireDependencies(field infer.FieldSelector, args *NetworkResourceArgs, state *NetworkResourceState) {
+	field.OutputField(&state.Name).DependsOn(field.InputField(&args.Name))
+	field.OutputField(&state.Description).DependsOn(field.InputField(&args.Description))
+	field.OutputField(&state.NetworkID).DependsOn(field.InputField(&args.NetworkID))
+	field.OutputField(&state.Address).DependsOn(field.InputField(&args.Address))
+	field.OutputField(&state.Enabled).DependsOn(field.InputField(&args.Enabled))
+	field.OutputField(&state.GroupIDs).DependsOn(field.InputField(&args.GroupIDs))
 }
 
 // Extract and sort group IDs.

@@ -302,11 +302,11 @@ func (*User) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResp
 }
 
 // WireDependencies explicitly defines input/output relationships.
-func (*User) WireDependencies(f infer.FieldSelector, args *UserArgs, state *UserState) {
-	f.OutputField(&state.Email).DependsOn(f.InputField(&args.Email))
-	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
-	f.OutputField(&state.Role).DependsOn(f.InputField(&args.Role))
-	f.OutputField(&state.IsServiceUser).DependsOn(f.InputField(&args.IsServiceUser))
-	f.OutputField(&state.AutoGroups).DependsOn(f.InputField(&args.AutoGroups))
-	f.OutputField(&state.IsBlocked).DependsOn(f.InputField(&args.IsBlocked))
+func (*User) WireDependencies(field infer.FieldSelector, args *UserArgs, state *UserState) {
+	field.OutputField(&state.Email).DependsOn(field.InputField(&args.Email))
+	field.OutputField(&state.Name).DependsOn(field.InputField(&args.Name))
+	field.OutputField(&state.Role).DependsOn(field.InputField(&args.Role))
+	field.OutputField(&state.IsServiceUser).DependsOn(field.InputField(&args.IsServiceUser))
+	field.OutputField(&state.AutoGroups).DependsOn(field.InputField(&args.AutoGroups))
+	field.OutputField(&state.IsBlocked).DependsOn(field.InputField(&args.IsBlocked))
 }

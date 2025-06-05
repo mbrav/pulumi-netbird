@@ -145,12 +145,16 @@ cross_build: ## Build binaries for multiple OS/ARCH targets
 	@for os in linux darwin; do \
 		for arch in amd64 arm64; do \
 			BIN_NAME=pulumi-resource-${PACK}-v${VERSION}-$$os-$$arch; \
+			OUT_DIR=dist/$$BIN_NAME; \
+			mkdir -p $$OUT_DIR; \
 			GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 \
-			go build -o bin/$$BIN_NAME -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" \
+			go build -o $$OUT_DIR/pulumi-resource-${PACK} -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" \
 				$(PROJECT)/${PROVIDER_PATH}/cmd/$(PROVIDER); \
-			cp bin/$$BIN_NAME dist/; \
-			tar -czf dist/$$BIN_NAME.tar.gz -C dist $$BIN_NAME; \
-			rm dist/$$BIN_NAME; \
+			echo "name: ${PACK}" > $$OUT_DIR/PulumiPlugin.yaml; \
+			echo "kind: resource" >> $$OUT_DIR/PulumiPlugin.yaml; \
+			echo "version: ${VERSION}" >> $$OUT_DIR/PulumiPlugin.yaml; \
+			tar -czf dist/$$BIN_NAME.tar.gz -C $$OUT_DIR .; \
+			rm -rf $$OUT_DIR; \
 		done; \
 	done
 

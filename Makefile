@@ -146,6 +146,7 @@ cross_build: ## Build binaries for multiple OS/ARCH targets
 		for arch in amd64 arm64; do \
 			BIN_NAME=pulumi-resource-${PACK}-v${VERSION}-$$os-$$arch; \
 			OUT_DIR=dist/$$BIN_NAME; \
+			echo "Building $$BIN_NAME..."; \
 			mkdir -p $$OUT_DIR; \
 			GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 \
 			go build -o $$OUT_DIR/pulumi-resource-${PACK} -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" \

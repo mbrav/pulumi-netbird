@@ -150,9 +150,11 @@ cross_build: ## Build binaries for multiple OS/ARCH targets
 			GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 \
 			go build -o $$OUT_DIR/pulumi-resource-${PACK} -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" \
 				$(PROJECT)/${PROVIDER_PATH}/cmd/$(PROVIDER); \
-			echo "name: ${PACK}" > $$OUT_DIR/PulumiPlugin.yaml; \
+			echo "# Generated on $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > $$OUT_DIR/PulumiPlugin.yaml; \
+			echo "name: ${PACK}" >> $$OUT_DIR/PulumiPlugin.yaml; \
 			echo "kind: resource" >> $$OUT_DIR/PulumiPlugin.yaml; \
 			echo "version: ${VERSION}" >> $$OUT_DIR/PulumiPlugin.yaml; \
+			echo "runtime: go" >> $$OUT_DIR/PulumiPlugin.yaml; \
 			tar -czf dist/$$BIN_NAME.tar.gz -C $$OUT_DIR .; \
 			rm -rf $$OUT_DIR; \
 		done; \

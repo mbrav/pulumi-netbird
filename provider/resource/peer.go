@@ -159,6 +159,23 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 	}, nil
 }
 
+// Delete removes a peer from NetBird.
+func (*Peer) Delete(ctx context.Context, req infer.DeleteRequest[PeerState]) (infer.DeleteResponse, error) {
+	p.GetLogger(ctx).Debugf("Delete:Peer[%s]", req.ID)
+
+	client, err := config.GetNetBirdClient(ctx)
+	if err != nil {
+		return infer.DeleteResponse{}, fmt.Errorf("error getting NetBird client: %w", err)
+	}
+
+	err = client.Peers.Delete(ctx, req.ID)
+	if err != nil {
+		return infer.DeleteResponse{}, fmt.Errorf("deleting peer failed: %w", err)
+	}
+
+	return infer.DeleteResponse{}, nil
+}
+
 // Diff detects changes between inputs and prior state.
 func (*Peer) Diff(ctx context.Context, req infer.DiffRequest[PeerArgs, PeerState]) (infer.DiffResponse, error) {
 	p.GetLogger(ctx).Debugf("Diff:Peer[%s]", req.ID)

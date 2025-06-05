@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -908,6 +908,10 @@
           },
           "description": "Groups this user’s peers are automatically assigned to."
         },
+        "blocked": {
+          "type": "boolean",
+          "description": "Indicates whether the user is blocked from accessing the system"
+        },
         "email": {
           "type": "string",
           "description": "Email address of the user."
@@ -928,6 +932,7 @@
       "type": "object",
       "required": [
         "autoGroups",
+        "blocked",
         "email",
         "isServiceUser",
         "name",
@@ -940,6 +945,10 @@
             "type": "string"
           },
           "description": "List of group IDs to auto-assign this user’s peers to."
+        },
+        "blocked": {
+          "type": "boolean",
+          "description": "Indicates whether the user is blocked from accessing the system. Used only on update, not create."
         },
         "email": {
           "type": "string",
@@ -960,6 +969,7 @@
       },
       "requiredInputs": [
         "auto_groups",
+        "blocked",
         "email",
         "is_service_user",
         "name",

@@ -4,7 +4,7 @@ import (
 	"slices"
 )
 
-// Helper to stringify a pointer safely.
+// strPtr helper function to stringify a pointer safely.
 func strPtr(str *string) string {
 	if str == nil {
 		return ""
@@ -13,7 +13,7 @@ func strPtr(str *string) string {
 	return *str
 }
 
-// Helper to compare string pointers safely.
+// equalPtr helper function to compare string pointers safely.
 func equalPtr(atrA, strB *string) bool {
 	if atrA == nil && strB == nil {
 		return true
@@ -26,7 +26,27 @@ func equalPtr(atrA, strB *string) bool {
 	return *atrA == *strB
 }
 
-// helper function to compare optional []string values.
+// equalSlice compares two []string slices, ignoring order.
+func equalSlice(sliceA, sliceB []string) bool {
+	if len(sliceA) != len(sliceB) {
+		return false
+	}
+
+	aSorted := slices.Clone(sliceA)
+	bSorted := slices.Clone(sliceB)
+	slices.Sort(aSorted)
+	slices.Sort(bSorted)
+
+	for i := range aSorted {
+		if aSorted[i] != bSorted[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+// equalSlicePtr compares two *[]string values by delegating to equalSlice.
 func equalSlicePtr(sliceA, sliceB *[]string) bool {
 	if sliceA == nil && sliceB == nil {
 		return true
@@ -36,21 +56,5 @@ func equalSlicePtr(sliceA, sliceB *[]string) bool {
 		return false
 	}
 
-	// Copy and sort both before comparing
-	aSorted := slices.Clone(*sliceA)
-	bSorted := slices.Clone(*sliceB)
-	slices.Sort(aSorted)
-	slices.Sort(bSorted)
-
-	if len(aSorted) != len(bSorted) {
-		return false
-	}
-
-	for i := range aSorted {
-		if aSorted[i] != bSorted[i] {
-			return false
-		}
-	}
-
-	return true
+	return equalSlice(*sliceA, *sliceB)
 }

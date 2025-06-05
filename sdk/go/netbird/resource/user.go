@@ -18,6 +18,8 @@ type User struct {
 
 	// Groups this user’s peers are automatically assigned to.
 	AutoGroups pulumi.StringArrayOutput `pulumi:"autoGroups"`
+	// Indicates whether the user is blocked from accessing the system
+	Blocked pulumi.BoolOutput `pulumi:"blocked"`
 	// Email address of the user.
 	Email pulumi.StringOutput `pulumi:"email"`
 	// Whether this user is a service identity.
@@ -37,6 +39,9 @@ func NewUser(ctx *pulumi.Context,
 
 	if args.Auto_groups == nil {
 		return nil, errors.New("invalid value for required argument 'Auto_groups'")
+	}
+	if args.Blocked == nil {
+		return nil, errors.New("invalid value for required argument 'Blocked'")
 	}
 	if args.Email == nil {
 		return nil, errors.New("invalid value for required argument 'Email'")
@@ -85,6 +90,8 @@ func (UserState) ElementType() reflect.Type {
 type userArgs struct {
 	// List of group IDs to auto-assign this user’s peers to.
 	Auto_groups []string `pulumi:"auto_groups"`
+	// Indicates whether the user is blocked from accessing the system. Used only on update, not create.
+	Blocked bool `pulumi:"blocked"`
 	// Email address to send user invite to.
 	Email string `pulumi:"email"`
 	// Whether this user is a service identity.
@@ -99,6 +106,8 @@ type userArgs struct {
 type UserArgs struct {
 	// List of group IDs to auto-assign this user’s peers to.
 	Auto_groups pulumi.StringArrayInput
+	// Indicates whether the user is blocked from accessing the system. Used only on update, not create.
+	Blocked pulumi.BoolInput
 	// Email address to send user invite to.
 	Email pulumi.StringInput
 	// Whether this user is a service identity.
@@ -199,6 +208,11 @@ func (o UserOutput) ToUserOutputWithContext(ctx context.Context) UserOutput {
 // Groups this user’s peers are automatically assigned to.
 func (o UserOutput) AutoGroups() pulumi.StringArrayOutput {
 	return o.ApplyT(func(v *User) pulumi.StringArrayOutput { return v.AutoGroups }).(pulumi.StringArrayOutput)
+}
+
+// Indicates whether the user is blocked from accessing the system
+func (o UserOutput) Blocked() pulumi.BoolOutput {
+	return o.ApplyT(func(v *User) pulumi.BoolOutput { return v.Blocked }).(pulumi.BoolOutput)
 }
 
 // Email address of the user.

@@ -257,3 +257,24 @@ func (*NetworkRouter) Diff(ctx context.Context, req infer.DiffRequest[NetworkRou
 		DetailedDiff:        diff,
 	}, nil
 }
+
+// Check provides input validation and default setting.
+func (*NetworkRouter) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkRouterArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:NetworkRouter old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+	args, failures, err := infer.DefaultCheck[NetworkRouterArgs](ctx, req.NewInputs)
+
+	return infer.CheckResponse[NetworkRouterArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
+}
+
+// WireDependencies explicitly defines input/output relationships.
+func (*NetworkRouter) WireDependencies(f infer.FieldSelector, args *NetworkRouterArgs, state *NetworkRouterState) {
+	f.OutputField(&state.NetworkID).DependsOn(f.InputField(&args.NetworkID))
+	f.OutputField(&state.Enabled).DependsOn(f.InputField(&args.Enabled))
+	f.OutputField(&state.Masquerade).DependsOn(f.InputField(&args.Masquerade))
+	f.OutputField(&state.Metric).DependsOn(f.InputField(&args.Metric))
+	f.OutputField(&state.Peer).DependsOn(f.InputField(&args.Peer))
+	f.OutputField(&state.PeerGroups).DependsOn(f.InputField(&args.PeerGroups))
+}

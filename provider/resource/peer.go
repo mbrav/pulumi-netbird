@@ -223,3 +223,23 @@ func (*Peer) Diff(ctx context.Context, req infer.DiffRequest[PeerArgs, PeerState
 		DetailedDiff:        diff,
 	}, nil
 }
+
+// Check provides input validation and default setting.
+func (*Peer) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[PeerArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:Peer old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+	args, failures, err := infer.DefaultCheck[PeerArgs](ctx, req.NewInputs)
+
+	return infer.CheckResponse[PeerArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
+}
+
+// WireDependencies explicitly defines input/output relationships.
+func (*Peer) WireDependencies(f infer.FieldSelector, args *PeerArgs, state *PeerState) {
+	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.InactivityExpirationEnabled).DependsOn(f.InputField(&args.InactivityExpirationEnabled))
+	f.OutputField(&state.LoginExpirationEnabled).DependsOn(f.InputField(&args.LoginExpirationEnabled))
+	f.OutputField(&state.SSHEnabled).DependsOn(f.InputField(&args.SSHEnabled))
+	f.OutputField(&state.ApprovalRequired).DependsOn(f.InputField(&args.ApprovalRequired))
+}

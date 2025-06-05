@@ -284,6 +284,16 @@ func (*NetworkResource) Check(ctx context.Context, req infer.CheckRequest) (infe
 	}, err
 }
 
+// WireDependencies explicitly defines input/output relationships.
+func (*NetworkResource) WireDependencies(f infer.FieldSelector, args *NetworkResourceArgs, state *NetworkResourceState) {
+	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
+	f.OutputField(&state.NetworkID).DependsOn(f.InputField(&args.NetworkID))
+	f.OutputField(&state.Address).DependsOn(f.InputField(&args.Address))
+	f.OutputField(&state.Enabled).DependsOn(f.InputField(&args.Enabled))
+	f.OutputField(&state.GroupIDs).DependsOn(f.InputField(&args.GroupIDs))
+}
+
 // Extract and sort group IDs.
 func getNetworkResourceGroupIDs(net *nbapi.NetworkResource) []string {
 	groupIDs := make([]string, 0, len(net.Groups))

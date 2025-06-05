@@ -259,4 +259,5 @@ func (*Group) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckRes
 func (*Group) WireDependencies(f infer.FieldSelector, args *GroupArgs, state *GroupState) {
 	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
 	f.OutputField(&state.Peers).DependsOn(f.InputField(&args.Peers))
+	f.OutputField(&state.Resources).DependsOn(f.InputField(&args.Resources))
 }

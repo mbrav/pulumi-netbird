@@ -592,6 +592,26 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 	}, nil
 }
 
+// Check provides input validation and default setting.
+func (*Policy) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[PolicyArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:Policy old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+	args, failures, err := infer.DefaultCheck[PolicyArgs](ctx, req.NewInputs)
+
+	return infer.CheckResponse[PolicyArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
+}
+
+// WireDependencies explicitly defines input/output relationships.
+func (*Policy) WireDependencies(f infer.FieldSelector, args *PolicyArgs, state *PolicyState) {
+	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
+	f.OutputField(&state.Enabled).DependsOn(f.InputField(&args.Enabled))
+	f.OutputField(&state.Rules).DependsOn(f.InputField(&args.Rules))
+	f.OutputField(&state.SourcePostureChecks).DependsOn(f.InputField(&args.SourcePostureChecks))
+}
+
 // Converts a slice of RulePortRange from state model to API model.
 func toAPIPortRanges(rulePortRange *[]RulePortRange) *[]nbapi.RulePortRange {
 	if rulePortRange == nil {

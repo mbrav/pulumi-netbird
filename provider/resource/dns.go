@@ -389,3 +389,26 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 		DetailedDiff:        diff,
 	}, nil
 }
+
+// Check provides input validation and default setting.
+func (*DNS) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[DNSArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:DNS old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+	args, failures, err := infer.DefaultCheck[DNSArgs](ctx, req.NewInputs)
+
+	return infer.CheckResponse[DNSArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
+}
+
+// WireDependencies explicitly defines input/output relationships.
+func (*DNS) WireDependencies(f infer.FieldSelector, args *DNSArgs, state *DNSState) {
+	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.Description).DependsOn(f.InputField(&args.Description))
+	f.OutputField(&state.Domains).DependsOn(f.InputField(&args.Domains))
+	f.OutputField(&state.Enabled).DependsOn(f.InputField(&args.Enabled))
+	f.OutputField(&state.Groups).DependsOn(f.InputField(&args.Groups))
+	f.OutputField(&state.Primary).DependsOn(f.InputField(&args.Primary))
+	f.OutputField(&state.Nameservers).DependsOn(f.InputField(&args.Nameservers))
+	f.OutputField(&state.SearchDomainsEnabled).DependsOn(f.InputField(&args.SearchDomainsEnabled))
+}

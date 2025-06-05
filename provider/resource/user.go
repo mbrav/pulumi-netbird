@@ -289,3 +289,24 @@ func (*User) Diff(ctx context.Context, req infer.DiffRequest[UserArgs, UserState
 		DetailedDiff:        diff,
 	}, nil
 }
+
+// Check provides input validation and default setting.
+func (*User) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[UserArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:User old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+	args, failures, err := infer.DefaultCheck[UserArgs](ctx, req.NewInputs)
+
+	return infer.CheckResponse[UserArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
+}
+
+// WireDependencies explicitly defines input/output relationships.
+func (*User) WireDependencies(f infer.FieldSelector, args *UserArgs, state *UserState) {
+	f.OutputField(&state.Email).DependsOn(f.InputField(&args.Email))
+	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.Role).DependsOn(f.InputField(&args.Role))
+	f.OutputField(&state.IsServiceUser).DependsOn(f.InputField(&args.IsServiceUser))
+	f.OutputField(&state.AutoGroups).DependsOn(f.InputField(&args.AutoGroups))
+	f.OutputField(&state.IsBlocked).DependsOn(f.InputField(&args.IsBlocked))
+}

@@ -17,10 +17,10 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## 📦 Installing plugin
 
-To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.24`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
+To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.25`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.0.24 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.0.25 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -212,8 +212,8 @@ go list -m -versions github.com/mbrav/pulumi-netbird/sdk
 
 Output:
 
-```text
-github.com/mbrav/pulumi-netbird/sdk v0.0.11 v0.0.12 v0.0.13 v0.0.14 v0.0.15 v0.0.16 v0.0.17 v0.0.18 v0.0.19 v0.0.20
+```bash
+github.com/mbrav/pulumi-netbird/sdk v0.0.11 v0.0.12 v0.0.13 # and so on
 ```
 
 ### 1. Setup
@@ -254,7 +254,7 @@ make sdk_python
 Then install the wheel:
 
 ```bash
-pip install sdk/python/bin/dist/pulumi_netbird-0.0.24.tar.gz
+pip install sdk/python/bin/dist/pulumi_netbird-0.0.25.tar.gz
 ```
 
 Navigate to the Python example directory:

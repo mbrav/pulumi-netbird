@@ -152,15 +152,17 @@ cross_build: ## Build binaries for multiple OS/ARCH targets
 			GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 \
 			go build -o $$OUT_DIR/pulumi-resource-${PACK} -ldflags "-X ${PROJECT}/${VERSION_PATH}=${VERSION}" \
 				$(PROJECT)/${PROVIDER_PATH}/cmd/$(PROVIDER); \
-			echo "# Generated on $$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")" > $$OUT_DIR/PulumiPlugin.yaml; \
-			echo "name: ${PACK}" >> $$OUT_DIR/PulumiPlugin.yaml; \
-			echo "kind: resource" >> $$OUT_DIR/PulumiPlugin.yaml; \
-			echo "version: ${VERSION}" >> $$OUT_DIR/PulumiPlugin.yaml; \
-			echo "runtime: go" >> $$OUT_DIR/PulumiPlugin.yaml; \
+			cp README.md $$OUT_DIR/; \
+			cp LICENSE $$OUT_DIR/; \
 			tar -czf dist/$$BIN_NAME.tar.gz -C $$OUT_DIR .; \
 			rm -rf $$OUT_DIR; \
 		done; \
 	done
+# echo "# Generated on $$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")" > $$OUT_DIR/PulumiPlugin.yaml; \
+# echo "name: ${PACK}" >> $$OUT_DIR/PulumiPlugin.yaml; \
+# echo "kind: resource" >> $$OUT_DIR/PulumiPlugin.yaml; \
+# echo "version: ${VERSION}" >> $$OUT_DIR/PulumiPlugin.yaml; \
+# echo "runtime: go" >> $$OUT_DIR/PulumiPlugin.yaml; \
 
 install: build ## Install provider into $GOPATH/bin
 	cp $(PROVIDER_BIN) $(GOPATH)/bin

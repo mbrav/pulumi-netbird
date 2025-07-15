@@ -59,6 +59,7 @@ linters:
   disable:
     # TODO: Fix imports from Main
     - depguard
+    - wsl
     # Allow lines longer than 120 characters
     - lll
     - err113

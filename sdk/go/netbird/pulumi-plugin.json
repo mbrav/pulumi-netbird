@@ -1,6 +1,6 @@
 {
   "resource": true,
   "name": "netbird",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "server": "github://api.github.com/mbrav/pulumi-netbird"
 }

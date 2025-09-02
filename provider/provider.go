@@ -13,7 +13,7 @@ import (
 // Change to var to enable semver Version management.
 const (
 	Name    string = "netbird"
-	Version string = "0.0.29"
+	Version string = "0.1.0"
 )
 
 // Provider creates and returns a new Pulumi provider for managing NetBird resources.

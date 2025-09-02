@@ -6,7 +6,7 @@ import (
 	"slices"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
-	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )

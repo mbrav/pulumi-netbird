@@ -35,7 +35,7 @@ jobs:
         run: |
           set -e
 
-          VERSION="v0.0.49"
+          VERSION="v0.0.50"
           OS="$(uname | tr '[:upper:]' '[:lower:]')"
           ARCH="$(uname -m)"
 

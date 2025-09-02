@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
-	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
@@ -143,6 +143,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 		LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
 		SshEnabled:                  req.Inputs.SSHEnabled,
 		ApprovalRequired:            nil, // ApprovalRequired is not supported in for Cloud version only
+		Ip:                          nil,
 	})
 	if err != nil {
 		return infer.UpdateResponse[PeerState]{}, fmt.Errorf("updating peer failed: %w", err)

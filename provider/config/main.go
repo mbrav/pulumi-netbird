@@ -3,7 +3,7 @@ package config
 import (
 	"context"
 
-	"github.com/netbirdio/netbird/management/client/rest"
+	"github.com/netbirdio/netbird/shared/management/client/rest"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )

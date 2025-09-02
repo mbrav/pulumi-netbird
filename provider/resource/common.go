@@ -2,7 +2,7 @@
 package resource
 
 import (
-	nbapi "github.com/netbirdio/netbird/management/server/http/api"
+	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 

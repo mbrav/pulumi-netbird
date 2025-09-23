@@ -8,7 +8,7 @@ env:
 
 jobs:
   lint:
-    container: golangci/golangci-lint:v2.4.0
+    container: golangci/golangci-lint:v2.5.0
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo ✅

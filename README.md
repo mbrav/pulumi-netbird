@@ -19,10 +19,10 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## 📦 Installing plugin
 
-To manually install the Pulumi NetBird resource plugin replace the version number (`0.0.25`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
+To manually install the Pulumi NetBird resource plugin replace the version number (`0.1.0`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.0.25 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.1.0 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test

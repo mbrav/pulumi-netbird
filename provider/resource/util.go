@@ -34,6 +34,7 @@ func equalSlice(sliceA, sliceB []string) bool {
 
 	aSorted := slices.Clone(sliceA)
 	bSorted := slices.Clone(sliceB)
+
 	slices.Sort(aSorted)
 	slices.Sort(bSorted)
 

@@ -211,6 +211,7 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 	if req.Inputs.Peers != nil && req.State.Peers != nil {
 		inPeers := slices.Clone(*req.Inputs.Peers)
 		stPeers := slices.Clone(*req.State.Peers)
+
 		slices.Sort(inPeers)
 		slices.Sort(stPeers)
 

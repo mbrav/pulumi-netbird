@@ -70,3 +70,5 @@ linters:
     - cyclop
     # Allow long functions
     - funlen
+    # Allow TODO/BUG/FIXME in comments
+    - godox

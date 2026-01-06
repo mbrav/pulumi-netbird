@@ -11,6 +11,7 @@ import (
 )
 
 // TEST: InputDiff: false
+// TODO: Implement AuthorizedGroups
 
 // Policy defines the Pulumi resource handler for NetBird policy resources.
 type Policy struct{}
@@ -268,6 +269,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 			PortRanges:          toAPIPortRanges(rule.PortRanges),
 			Sources:             rule.Sources,
 			Destinations:        rule.Destinations,
+			AuthorizedGroups:    nil, // TODO: Implement AuthorizedGroups
 			SourceResource:      toAPIResource(rule.SourceResource),
 			DestinationResource: toAPIResource(rule.DestinationResource),
 		}
@@ -445,6 +447,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 			PortRanges:          toAPIPortRanges(rule.PortRanges),
 			Sources:             rule.Sources,
 			Destinations:        rule.Destinations,
+			AuthorizedGroups:    nil, // TODO: Implement AuthorizedGroups
 			SourceResource:      toAPIResource(rule.SourceResource),
 			DestinationResource: toAPIResource(rule.DestinationResource),
 		}

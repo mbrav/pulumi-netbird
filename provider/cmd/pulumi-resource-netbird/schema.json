@@ -15,9 +15,6 @@
   "pluginDownloadURL": "github://api.github.com/mbrav/pulumi-netbird",
   "publisher": "mbrav",
   "namespace": "pulumi",
-  "meta": {
-    "moduleFormat": "(.*)"
-  },
   "language": {
     "csharp": {
       "packageReferences": {
@@ -77,8 +74,8 @@
       }
     },
     "defaults": [
-      "token",
-      "url"
+      "url",
+      "token"
     ]
   },
   "types": {
@@ -100,8 +97,8 @@
       "type": "object",
       "required": [
         "ip",
-        "port",
-        "type"
+        "type",
+        "port"
       ]
     },
     "netbird:resource:NameserverNsType": {
@@ -182,10 +179,10 @@
       },
       "type": "object",
       "required": [
-        "action",
-        "bidirectional",
-        "enabled",
         "name",
+        "bidirectional",
+        "action",
+        "enabled",
         "protocol"
       ]
     },
@@ -258,10 +255,10 @@
       },
       "type": "object",
       "required": [
-        "action",
-        "bidirectional",
-        "enabled",
         "name",
+        "bidirectional",
+        "action",
+        "enabled",
         "protocol"
       ]
     },
@@ -346,8 +343,8 @@
       },
       "type": "object",
       "required": [
-        "end",
-        "start"
+        "start",
+        "end"
       ]
     },
     "netbird:resource:Type": {
@@ -392,10 +389,9 @@
         }
       }
     },
-    "type": "object",
     "required": [
-      "token",
-      "url"
+      "url",
+      "token"
     ],
     "inputProperties": {
       "token": {
@@ -421,8 +417,8 @@
       }
     },
     "requiredInputs": [
-      "token",
-      "url"
+      "url",
+      "token"
     ]
   },
   "resources": {
@@ -471,15 +467,14 @@
           "description": "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty."
         }
       },
-      "type": "object",
       "required": [
+        "name",
         "description",
         "domains",
         "enabled",
         "groups",
-        "name",
-        "nameservers",
         "primary",
+        "nameservers",
         "search_domains_enabled"
       ],
       "inputProperties": {
@@ -526,13 +521,13 @@
         }
       },
       "requiredInputs": [
+        "name",
         "description",
         "domains",
         "enabled",
         "groups",
-        "name",
-        "nameservers",
         "primary",
+        "nameservers",
         "search_domains_enabled"
       ]
     },
@@ -558,7 +553,6 @@
           "description": "An optional list of resources to associate with this group."
         }
       },
-      "type": "object",
       "required": [
         "name"
       ],
@@ -598,7 +592,6 @@
           "description": "The name of the NetBird network."
         }
       },
-      "type": "object",
       "required": [
         "name"
       ],
@@ -647,13 +640,12 @@
           "description": "ID of the network this resource belongs to."
         }
       },
-      "type": "object",
       "required": [
+        "name",
+        "network_id",
         "address",
         "enabled",
-        "group_ids",
-        "name",
-        "network_id"
+        "group_ids"
       ],
       "inputProperties": {
         "address": {
@@ -685,11 +677,11 @@
         }
       },
       "requiredInputs": [
+        "name",
+        "network_id",
         "address",
         "enabled",
-        "group_ids",
-        "name",
-        "network_id"
+        "group_ids"
       ]
     },
     "netbird:resource:NetworkRouter": {
@@ -723,12 +715,11 @@
           "description": "Optional list of peer group IDs associated with this router."
         }
       },
-      "type": "object",
       "required": [
+        "network_id",
         "enabled",
         "masquerade",
-        "metric",
-        "network_id"
+        "metric"
       ],
       "inputProperties": {
         "enabled": {
@@ -760,10 +751,10 @@
         }
       },
       "requiredInputs": [
+        "network_id",
         "enabled",
         "masquerade",
-        "metric",
-        "network_id"
+        "metric"
       ]
     },
     "netbird:resource:Peer": {
@@ -790,13 +781,12 @@
           "description": "Whether SSH is enabled."
         }
       },
-      "type": "object",
       "required": [
-        "approvalRequired",
+        "name",
         "inactivityExpirationEnabled",
         "loginExpirationEnabled",
-        "name",
-        "sshEnabled"
+        "sshEnabled",
+        "approvalRequired"
       ],
       "inputProperties": {
         "approvalRequired": {
@@ -821,11 +811,11 @@
         }
       },
       "requiredInputs": [
-        "approvalRequired",
+        "name",
         "inactivityExpirationEnabled",
         "loginExpirationEnabled",
-        "name",
-        "sshEnabled"
+        "sshEnabled",
+        "approvalRequired"
       ]
     },
     "netbird:resource:Policy": {
@@ -858,10 +848,9 @@
           "description": "Rules Policy rule object for policy UI editor"
         }
       },
-      "type": "object",
       "required": [
-        "enabled",
         "name",
+        "enabled",
         "rules"
       ],
       "inputProperties": {
@@ -893,8 +882,8 @@
         }
       },
       "requiredInputs": [
-        "enabled",
         "name",
+        "enabled",
         "rules"
       ]
     },
@@ -929,14 +918,13 @@
           "description": "NetBird account role assigned to the user."
         }
       },
-      "type": "object",
       "required": [
-        "autoGroups",
-        "blocked",
         "email",
-        "isServiceUser",
         "name",
-        "role"
+        "role",
+        "isServiceUser",
+        "autoGroups",
+        "blocked"
       ],
       "inputProperties": {
         "auto_groups": {
@@ -968,12 +956,12 @@
         }
       },
       "requiredInputs": [
-        "auto_groups",
-        "blocked",
         "email",
-        "is_service_user",
         "name",
-        "role"
+        "role",
+        "is_service_user",
+        "auto_groups",
+        "blocked"
       ]
     }
   }

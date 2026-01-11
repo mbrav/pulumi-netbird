@@ -347,6 +347,19 @@
         "end"
       ]
     },
+    "netbird:resource:SetupKeyType": {
+      "type": "string",
+      "enum": [
+        {
+          "description": "Reusable setup key that supports multiple peers.",
+          "value": "reusable"
+        },
+        {
+          "description": "One-off setup key that can be used only once.",
+          "value": "one-off"
+        }
+      ]
+    },
     "netbird:resource:Type": {
       "type": "string",
       "enum": [
@@ -885,6 +898,113 @@
         "name",
         "enabled",
         "rules"
+      ]
+    },
+    "netbird:resource:SetupKey": {
+      "description": "Manages a NetBird setup key.",
+      "properties": {
+        "allowExtraDnsLabels": {
+          "type": "boolean",
+          "description": "Allow peers to add extra DNS labels beyond the base peer name."
+        },
+        "autoGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs to auto-assign to peers created with this key."
+        },
+        "ephemeral": {
+          "type": "boolean",
+          "description": "Whether peers registered with this key are ephemeral (auto-expire)."
+        },
+        "expires": {
+          "type": "string"
+        },
+        "expiresIn": {
+          "type": "integer",
+          "description": "Time-to-live in seconds from creation; use 0 for no expiration if supported by the API."
+        },
+        "key": {
+          "type": "string"
+        },
+        "lastUsed": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "Setup key display name."
+        },
+        "revoked": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:SetupKeyType",
+          "description": "Setup key type: 'one-off' (single use) or 'reusable'."
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "usageLimit": {
+          "type": "integer",
+          "description": "Maximum uses for reusable keys; 0 = unlimited."
+        },
+        "usedTimes": {
+          "type": "integer"
+        },
+        "valid": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "expiresIn",
+        "autoGroups",
+        "usageLimit"
+      ],
+      "inputProperties": {
+        "allowExtraDnsLabels": {
+          "type": "boolean",
+          "description": "Allow peers to add extra DNS labels beyond the base peer name."
+        },
+        "autoGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs to auto-assign to peers created with this key."
+        },
+        "ephemeral": {
+          "type": "boolean",
+          "description": "Whether peers registered with this key are ephemeral (auto-expire)."
+        },
+        "expiresIn": {
+          "type": "integer",
+          "description": "Time-to-live in seconds from creation; use 0 for no expiration if supported by the API."
+        },
+        "name": {
+          "type": "string",
+          "description": "Setup key display name."
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:SetupKeyType",
+          "description": "Setup key type: 'one-off' (single use) or 'reusable'."
+        },
+        "usageLimit": {
+          "type": "integer",
+          "description": "Maximum uses for reusable keys; 0 = unlimited."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "type",
+        "expiresIn",
+        "autoGroups",
+        "usageLimit"
       ]
     },
     "netbird:resource:User": {

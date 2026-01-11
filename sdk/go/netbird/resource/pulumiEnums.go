@@ -514,6 +514,173 @@ func (in *ruleActionPtr) ToRuleActionPtrOutputWithContext(ctx context.Context) R
 	return pulumi.ToOutputWithContext(ctx, in).(RuleActionPtrOutput)
 }
 
+type SetupKeyType string
+
+const (
+	// Reusable setup key that supports multiple peers.
+	SetupKeyTypeReusable = SetupKeyType("reusable")
+	// One-off setup key that can be used only once.
+	SetupKeyType_One_Off = SetupKeyType("one-off")
+)
+
+func (SetupKeyType) ElementType() reflect.Type {
+	return reflect.TypeOf((*SetupKeyType)(nil)).Elem()
+}
+
+func (e SetupKeyType) ToSetupKeyTypeOutput() SetupKeyTypeOutput {
+	return pulumi.ToOutput(e).(SetupKeyTypeOutput)
+}
+
+func (e SetupKeyType) ToSetupKeyTypeOutputWithContext(ctx context.Context) SetupKeyTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(SetupKeyTypeOutput)
+}
+
+func (e SetupKeyType) ToSetupKeyTypePtrOutput() SetupKeyTypePtrOutput {
+	return e.ToSetupKeyTypePtrOutputWithContext(context.Background())
+}
+
+func (e SetupKeyType) ToSetupKeyTypePtrOutputWithContext(ctx context.Context) SetupKeyTypePtrOutput {
+	return SetupKeyType(e).ToSetupKeyTypeOutputWithContext(ctx).ToSetupKeyTypePtrOutputWithContext(ctx)
+}
+
+func (e SetupKeyType) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e SetupKeyType) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e SetupKeyType) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e SetupKeyType) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type SetupKeyTypeOutput struct{ *pulumi.OutputState }
+
+func (SetupKeyTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*SetupKeyType)(nil)).Elem()
+}
+
+func (o SetupKeyTypeOutput) ToSetupKeyTypeOutput() SetupKeyTypeOutput {
+	return o
+}
+
+func (o SetupKeyTypeOutput) ToSetupKeyTypeOutputWithContext(ctx context.Context) SetupKeyTypeOutput {
+	return o
+}
+
+func (o SetupKeyTypeOutput) ToSetupKeyTypePtrOutput() SetupKeyTypePtrOutput {
+	return o.ToSetupKeyTypePtrOutputWithContext(context.Background())
+}
+
+func (o SetupKeyTypeOutput) ToSetupKeyTypePtrOutputWithContext(ctx context.Context) SetupKeyTypePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v SetupKeyType) *SetupKeyType {
+		return &v
+	}).(SetupKeyTypePtrOutput)
+}
+
+func (o SetupKeyTypeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o SetupKeyTypeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e SetupKeyType) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o SetupKeyTypeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o SetupKeyTypeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e SetupKeyType) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type SetupKeyTypePtrOutput struct{ *pulumi.OutputState }
+
+func (SetupKeyTypePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**SetupKeyType)(nil)).Elem()
+}
+
+func (o SetupKeyTypePtrOutput) ToSetupKeyTypePtrOutput() SetupKeyTypePtrOutput {
+	return o
+}
+
+func (o SetupKeyTypePtrOutput) ToSetupKeyTypePtrOutputWithContext(ctx context.Context) SetupKeyTypePtrOutput {
+	return o
+}
+
+func (o SetupKeyTypePtrOutput) Elem() SetupKeyTypeOutput {
+	return o.ApplyT(func(v *SetupKeyType) SetupKeyType {
+		if v != nil {
+			return *v
+		}
+		var ret SetupKeyType
+		return ret
+	}).(SetupKeyTypeOutput)
+}
+
+func (o SetupKeyTypePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o SetupKeyTypePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *SetupKeyType) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// SetupKeyTypeInput is an input type that accepts values of the SetupKeyType enum
+// A concrete instance of `SetupKeyTypeInput` can be one of the following:
+//
+//	SetupKeyTypeReusable
+//	SetupKeyType_One_Off
+type SetupKeyTypeInput interface {
+	pulumi.Input
+
+	ToSetupKeyTypeOutput() SetupKeyTypeOutput
+	ToSetupKeyTypeOutputWithContext(context.Context) SetupKeyTypeOutput
+}
+
+var setupKeyTypePtrType = reflect.TypeOf((**SetupKeyType)(nil)).Elem()
+
+type SetupKeyTypePtrInput interface {
+	pulumi.Input
+
+	ToSetupKeyTypePtrOutput() SetupKeyTypePtrOutput
+	ToSetupKeyTypePtrOutputWithContext(context.Context) SetupKeyTypePtrOutput
+}
+
+type setupKeyTypePtr string
+
+func SetupKeyTypePtr(v string) SetupKeyTypePtrInput {
+	return (*setupKeyTypePtr)(&v)
+}
+
+func (*setupKeyTypePtr) ElementType() reflect.Type {
+	return setupKeyTypePtrType
+}
+
+func (in *setupKeyTypePtr) ToSetupKeyTypePtrOutput() SetupKeyTypePtrOutput {
+	return pulumi.ToOutput(in).(SetupKeyTypePtrOutput)
+}
+
+func (in *setupKeyTypePtr) ToSetupKeyTypePtrOutputWithContext(ctx context.Context) SetupKeyTypePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(SetupKeyTypePtrOutput)
+}
+
 type Type string
 
 const (
@@ -691,6 +858,8 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolPtrInput)(nil)).Elem(), Protocol("all"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionInput)(nil)).Elem(), RuleAction("accept"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionPtrInput)(nil)).Elem(), RuleAction("accept"))
+	pulumi.RegisterInputType(reflect.TypeOf((*SetupKeyTypeInput)(nil)).Elem(), SetupKeyType("reusable"))
+	pulumi.RegisterInputType(reflect.TypeOf((*SetupKeyTypePtrInput)(nil)).Elem(), SetupKeyType("reusable"))
 	pulumi.RegisterInputType(reflect.TypeOf((*TypeInput)(nil)).Elem(), Type("domain"))
 	pulumi.RegisterInputType(reflect.TypeOf((*TypePtrInput)(nil)).Elem(), Type("domain"))
 	pulumi.RegisterOutputType(NameserverNsTypeOutput{})
@@ -699,6 +868,8 @@ func init() {
 	pulumi.RegisterOutputType(ProtocolPtrOutput{})
 	pulumi.RegisterOutputType(RuleActionOutput{})
 	pulumi.RegisterOutputType(RuleActionPtrOutput{})
+	pulumi.RegisterOutputType(SetupKeyTypeOutput{})
+	pulumi.RegisterOutputType(SetupKeyTypePtrOutput{})
 	pulumi.RegisterOutputType(TypeOutput{})
 	pulumi.RegisterOutputType(TypePtrOutput{})
 }

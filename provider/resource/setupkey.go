@@ -23,24 +23,24 @@ func (s *SetupKey) Annotate(a infer.Annotator) {
 
 // SetupKeyArgs represents the input arguments for creating a setup key.
 type SetupKeyArgs struct {
-	Name                string   `pulumi:"name"`
-	Type                string   `pulumi:"type"`      // "one-off" | "reusable"
-	ExpiresIn           int      `pulumi:"expiresIn"` // seconds
-	AutoGroups          []string `pulumi:"autoGroups"`
-	UsageLimit          int      `pulumi:"usageLimit"` // 0 = unlimited
-	Ephemeral           *bool    `pulumi:"ephemeral,optional"`
-	AllowExtraDNSLabels *bool    `pulumi:"allowExtraDnsLabels,optional"`
+	Name                string       `pulumi:"name"`
+	Type                SetupKeyType `pulumi:"type"`      // "one-off" | "reusable"
+	ExpiresIn           int          `pulumi:"expiresIn"` // seconds
+	AutoGroups          []string     `pulumi:"autoGroups"`
+	UsageLimit          int          `pulumi:"usageLimit"` // 0 = unlimited
+	Ephemeral           *bool        `pulumi:"ephemeral,optional"`
+	AllowExtraDNSLabels *bool        `pulumi:"allowExtraDnsLabels,optional"`
 }
 
 // Annotate provides documentation for SetupKeyArgs fields.
 func (a *SetupKeyArgs) Annotate(annotator infer.Annotator) {
-	annotator.Describe(&a.Name, "Setup key name.")
-	annotator.Describe(&a.Type, "Setup key type: 'one-off' or 'reusable'.")
-	annotator.Describe(&a.ExpiresIn, "Expiration time in seconds.")
-	annotator.Describe(&a.AutoGroups, "List of group IDs to auto-assign to peers.")
-	annotator.Describe(&a.UsageLimit, "Usage limit (0 = unlimited).")
-	annotator.Describe(&a.Ephemeral, "Whether peers registered with this key are ephemeral.")
-	annotator.Describe(&a.AllowExtraDNSLabels, "Allow extra DNS labels to be added to peers.")
+	annotator.Describe(&a.Name, "Setup key display name.")
+	annotator.Describe(&a.Type, "Setup key type: 'one-off' (single use) or 'reusable'.")
+	annotator.Describe(&a.ExpiresIn, "Time-to-live in seconds from creation; use 0 for no expiration if supported by the API.")
+	annotator.Describe(&a.AutoGroups, "Group IDs to auto-assign to peers created with this key.")
+	annotator.Describe(&a.UsageLimit, "Maximum uses for reusable keys; 0 = unlimited.")
+	annotator.Describe(&a.Ephemeral, "Whether peers registered with this key are ephemeral (auto-expire).")
+	annotator.Describe(&a.AllowExtraDNSLabels, "Allow peers to add extra DNS labels beyond the base peer name.")
 }
 
 // SetupKeyState represents the state/output of a setup key resource.
@@ -55,6 +55,24 @@ type SetupKeyState struct {
 	Expires   *string `pulumi:"expires,optional"`
 	State     *string `pulumi:"state,optional"`
 	UpdatedAt *string `pulumi:"updatedAt,optional"`
+}
+
+// SetupKeyType defines the kind of setup key accepted by NetBird.
+type SetupKeyType string
+
+const (
+	// SetupKeyTypeReusable creates a key that can be used multiple times.
+	SetupKeyTypeReusable SetupKeyType = SetupKeyType("reusable")
+	// SetupKeyTypeOneOff creates a key that can only be used once.
+	SetupKeyTypeOneOff SetupKeyType = SetupKeyType("one-off")
+)
+
+// Values describes the setup key type enum for schema generation.
+func (SetupKeyType) Values() []infer.EnumValue[Type] {
+	return []infer.EnumValue[Type]{
+		{Name: "reusable", Value: Type(SetupKeyTypeReusable), Description: "Reusable setup key that supports multiple peers."},
+		{Name: "one-off", Value: Type(SetupKeyTypeOneOff), Description: "One-off setup key that can be used only once."},
+	}
 }
 
 // Create creates a new NetBird setup key.
@@ -86,7 +104,7 @@ func (*SetupKey) Create(ctx context.Context, req infer.CreateRequest[SetupKeyArg
 	// Use CreateSetupKeyRequest for creation
 	createReq := nbapi.CreateSetupKeyRequest{
 		Name:                req.Inputs.Name,
-		Type:                req.Inputs.Type,
+		Type:                string(req.Inputs.Type),
 		ExpiresIn:           req.Inputs.ExpiresIn,
 		AutoGroups:          req.Inputs.AutoGroups,
 		UsageLimit:          req.Inputs.UsageLimit,
@@ -148,7 +166,7 @@ func (*SetupKey) Read(ctx context.Context, setupKeyID string, state SetupKeyStat
 	p.GetLogger(ctx).Debugf("Read:SetupKeyAPI name=%s, id=%s", setupKey.Name, setupKey.Id)
 
 	state.Name = setupKey.Name
-	state.Type = setupKey.Type
+	state.Type = SetupKeyType(setupKey.Type)
 	state.AutoGroups = setupKey.AutoGroups
 	state.UsageLimit = setupKey.UsageLimit
 	ephemeral := setupKey.Ephemeral

@@ -59,3 +59,12 @@ func equalSlicePtr(sliceA, sliceB *[]string) bool {
 
 	return equalSlice(*sliceA, *sliceB)
 }
+
+// boolVal safely converts a pointer to bool to a bool value.
+func boolVal(p *bool) bool {
+	if p == nil {
+		return false
+	}
+
+	return *p
+}

@@ -169,18 +169,13 @@ func (*SetupKey) Read(ctx context.Context, setupKeyID string, state SetupKeyStat
 	state.Type = SetupKeyType(setupKey.Type)
 	state.AutoGroups = setupKey.AutoGroups
 	state.UsageLimit = setupKey.UsageLimit
-	ephemeral := setupKey.Ephemeral
-	state.Ephemeral = &ephemeral
-	allowExtraDNS := setupKey.AllowExtraDnsLabels
-	state.AllowExtraDNSLabels = &allowExtraDNS
+	state.Ephemeral = &setupKey.Ephemeral
+	state.AllowExtraDNSLabels = &setupKey.AllowExtraDnsLabels
 
 	// Output fields
-	key := setupKey.Key
-	state.Key = &key
-	revoked := setupKey.Revoked
-	state.Revoked = &revoked
-	usedTimes := setupKey.UsedTimes
-	state.UsedTimes = &usedTimes
+	state.Key = &setupKey.Key
+	state.Revoked = &setupKey.Revoked
+	state.UsedTimes = &setupKey.UsedTimes
 	expires := setupKey.Expires.Format("2006-01-02T15:04:05Z07:00")
 	state.Expires = &expires
 	lastUsed := setupKey.LastUsed.Format("2006-01-02T15:04:05Z07:00")

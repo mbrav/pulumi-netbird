@@ -19,13 +19,13 @@ type User struct {
 	// Groups this user’s peers are automatically assigned to.
 	AutoGroups pulumi.StringArrayOutput `pulumi:"autoGroups"`
 	// Indicates whether the user is blocked from accessing the system
-	Blocked pulumi.BoolOutput `pulumi:"blocked"`
+	Blocked pulumi.BoolPtrOutput `pulumi:"blocked"`
 	// Email address of the user.
-	Email pulumi.StringOutput `pulumi:"email"`
+	Email pulumi.StringPtrOutput `pulumi:"email"`
 	// Whether this user is a service identity.
 	IsServiceUser pulumi.BoolOutput `pulumi:"isServiceUser"`
 	// Full name of the user.
-	Name pulumi.StringOutput `pulumi:"name"`
+	Name pulumi.StringPtrOutput `pulumi:"name"`
 	// NetBird account role assigned to the user.
 	Role pulumi.StringOutput `pulumi:"role"`
 }
@@ -37,21 +37,6 @@ func NewUser(ctx *pulumi.Context,
 		return nil, errors.New("missing one or more required arguments")
 	}
 
-	if args.Auto_groups == nil {
-		return nil, errors.New("invalid value for required argument 'Auto_groups'")
-	}
-	if args.Blocked == nil {
-		return nil, errors.New("invalid value for required argument 'Blocked'")
-	}
-	if args.Email == nil {
-		return nil, errors.New("invalid value for required argument 'Email'")
-	}
-	if args.Is_service_user == nil {
-		return nil, errors.New("invalid value for required argument 'Is_service_user'")
-	}
-	if args.Name == nil {
-		return nil, errors.New("invalid value for required argument 'Name'")
-	}
 	if args.Role == nil {
 		return nil, errors.New("invalid value for required argument 'Role'")
 	}
@@ -89,15 +74,15 @@ func (UserState) ElementType() reflect.Type {
 
 type userArgs struct {
 	// List of group IDs to auto-assign this user’s peers to.
-	Auto_groups []string `pulumi:"auto_groups"`
+	AutoGroups []string `pulumi:"autoGroups"`
 	// Indicates whether the user is blocked from accessing the system. Used only on update, not create.
-	Blocked bool `pulumi:"blocked"`
+	Blocked *bool `pulumi:"blocked"`
 	// Email address to send user invite to.
-	Email string `pulumi:"email"`
+	Email *string `pulumi:"email"`
 	// Whether this user is a service identity.
-	Is_service_user bool `pulumi:"is_service_user"`
+	IsServiceUser *bool `pulumi:"isServiceUser"`
 	// Full name of the user.
-	Name string `pulumi:"name"`
+	Name *string `pulumi:"name"`
 	// NetBird account role (e.g., 'admin', 'user').
 	Role string `pulumi:"role"`
 }
@@ -105,15 +90,15 @@ type userArgs struct {
 // The set of arguments for constructing a User resource.
 type UserArgs struct {
 	// List of group IDs to auto-assign this user’s peers to.
-	Auto_groups pulumi.StringArrayInput
+	AutoGroups pulumi.StringArrayInput
 	// Indicates whether the user is blocked from accessing the system. Used only on update, not create.
-	Blocked pulumi.BoolInput
+	Blocked pulumi.BoolPtrInput
 	// Email address to send user invite to.
-	Email pulumi.StringInput
+	Email pulumi.StringPtrInput
 	// Whether this user is a service identity.
-	Is_service_user pulumi.BoolInput
+	IsServiceUser pulumi.BoolPtrInput
 	// Full name of the user.
-	Name pulumi.StringInput
+	Name pulumi.StringPtrInput
 	// NetBird account role (e.g., 'admin', 'user').
 	Role pulumi.StringInput
 }
@@ -211,13 +196,13 @@ func (o UserOutput) AutoGroups() pulumi.StringArrayOutput {
 }
 
 // Indicates whether the user is blocked from accessing the system
-func (o UserOutput) Blocked() pulumi.BoolOutput {
-	return o.ApplyT(func(v *User) pulumi.BoolOutput { return v.Blocked }).(pulumi.BoolOutput)
+func (o UserOutput) Blocked() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *User) pulumi.BoolPtrOutput { return v.Blocked }).(pulumi.BoolPtrOutput)
 }
 
 // Email address of the user.
-func (o UserOutput) Email() pulumi.StringOutput {
-	return o.ApplyT(func(v *User) pulumi.StringOutput { return v.Email }).(pulumi.StringOutput)
+func (o UserOutput) Email() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *User) pulumi.StringPtrOutput { return v.Email }).(pulumi.StringPtrOutput)
 }
 
 // Whether this user is a service identity.
@@ -226,8 +211,8 @@ func (o UserOutput) IsServiceUser() pulumi.BoolOutput {
 }
 
 // Full name of the user.
-func (o UserOutput) Name() pulumi.StringOutput {
-	return o.ApplyT(func(v *User) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
+func (o UserOutput) Name() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *User) pulumi.StringPtrOutput { return v.Name }).(pulumi.StringPtrOutput)
 }
 
 // NetBird account role assigned to the user.

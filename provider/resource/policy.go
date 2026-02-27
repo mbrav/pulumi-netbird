@@ -2,6 +2,7 @@ package resource
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
@@ -23,11 +24,11 @@ func (policy *Policy) Annotate(annotator infer.Annotator) {
 
 // PolicyArgs defines the user-supplied arguments for creating/updating a Policy resource.
 type PolicyArgs struct {
-	Name                string           `pulumi:"name"`                    // Policy name (required)
-	Description         *string          `pulumi:"description,optional"`    // Optional description
-	Enabled             bool             `pulumi:"enabled"`                 // Whether the policy is enabled
-	Rules               []PolicyRuleArgs `pulumi:"rules"`                   // List of rules defined in the policy
-	SourcePostureChecks *[]string        `pulumi:"posture_checks,optional"` // Optional list of posture check IDs
+	Name                string           `pulumi:"name"`                   // Policy name (required)
+	Description         *string          `pulumi:"description,optional"`   // Optional description
+	Enabled             bool             `pulumi:"enabled"`                // Whether the policy is enabled
+	Rules               []PolicyRuleArgs `pulumi:"rules"`                  // List of rules defined in the policy
+	SourcePostureChecks *[]string        `pulumi:"postureChecks,optional"` // Optional list of posture check IDs
 }
 
 // Annotate adds field descriptions to PolicyArgs for generated SDKs.
@@ -45,7 +46,7 @@ type PolicyState struct {
 	Description         *string           `pulumi:"description,optional"`
 	Enabled             bool              `pulumi:"enabled"`
 	Rules               []PolicyRuleState `pulumi:"rules"`
-	SourcePostureChecks *[]string         `pulumi:"posture_checks,optional"`
+	SourcePostureChecks *[]string         `pulumi:"postureChecks,optional"`
 }
 
 // Annotate adds descriptive annotations to the PolicyState fields for use in generated SDKs.
@@ -284,6 +285,10 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 	})
 	if err != nil {
 		return infer.CreateResponse[PolicyState]{}, fmt.Errorf("creating policy failed: %w", err)
+	}
+
+	if created.Id == nil || *created.Id == "" {
+		return infer.CreateResponse[PolicyState]{}, errors.New("policy create response did not include an id")
 	}
 
 	// Convert created rules to PolicyRuleState
@@ -596,9 +601,142 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 }
 
 // Check provides input validation and default setting.
-func (*Policy) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[PolicyArgs], error) {
+func (*Policy) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[PolicyArgs], error) { //nolint:gocognit,gocyclo
 	p.GetLogger(ctx).Debugf("Check:Policy old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[PolicyArgs](ctx, req.NewInputs)
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty",
+		})
+	}
+
+	if len(args.Rules) == 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "rules",
+			Reason:   "at least one rule is required",
+		})
+	}
+
+	for ruleIndex, rule := range args.Rules {
+		if isBlank(rule.Name) {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("rules[%d].name", ruleIndex),
+				Reason:   "rule name must not be empty",
+			})
+		}
+
+		if rule.Ports != nil {
+			for portIndex, port := range *rule.Ports {
+				if isBlank(port) {
+					failures = append(failures, p.CheckFailure{
+						Property: fmt.Sprintf("rules[%d].ports[%d]", ruleIndex, portIndex),
+						Reason:   "port must not be empty",
+					})
+				}
+			}
+		}
+
+		if rule.PortRanges != nil {
+			for portRangeIndex, portRange := range *rule.PortRanges {
+				if portRange.Start < 1 || portRange.Start > 65535 {
+					failures = append(failures, p.CheckFailure{
+						Property: fmt.Sprintf("rules[%d].portRanges[%d].start", ruleIndex, portRangeIndex),
+						Reason:   "start must be between 1 and 65535",
+					})
+				}
+
+				if portRange.End < 1 || portRange.End > 65535 {
+					failures = append(failures, p.CheckFailure{
+						Property: fmt.Sprintf("rules[%d].portRanges[%d].end", ruleIndex, portRangeIndex),
+						Reason:   "end must be between 1 and 65535",
+					})
+				}
+
+				if portRange.Start > portRange.End {
+					failures = append(failures, p.CheckFailure{
+						Property: fmt.Sprintf("rules[%d].portRanges[%d]", ruleIndex, portRangeIndex),
+						Reason:   "start must be less than or equal to end",
+					})
+				}
+			}
+		}
+
+		hasSources := rule.Sources != nil && len(*rule.Sources) > 0
+
+		hasSourceResource := rule.SourceResource != nil
+		if !hasSources && !hasSourceResource {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("rules[%d].sources", ruleIndex),
+				Reason:   "at least one source or sourceResource is required",
+			})
+		}
+
+		hasDestinations := rule.Destinations != nil && len(*rule.Destinations) > 0
+
+		hasDestinationResource := rule.DestinationResource != nil
+		if !hasDestinations && !hasDestinationResource {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("rules[%d].destinations", ruleIndex),
+				Reason:   "at least one destination or destinationResource is required",
+			})
+		}
+
+		if rule.Sources != nil {
+			for sourceIndex, source := range *rule.Sources {
+				if isBlank(source) {
+					failures = append(failures, p.CheckFailure{
+						Property: fmt.Sprintf("rules[%d].sources[%d]", ruleIndex, sourceIndex),
+						Reason:   "source id must not be empty",
+					})
+				}
+			}
+		}
+
+		if rule.Destinations != nil {
+			for destinationIndex, destination := range *rule.Destinations {
+				if isBlank(destination) {
+					failures = append(failures, p.CheckFailure{
+						Property: fmt.Sprintf("rules[%d].destinations[%d]", ruleIndex, destinationIndex),
+						Reason:   "destination id must not be empty",
+					})
+				}
+			}
+		}
+
+		if rule.SourceResource != nil {
+			if isBlank(rule.SourceResource.ID) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("rules[%d].sourceResource.id", ruleIndex),
+					Reason:   "sourceResource.id must not be empty",
+				})
+			}
+
+			if isBlank(string(rule.SourceResource.Type)) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("rules[%d].sourceResource.type", ruleIndex),
+					Reason:   "sourceResource.type must not be empty",
+				})
+			}
+		}
+
+		if rule.DestinationResource != nil {
+			if isBlank(rule.DestinationResource.ID) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("rules[%d].destinationResource.id", ruleIndex),
+					Reason:   "destinationResource.id must not be empty",
+				})
+			}
+
+			if isBlank(string(rule.DestinationResource.Type)) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("rules[%d].destinationResource.type", ruleIndex),
+					Reason:   "destinationResource.type must not be empty",
+				})
+			}
+		}
+	}
 
 	return infer.CheckResponse[PolicyArgs]{
 		Inputs:   args,

@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -475,7 +475,7 @@
           "type": "boolean",
           "description": "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty."
         },
-        "search_domains_enabled": {
+        "searchDomainsEnabled": {
           "type": "boolean",
           "description": "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty."
         }
@@ -488,7 +488,7 @@
         "groups",
         "primary",
         "nameservers",
-        "search_domains_enabled"
+        "searchDomainsEnabled"
       ],
       "inputProperties": {
         "description": {
@@ -528,7 +528,7 @@
           "type": "boolean",
           "description": "Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty."
         },
-        "search_domains_enabled": {
+        "searchDomainsEnabled": {
           "type": "boolean",
           "description": "SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty."
         }
@@ -541,7 +541,7 @@
         "groups",
         "primary",
         "nameservers",
-        "search_domains_enabled"
+        "searchDomainsEnabled"
       ]
     },
     "netbird:resource:Group": {
@@ -637,7 +637,7 @@
           "type": "boolean",
           "description": "Whether the resource is enabled."
         },
-        "group_ids": {
+        "groupIDs": {
           "type": "array",
           "items": {
             "type": "string"
@@ -648,17 +648,17 @@
           "type": "string",
           "description": "Name of the network resource."
         },
-        "network_id": {
+        "networkID": {
           "type": "string",
           "description": "ID of the network this resource belongs to."
         }
       },
       "required": [
         "name",
-        "network_id",
+        "networkID",
         "address",
         "enabled",
-        "group_ids"
+        "groupIDs"
       ],
       "inputProperties": {
         "address": {
@@ -673,7 +673,7 @@
           "type": "boolean",
           "description": "Whether the resource is enabled."
         },
-        "group_ids": {
+        "groupIDs": {
           "type": "array",
           "items": {
             "type": "string"
@@ -684,17 +684,17 @@
           "type": "string",
           "description": "Name of the network resource."
         },
-        "network_id": {
+        "networkID": {
           "type": "string",
           "description": "ID of the network this resource belongs to."
         }
       },
       "requiredInputs": [
         "name",
-        "network_id",
+        "networkID",
         "address",
         "enabled",
-        "group_ids"
+        "groupIDs"
       ]
     },
     "netbird:resource:NetworkRouter": {
@@ -712,7 +712,7 @@
           "type": "integer",
           "description": "Routing metric value."
         },
-        "network_id": {
+        "networkID": {
           "type": "string",
           "description": "ID of the network this router belongs to."
         },
@@ -720,7 +720,7 @@
           "type": "string",
           "description": "Optional peer ID associated with this router."
         },
-        "peer_groups": {
+        "peerGroups": {
           "type": "array",
           "items": {
             "type": "string"
@@ -729,7 +729,7 @@
         }
       },
       "required": [
-        "network_id",
+        "networkID",
         "enabled",
         "masquerade",
         "metric"
@@ -747,7 +747,7 @@
           "type": "integer",
           "description": "Routing metric value."
         },
-        "network_id": {
+        "networkID": {
           "type": "string",
           "description": "ID of the network this router belongs to."
         },
@@ -755,7 +755,7 @@
           "type": "string",
           "description": "Optional peer ID associated with this router."
         },
-        "peer_groups": {
+        "peerGroups": {
           "type": "array",
           "items": {
             "type": "string"
@@ -764,7 +764,7 @@
         }
       },
       "requiredInputs": [
-        "network_id",
+        "networkID",
         "enabled",
         "masquerade",
         "metric"
@@ -846,7 +846,7 @@
           "type": "string",
           "description": "Name Policy name identifier"
         },
-        "posture_checks": {
+        "postureChecks": {
           "type": "array",
           "items": {
             "type": "string"
@@ -879,7 +879,7 @@
           "type": "string",
           "description": "Name Policy name identifier"
         },
-        "posture_checks": {
+        "postureChecks": {
           "type": "array",
           "items": {
             "type": "string"
@@ -1039,15 +1039,11 @@
         }
       },
       "required": [
-        "email",
-        "name",
         "role",
-        "isServiceUser",
-        "autoGroups",
-        "blocked"
+        "isServiceUser"
       ],
       "inputProperties": {
-        "auto_groups": {
+        "autoGroups": {
           "type": "array",
           "items": {
             "type": "string"
@@ -1062,7 +1058,7 @@
           "type": "string",
           "description": "Email address to send user invite to."
         },
-        "is_service_user": {
+        "isServiceUser": {
           "type": "boolean",
           "description": "Whether this user is a service identity."
         },
@@ -1076,12 +1072,7 @@
         }
       },
       "requiredInputs": [
-        "email",
-        "name",
-        "role",
-        "is_service_user",
-        "auto_groups",
-        "blocked"
+        "role"
       ]
     }
   }

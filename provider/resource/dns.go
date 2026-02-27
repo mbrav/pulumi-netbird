@@ -30,7 +30,7 @@ type DNSArgs struct {
 	Groups               []string     `pulumi:"groups"`
 	Primary              bool         `pulumi:"primary"`
 	Nameservers          []Nameserver `pulumi:"nameservers"`
-	SearchDomainsEnabled bool         `pulumi:"search_domains_enabled"`
+	SearchDomainsEnabled bool         `pulumi:"searchDomainsEnabled"`
 }
 
 // Annotate provides documentation for DNSArgs fields.
@@ -54,7 +54,7 @@ type DNSState struct {
 	Groups               []string     `pulumi:"groups"`
 	Primary              bool         `pulumi:"primary"`
 	Nameservers          []Nameserver `pulumi:"nameservers"`
-	SearchDomainsEnabled bool         `pulumi:"search_domains_enabled"`
+	SearchDomainsEnabled bool         `pulumi:"searchDomainsEnabled"`
 }
 
 // Annotate provides documentation for DNSState fields.
@@ -173,8 +173,8 @@ func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) 
 
 	// Convert API nameservers to Pulumi state format
 	stateNameservers := make([]Nameserver, len(group.Nameservers))
-	for i, ns := range group.Nameservers {
-		stateNameservers[i] = Nameserver{
+	for nsIndex, ns := range group.Nameservers {
+		stateNameservers[nsIndex] = Nameserver{
 			IP:     ns.Ip,
 			NsType: NameserverNsType(ns.NsType),
 			Port:   ns.Port,
@@ -276,8 +276,8 @@ func toAPINameservers(in []Nameserver) []nbapi.Nameserver {
 // Converts a slice of API Nameserver to internal Nameserver.
 func fromAPINameservers(in []nbapi.Nameserver) []Nameserver {
 	nameservers := make([]Nameserver, len(in))
-	for i, ns := range in {
-		nameservers[i] = Nameserver{
+	for nsIndex, ns := range in {
+		nameservers[nsIndex] = Nameserver{
 			IP:     ns.Ip,
 			NsType: NameserverNsType(ns.NsType),
 			Port:   ns.Port,
@@ -353,7 +353,7 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 	}
 
 	if req.Inputs.SearchDomainsEnabled != req.State.SearchDomainsEnabled {
-		diff["search_domains_enabled"] = p.PropertyDiff{
+		diff["searchDomainsEnabled"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
 		}
@@ -393,7 +393,58 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 // Check provides input validation and default setting.
 func (*DNS) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[DNSArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:DNS old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[DNSArgs](ctx, req.NewInputs)
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty",
+		})
+	}
+
+	if args.Primary && len(args.Domains) > 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "domains",
+			Reason:   "domains must be empty when primary is true",
+		})
+	}
+
+	if !args.Primary && len(args.Domains) == 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "domains",
+			Reason:   "domains must not be empty when primary is false",
+		})
+	}
+
+	if args.SearchDomainsEnabled && len(args.Domains) == 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "searchDomainsEnabled",
+			Reason:   "searchDomainsEnabled requires at least one domain",
+		})
+	}
+
+	if len(args.Nameservers) == 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "nameservers",
+			Reason:   "at least one nameserver is required",
+		})
+	}
+
+	for nsIndex, nameserver := range args.Nameservers {
+		if isBlank(nameserver.IP) {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("nameservers[%d].ip", nsIndex),
+				Reason:   "ip must not be empty",
+			})
+		}
+
+		if nameserver.Port < 1 || nameserver.Port > 65535 {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("nameservers[%d].port", nsIndex),
+				Reason:   "port must be between 1 and 65535",
+			})
+		}
+	}
 
 	return infer.CheckResponse[DNSArgs]{
 		Inputs:   args,

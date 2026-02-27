@@ -68,6 +68,7 @@ jobs:
           generate_release_notes: true
           # draft: true
           name: Release ${{ github.ref_name }}
+          body_path: ./CHANGELOG.md
           files: |
             dist/*.tar.gz
             dist/checksums.txt

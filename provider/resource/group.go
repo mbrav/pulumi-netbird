@@ -228,10 +228,9 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 		}
 	}
 
-	// Resources: input-only field — always tracked as an input diff
-	if req.Inputs.Resources != nil {
+	if !equalResourcesPtr(req.Inputs.Resources, req.State.Resources) {
 		diff["resources"] = p.PropertyDiff{
-			InputDiff: true,
+			InputDiff: false,
 			Kind:      p.Update,
 		}
 	}
@@ -248,7 +247,36 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 // Check provides input validation and default setting.
 func (*Group) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[GroupArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:Group old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[GroupArgs](ctx, req.NewInputs)
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty",
+		})
+	}
+
+	if args.Peers != nil {
+		for i, peerID := range *args.Peers {
+			if isBlank(peerID) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("peers[%d]", i),
+					Reason:   "peer id must not be empty",
+				})
+			}
+		}
+	}
+
+	if args.Resources != nil {
+		for i, resource := range *args.Resources {
+			if isBlank(resource.ID) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("resources[%d].id", i),
+					Reason:   "resource id must not be empty",
+				})
+			}
+		}
+	}
 
 	return infer.CheckResponse[GroupArgs]{
 		Inputs:   args,

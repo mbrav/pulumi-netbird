@@ -31,7 +31,7 @@ type DNS struct {
 	// Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.
 	Primary pulumi.BoolOutput `pulumi:"primary"`
 	// SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.
-	Search_domains_enabled pulumi.BoolOutput `pulumi:"search_domains_enabled"`
+	SearchDomainsEnabled pulumi.BoolOutput `pulumi:"searchDomainsEnabled"`
 }
 
 // NewDNS registers a new resource with the given unique name, arguments, and options.
@@ -62,8 +62,8 @@ func NewDNS(ctx *pulumi.Context,
 	if args.Primary == nil {
 		return nil, errors.New("invalid value for required argument 'Primary'")
 	}
-	if args.Search_domains_enabled == nil {
-		return nil, errors.New("invalid value for required argument 'Search_domains_enabled'")
+	if args.SearchDomainsEnabled == nil {
+		return nil, errors.New("invalid value for required argument 'SearchDomainsEnabled'")
 	}
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource DNS
@@ -113,7 +113,7 @@ type dnsArgs struct {
 	// Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.
 	Primary bool `pulumi:"primary"`
 	// SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.
-	Search_domains_enabled bool `pulumi:"search_domains_enabled"`
+	SearchDomainsEnabled bool `pulumi:"searchDomainsEnabled"`
 }
 
 // The set of arguments for constructing a DNS resource.
@@ -133,7 +133,7 @@ type DNSArgs struct {
 	// Primary Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.
 	Primary pulumi.BoolInput
 	// SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.
-	Search_domains_enabled pulumi.BoolInput
+	SearchDomainsEnabled pulumi.BoolInput
 }
 
 func (DNSArgs) ElementType() reflect.Type {
@@ -259,8 +259,8 @@ func (o DNSOutput) Primary() pulumi.BoolOutput {
 }
 
 // SearchDomainsEnabled Search domain status for match domains. It should be true only if domains list is not empty.
-func (o DNSOutput) Search_domains_enabled() pulumi.BoolOutput {
-	return o.ApplyT(func(v *DNS) pulumi.BoolOutput { return v.Search_domains_enabled }).(pulumi.BoolOutput)
+func (o DNSOutput) SearchDomainsEnabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v *DNS) pulumi.BoolOutput { return v.SearchDomainsEnabled }).(pulumi.BoolOutput)
 }
 
 type DNSArrayOutput struct{ *pulumi.OutputState }

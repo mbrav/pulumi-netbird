@@ -228,7 +228,14 @@ func (*Peer) Diff(ctx context.Context, req infer.DiffRequest[PeerArgs, PeerState
 // Check provides input validation and default setting.
 func (*Peer) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[PeerArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:Peer old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[PeerArgs](ctx, req.NewInputs)
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty",
+		})
+	}
 
 	return infer.CheckResponse[PeerArgs]{
 		Inputs:   args,

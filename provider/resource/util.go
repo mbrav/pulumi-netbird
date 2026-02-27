@@ -2,6 +2,7 @@ package resource
 
 import (
 	"slices"
+	"strings"
 )
 
 // strPtr helper function to stringify a pointer safely.
@@ -67,4 +68,57 @@ func boolVal(p *bool) bool {
 	}
 
 	return *p
+}
+
+func isBlank(v string) bool {
+	return strings.TrimSpace(v) == ""
+}
+
+func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
+	if resourcesA == nil && resourcesB == nil {
+		return true
+	}
+
+	if resourcesA == nil || resourcesB == nil {
+		return false
+	}
+
+	if len(*resourcesA) != len(*resourcesB) {
+		return false
+	}
+
+	aSorted := slices.Clone(*resourcesA)
+	bSorted := slices.Clone(*resourcesB)
+
+	slices.SortFunc(aSorted, func(resA, resB Resource) int {
+		if resA.Type != resB.Type {
+			if resA.Type < resB.Type {
+				return -1
+			}
+
+			return 1
+		}
+
+		return strings.Compare(resA.ID, resB.ID)
+	})
+
+	slices.SortFunc(bSorted, func(resA, resB Resource) int {
+		if resA.Type != resB.Type {
+			if resA.Type < resB.Type {
+				return -1
+			}
+
+			return 1
+		}
+
+		return strings.Compare(resA.ID, resB.ID)
+	})
+
+	for i := range aSorted {
+		if !equalResourcePtr(&aSorted[i], &bSorted[i]) {
+			return false
+		}
+	}
+
+	return true
 }

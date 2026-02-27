@@ -25,10 +25,10 @@ func (net *NetworkResource) Annotate(a infer.Annotator) {
 type NetworkResourceArgs struct {
 	Name        string   `pulumi:"name"`
 	Description *string  `pulumi:"description,optional"`
-	NetworkID   string   `pulumi:"network_id"`
+	NetworkID   string   `pulumi:"networkID"`
 	Address     string   `pulumi:"address"`
 	Enabled     bool     `pulumi:"enabled"`
-	GroupIDs    []string `pulumi:"group_ids"`
+	GroupIDs    []string `pulumi:"groupIDs"`
 }
 
 // Annotate provides documentation for NetworkResourceArgs fields.
@@ -45,10 +45,10 @@ func (a *NetworkResourceArgs) Annotate(annotator infer.Annotator) {
 type NetworkResourceState struct {
 	Name        string   `pulumi:"name"`
 	Description *string  `pulumi:"description,optional"`
-	NetworkID   string   `pulumi:"network_id"`
+	NetworkID   string   `pulumi:"networkID"`
 	Address     string   `pulumi:"address"`
 	Enabled     bool     `pulumi:"enabled"`
-	GroupIDs    []string `pulumi:"group_ids"`
+	GroupIDs    []string `pulumi:"groupIDs"`
 }
 
 // Annotate provides documentation for NetworkResourceState fields.
@@ -222,6 +222,13 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 
 	diff := map[string]p.PropertyDiff{}
 
+	if req.Inputs.NetworkID != req.State.NetworkID {
+		diff["networkID"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
 	if req.Inputs.Name != req.State.Name {
 		diff["name"] = p.PropertyDiff{
 			InputDiff: false,
@@ -255,12 +262,12 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 		slices.Sort(req.State.GroupIDs)
 
 		if !slices.Equal(req.Inputs.GroupIDs, req.State.GroupIDs) {
-			diff["group_ids"] = p.PropertyDiff{
+			diff["groupIDs"] = p.PropertyDiff{
 				InputDiff: false,
 				Kind:      p.Update,
 			}
 
-			p.GetLogger(ctx).Debugf("Diff:NetworkResource group_ids input=%s output=%s", req.Inputs.GroupIDs, req.State.GroupIDs)
+			p.GetLogger(ctx).Debugf("Diff:NetworkResource GroupIDs input=%s output=%s", req.Inputs.GroupIDs, req.State.GroupIDs)
 		}
 	}
 
@@ -276,7 +283,37 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 // Check provides input validation and default setting.
 func (*NetworkResource) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkResourceArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:NetworkResource old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[NetworkResourceArgs](ctx, req.NewInputs)
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty",
+		})
+	}
+
+	if isBlank(args.NetworkID) {
+		failures = append(failures, p.CheckFailure{
+			Property: "networkID",
+			Reason:   "networkID must not be empty",
+		})
+	}
+
+	if isBlank(args.Address) {
+		failures = append(failures, p.CheckFailure{
+			Property: "address",
+			Reason:   "address must not be empty",
+		})
+	}
+
+	for i, groupID := range args.GroupIDs {
+		if isBlank(groupID) {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("groupIDs[%d]", i),
+				Reason:   "group id must not be empty",
+			})
+		}
+	}
 
 	return infer.CheckResponse[NetworkResourceArgs]{
 		Inputs:   args,

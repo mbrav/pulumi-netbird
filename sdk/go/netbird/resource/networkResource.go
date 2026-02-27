@@ -23,11 +23,11 @@ type NetworkResource struct {
 	// Whether the resource is enabled.
 	Enabled pulumi.BoolOutput `pulumi:"enabled"`
 	// List of group IDs associated with this resource.
-	Group_ids pulumi.StringArrayOutput `pulumi:"group_ids"`
+	GroupIDs pulumi.StringArrayOutput `pulumi:"groupIDs"`
 	// Name of the network resource.
 	Name pulumi.StringOutput `pulumi:"name"`
 	// ID of the network this resource belongs to.
-	Network_id pulumi.StringOutput `pulumi:"network_id"`
+	NetworkID pulumi.StringOutput `pulumi:"networkID"`
 }
 
 // NewNetworkResource registers a new resource with the given unique name, arguments, and options.
@@ -43,14 +43,14 @@ func NewNetworkResource(ctx *pulumi.Context,
 	if args.Enabled == nil {
 		return nil, errors.New("invalid value for required argument 'Enabled'")
 	}
-	if args.Group_ids == nil {
-		return nil, errors.New("invalid value for required argument 'Group_ids'")
+	if args.GroupIDs == nil {
+		return nil, errors.New("invalid value for required argument 'GroupIDs'")
 	}
 	if args.Name == nil {
 		return nil, errors.New("invalid value for required argument 'Name'")
 	}
-	if args.Network_id == nil {
-		return nil, errors.New("invalid value for required argument 'Network_id'")
+	if args.NetworkID == nil {
+		return nil, errors.New("invalid value for required argument 'NetworkID'")
 	}
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource NetworkResource
@@ -92,11 +92,11 @@ type networkResourceArgs struct {
 	// Whether the resource is enabled.
 	Enabled bool `pulumi:"enabled"`
 	// List of group IDs associated with this resource.
-	Group_ids []string `pulumi:"group_ids"`
+	GroupIDs []string `pulumi:"groupIDs"`
 	// Name of the network resource.
 	Name string `pulumi:"name"`
 	// ID of the network this resource belongs to.
-	Network_id string `pulumi:"network_id"`
+	NetworkID string `pulumi:"networkID"`
 }
 
 // The set of arguments for constructing a NetworkResource resource.
@@ -108,11 +108,11 @@ type NetworkResourceArgs struct {
 	// Whether the resource is enabled.
 	Enabled pulumi.BoolInput
 	// List of group IDs associated with this resource.
-	Group_ids pulumi.StringArrayInput
+	GroupIDs pulumi.StringArrayInput
 	// Name of the network resource.
 	Name pulumi.StringInput
 	// ID of the network this resource belongs to.
-	Network_id pulumi.StringInput
+	NetworkID pulumi.StringInput
 }
 
 func (NetworkResourceArgs) ElementType() reflect.Type {
@@ -218,8 +218,8 @@ func (o NetworkResourceOutput) Enabled() pulumi.BoolOutput {
 }
 
 // List of group IDs associated with this resource.
-func (o NetworkResourceOutput) Group_ids() pulumi.StringArrayOutput {
-	return o.ApplyT(func(v *NetworkResource) pulumi.StringArrayOutput { return v.Group_ids }).(pulumi.StringArrayOutput)
+func (o NetworkResourceOutput) GroupIDs() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *NetworkResource) pulumi.StringArrayOutput { return v.GroupIDs }).(pulumi.StringArrayOutput)
 }
 
 // Name of the network resource.
@@ -228,8 +228,8 @@ func (o NetworkResourceOutput) Name() pulumi.StringOutput {
 }
 
 // ID of the network this resource belongs to.
-func (o NetworkResourceOutput) Network_id() pulumi.StringOutput {
-	return o.ApplyT(func(v *NetworkResource) pulumi.StringOutput { return v.Network_id }).(pulumi.StringOutput)
+func (o NetworkResourceOutput) NetworkID() pulumi.StringOutput {
+	return o.ApplyT(func(v *NetworkResource) pulumi.StringOutput { return v.NetworkID }).(pulumi.StringOutput)
 }
 
 type NetworkResourceArrayOutput struct{ *pulumi.OutputState }

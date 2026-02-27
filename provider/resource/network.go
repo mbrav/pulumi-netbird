@@ -195,7 +195,14 @@ func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, Net
 // Check provides input validation and default setting.
 func (*Network) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:Network old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[NetworkArgs](ctx, req.NewInputs)
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty",
+		})
+	}
 
 	return infer.CheckResponse[NetworkArgs]{
 		Inputs:   args,

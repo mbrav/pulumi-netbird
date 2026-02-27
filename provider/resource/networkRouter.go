@@ -22,12 +22,12 @@ func (netR *NetworkRouter) Annotate(a infer.Annotator) {
 
 // NetworkRouterArgs represents the input arguments for creating or updating a network router.
 type NetworkRouterArgs struct {
-	NetworkID  string    `pulumi:"network_id"`
+	NetworkID  string    `pulumi:"networkID"`
 	Enabled    bool      `pulumi:"enabled"`
 	Masquerade bool      `pulumi:"masquerade"`
 	Metric     int       `pulumi:"metric"`
 	Peer       *string   `pulumi:"peer,optional"`
-	PeerGroups *[]string `pulumi:"peer_groups,optional"`
+	PeerGroups *[]string `pulumi:"peerGroups,optional"`
 }
 
 // Annotate provides documentation for NetworkRouterArgs fields.
@@ -42,12 +42,12 @@ func (a *NetworkRouterArgs) Annotate(annotator infer.Annotator) {
 
 // NetworkRouterState represents the state of a network router.
 type NetworkRouterState struct {
-	NetworkID  string    `pulumi:"network_id"`
+	NetworkID  string    `pulumi:"networkID"`
 	Enabled    bool      `pulumi:"enabled"`
 	Masquerade bool      `pulumi:"masquerade"`
 	Metric     int       `pulumi:"metric"`
 	Peer       *string   `pulumi:"peer,optional"`
-	PeerGroups *[]string `pulumi:"peer_groups,optional"`
+	PeerGroups *[]string `pulumi:"peerGroups,optional"`
 }
 
 // Annotate provides documentation for NetworkRouterState fields.
@@ -62,7 +62,7 @@ func (s *NetworkRouterState) Annotate(annotator infer.Annotator) {
 
 // Create creates a new NetBird network router.
 func (*NetworkRouter) Create(ctx context.Context, req infer.CreateRequest[NetworkRouterArgs]) (infer.CreateResponse[NetworkRouterState], error) {
-	p.GetLogger(ctx).Debugf("Create:NetworkRouter network_id=%s", req.Inputs.NetworkID)
+	p.GetLogger(ctx).Debugf("Create:NetworkRouter networkID=%s", req.Inputs.NetworkID)
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkRouterState]{
@@ -214,6 +214,13 @@ func (*NetworkRouter) Diff(ctx context.Context, req infer.DiffRequest[NetworkRou
 
 	diff := map[string]p.PropertyDiff{}
 
+	if req.Inputs.NetworkID != req.State.NetworkID {
+		diff["networkID"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
 	if req.Inputs.Enabled != req.State.Enabled {
 		diff["enabled"] = p.PropertyDiff{
 			InputDiff: false,
@@ -243,7 +250,7 @@ func (*NetworkRouter) Diff(ctx context.Context, req infer.DiffRequest[NetworkRou
 	}
 
 	if !equalSlicePtr(req.Inputs.PeerGroups, req.State.PeerGroups) {
-		diff["peer_groups"] = p.PropertyDiff{
+		diff["peerGroups"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
 		}
@@ -261,7 +268,49 @@ func (*NetworkRouter) Diff(ctx context.Context, req infer.DiffRequest[NetworkRou
 // Check provides input validation and default setting.
 func (*NetworkRouter) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[NetworkRouterArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:NetworkRouter old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[NetworkRouterArgs](ctx, req.NewInputs)
+	if isBlank(args.NetworkID) {
+		failures = append(failures, p.CheckFailure{
+			Property: "networkID",
+			Reason:   "networkID must not be empty",
+		})
+	}
+
+	if args.Peer != nil && isBlank(*args.Peer) {
+		failures = append(failures, p.CheckFailure{
+			Property: "peer",
+			Reason:   "peer must not be empty when provided",
+		})
+	}
+
+	if args.PeerGroups != nil {
+		for i, peerGroupID := range *args.PeerGroups {
+			if isBlank(peerGroupID) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("peerGroups[%d]", i),
+					Reason:   "peer group id must not be empty",
+				})
+			}
+		}
+	}
+
+	if args.Metric < 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "metric",
+			Reason:   "metric must be greater than or equal to 0",
+		})
+	}
+
+	hasPeer := args.Peer != nil && !isBlank(*args.Peer)
+
+	hasPeerGroups := args.PeerGroups != nil && len(*args.PeerGroups) > 0
+	if !hasPeer && !hasPeerGroups {
+		failures = append(failures, p.CheckFailure{
+			Property: "peer",
+			Reason:   "either peer or peerGroups must be provided",
+		})
+	}
 
 	return infer.CheckResponse[NetworkRouterArgs]{
 		Inputs:   args,

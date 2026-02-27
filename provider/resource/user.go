@@ -21,18 +21,18 @@ func (u *User) Annotate(a infer.Annotator) {
 // UserArgs defines input arguments for creating a NetBird user.
 type UserArgs struct {
 	// Email is the user's email address to which the invite is sent.
-	Email *string `pulumi:"email"`
+	Email *string `pulumi:"email,optional"`
 	// Name is the full name of the user.
-	Name *string `pulumi:"name"`
+	Name *string `pulumi:"name,optional"`
 	// Role is the NetBird account role to assign (e.g. 'admin', 'user').
 	Role string `pulumi:"role"`
 	// IsServiceUser is true if the user is a service identity.
-	IsServiceUser bool `pulumi:"is_service_user"`
+	IsServiceUser bool `pulumi:"isServiceUser,optional"`
 	// AutoGroups is the list of group IDs to auto-assign peers to.
-	AutoGroups []string `pulumi:"auto_groups"`
+	AutoGroups []string `pulumi:"autoGroups,optional"`
 	// IsBlocked indicates whether the user is blocked from accessing the system.
 	// Used only on update, not create.
-	IsBlocked *bool `pulumi:"blocked"`
+	IsBlocked *bool `pulumi:"blocked,optional"`
 }
 
 // Annotate adds descriptions for SDK schema generation.
@@ -47,12 +47,12 @@ func (user *UserArgs) Annotate(annotator infer.Annotator) {
 
 // UserState represents the stored state of a NetBird user in Pulumi.
 type UserState struct {
-	Email         *string  `pulumi:"email"`
-	Name          *string  `pulumi:"name"`
+	Email         *string  `pulumi:"email,optional"`
+	Name          *string  `pulumi:"name,optional"`
 	Role          string   `pulumi:"role"`
 	IsServiceUser bool     `pulumi:"isServiceUser"`
-	AutoGroups    []string `pulumi:"autoGroups"`
-	IsBlocked     *bool    `pulumi:"blocked"`
+	AutoGroups    []string `pulumi:"autoGroups,optional"`
+	IsBlocked     *bool    `pulumi:"blocked,optional"`
 }
 
 // Annotate documents the stored state for the Pulumi schema.
@@ -151,7 +151,7 @@ func (*User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState
 			Name:          &foundUser.Name,
 			Email:         &foundUser.Email,
 			Role:          foundUser.Role,
-			IsServiceUser: *foundUser.IsServiceUser,
+			IsServiceUser: foundUser.IsServiceUser != nil && *foundUser.IsServiceUser,
 			AutoGroups:    foundUser.AutoGroups,
 			IsBlocked:     &foundUser.IsBlocked,
 		},
@@ -159,7 +159,7 @@ func (*User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState
 			Name:          &foundUser.Name,
 			Email:         &foundUser.Email,
 			Role:          foundUser.Role,
-			IsServiceUser: *foundUser.IsServiceUser,
+			IsServiceUser: foundUser.IsServiceUser != nil && *foundUser.IsServiceUser,
 			AutoGroups:    foundUser.AutoGroups,
 			IsBlocked:     &foundUser.IsBlocked,
 		},
@@ -241,17 +241,17 @@ func (*User) Diff(ctx context.Context, req infer.DiffRequest[UserArgs, UserState
 
 	diff := map[string]p.PropertyDiff{}
 
-	if req.Inputs.Name != req.State.Name {
+	if !equalPtr(req.Inputs.Name, req.State.Name) {
 		diff["name"] = p.PropertyDiff{
 			InputDiff: false,
-			Kind:      p.Update,
+			Kind:      p.UpdateReplace,
 		}
 	}
 
-	if req.Inputs.Email != req.State.Email {
+	if !equalPtr(req.Inputs.Email, req.State.Email) {
 		diff["email"] = p.PropertyDiff{
 			InputDiff: false,
-			Kind:      p.Update,
+			Kind:      p.UpdateReplace,
 		}
 	}
 
@@ -263,20 +263,20 @@ func (*User) Diff(ctx context.Context, req infer.DiffRequest[UserArgs, UserState
 	}
 
 	if req.Inputs.IsServiceUser != req.State.IsServiceUser {
-		diff["is_service_user"] = p.PropertyDiff{
+		diff["isServiceUser"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
+	if !equalSlice(req.Inputs.AutoGroups, req.State.AutoGroups) {
+		diff["autoGroups"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
 		}
 	}
 
-	if equalSlice(req.Inputs.AutoGroups, req.State.AutoGroups) {
-		diff["auto_groups"] = p.PropertyDiff{
-			InputDiff: false,
-			Kind:      p.Update,
-		}
-	}
-
-	if req.Inputs.IsBlocked != req.State.IsBlocked {
+	if boolVal(req.Inputs.IsBlocked) != boolVal(req.State.IsBlocked) {
 		diff["blocked"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
@@ -293,7 +293,28 @@ func (*User) Diff(ctx context.Context, req infer.DiffRequest[UserArgs, UserState
 // Check provides input validation and default setting.
 func (*User) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[UserArgs], error) {
 	p.GetLogger(ctx).Debugf("Check:User old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
 	args, failures, err := infer.DefaultCheck[UserArgs](ctx, req.NewInputs)
+	if isBlank(args.Role) {
+		failures = append(failures, p.CheckFailure{
+			Property: "role",
+			Reason:   "role must not be empty",
+		})
+	}
+
+	if !args.IsServiceUser && (args.Email == nil || isBlank(*args.Email)) {
+		failures = append(failures, p.CheckFailure{
+			Property: "email",
+			Reason:   "email is required when isServiceUser is false",
+		})
+	}
+
+	if args.Name != nil && isBlank(*args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty when provided",
+		})
+	}
 
 	return infer.CheckResponse[UserArgs]{
 		Inputs:   args,

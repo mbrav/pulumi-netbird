@@ -37,7 +37,7 @@ type SetupKeyArgs struct {
 	Type                SetupKeyType `pulumi:"type"`
 	ExpiresIn           int          `pulumi:"expiresIn"` // seconds
 	AutoGroups          []string     `pulumi:"autoGroups"`
-	UsageLimit          int          `pulumi:"usageLimit"` // 0 = unlimited
+	UsageLimit          int          `pulumi:"usageLimit"`
 	Ephemeral           *bool        `pulumi:"ephemeral,optional"`
 	AllowExtraDNSLabels *bool        `pulumi:"allowExtraDnsLabels,optional"`
 }
@@ -267,4 +267,116 @@ func (*SetupKey) Delete(ctx context.Context, req infer.DeleteRequest[SetupKeySta
 	}
 
 	return infer.DeleteResponse{}, nil
+}
+
+// Diff detects changes between inputs and prior state.
+func (*SetupKey) Diff(ctx context.Context, req infer.DiffRequest[SetupKeyArgs, SetupKeyState]) (infer.DiffResponse, error) {
+	p.GetLogger(ctx).Debugf("Diff:SetupKey[%s]", req.ID)
+
+	diff := map[string]p.PropertyDiff{}
+
+	if req.Inputs.Name != req.State.Name {
+		diff["name"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
+	if req.Inputs.Type != req.State.Type {
+		diff["type"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
+	if req.Inputs.ExpiresIn != req.State.ExpiresIn {
+		diff["expiresIn"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
+	if req.Inputs.UsageLimit != req.State.UsageLimit {
+		diff["usageLimit"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
+	if boolVal(req.Inputs.Ephemeral) != boolVal(req.State.Ephemeral) {
+		diff["ephemeral"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
+	if boolVal(req.Inputs.AllowExtraDNSLabels) != boolVal(req.State.AllowExtraDNSLabels) {
+		diff["allowExtraDnsLabels"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.UpdateReplace,
+		}
+	}
+
+	if !equalSlice(req.Inputs.AutoGroups, req.State.AutoGroups) {
+		diff["autoGroups"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
+	}
+
+	p.GetLogger(ctx).Debugf("Diff:SetupKey[%s] diff=%d", req.ID, len(diff))
+
+	return infer.DiffResponse{
+		DeleteBeforeReplace: false,
+		HasChanges:          len(diff) > 0,
+		DetailedDiff:        diff,
+	}, nil
+}
+
+// Check provides input validation and default setting.
+func (*SetupKey) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[SetupKeyArgs], error) {
+	p.GetLogger(ctx).Debugf("Check:SetupKey old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
+
+	args, failures, err := infer.DefaultCheck[SetupKeyArgs](ctx, req.NewInputs)
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{
+			Property: "name",
+			Reason:   "name must not be empty",
+		})
+	}
+
+	if args.Type != SetupKeyTypeReusable && args.Type != SetupKeyTypeOneOff {
+		failures = append(failures, p.CheckFailure{
+			Property: "type",
+			Reason:   "type must be 'reusable' or 'one-off'",
+		})
+	}
+
+	if args.ExpiresIn < 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "expiresIn",
+			Reason:   "expiresIn must be greater than or equal to 0",
+		})
+	}
+
+	if args.UsageLimit < 0 {
+		failures = append(failures, p.CheckFailure{
+			Property: "usageLimit",
+			Reason:   "usageLimit must be greater than or equal to 0",
+		})
+	}
+
+	for i, groupID := range args.AutoGroups {
+		if isBlank(groupID) {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("autoGroups[%d]", i),
+				Reason:   "group id must not be empty",
+			})
+		}
+	}
+
+	return infer.CheckResponse[SetupKeyArgs]{
+		Inputs:   args,
+		Failures: failures,
+	}, err
 }

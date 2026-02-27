@@ -23,11 +23,11 @@ type NetworkRouter struct {
 	// Routing metric value.
 	Metric pulumi.IntOutput `pulumi:"metric"`
 	// ID of the network this router belongs to.
-	Network_id pulumi.StringOutput `pulumi:"network_id"`
+	NetworkID pulumi.StringOutput `pulumi:"networkID"`
 	// Optional peer ID associated with this router.
 	Peer pulumi.StringPtrOutput `pulumi:"peer"`
 	// Optional list of peer group IDs associated with this router.
-	Peer_groups pulumi.StringArrayOutput `pulumi:"peer_groups"`
+	PeerGroups pulumi.StringArrayOutput `pulumi:"peerGroups"`
 }
 
 // NewNetworkRouter registers a new resource with the given unique name, arguments, and options.
@@ -46,8 +46,8 @@ func NewNetworkRouter(ctx *pulumi.Context,
 	if args.Metric == nil {
 		return nil, errors.New("invalid value for required argument 'Metric'")
 	}
-	if args.Network_id == nil {
-		return nil, errors.New("invalid value for required argument 'Network_id'")
+	if args.NetworkID == nil {
+		return nil, errors.New("invalid value for required argument 'NetworkID'")
 	}
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource NetworkRouter
@@ -89,11 +89,11 @@ type networkRouterArgs struct {
 	// Routing metric value.
 	Metric int `pulumi:"metric"`
 	// ID of the network this router belongs to.
-	Network_id string `pulumi:"network_id"`
+	NetworkID string `pulumi:"networkID"`
 	// Optional peer ID associated with this router.
 	Peer *string `pulumi:"peer"`
 	// Optional list of peer group IDs associated with this router.
-	Peer_groups []string `pulumi:"peer_groups"`
+	PeerGroups []string `pulumi:"peerGroups"`
 }
 
 // The set of arguments for constructing a NetworkRouter resource.
@@ -105,11 +105,11 @@ type NetworkRouterArgs struct {
 	// Routing metric value.
 	Metric pulumi.IntInput
 	// ID of the network this router belongs to.
-	Network_id pulumi.StringInput
+	NetworkID pulumi.StringInput
 	// Optional peer ID associated with this router.
 	Peer pulumi.StringPtrInput
 	// Optional list of peer group IDs associated with this router.
-	Peer_groups pulumi.StringArrayInput
+	PeerGroups pulumi.StringArrayInput
 }
 
 func (NetworkRouterArgs) ElementType() reflect.Type {
@@ -215,8 +215,8 @@ func (o NetworkRouterOutput) Metric() pulumi.IntOutput {
 }
 
 // ID of the network this router belongs to.
-func (o NetworkRouterOutput) Network_id() pulumi.StringOutput {
-	return o.ApplyT(func(v *NetworkRouter) pulumi.StringOutput { return v.Network_id }).(pulumi.StringOutput)
+func (o NetworkRouterOutput) NetworkID() pulumi.StringOutput {
+	return o.ApplyT(func(v *NetworkRouter) pulumi.StringOutput { return v.NetworkID }).(pulumi.StringOutput)
 }
 
 // Optional peer ID associated with this router.
@@ -225,8 +225,8 @@ func (o NetworkRouterOutput) Peer() pulumi.StringPtrOutput {
 }
 
 // Optional list of peer group IDs associated with this router.
-func (o NetworkRouterOutput) Peer_groups() pulumi.StringArrayOutput {
-	return o.ApplyT(func(v *NetworkRouter) pulumi.StringArrayOutput { return v.Peer_groups }).(pulumi.StringArrayOutput)
+func (o NetworkRouterOutput) PeerGroups() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *NetworkRouter) pulumi.StringArrayOutput { return v.PeerGroups }).(pulumi.StringArrayOutput)
 }
 
 type NetworkRouterArrayOutput struct{ *pulumi.OutputState }

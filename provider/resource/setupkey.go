@@ -21,10 +21,20 @@ func (s *SetupKey) Annotate(a infer.Annotator) {
 	a.Describe(&s, "Manages a NetBird setup key.")
 }
 
+// SetupKeyType defines the kind of setup key accepted by NetBird.
+type SetupKeyType string
+
+const (
+	// SetupKeyTypeReusable creates a key that can be used multiple times.
+	SetupKeyTypeReusable SetupKeyType = SetupKeyType("reusable")
+	// SetupKeyTypeOneOff creates a key that can only be used once.
+	SetupKeyTypeOneOff SetupKeyType = SetupKeyType("one-off")
+)
+
 // SetupKeyArgs represents the input arguments for creating a setup key.
 type SetupKeyArgs struct {
 	Name                string       `pulumi:"name"`
-	Type                SetupKeyType `pulumi:"type"`      // "one-off" | "reusable"
+	Type                SetupKeyType `pulumi:"type"`
 	ExpiresIn           int          `pulumi:"expiresIn"` // seconds
 	AutoGroups          []string     `pulumi:"autoGroups"`
 	UsageLimit          int          `pulumi:"usageLimit"` // 0 = unlimited
@@ -56,16 +66,6 @@ type SetupKeyState struct {
 	State     *string `pulumi:"state,optional"`
 	UpdatedAt *string `pulumi:"updatedAt,optional"`
 }
-
-// SetupKeyType defines the kind of setup key accepted by NetBird.
-type SetupKeyType string
-
-const (
-	// SetupKeyTypeReusable creates a key that can be used multiple times.
-	SetupKeyTypeReusable SetupKeyType = SetupKeyType("reusable")
-	// SetupKeyTypeOneOff creates a key that can only be used once.
-	SetupKeyTypeOneOff SetupKeyType = SetupKeyType("one-off")
-)
 
 // Values describes the setup key type enum for schema generation.
 func (SetupKeyType) Values() []infer.EnumValue[Type] {

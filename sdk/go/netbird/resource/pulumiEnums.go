@@ -344,6 +344,340 @@ func (in *nameserverNsTypePtr) ToNameserverNsTypePtrOutputWithContext(ctx contex
 	return pulumi.ToOutputWithContext(ctx, in).(NameserverNsTypePtrOutput)
 }
 
+type PostureGeoLocationAction string
+
+const (
+	// Allow peers from the specified locations.
+	PostureGeoLocationActionAllow = PostureGeoLocationAction("allow")
+	// Deny peers from the specified locations.
+	PostureGeoLocationActionDeny = PostureGeoLocationAction("deny")
+)
+
+func (PostureGeoLocationAction) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureGeoLocationAction)(nil)).Elem()
+}
+
+func (e PostureGeoLocationAction) ToPostureGeoLocationActionOutput() PostureGeoLocationActionOutput {
+	return pulumi.ToOutput(e).(PostureGeoLocationActionOutput)
+}
+
+func (e PostureGeoLocationAction) ToPostureGeoLocationActionOutputWithContext(ctx context.Context) PostureGeoLocationActionOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(PostureGeoLocationActionOutput)
+}
+
+func (e PostureGeoLocationAction) ToPostureGeoLocationActionPtrOutput() PostureGeoLocationActionPtrOutput {
+	return e.ToPostureGeoLocationActionPtrOutputWithContext(context.Background())
+}
+
+func (e PostureGeoLocationAction) ToPostureGeoLocationActionPtrOutputWithContext(ctx context.Context) PostureGeoLocationActionPtrOutput {
+	return PostureGeoLocationAction(e).ToPostureGeoLocationActionOutputWithContext(ctx).ToPostureGeoLocationActionPtrOutputWithContext(ctx)
+}
+
+func (e PostureGeoLocationAction) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e PostureGeoLocationAction) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e PostureGeoLocationAction) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e PostureGeoLocationAction) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type PostureGeoLocationActionOutput struct{ *pulumi.OutputState }
+
+func (PostureGeoLocationActionOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureGeoLocationAction)(nil)).Elem()
+}
+
+func (o PostureGeoLocationActionOutput) ToPostureGeoLocationActionOutput() PostureGeoLocationActionOutput {
+	return o
+}
+
+func (o PostureGeoLocationActionOutput) ToPostureGeoLocationActionOutputWithContext(ctx context.Context) PostureGeoLocationActionOutput {
+	return o
+}
+
+func (o PostureGeoLocationActionOutput) ToPostureGeoLocationActionPtrOutput() PostureGeoLocationActionPtrOutput {
+	return o.ToPostureGeoLocationActionPtrOutputWithContext(context.Background())
+}
+
+func (o PostureGeoLocationActionOutput) ToPostureGeoLocationActionPtrOutputWithContext(ctx context.Context) PostureGeoLocationActionPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PostureGeoLocationAction) *PostureGeoLocationAction {
+		return &v
+	}).(PostureGeoLocationActionPtrOutput)
+}
+
+func (o PostureGeoLocationActionOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o PostureGeoLocationActionOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e PostureGeoLocationAction) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o PostureGeoLocationActionOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o PostureGeoLocationActionOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e PostureGeoLocationAction) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type PostureGeoLocationActionPtrOutput struct{ *pulumi.OutputState }
+
+func (PostureGeoLocationActionPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureGeoLocationAction)(nil)).Elem()
+}
+
+func (o PostureGeoLocationActionPtrOutput) ToPostureGeoLocationActionPtrOutput() PostureGeoLocationActionPtrOutput {
+	return o
+}
+
+func (o PostureGeoLocationActionPtrOutput) ToPostureGeoLocationActionPtrOutputWithContext(ctx context.Context) PostureGeoLocationActionPtrOutput {
+	return o
+}
+
+func (o PostureGeoLocationActionPtrOutput) Elem() PostureGeoLocationActionOutput {
+	return o.ApplyT(func(v *PostureGeoLocationAction) PostureGeoLocationAction {
+		if v != nil {
+			return *v
+		}
+		var ret PostureGeoLocationAction
+		return ret
+	}).(PostureGeoLocationActionOutput)
+}
+
+func (o PostureGeoLocationActionPtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o PostureGeoLocationActionPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *PostureGeoLocationAction) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// PostureGeoLocationActionInput is an input type that accepts values of the PostureGeoLocationAction enum
+// A concrete instance of `PostureGeoLocationActionInput` can be one of the following:
+//
+//	PostureGeoLocationActionAllow
+//	PostureGeoLocationActionDeny
+type PostureGeoLocationActionInput interface {
+	pulumi.Input
+
+	ToPostureGeoLocationActionOutput() PostureGeoLocationActionOutput
+	ToPostureGeoLocationActionOutputWithContext(context.Context) PostureGeoLocationActionOutput
+}
+
+var postureGeoLocationActionPtrType = reflect.TypeOf((**PostureGeoLocationAction)(nil)).Elem()
+
+type PostureGeoLocationActionPtrInput interface {
+	pulumi.Input
+
+	ToPostureGeoLocationActionPtrOutput() PostureGeoLocationActionPtrOutput
+	ToPostureGeoLocationActionPtrOutputWithContext(context.Context) PostureGeoLocationActionPtrOutput
+}
+
+type postureGeoLocationActionPtr string
+
+func PostureGeoLocationActionPtr(v string) PostureGeoLocationActionPtrInput {
+	return (*postureGeoLocationActionPtr)(&v)
+}
+
+func (*postureGeoLocationActionPtr) ElementType() reflect.Type {
+	return postureGeoLocationActionPtrType
+}
+
+func (in *postureGeoLocationActionPtr) ToPostureGeoLocationActionPtrOutput() PostureGeoLocationActionPtrOutput {
+	return pulumi.ToOutput(in).(PostureGeoLocationActionPtrOutput)
+}
+
+func (in *postureGeoLocationActionPtr) ToPostureGeoLocationActionPtrOutputWithContext(ctx context.Context) PostureGeoLocationActionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(PostureGeoLocationActionPtrOutput)
+}
+
+type PosturePeerNetworkRangeAction string
+
+const (
+	// Allow peers whose local network matches.
+	PosturePeerNetworkRangeActionAllow = PosturePeerNetworkRangeAction("allow")
+	// Deny peers whose local network matches.
+	PosturePeerNetworkRangeActionDeny = PosturePeerNetworkRangeAction("deny")
+)
+
+func (PosturePeerNetworkRangeAction) ElementType() reflect.Type {
+	return reflect.TypeOf((*PosturePeerNetworkRangeAction)(nil)).Elem()
+}
+
+func (e PosturePeerNetworkRangeAction) ToPosturePeerNetworkRangeActionOutput() PosturePeerNetworkRangeActionOutput {
+	return pulumi.ToOutput(e).(PosturePeerNetworkRangeActionOutput)
+}
+
+func (e PosturePeerNetworkRangeAction) ToPosturePeerNetworkRangeActionOutputWithContext(ctx context.Context) PosturePeerNetworkRangeActionOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(PosturePeerNetworkRangeActionOutput)
+}
+
+func (e PosturePeerNetworkRangeAction) ToPosturePeerNetworkRangeActionPtrOutput() PosturePeerNetworkRangeActionPtrOutput {
+	return e.ToPosturePeerNetworkRangeActionPtrOutputWithContext(context.Background())
+}
+
+func (e PosturePeerNetworkRangeAction) ToPosturePeerNetworkRangeActionPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeActionPtrOutput {
+	return PosturePeerNetworkRangeAction(e).ToPosturePeerNetworkRangeActionOutputWithContext(ctx).ToPosturePeerNetworkRangeActionPtrOutputWithContext(ctx)
+}
+
+func (e PosturePeerNetworkRangeAction) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e PosturePeerNetworkRangeAction) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e PosturePeerNetworkRangeAction) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e PosturePeerNetworkRangeAction) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type PosturePeerNetworkRangeActionOutput struct{ *pulumi.OutputState }
+
+func (PosturePeerNetworkRangeActionOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PosturePeerNetworkRangeAction)(nil)).Elem()
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToPosturePeerNetworkRangeActionOutput() PosturePeerNetworkRangeActionOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToPosturePeerNetworkRangeActionOutputWithContext(ctx context.Context) PosturePeerNetworkRangeActionOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToPosturePeerNetworkRangeActionPtrOutput() PosturePeerNetworkRangeActionPtrOutput {
+	return o.ToPosturePeerNetworkRangeActionPtrOutputWithContext(context.Background())
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToPosturePeerNetworkRangeActionPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeActionPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PosturePeerNetworkRangeAction) *PosturePeerNetworkRangeAction {
+		return &v
+	}).(PosturePeerNetworkRangeActionPtrOutput)
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e PosturePeerNetworkRangeAction) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o PosturePeerNetworkRangeActionOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e PosturePeerNetworkRangeAction) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type PosturePeerNetworkRangeActionPtrOutput struct{ *pulumi.OutputState }
+
+func (PosturePeerNetworkRangeActionPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PosturePeerNetworkRangeAction)(nil)).Elem()
+}
+
+func (o PosturePeerNetworkRangeActionPtrOutput) ToPosturePeerNetworkRangeActionPtrOutput() PosturePeerNetworkRangeActionPtrOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeActionPtrOutput) ToPosturePeerNetworkRangeActionPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeActionPtrOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeActionPtrOutput) Elem() PosturePeerNetworkRangeActionOutput {
+	return o.ApplyT(func(v *PosturePeerNetworkRangeAction) PosturePeerNetworkRangeAction {
+		if v != nil {
+			return *v
+		}
+		var ret PosturePeerNetworkRangeAction
+		return ret
+	}).(PosturePeerNetworkRangeActionOutput)
+}
+
+func (o PosturePeerNetworkRangeActionPtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o PosturePeerNetworkRangeActionPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *PosturePeerNetworkRangeAction) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// PosturePeerNetworkRangeActionInput is an input type that accepts values of the PosturePeerNetworkRangeAction enum
+// A concrete instance of `PosturePeerNetworkRangeActionInput` can be one of the following:
+//
+//	PosturePeerNetworkRangeActionAllow
+//	PosturePeerNetworkRangeActionDeny
+type PosturePeerNetworkRangeActionInput interface {
+	pulumi.Input
+
+	ToPosturePeerNetworkRangeActionOutput() PosturePeerNetworkRangeActionOutput
+	ToPosturePeerNetworkRangeActionOutputWithContext(context.Context) PosturePeerNetworkRangeActionOutput
+}
+
+var posturePeerNetworkRangeActionPtrType = reflect.TypeOf((**PosturePeerNetworkRangeAction)(nil)).Elem()
+
+type PosturePeerNetworkRangeActionPtrInput interface {
+	pulumi.Input
+
+	ToPosturePeerNetworkRangeActionPtrOutput() PosturePeerNetworkRangeActionPtrOutput
+	ToPosturePeerNetworkRangeActionPtrOutputWithContext(context.Context) PosturePeerNetworkRangeActionPtrOutput
+}
+
+type posturePeerNetworkRangeActionPtr string
+
+func PosturePeerNetworkRangeActionPtr(v string) PosturePeerNetworkRangeActionPtrInput {
+	return (*posturePeerNetworkRangeActionPtr)(&v)
+}
+
+func (*posturePeerNetworkRangeActionPtr) ElementType() reflect.Type {
+	return posturePeerNetworkRangeActionPtrType
+}
+
+func (in *posturePeerNetworkRangeActionPtr) ToPosturePeerNetworkRangeActionPtrOutput() PosturePeerNetworkRangeActionPtrOutput {
+	return pulumi.ToOutput(in).(PosturePeerNetworkRangeActionPtrOutput)
+}
+
+func (in *posturePeerNetworkRangeActionPtr) ToPosturePeerNetworkRangeActionPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeActionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(PosturePeerNetworkRangeActionPtrOutput)
+}
+
 type Protocol string
 
 const (
@@ -1637,6 +1971,10 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*DNSRecordTypePtrInput)(nil)).Elem(), DNSRecordType("A"))
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypeInput)(nil)).Elem(), NameserverNsType("udp"))
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypePtrInput)(nil)).Elem(), NameserverNsType("udp"))
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureGeoLocationActionInput)(nil)).Elem(), PostureGeoLocationAction("allow"))
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureGeoLocationActionPtrInput)(nil)).Elem(), PostureGeoLocationAction("allow"))
+	pulumi.RegisterInputType(reflect.TypeOf((*PosturePeerNetworkRangeActionInput)(nil)).Elem(), PosturePeerNetworkRangeAction("allow"))
+	pulumi.RegisterInputType(reflect.TypeOf((*PosturePeerNetworkRangeActionPtrInput)(nil)).Elem(), PosturePeerNetworkRangeAction("allow"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolInput)(nil)).Elem(), Protocol("all"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolPtrInput)(nil)).Elem(), Protocol("all"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyServiceModeInput)(nil)).Elem(), ReverseProxyServiceMode("http"))
@@ -1655,6 +1993,10 @@ func init() {
 	pulumi.RegisterOutputType(DNSRecordTypePtrOutput{})
 	pulumi.RegisterOutputType(NameserverNsTypeOutput{})
 	pulumi.RegisterOutputType(NameserverNsTypePtrOutput{})
+	pulumi.RegisterOutputType(PostureGeoLocationActionOutput{})
+	pulumi.RegisterOutputType(PostureGeoLocationActionPtrOutput{})
+	pulumi.RegisterOutputType(PosturePeerNetworkRangeActionOutput{})
+	pulumi.RegisterOutputType(PosturePeerNetworkRangeActionPtrOutput{})
 	pulumi.RegisterOutputType(ProtocolOutput{})
 	pulumi.RegisterOutputType(ProtocolPtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyDomainTypeOutput{})

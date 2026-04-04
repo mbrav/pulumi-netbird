@@ -47,6 +47,7 @@ func Provider() p.Provider { //nolint:funlen
 			infer.Resource(&resource.NetworkRouter{}),
 			infer.Resource(&resource.Peer{}),
 			infer.Resource(&resource.Policy{}),
+			infer.Resource(&resource.PostureCheck{}),
 			infer.Resource(&resource.ReverseProxyDomain{}),
 			infer.Resource(&resource.ReverseProxyService{}),
 			infer.Resource(&resource.SetupKey{}),
@@ -73,7 +74,7 @@ func Provider() p.Provider { //nolint:funlen
 			"nodejs": map[string]any{
 				"packageName": "@mbrav/pulumi-netbird",
 				"dependencies": map[string]string{
-					"@pulumi/pulumi": "^3.0.0",
+					"@pulumi/pulumi": "^3.229.0",
 				},
 			},
 			"python": map[string]any{
@@ -82,7 +83,7 @@ func Provider() p.Provider { //nolint:funlen
 					"enabled": true,
 				},
 				"requires": map[string]string{
-					"pulumi": ">=3.0.0,<4.0.0",
+					"pulumi": ">=3.229.0,<4.0.0",
 				},
 			},
 			"java": map[string]any{

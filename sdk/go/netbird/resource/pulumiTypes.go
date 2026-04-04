@@ -461,6 +461,1251 @@ func (o PolicyRuleStateArrayOutput) Index(i pulumi.IntInput) PolicyRuleStateOutp
 	}).(PolicyRuleStateOutput)
 }
 
+type PostureChecksConfig struct {
+	// Posture check for geo location.
+	GeoLocationCheck *PostureGeoLocationCheck `pulumi:"geoLocationCheck"`
+	// Posture check for the minimum NetBird client version.
+	NbVersionCheck *PostureMinVersionCheck `pulumi:"nbVersionCheck"`
+	// Posture check for the minimum operating system version.
+	OsVersionCheck *PostureOSVersionCheck `pulumi:"osVersionCheck"`
+	// Posture check based on peer local network addresses.
+	PeerNetworkRangeCheck *PosturePeerNetworkRangeCheck `pulumi:"peerNetworkRangeCheck"`
+	// Posture check for required binaries running on the peer.
+	ProcessCheck *PostureProcessCheck `pulumi:"processCheck"`
+}
+
+// PostureChecksConfigInput is an input type that accepts PostureChecksConfigArgs and PostureChecksConfigOutput values.
+// You can construct a concrete instance of `PostureChecksConfigInput` via:
+//
+//	PostureChecksConfigArgs{...}
+type PostureChecksConfigInput interface {
+	pulumi.Input
+
+	ToPostureChecksConfigOutput() PostureChecksConfigOutput
+	ToPostureChecksConfigOutputWithContext(context.Context) PostureChecksConfigOutput
+}
+
+type PostureChecksConfigArgs struct {
+	// Posture check for geo location.
+	GeoLocationCheck PostureGeoLocationCheckPtrInput `pulumi:"geoLocationCheck"`
+	// Posture check for the minimum NetBird client version.
+	NbVersionCheck PostureMinVersionCheckPtrInput `pulumi:"nbVersionCheck"`
+	// Posture check for the minimum operating system version.
+	OsVersionCheck PostureOSVersionCheckPtrInput `pulumi:"osVersionCheck"`
+	// Posture check based on peer local network addresses.
+	PeerNetworkRangeCheck PosturePeerNetworkRangeCheckPtrInput `pulumi:"peerNetworkRangeCheck"`
+	// Posture check for required binaries running on the peer.
+	ProcessCheck PostureProcessCheckPtrInput `pulumi:"processCheck"`
+}
+
+func (PostureChecksConfigArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureChecksConfig)(nil)).Elem()
+}
+
+func (i PostureChecksConfigArgs) ToPostureChecksConfigOutput() PostureChecksConfigOutput {
+	return i.ToPostureChecksConfigOutputWithContext(context.Background())
+}
+
+func (i PostureChecksConfigArgs) ToPostureChecksConfigOutputWithContext(ctx context.Context) PostureChecksConfigOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureChecksConfigOutput)
+}
+
+type PostureChecksConfigOutput struct{ *pulumi.OutputState }
+
+func (PostureChecksConfigOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureChecksConfig)(nil)).Elem()
+}
+
+func (o PostureChecksConfigOutput) ToPostureChecksConfigOutput() PostureChecksConfigOutput {
+	return o
+}
+
+func (o PostureChecksConfigOutput) ToPostureChecksConfigOutputWithContext(ctx context.Context) PostureChecksConfigOutput {
+	return o
+}
+
+// Posture check for geo location.
+func (o PostureChecksConfigOutput) GeoLocationCheck() PostureGeoLocationCheckPtrOutput {
+	return o.ApplyT(func(v PostureChecksConfig) *PostureGeoLocationCheck { return v.GeoLocationCheck }).(PostureGeoLocationCheckPtrOutput)
+}
+
+// Posture check for the minimum NetBird client version.
+func (o PostureChecksConfigOutput) NbVersionCheck() PostureMinVersionCheckPtrOutput {
+	return o.ApplyT(func(v PostureChecksConfig) *PostureMinVersionCheck { return v.NbVersionCheck }).(PostureMinVersionCheckPtrOutput)
+}
+
+// Posture check for the minimum operating system version.
+func (o PostureChecksConfigOutput) OsVersionCheck() PostureOSVersionCheckPtrOutput {
+	return o.ApplyT(func(v PostureChecksConfig) *PostureOSVersionCheck { return v.OsVersionCheck }).(PostureOSVersionCheckPtrOutput)
+}
+
+// Posture check based on peer local network addresses.
+func (o PostureChecksConfigOutput) PeerNetworkRangeCheck() PosturePeerNetworkRangeCheckPtrOutput {
+	return o.ApplyT(func(v PostureChecksConfig) *PosturePeerNetworkRangeCheck { return v.PeerNetworkRangeCheck }).(PosturePeerNetworkRangeCheckPtrOutput)
+}
+
+// Posture check for required binaries running on the peer.
+func (o PostureChecksConfigOutput) ProcessCheck() PostureProcessCheckPtrOutput {
+	return o.ApplyT(func(v PostureChecksConfig) *PostureProcessCheck { return v.ProcessCheck }).(PostureProcessCheckPtrOutput)
+}
+
+type PostureGeoLocationCheck struct {
+	// Action to take upon geo location match (allow or deny).
+	Action PostureGeoLocationAction `pulumi:"action"`
+	// List of geo locations to which the check applies.
+	Locations []PostureLocation `pulumi:"locations"`
+}
+
+// PostureGeoLocationCheckInput is an input type that accepts PostureGeoLocationCheckArgs and PostureGeoLocationCheckOutput values.
+// You can construct a concrete instance of `PostureGeoLocationCheckInput` via:
+//
+//	PostureGeoLocationCheckArgs{...}
+type PostureGeoLocationCheckInput interface {
+	pulumi.Input
+
+	ToPostureGeoLocationCheckOutput() PostureGeoLocationCheckOutput
+	ToPostureGeoLocationCheckOutputWithContext(context.Context) PostureGeoLocationCheckOutput
+}
+
+type PostureGeoLocationCheckArgs struct {
+	// Action to take upon geo location match (allow or deny).
+	Action PostureGeoLocationActionInput `pulumi:"action"`
+	// List of geo locations to which the check applies.
+	Locations PostureLocationArrayInput `pulumi:"locations"`
+}
+
+func (PostureGeoLocationCheckArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureGeoLocationCheck)(nil)).Elem()
+}
+
+func (i PostureGeoLocationCheckArgs) ToPostureGeoLocationCheckOutput() PostureGeoLocationCheckOutput {
+	return i.ToPostureGeoLocationCheckOutputWithContext(context.Background())
+}
+
+func (i PostureGeoLocationCheckArgs) ToPostureGeoLocationCheckOutputWithContext(ctx context.Context) PostureGeoLocationCheckOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureGeoLocationCheckOutput)
+}
+
+func (i PostureGeoLocationCheckArgs) ToPostureGeoLocationCheckPtrOutput() PostureGeoLocationCheckPtrOutput {
+	return i.ToPostureGeoLocationCheckPtrOutputWithContext(context.Background())
+}
+
+func (i PostureGeoLocationCheckArgs) ToPostureGeoLocationCheckPtrOutputWithContext(ctx context.Context) PostureGeoLocationCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureGeoLocationCheckOutput).ToPostureGeoLocationCheckPtrOutputWithContext(ctx)
+}
+
+// PostureGeoLocationCheckPtrInput is an input type that accepts PostureGeoLocationCheckArgs, PostureGeoLocationCheckPtr and PostureGeoLocationCheckPtrOutput values.
+// You can construct a concrete instance of `PostureGeoLocationCheckPtrInput` via:
+//
+//	        PostureGeoLocationCheckArgs{...}
+//
+//	or:
+//
+//	        nil
+type PostureGeoLocationCheckPtrInput interface {
+	pulumi.Input
+
+	ToPostureGeoLocationCheckPtrOutput() PostureGeoLocationCheckPtrOutput
+	ToPostureGeoLocationCheckPtrOutputWithContext(context.Context) PostureGeoLocationCheckPtrOutput
+}
+
+type postureGeoLocationCheckPtrType PostureGeoLocationCheckArgs
+
+func PostureGeoLocationCheckPtr(v *PostureGeoLocationCheckArgs) PostureGeoLocationCheckPtrInput {
+	return (*postureGeoLocationCheckPtrType)(v)
+}
+
+func (*postureGeoLocationCheckPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureGeoLocationCheck)(nil)).Elem()
+}
+
+func (i *postureGeoLocationCheckPtrType) ToPostureGeoLocationCheckPtrOutput() PostureGeoLocationCheckPtrOutput {
+	return i.ToPostureGeoLocationCheckPtrOutputWithContext(context.Background())
+}
+
+func (i *postureGeoLocationCheckPtrType) ToPostureGeoLocationCheckPtrOutputWithContext(ctx context.Context) PostureGeoLocationCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureGeoLocationCheckPtrOutput)
+}
+
+type PostureGeoLocationCheckOutput struct{ *pulumi.OutputState }
+
+func (PostureGeoLocationCheckOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureGeoLocationCheck)(nil)).Elem()
+}
+
+func (o PostureGeoLocationCheckOutput) ToPostureGeoLocationCheckOutput() PostureGeoLocationCheckOutput {
+	return o
+}
+
+func (o PostureGeoLocationCheckOutput) ToPostureGeoLocationCheckOutputWithContext(ctx context.Context) PostureGeoLocationCheckOutput {
+	return o
+}
+
+func (o PostureGeoLocationCheckOutput) ToPostureGeoLocationCheckPtrOutput() PostureGeoLocationCheckPtrOutput {
+	return o.ToPostureGeoLocationCheckPtrOutputWithContext(context.Background())
+}
+
+func (o PostureGeoLocationCheckOutput) ToPostureGeoLocationCheckPtrOutputWithContext(ctx context.Context) PostureGeoLocationCheckPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PostureGeoLocationCheck) *PostureGeoLocationCheck {
+		return &v
+	}).(PostureGeoLocationCheckPtrOutput)
+}
+
+// Action to take upon geo location match (allow or deny).
+func (o PostureGeoLocationCheckOutput) Action() PostureGeoLocationActionOutput {
+	return o.ApplyT(func(v PostureGeoLocationCheck) PostureGeoLocationAction { return v.Action }).(PostureGeoLocationActionOutput)
+}
+
+// List of geo locations to which the check applies.
+func (o PostureGeoLocationCheckOutput) Locations() PostureLocationArrayOutput {
+	return o.ApplyT(func(v PostureGeoLocationCheck) []PostureLocation { return v.Locations }).(PostureLocationArrayOutput)
+}
+
+type PostureGeoLocationCheckPtrOutput struct{ *pulumi.OutputState }
+
+func (PostureGeoLocationCheckPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureGeoLocationCheck)(nil)).Elem()
+}
+
+func (o PostureGeoLocationCheckPtrOutput) ToPostureGeoLocationCheckPtrOutput() PostureGeoLocationCheckPtrOutput {
+	return o
+}
+
+func (o PostureGeoLocationCheckPtrOutput) ToPostureGeoLocationCheckPtrOutputWithContext(ctx context.Context) PostureGeoLocationCheckPtrOutput {
+	return o
+}
+
+func (o PostureGeoLocationCheckPtrOutput) Elem() PostureGeoLocationCheckOutput {
+	return o.ApplyT(func(v *PostureGeoLocationCheck) PostureGeoLocationCheck {
+		if v != nil {
+			return *v
+		}
+		var ret PostureGeoLocationCheck
+		return ret
+	}).(PostureGeoLocationCheckOutput)
+}
+
+// Action to take upon geo location match (allow or deny).
+func (o PostureGeoLocationCheckPtrOutput) Action() PostureGeoLocationActionPtrOutput {
+	return o.ApplyT(func(v *PostureGeoLocationCheck) *PostureGeoLocationAction {
+		if v == nil {
+			return nil
+		}
+		return &v.Action
+	}).(PostureGeoLocationActionPtrOutput)
+}
+
+// List of geo locations to which the check applies.
+func (o PostureGeoLocationCheckPtrOutput) Locations() PostureLocationArrayOutput {
+	return o.ApplyT(func(v *PostureGeoLocationCheck) []PostureLocation {
+		if v == nil {
+			return nil
+		}
+		return v.Locations
+	}).(PostureLocationArrayOutput)
+}
+
+type PostureLocation struct {
+	// Commonly used English name of the city.
+	CityName *string `pulumi:"cityName"`
+	// 2-letter ISO 3166-1 alpha-2 country code.
+	CountryCode string `pulumi:"countryCode"`
+}
+
+// PostureLocationInput is an input type that accepts PostureLocationArgs and PostureLocationOutput values.
+// You can construct a concrete instance of `PostureLocationInput` via:
+//
+//	PostureLocationArgs{...}
+type PostureLocationInput interface {
+	pulumi.Input
+
+	ToPostureLocationOutput() PostureLocationOutput
+	ToPostureLocationOutputWithContext(context.Context) PostureLocationOutput
+}
+
+type PostureLocationArgs struct {
+	// Commonly used English name of the city.
+	CityName pulumi.StringPtrInput `pulumi:"cityName"`
+	// 2-letter ISO 3166-1 alpha-2 country code.
+	CountryCode pulumi.StringInput `pulumi:"countryCode"`
+}
+
+func (PostureLocationArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureLocation)(nil)).Elem()
+}
+
+func (i PostureLocationArgs) ToPostureLocationOutput() PostureLocationOutput {
+	return i.ToPostureLocationOutputWithContext(context.Background())
+}
+
+func (i PostureLocationArgs) ToPostureLocationOutputWithContext(ctx context.Context) PostureLocationOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureLocationOutput)
+}
+
+// PostureLocationArrayInput is an input type that accepts PostureLocationArray and PostureLocationArrayOutput values.
+// You can construct a concrete instance of `PostureLocationArrayInput` via:
+//
+//	PostureLocationArray{ PostureLocationArgs{...} }
+type PostureLocationArrayInput interface {
+	pulumi.Input
+
+	ToPostureLocationArrayOutput() PostureLocationArrayOutput
+	ToPostureLocationArrayOutputWithContext(context.Context) PostureLocationArrayOutput
+}
+
+type PostureLocationArray []PostureLocationInput
+
+func (PostureLocationArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]PostureLocation)(nil)).Elem()
+}
+
+func (i PostureLocationArray) ToPostureLocationArrayOutput() PostureLocationArrayOutput {
+	return i.ToPostureLocationArrayOutputWithContext(context.Background())
+}
+
+func (i PostureLocationArray) ToPostureLocationArrayOutputWithContext(ctx context.Context) PostureLocationArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureLocationArrayOutput)
+}
+
+type PostureLocationOutput struct{ *pulumi.OutputState }
+
+func (PostureLocationOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureLocation)(nil)).Elem()
+}
+
+func (o PostureLocationOutput) ToPostureLocationOutput() PostureLocationOutput {
+	return o
+}
+
+func (o PostureLocationOutput) ToPostureLocationOutputWithContext(ctx context.Context) PostureLocationOutput {
+	return o
+}
+
+// Commonly used English name of the city.
+func (o PostureLocationOutput) CityName() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v PostureLocation) *string { return v.CityName }).(pulumi.StringPtrOutput)
+}
+
+// 2-letter ISO 3166-1 alpha-2 country code.
+func (o PostureLocationOutput) CountryCode() pulumi.StringOutput {
+	return o.ApplyT(func(v PostureLocation) string { return v.CountryCode }).(pulumi.StringOutput)
+}
+
+type PostureLocationArrayOutput struct{ *pulumi.OutputState }
+
+func (PostureLocationArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]PostureLocation)(nil)).Elem()
+}
+
+func (o PostureLocationArrayOutput) ToPostureLocationArrayOutput() PostureLocationArrayOutput {
+	return o
+}
+
+func (o PostureLocationArrayOutput) ToPostureLocationArrayOutputWithContext(ctx context.Context) PostureLocationArrayOutput {
+	return o
+}
+
+func (o PostureLocationArrayOutput) Index(i pulumi.IntInput) PostureLocationOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) PostureLocation {
+		return vs[0].([]PostureLocation)[vs[1].(int)]
+	}).(PostureLocationOutput)
+}
+
+type PostureMinKernelVersionCheck struct {
+	// Minimum acceptable kernel version string.
+	MinKernelVersion string `pulumi:"minKernelVersion"`
+}
+
+// PostureMinKernelVersionCheckInput is an input type that accepts PostureMinKernelVersionCheckArgs and PostureMinKernelVersionCheckOutput values.
+// You can construct a concrete instance of `PostureMinKernelVersionCheckInput` via:
+//
+//	PostureMinKernelVersionCheckArgs{...}
+type PostureMinKernelVersionCheckInput interface {
+	pulumi.Input
+
+	ToPostureMinKernelVersionCheckOutput() PostureMinKernelVersionCheckOutput
+	ToPostureMinKernelVersionCheckOutputWithContext(context.Context) PostureMinKernelVersionCheckOutput
+}
+
+type PostureMinKernelVersionCheckArgs struct {
+	// Minimum acceptable kernel version string.
+	MinKernelVersion pulumi.StringInput `pulumi:"minKernelVersion"`
+}
+
+func (PostureMinKernelVersionCheckArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureMinKernelVersionCheck)(nil)).Elem()
+}
+
+func (i PostureMinKernelVersionCheckArgs) ToPostureMinKernelVersionCheckOutput() PostureMinKernelVersionCheckOutput {
+	return i.ToPostureMinKernelVersionCheckOutputWithContext(context.Background())
+}
+
+func (i PostureMinKernelVersionCheckArgs) ToPostureMinKernelVersionCheckOutputWithContext(ctx context.Context) PostureMinKernelVersionCheckOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureMinKernelVersionCheckOutput)
+}
+
+func (i PostureMinKernelVersionCheckArgs) ToPostureMinKernelVersionCheckPtrOutput() PostureMinKernelVersionCheckPtrOutput {
+	return i.ToPostureMinKernelVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (i PostureMinKernelVersionCheckArgs) ToPostureMinKernelVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinKernelVersionCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureMinKernelVersionCheckOutput).ToPostureMinKernelVersionCheckPtrOutputWithContext(ctx)
+}
+
+// PostureMinKernelVersionCheckPtrInput is an input type that accepts PostureMinKernelVersionCheckArgs, PostureMinKernelVersionCheckPtr and PostureMinKernelVersionCheckPtrOutput values.
+// You can construct a concrete instance of `PostureMinKernelVersionCheckPtrInput` via:
+//
+//	        PostureMinKernelVersionCheckArgs{...}
+//
+//	or:
+//
+//	        nil
+type PostureMinKernelVersionCheckPtrInput interface {
+	pulumi.Input
+
+	ToPostureMinKernelVersionCheckPtrOutput() PostureMinKernelVersionCheckPtrOutput
+	ToPostureMinKernelVersionCheckPtrOutputWithContext(context.Context) PostureMinKernelVersionCheckPtrOutput
+}
+
+type postureMinKernelVersionCheckPtrType PostureMinKernelVersionCheckArgs
+
+func PostureMinKernelVersionCheckPtr(v *PostureMinKernelVersionCheckArgs) PostureMinKernelVersionCheckPtrInput {
+	return (*postureMinKernelVersionCheckPtrType)(v)
+}
+
+func (*postureMinKernelVersionCheckPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureMinKernelVersionCheck)(nil)).Elem()
+}
+
+func (i *postureMinKernelVersionCheckPtrType) ToPostureMinKernelVersionCheckPtrOutput() PostureMinKernelVersionCheckPtrOutput {
+	return i.ToPostureMinKernelVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (i *postureMinKernelVersionCheckPtrType) ToPostureMinKernelVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinKernelVersionCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureMinKernelVersionCheckPtrOutput)
+}
+
+type PostureMinKernelVersionCheckOutput struct{ *pulumi.OutputState }
+
+func (PostureMinKernelVersionCheckOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureMinKernelVersionCheck)(nil)).Elem()
+}
+
+func (o PostureMinKernelVersionCheckOutput) ToPostureMinKernelVersionCheckOutput() PostureMinKernelVersionCheckOutput {
+	return o
+}
+
+func (o PostureMinKernelVersionCheckOutput) ToPostureMinKernelVersionCheckOutputWithContext(ctx context.Context) PostureMinKernelVersionCheckOutput {
+	return o
+}
+
+func (o PostureMinKernelVersionCheckOutput) ToPostureMinKernelVersionCheckPtrOutput() PostureMinKernelVersionCheckPtrOutput {
+	return o.ToPostureMinKernelVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (o PostureMinKernelVersionCheckOutput) ToPostureMinKernelVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinKernelVersionCheckPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PostureMinKernelVersionCheck) *PostureMinKernelVersionCheck {
+		return &v
+	}).(PostureMinKernelVersionCheckPtrOutput)
+}
+
+// Minimum acceptable kernel version string.
+func (o PostureMinKernelVersionCheckOutput) MinKernelVersion() pulumi.StringOutput {
+	return o.ApplyT(func(v PostureMinKernelVersionCheck) string { return v.MinKernelVersion }).(pulumi.StringOutput)
+}
+
+type PostureMinKernelVersionCheckPtrOutput struct{ *pulumi.OutputState }
+
+func (PostureMinKernelVersionCheckPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureMinKernelVersionCheck)(nil)).Elem()
+}
+
+func (o PostureMinKernelVersionCheckPtrOutput) ToPostureMinKernelVersionCheckPtrOutput() PostureMinKernelVersionCheckPtrOutput {
+	return o
+}
+
+func (o PostureMinKernelVersionCheckPtrOutput) ToPostureMinKernelVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinKernelVersionCheckPtrOutput {
+	return o
+}
+
+func (o PostureMinKernelVersionCheckPtrOutput) Elem() PostureMinKernelVersionCheckOutput {
+	return o.ApplyT(func(v *PostureMinKernelVersionCheck) PostureMinKernelVersionCheck {
+		if v != nil {
+			return *v
+		}
+		var ret PostureMinKernelVersionCheck
+		return ret
+	}).(PostureMinKernelVersionCheckOutput)
+}
+
+// Minimum acceptable kernel version string.
+func (o PostureMinKernelVersionCheckPtrOutput) MinKernelVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *PostureMinKernelVersionCheck) *string {
+		if v == nil {
+			return nil
+		}
+		return &v.MinKernelVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+type PostureMinVersionCheck struct {
+	// Minimum acceptable version string.
+	MinVersion string `pulumi:"minVersion"`
+}
+
+// PostureMinVersionCheckInput is an input type that accepts PostureMinVersionCheckArgs and PostureMinVersionCheckOutput values.
+// You can construct a concrete instance of `PostureMinVersionCheckInput` via:
+//
+//	PostureMinVersionCheckArgs{...}
+type PostureMinVersionCheckInput interface {
+	pulumi.Input
+
+	ToPostureMinVersionCheckOutput() PostureMinVersionCheckOutput
+	ToPostureMinVersionCheckOutputWithContext(context.Context) PostureMinVersionCheckOutput
+}
+
+type PostureMinVersionCheckArgs struct {
+	// Minimum acceptable version string.
+	MinVersion pulumi.StringInput `pulumi:"minVersion"`
+}
+
+func (PostureMinVersionCheckArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureMinVersionCheck)(nil)).Elem()
+}
+
+func (i PostureMinVersionCheckArgs) ToPostureMinVersionCheckOutput() PostureMinVersionCheckOutput {
+	return i.ToPostureMinVersionCheckOutputWithContext(context.Background())
+}
+
+func (i PostureMinVersionCheckArgs) ToPostureMinVersionCheckOutputWithContext(ctx context.Context) PostureMinVersionCheckOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureMinVersionCheckOutput)
+}
+
+func (i PostureMinVersionCheckArgs) ToPostureMinVersionCheckPtrOutput() PostureMinVersionCheckPtrOutput {
+	return i.ToPostureMinVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (i PostureMinVersionCheckArgs) ToPostureMinVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinVersionCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureMinVersionCheckOutput).ToPostureMinVersionCheckPtrOutputWithContext(ctx)
+}
+
+// PostureMinVersionCheckPtrInput is an input type that accepts PostureMinVersionCheckArgs, PostureMinVersionCheckPtr and PostureMinVersionCheckPtrOutput values.
+// You can construct a concrete instance of `PostureMinVersionCheckPtrInput` via:
+//
+//	        PostureMinVersionCheckArgs{...}
+//
+//	or:
+//
+//	        nil
+type PostureMinVersionCheckPtrInput interface {
+	pulumi.Input
+
+	ToPostureMinVersionCheckPtrOutput() PostureMinVersionCheckPtrOutput
+	ToPostureMinVersionCheckPtrOutputWithContext(context.Context) PostureMinVersionCheckPtrOutput
+}
+
+type postureMinVersionCheckPtrType PostureMinVersionCheckArgs
+
+func PostureMinVersionCheckPtr(v *PostureMinVersionCheckArgs) PostureMinVersionCheckPtrInput {
+	return (*postureMinVersionCheckPtrType)(v)
+}
+
+func (*postureMinVersionCheckPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureMinVersionCheck)(nil)).Elem()
+}
+
+func (i *postureMinVersionCheckPtrType) ToPostureMinVersionCheckPtrOutput() PostureMinVersionCheckPtrOutput {
+	return i.ToPostureMinVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (i *postureMinVersionCheckPtrType) ToPostureMinVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinVersionCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureMinVersionCheckPtrOutput)
+}
+
+type PostureMinVersionCheckOutput struct{ *pulumi.OutputState }
+
+func (PostureMinVersionCheckOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureMinVersionCheck)(nil)).Elem()
+}
+
+func (o PostureMinVersionCheckOutput) ToPostureMinVersionCheckOutput() PostureMinVersionCheckOutput {
+	return o
+}
+
+func (o PostureMinVersionCheckOutput) ToPostureMinVersionCheckOutputWithContext(ctx context.Context) PostureMinVersionCheckOutput {
+	return o
+}
+
+func (o PostureMinVersionCheckOutput) ToPostureMinVersionCheckPtrOutput() PostureMinVersionCheckPtrOutput {
+	return o.ToPostureMinVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (o PostureMinVersionCheckOutput) ToPostureMinVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinVersionCheckPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PostureMinVersionCheck) *PostureMinVersionCheck {
+		return &v
+	}).(PostureMinVersionCheckPtrOutput)
+}
+
+// Minimum acceptable version string.
+func (o PostureMinVersionCheckOutput) MinVersion() pulumi.StringOutput {
+	return o.ApplyT(func(v PostureMinVersionCheck) string { return v.MinVersion }).(pulumi.StringOutput)
+}
+
+type PostureMinVersionCheckPtrOutput struct{ *pulumi.OutputState }
+
+func (PostureMinVersionCheckPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureMinVersionCheck)(nil)).Elem()
+}
+
+func (o PostureMinVersionCheckPtrOutput) ToPostureMinVersionCheckPtrOutput() PostureMinVersionCheckPtrOutput {
+	return o
+}
+
+func (o PostureMinVersionCheckPtrOutput) ToPostureMinVersionCheckPtrOutputWithContext(ctx context.Context) PostureMinVersionCheckPtrOutput {
+	return o
+}
+
+func (o PostureMinVersionCheckPtrOutput) Elem() PostureMinVersionCheckOutput {
+	return o.ApplyT(func(v *PostureMinVersionCheck) PostureMinVersionCheck {
+		if v != nil {
+			return *v
+		}
+		var ret PostureMinVersionCheck
+		return ret
+	}).(PostureMinVersionCheckOutput)
+}
+
+// Minimum acceptable version string.
+func (o PostureMinVersionCheckPtrOutput) MinVersion() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *PostureMinVersionCheck) *string {
+		if v == nil {
+			return nil
+		}
+		return &v.MinVersion
+	}).(pulumi.StringPtrOutput)
+}
+
+type PostureOSVersionCheck struct {
+	// Minimum version check for Android.
+	Android *PostureMinVersionCheck `pulumi:"android"`
+	// Minimum version check for macOS.
+	Darwin *PostureMinVersionCheck `pulumi:"darwin"`
+	// Minimum version check for iOS.
+	Ios *PostureMinVersionCheck `pulumi:"ios"`
+	// Minimum kernel version check for Linux.
+	Linux *PostureMinKernelVersionCheck `pulumi:"linux"`
+	// Minimum kernel version check for Windows.
+	Windows *PostureMinKernelVersionCheck `pulumi:"windows"`
+}
+
+// PostureOSVersionCheckInput is an input type that accepts PostureOSVersionCheckArgs and PostureOSVersionCheckOutput values.
+// You can construct a concrete instance of `PostureOSVersionCheckInput` via:
+//
+//	PostureOSVersionCheckArgs{...}
+type PostureOSVersionCheckInput interface {
+	pulumi.Input
+
+	ToPostureOSVersionCheckOutput() PostureOSVersionCheckOutput
+	ToPostureOSVersionCheckOutputWithContext(context.Context) PostureOSVersionCheckOutput
+}
+
+type PostureOSVersionCheckArgs struct {
+	// Minimum version check for Android.
+	Android PostureMinVersionCheckPtrInput `pulumi:"android"`
+	// Minimum version check for macOS.
+	Darwin PostureMinVersionCheckPtrInput `pulumi:"darwin"`
+	// Minimum version check for iOS.
+	Ios PostureMinVersionCheckPtrInput `pulumi:"ios"`
+	// Minimum kernel version check for Linux.
+	Linux PostureMinKernelVersionCheckPtrInput `pulumi:"linux"`
+	// Minimum kernel version check for Windows.
+	Windows PostureMinKernelVersionCheckPtrInput `pulumi:"windows"`
+}
+
+func (PostureOSVersionCheckArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureOSVersionCheck)(nil)).Elem()
+}
+
+func (i PostureOSVersionCheckArgs) ToPostureOSVersionCheckOutput() PostureOSVersionCheckOutput {
+	return i.ToPostureOSVersionCheckOutputWithContext(context.Background())
+}
+
+func (i PostureOSVersionCheckArgs) ToPostureOSVersionCheckOutputWithContext(ctx context.Context) PostureOSVersionCheckOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureOSVersionCheckOutput)
+}
+
+func (i PostureOSVersionCheckArgs) ToPostureOSVersionCheckPtrOutput() PostureOSVersionCheckPtrOutput {
+	return i.ToPostureOSVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (i PostureOSVersionCheckArgs) ToPostureOSVersionCheckPtrOutputWithContext(ctx context.Context) PostureOSVersionCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureOSVersionCheckOutput).ToPostureOSVersionCheckPtrOutputWithContext(ctx)
+}
+
+// PostureOSVersionCheckPtrInput is an input type that accepts PostureOSVersionCheckArgs, PostureOSVersionCheckPtr and PostureOSVersionCheckPtrOutput values.
+// You can construct a concrete instance of `PostureOSVersionCheckPtrInput` via:
+//
+//	        PostureOSVersionCheckArgs{...}
+//
+//	or:
+//
+//	        nil
+type PostureOSVersionCheckPtrInput interface {
+	pulumi.Input
+
+	ToPostureOSVersionCheckPtrOutput() PostureOSVersionCheckPtrOutput
+	ToPostureOSVersionCheckPtrOutputWithContext(context.Context) PostureOSVersionCheckPtrOutput
+}
+
+type postureOSVersionCheckPtrType PostureOSVersionCheckArgs
+
+func PostureOSVersionCheckPtr(v *PostureOSVersionCheckArgs) PostureOSVersionCheckPtrInput {
+	return (*postureOSVersionCheckPtrType)(v)
+}
+
+func (*postureOSVersionCheckPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureOSVersionCheck)(nil)).Elem()
+}
+
+func (i *postureOSVersionCheckPtrType) ToPostureOSVersionCheckPtrOutput() PostureOSVersionCheckPtrOutput {
+	return i.ToPostureOSVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (i *postureOSVersionCheckPtrType) ToPostureOSVersionCheckPtrOutputWithContext(ctx context.Context) PostureOSVersionCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureOSVersionCheckPtrOutput)
+}
+
+type PostureOSVersionCheckOutput struct{ *pulumi.OutputState }
+
+func (PostureOSVersionCheckOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureOSVersionCheck)(nil)).Elem()
+}
+
+func (o PostureOSVersionCheckOutput) ToPostureOSVersionCheckOutput() PostureOSVersionCheckOutput {
+	return o
+}
+
+func (o PostureOSVersionCheckOutput) ToPostureOSVersionCheckOutputWithContext(ctx context.Context) PostureOSVersionCheckOutput {
+	return o
+}
+
+func (o PostureOSVersionCheckOutput) ToPostureOSVersionCheckPtrOutput() PostureOSVersionCheckPtrOutput {
+	return o.ToPostureOSVersionCheckPtrOutputWithContext(context.Background())
+}
+
+func (o PostureOSVersionCheckOutput) ToPostureOSVersionCheckPtrOutputWithContext(ctx context.Context) PostureOSVersionCheckPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PostureOSVersionCheck) *PostureOSVersionCheck {
+		return &v
+	}).(PostureOSVersionCheckPtrOutput)
+}
+
+// Minimum version check for Android.
+func (o PostureOSVersionCheckOutput) Android() PostureMinVersionCheckPtrOutput {
+	return o.ApplyT(func(v PostureOSVersionCheck) *PostureMinVersionCheck { return v.Android }).(PostureMinVersionCheckPtrOutput)
+}
+
+// Minimum version check for macOS.
+func (o PostureOSVersionCheckOutput) Darwin() PostureMinVersionCheckPtrOutput {
+	return o.ApplyT(func(v PostureOSVersionCheck) *PostureMinVersionCheck { return v.Darwin }).(PostureMinVersionCheckPtrOutput)
+}
+
+// Minimum version check for iOS.
+func (o PostureOSVersionCheckOutput) Ios() PostureMinVersionCheckPtrOutput {
+	return o.ApplyT(func(v PostureOSVersionCheck) *PostureMinVersionCheck { return v.Ios }).(PostureMinVersionCheckPtrOutput)
+}
+
+// Minimum kernel version check for Linux.
+func (o PostureOSVersionCheckOutput) Linux() PostureMinKernelVersionCheckPtrOutput {
+	return o.ApplyT(func(v PostureOSVersionCheck) *PostureMinKernelVersionCheck { return v.Linux }).(PostureMinKernelVersionCheckPtrOutput)
+}
+
+// Minimum kernel version check for Windows.
+func (o PostureOSVersionCheckOutput) Windows() PostureMinKernelVersionCheckPtrOutput {
+	return o.ApplyT(func(v PostureOSVersionCheck) *PostureMinKernelVersionCheck { return v.Windows }).(PostureMinKernelVersionCheckPtrOutput)
+}
+
+type PostureOSVersionCheckPtrOutput struct{ *pulumi.OutputState }
+
+func (PostureOSVersionCheckPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureOSVersionCheck)(nil)).Elem()
+}
+
+func (o PostureOSVersionCheckPtrOutput) ToPostureOSVersionCheckPtrOutput() PostureOSVersionCheckPtrOutput {
+	return o
+}
+
+func (o PostureOSVersionCheckPtrOutput) ToPostureOSVersionCheckPtrOutputWithContext(ctx context.Context) PostureOSVersionCheckPtrOutput {
+	return o
+}
+
+func (o PostureOSVersionCheckPtrOutput) Elem() PostureOSVersionCheckOutput {
+	return o.ApplyT(func(v *PostureOSVersionCheck) PostureOSVersionCheck {
+		if v != nil {
+			return *v
+		}
+		var ret PostureOSVersionCheck
+		return ret
+	}).(PostureOSVersionCheckOutput)
+}
+
+// Minimum version check for Android.
+func (o PostureOSVersionCheckPtrOutput) Android() PostureMinVersionCheckPtrOutput {
+	return o.ApplyT(func(v *PostureOSVersionCheck) *PostureMinVersionCheck {
+		if v == nil {
+			return nil
+		}
+		return v.Android
+	}).(PostureMinVersionCheckPtrOutput)
+}
+
+// Minimum version check for macOS.
+func (o PostureOSVersionCheckPtrOutput) Darwin() PostureMinVersionCheckPtrOutput {
+	return o.ApplyT(func(v *PostureOSVersionCheck) *PostureMinVersionCheck {
+		if v == nil {
+			return nil
+		}
+		return v.Darwin
+	}).(PostureMinVersionCheckPtrOutput)
+}
+
+// Minimum version check for iOS.
+func (o PostureOSVersionCheckPtrOutput) Ios() PostureMinVersionCheckPtrOutput {
+	return o.ApplyT(func(v *PostureOSVersionCheck) *PostureMinVersionCheck {
+		if v == nil {
+			return nil
+		}
+		return v.Ios
+	}).(PostureMinVersionCheckPtrOutput)
+}
+
+// Minimum kernel version check for Linux.
+func (o PostureOSVersionCheckPtrOutput) Linux() PostureMinKernelVersionCheckPtrOutput {
+	return o.ApplyT(func(v *PostureOSVersionCheck) *PostureMinKernelVersionCheck {
+		if v == nil {
+			return nil
+		}
+		return v.Linux
+	}).(PostureMinKernelVersionCheckPtrOutput)
+}
+
+// Minimum kernel version check for Windows.
+func (o PostureOSVersionCheckPtrOutput) Windows() PostureMinKernelVersionCheckPtrOutput {
+	return o.ApplyT(func(v *PostureOSVersionCheck) *PostureMinKernelVersionCheck {
+		if v == nil {
+			return nil
+		}
+		return v.Windows
+	}).(PostureMinKernelVersionCheckPtrOutput)
+}
+
+type PosturePeerNetworkRangeCheck struct {
+	// Action to take when the peer's network range matches (allow or deny).
+	Action PosturePeerNetworkRangeAction `pulumi:"action"`
+	// List of CIDR network ranges to match against.
+	Ranges []string `pulumi:"ranges"`
+}
+
+// PosturePeerNetworkRangeCheckInput is an input type that accepts PosturePeerNetworkRangeCheckArgs and PosturePeerNetworkRangeCheckOutput values.
+// You can construct a concrete instance of `PosturePeerNetworkRangeCheckInput` via:
+//
+//	PosturePeerNetworkRangeCheckArgs{...}
+type PosturePeerNetworkRangeCheckInput interface {
+	pulumi.Input
+
+	ToPosturePeerNetworkRangeCheckOutput() PosturePeerNetworkRangeCheckOutput
+	ToPosturePeerNetworkRangeCheckOutputWithContext(context.Context) PosturePeerNetworkRangeCheckOutput
+}
+
+type PosturePeerNetworkRangeCheckArgs struct {
+	// Action to take when the peer's network range matches (allow or deny).
+	Action PosturePeerNetworkRangeActionInput `pulumi:"action"`
+	// List of CIDR network ranges to match against.
+	Ranges pulumi.StringArrayInput `pulumi:"ranges"`
+}
+
+func (PosturePeerNetworkRangeCheckArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PosturePeerNetworkRangeCheck)(nil)).Elem()
+}
+
+func (i PosturePeerNetworkRangeCheckArgs) ToPosturePeerNetworkRangeCheckOutput() PosturePeerNetworkRangeCheckOutput {
+	return i.ToPosturePeerNetworkRangeCheckOutputWithContext(context.Background())
+}
+
+func (i PosturePeerNetworkRangeCheckArgs) ToPosturePeerNetworkRangeCheckOutputWithContext(ctx context.Context) PosturePeerNetworkRangeCheckOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PosturePeerNetworkRangeCheckOutput)
+}
+
+func (i PosturePeerNetworkRangeCheckArgs) ToPosturePeerNetworkRangeCheckPtrOutput() PosturePeerNetworkRangeCheckPtrOutput {
+	return i.ToPosturePeerNetworkRangeCheckPtrOutputWithContext(context.Background())
+}
+
+func (i PosturePeerNetworkRangeCheckArgs) ToPosturePeerNetworkRangeCheckPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PosturePeerNetworkRangeCheckOutput).ToPosturePeerNetworkRangeCheckPtrOutputWithContext(ctx)
+}
+
+// PosturePeerNetworkRangeCheckPtrInput is an input type that accepts PosturePeerNetworkRangeCheckArgs, PosturePeerNetworkRangeCheckPtr and PosturePeerNetworkRangeCheckPtrOutput values.
+// You can construct a concrete instance of `PosturePeerNetworkRangeCheckPtrInput` via:
+//
+//	        PosturePeerNetworkRangeCheckArgs{...}
+//
+//	or:
+//
+//	        nil
+type PosturePeerNetworkRangeCheckPtrInput interface {
+	pulumi.Input
+
+	ToPosturePeerNetworkRangeCheckPtrOutput() PosturePeerNetworkRangeCheckPtrOutput
+	ToPosturePeerNetworkRangeCheckPtrOutputWithContext(context.Context) PosturePeerNetworkRangeCheckPtrOutput
+}
+
+type posturePeerNetworkRangeCheckPtrType PosturePeerNetworkRangeCheckArgs
+
+func PosturePeerNetworkRangeCheckPtr(v *PosturePeerNetworkRangeCheckArgs) PosturePeerNetworkRangeCheckPtrInput {
+	return (*posturePeerNetworkRangeCheckPtrType)(v)
+}
+
+func (*posturePeerNetworkRangeCheckPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**PosturePeerNetworkRangeCheck)(nil)).Elem()
+}
+
+func (i *posturePeerNetworkRangeCheckPtrType) ToPosturePeerNetworkRangeCheckPtrOutput() PosturePeerNetworkRangeCheckPtrOutput {
+	return i.ToPosturePeerNetworkRangeCheckPtrOutputWithContext(context.Background())
+}
+
+func (i *posturePeerNetworkRangeCheckPtrType) ToPosturePeerNetworkRangeCheckPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PosturePeerNetworkRangeCheckPtrOutput)
+}
+
+type PosturePeerNetworkRangeCheckOutput struct{ *pulumi.OutputState }
+
+func (PosturePeerNetworkRangeCheckOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PosturePeerNetworkRangeCheck)(nil)).Elem()
+}
+
+func (o PosturePeerNetworkRangeCheckOutput) ToPosturePeerNetworkRangeCheckOutput() PosturePeerNetworkRangeCheckOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeCheckOutput) ToPosturePeerNetworkRangeCheckOutputWithContext(ctx context.Context) PosturePeerNetworkRangeCheckOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeCheckOutput) ToPosturePeerNetworkRangeCheckPtrOutput() PosturePeerNetworkRangeCheckPtrOutput {
+	return o.ToPosturePeerNetworkRangeCheckPtrOutputWithContext(context.Background())
+}
+
+func (o PosturePeerNetworkRangeCheckOutput) ToPosturePeerNetworkRangeCheckPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeCheckPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PosturePeerNetworkRangeCheck) *PosturePeerNetworkRangeCheck {
+		return &v
+	}).(PosturePeerNetworkRangeCheckPtrOutput)
+}
+
+// Action to take when the peer's network range matches (allow or deny).
+func (o PosturePeerNetworkRangeCheckOutput) Action() PosturePeerNetworkRangeActionOutput {
+	return o.ApplyT(func(v PosturePeerNetworkRangeCheck) PosturePeerNetworkRangeAction { return v.Action }).(PosturePeerNetworkRangeActionOutput)
+}
+
+// List of CIDR network ranges to match against.
+func (o PosturePeerNetworkRangeCheckOutput) Ranges() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v PosturePeerNetworkRangeCheck) []string { return v.Ranges }).(pulumi.StringArrayOutput)
+}
+
+type PosturePeerNetworkRangeCheckPtrOutput struct{ *pulumi.OutputState }
+
+func (PosturePeerNetworkRangeCheckPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PosturePeerNetworkRangeCheck)(nil)).Elem()
+}
+
+func (o PosturePeerNetworkRangeCheckPtrOutput) ToPosturePeerNetworkRangeCheckPtrOutput() PosturePeerNetworkRangeCheckPtrOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeCheckPtrOutput) ToPosturePeerNetworkRangeCheckPtrOutputWithContext(ctx context.Context) PosturePeerNetworkRangeCheckPtrOutput {
+	return o
+}
+
+func (o PosturePeerNetworkRangeCheckPtrOutput) Elem() PosturePeerNetworkRangeCheckOutput {
+	return o.ApplyT(func(v *PosturePeerNetworkRangeCheck) PosturePeerNetworkRangeCheck {
+		if v != nil {
+			return *v
+		}
+		var ret PosturePeerNetworkRangeCheck
+		return ret
+	}).(PosturePeerNetworkRangeCheckOutput)
+}
+
+// Action to take when the peer's network range matches (allow or deny).
+func (o PosturePeerNetworkRangeCheckPtrOutput) Action() PosturePeerNetworkRangeActionPtrOutput {
+	return o.ApplyT(func(v *PosturePeerNetworkRangeCheck) *PosturePeerNetworkRangeAction {
+		if v == nil {
+			return nil
+		}
+		return &v.Action
+	}).(PosturePeerNetworkRangeActionPtrOutput)
+}
+
+// List of CIDR network ranges to match against.
+func (o PosturePeerNetworkRangeCheckPtrOutput) Ranges() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *PosturePeerNetworkRangeCheck) []string {
+		if v == nil {
+			return nil
+		}
+		return v.Ranges
+	}).(pulumi.StringArrayOutput)
+}
+
+type PostureProcess struct {
+	// Path to the process executable on Linux.
+	LinuxPath *string `pulumi:"linuxPath"`
+	// Path to the process executable on macOS.
+	MacPath *string `pulumi:"macPath"`
+	// Path to the process executable on Windows.
+	WindowsPath *string `pulumi:"windowsPath"`
+}
+
+// PostureProcessInput is an input type that accepts PostureProcessArgs and PostureProcessOutput values.
+// You can construct a concrete instance of `PostureProcessInput` via:
+//
+//	PostureProcessArgs{...}
+type PostureProcessInput interface {
+	pulumi.Input
+
+	ToPostureProcessOutput() PostureProcessOutput
+	ToPostureProcessOutputWithContext(context.Context) PostureProcessOutput
+}
+
+type PostureProcessArgs struct {
+	// Path to the process executable on Linux.
+	LinuxPath pulumi.StringPtrInput `pulumi:"linuxPath"`
+	// Path to the process executable on macOS.
+	MacPath pulumi.StringPtrInput `pulumi:"macPath"`
+	// Path to the process executable on Windows.
+	WindowsPath pulumi.StringPtrInput `pulumi:"windowsPath"`
+}
+
+func (PostureProcessArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureProcess)(nil)).Elem()
+}
+
+func (i PostureProcessArgs) ToPostureProcessOutput() PostureProcessOutput {
+	return i.ToPostureProcessOutputWithContext(context.Background())
+}
+
+func (i PostureProcessArgs) ToPostureProcessOutputWithContext(ctx context.Context) PostureProcessOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureProcessOutput)
+}
+
+// PostureProcessArrayInput is an input type that accepts PostureProcessArray and PostureProcessArrayOutput values.
+// You can construct a concrete instance of `PostureProcessArrayInput` via:
+//
+//	PostureProcessArray{ PostureProcessArgs{...} }
+type PostureProcessArrayInput interface {
+	pulumi.Input
+
+	ToPostureProcessArrayOutput() PostureProcessArrayOutput
+	ToPostureProcessArrayOutputWithContext(context.Context) PostureProcessArrayOutput
+}
+
+type PostureProcessArray []PostureProcessInput
+
+func (PostureProcessArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]PostureProcess)(nil)).Elem()
+}
+
+func (i PostureProcessArray) ToPostureProcessArrayOutput() PostureProcessArrayOutput {
+	return i.ToPostureProcessArrayOutputWithContext(context.Background())
+}
+
+func (i PostureProcessArray) ToPostureProcessArrayOutputWithContext(ctx context.Context) PostureProcessArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureProcessArrayOutput)
+}
+
+type PostureProcessOutput struct{ *pulumi.OutputState }
+
+func (PostureProcessOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureProcess)(nil)).Elem()
+}
+
+func (o PostureProcessOutput) ToPostureProcessOutput() PostureProcessOutput {
+	return o
+}
+
+func (o PostureProcessOutput) ToPostureProcessOutputWithContext(ctx context.Context) PostureProcessOutput {
+	return o
+}
+
+// Path to the process executable on Linux.
+func (o PostureProcessOutput) LinuxPath() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v PostureProcess) *string { return v.LinuxPath }).(pulumi.StringPtrOutput)
+}
+
+// Path to the process executable on macOS.
+func (o PostureProcessOutput) MacPath() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v PostureProcess) *string { return v.MacPath }).(pulumi.StringPtrOutput)
+}
+
+// Path to the process executable on Windows.
+func (o PostureProcessOutput) WindowsPath() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v PostureProcess) *string { return v.WindowsPath }).(pulumi.StringPtrOutput)
+}
+
+type PostureProcessArrayOutput struct{ *pulumi.OutputState }
+
+func (PostureProcessArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]PostureProcess)(nil)).Elem()
+}
+
+func (o PostureProcessArrayOutput) ToPostureProcessArrayOutput() PostureProcessArrayOutput {
+	return o
+}
+
+func (o PostureProcessArrayOutput) ToPostureProcessArrayOutputWithContext(ctx context.Context) PostureProcessArrayOutput {
+	return o
+}
+
+func (o PostureProcessArrayOutput) Index(i pulumi.IntInput) PostureProcessOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) PostureProcess {
+		return vs[0].([]PostureProcess)[vs[1].(int)]
+	}).(PostureProcessOutput)
+}
+
+type PostureProcessCheck struct {
+	// List of processes that must be running on the peer.
+	Processes []PostureProcess `pulumi:"processes"`
+}
+
+// PostureProcessCheckInput is an input type that accepts PostureProcessCheckArgs and PostureProcessCheckOutput values.
+// You can construct a concrete instance of `PostureProcessCheckInput` via:
+//
+//	PostureProcessCheckArgs{...}
+type PostureProcessCheckInput interface {
+	pulumi.Input
+
+	ToPostureProcessCheckOutput() PostureProcessCheckOutput
+	ToPostureProcessCheckOutputWithContext(context.Context) PostureProcessCheckOutput
+}
+
+type PostureProcessCheckArgs struct {
+	// List of processes that must be running on the peer.
+	Processes PostureProcessArrayInput `pulumi:"processes"`
+}
+
+func (PostureProcessCheckArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureProcessCheck)(nil)).Elem()
+}
+
+func (i PostureProcessCheckArgs) ToPostureProcessCheckOutput() PostureProcessCheckOutput {
+	return i.ToPostureProcessCheckOutputWithContext(context.Background())
+}
+
+func (i PostureProcessCheckArgs) ToPostureProcessCheckOutputWithContext(ctx context.Context) PostureProcessCheckOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureProcessCheckOutput)
+}
+
+func (i PostureProcessCheckArgs) ToPostureProcessCheckPtrOutput() PostureProcessCheckPtrOutput {
+	return i.ToPostureProcessCheckPtrOutputWithContext(context.Background())
+}
+
+func (i PostureProcessCheckArgs) ToPostureProcessCheckPtrOutputWithContext(ctx context.Context) PostureProcessCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureProcessCheckOutput).ToPostureProcessCheckPtrOutputWithContext(ctx)
+}
+
+// PostureProcessCheckPtrInput is an input type that accepts PostureProcessCheckArgs, PostureProcessCheckPtr and PostureProcessCheckPtrOutput values.
+// You can construct a concrete instance of `PostureProcessCheckPtrInput` via:
+//
+//	        PostureProcessCheckArgs{...}
+//
+//	or:
+//
+//	        nil
+type PostureProcessCheckPtrInput interface {
+	pulumi.Input
+
+	ToPostureProcessCheckPtrOutput() PostureProcessCheckPtrOutput
+	ToPostureProcessCheckPtrOutputWithContext(context.Context) PostureProcessCheckPtrOutput
+}
+
+type postureProcessCheckPtrType PostureProcessCheckArgs
+
+func PostureProcessCheckPtr(v *PostureProcessCheckArgs) PostureProcessCheckPtrInput {
+	return (*postureProcessCheckPtrType)(v)
+}
+
+func (*postureProcessCheckPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureProcessCheck)(nil)).Elem()
+}
+
+func (i *postureProcessCheckPtrType) ToPostureProcessCheckPtrOutput() PostureProcessCheckPtrOutput {
+	return i.ToPostureProcessCheckPtrOutputWithContext(context.Background())
+}
+
+func (i *postureProcessCheckPtrType) ToPostureProcessCheckPtrOutputWithContext(ctx context.Context) PostureProcessCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureProcessCheckPtrOutput)
+}
+
+type PostureProcessCheckOutput struct{ *pulumi.OutputState }
+
+func (PostureProcessCheckOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureProcessCheck)(nil)).Elem()
+}
+
+func (o PostureProcessCheckOutput) ToPostureProcessCheckOutput() PostureProcessCheckOutput {
+	return o
+}
+
+func (o PostureProcessCheckOutput) ToPostureProcessCheckOutputWithContext(ctx context.Context) PostureProcessCheckOutput {
+	return o
+}
+
+func (o PostureProcessCheckOutput) ToPostureProcessCheckPtrOutput() PostureProcessCheckPtrOutput {
+	return o.ToPostureProcessCheckPtrOutputWithContext(context.Background())
+}
+
+func (o PostureProcessCheckOutput) ToPostureProcessCheckPtrOutputWithContext(ctx context.Context) PostureProcessCheckPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PostureProcessCheck) *PostureProcessCheck {
+		return &v
+	}).(PostureProcessCheckPtrOutput)
+}
+
+// List of processes that must be running on the peer.
+func (o PostureProcessCheckOutput) Processes() PostureProcessArrayOutput {
+	return o.ApplyT(func(v PostureProcessCheck) []PostureProcess { return v.Processes }).(PostureProcessArrayOutput)
+}
+
+type PostureProcessCheckPtrOutput struct{ *pulumi.OutputState }
+
+func (PostureProcessCheckPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureProcessCheck)(nil)).Elem()
+}
+
+func (o PostureProcessCheckPtrOutput) ToPostureProcessCheckPtrOutput() PostureProcessCheckPtrOutput {
+	return o
+}
+
+func (o PostureProcessCheckPtrOutput) ToPostureProcessCheckPtrOutputWithContext(ctx context.Context) PostureProcessCheckPtrOutput {
+	return o
+}
+
+func (o PostureProcessCheckPtrOutput) Elem() PostureProcessCheckOutput {
+	return o.ApplyT(func(v *PostureProcessCheck) PostureProcessCheck {
+		if v != nil {
+			return *v
+		}
+		var ret PostureProcessCheck
+		return ret
+	}).(PostureProcessCheckOutput)
+}
+
+// List of processes that must be running on the peer.
+func (o PostureProcessCheckPtrOutput) Processes() PostureProcessArrayOutput {
+	return o.ApplyT(func(v *PostureProcessCheck) []PostureProcess {
+		if v == nil {
+			return nil
+		}
+		return v.Processes
+	}).(PostureProcessArrayOutput)
+}
+
 type Resource struct {
 	// The unique identifier of the resource.
 	Id string `pulumi:"id"`
@@ -975,6 +2220,23 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverArrayInput)(nil)).Elem(), NameserverArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsInput)(nil)).Elem(), PolicyRuleArgsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsArrayInput)(nil)).Elem(), PolicyRuleArgsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureChecksConfigInput)(nil)).Elem(), PostureChecksConfigArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureGeoLocationCheckInput)(nil)).Elem(), PostureGeoLocationCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureGeoLocationCheckPtrInput)(nil)).Elem(), PostureGeoLocationCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureLocationInput)(nil)).Elem(), PostureLocationArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureLocationArrayInput)(nil)).Elem(), PostureLocationArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureMinKernelVersionCheckInput)(nil)).Elem(), PostureMinKernelVersionCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureMinKernelVersionCheckPtrInput)(nil)).Elem(), PostureMinKernelVersionCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureMinVersionCheckInput)(nil)).Elem(), PostureMinVersionCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureMinVersionCheckPtrInput)(nil)).Elem(), PostureMinVersionCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureOSVersionCheckInput)(nil)).Elem(), PostureOSVersionCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureOSVersionCheckPtrInput)(nil)).Elem(), PostureOSVersionCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PosturePeerNetworkRangeCheckInput)(nil)).Elem(), PosturePeerNetworkRangeCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PosturePeerNetworkRangeCheckPtrInput)(nil)).Elem(), PosturePeerNetworkRangeCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureProcessInput)(nil)).Elem(), PostureProcessArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureProcessArrayInput)(nil)).Elem(), PostureProcessArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureProcessCheckInput)(nil)).Elem(), PostureProcessCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureProcessCheckPtrInput)(nil)).Elem(), PostureProcessCheckArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourcePtrInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceArrayInput)(nil)).Elem(), ResourceArray{})
@@ -988,6 +2250,23 @@ func init() {
 	pulumi.RegisterOutputType(PolicyRuleArgsArrayOutput{})
 	pulumi.RegisterOutputType(PolicyRuleStateOutput{})
 	pulumi.RegisterOutputType(PolicyRuleStateArrayOutput{})
+	pulumi.RegisterOutputType(PostureChecksConfigOutput{})
+	pulumi.RegisterOutputType(PostureGeoLocationCheckOutput{})
+	pulumi.RegisterOutputType(PostureGeoLocationCheckPtrOutput{})
+	pulumi.RegisterOutputType(PostureLocationOutput{})
+	pulumi.RegisterOutputType(PostureLocationArrayOutput{})
+	pulumi.RegisterOutputType(PostureMinKernelVersionCheckOutput{})
+	pulumi.RegisterOutputType(PostureMinKernelVersionCheckPtrOutput{})
+	pulumi.RegisterOutputType(PostureMinVersionCheckOutput{})
+	pulumi.RegisterOutputType(PostureMinVersionCheckPtrOutput{})
+	pulumi.RegisterOutputType(PostureOSVersionCheckOutput{})
+	pulumi.RegisterOutputType(PostureOSVersionCheckPtrOutput{})
+	pulumi.RegisterOutputType(PosturePeerNetworkRangeCheckOutput{})
+	pulumi.RegisterOutputType(PosturePeerNetworkRangeCheckPtrOutput{})
+	pulumi.RegisterOutputType(PostureProcessOutput{})
+	pulumi.RegisterOutputType(PostureProcessArrayOutput{})
+	pulumi.RegisterOutputType(PostureProcessCheckOutput{})
+	pulumi.RegisterOutputType(PostureProcessCheckPtrOutput{})
 	pulumi.RegisterOutputType(ResourceOutput{})
 	pulumi.RegisterOutputType(ResourcePtrOutput{})
 	pulumi.RegisterOutputType(ResourceArrayOutput{})

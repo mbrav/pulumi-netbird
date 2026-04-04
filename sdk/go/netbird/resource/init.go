@@ -41,6 +41,8 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 		r = &Peer{}
 	case "netbird:resource:Policy":
 		r = &Policy{}
+	case "netbird:resource:PostureCheck":
+		r = &PostureCheck{}
 	case "netbird:resource:ReverseProxyDomain":
 		r = &ReverseProxyDomain{}
 	case "netbird:resource:ReverseProxyService":

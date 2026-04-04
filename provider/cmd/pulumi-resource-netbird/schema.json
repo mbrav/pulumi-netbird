@@ -35,7 +35,7 @@
     },
     "nodejs": {
       "dependencies": {
-        "@pulumi/pulumi": "^3.0.0"
+        "@pulumi/pulumi": "^3.229.0"
       },
       "packageName": "@mbrav/pulumi-netbird"
     },
@@ -44,7 +44,7 @@
         "enabled": true
       },
       "requires": {
-        "pulumi": "\u003e=3.0.0,\u003c4.0.0"
+        "pulumi": "\u003e=3.229.0,\u003c4.0.0"
       },
       "respectSchemaVersion": true
     }
@@ -281,6 +281,198 @@
         "action",
         "enabled",
         "protocol"
+      ]
+    },
+    "netbird:resource:PostureChecksConfig": {
+      "properties": {
+        "geoLocationCheck": {
+          "$ref": "#/types/netbird:resource:PostureGeoLocationCheck",
+          "description": "Posture check for geo location."
+        },
+        "nbVersionCheck": {
+          "$ref": "#/types/netbird:resource:PostureMinVersionCheck",
+          "description": "Posture check for the minimum NetBird client version."
+        },
+        "osVersionCheck": {
+          "$ref": "#/types/netbird:resource:PostureOSVersionCheck",
+          "description": "Posture check for the minimum operating system version."
+        },
+        "peerNetworkRangeCheck": {
+          "$ref": "#/types/netbird:resource:PosturePeerNetworkRangeCheck",
+          "description": "Posture check based on peer local network addresses."
+        },
+        "processCheck": {
+          "$ref": "#/types/netbird:resource:PostureProcessCheck",
+          "description": "Posture check for required binaries running on the peer."
+        }
+      },
+      "type": "object"
+    },
+    "netbird:resource:PostureGeoLocationAction": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "allow",
+          "description": "Allow peers from the specified locations.",
+          "value": "allow"
+        },
+        {
+          "name": "deny",
+          "description": "Deny peers from the specified locations.",
+          "value": "deny"
+        }
+      ]
+    },
+    "netbird:resource:PostureGeoLocationCheck": {
+      "properties": {
+        "action": {
+          "$ref": "#/types/netbird:resource:PostureGeoLocationAction",
+          "description": "Action to take upon geo location match (allow or deny)."
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:PostureLocation"
+          },
+          "description": "List of geo locations to which the check applies."
+        }
+      },
+      "type": "object",
+      "required": [
+        "action",
+        "locations"
+      ]
+    },
+    "netbird:resource:PostureLocation": {
+      "properties": {
+        "cityName": {
+          "type": "string",
+          "description": "Commonly used English name of the city."
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "2-letter ISO 3166-1 alpha-2 country code."
+        }
+      },
+      "type": "object",
+      "required": [
+        "countryCode"
+      ]
+    },
+    "netbird:resource:PostureMinKernelVersionCheck": {
+      "properties": {
+        "minKernelVersion": {
+          "type": "string",
+          "description": "Minimum acceptable kernel version string."
+        }
+      },
+      "type": "object",
+      "required": [
+        "minKernelVersion"
+      ]
+    },
+    "netbird:resource:PostureMinVersionCheck": {
+      "properties": {
+        "minVersion": {
+          "type": "string",
+          "description": "Minimum acceptable version string."
+        }
+      },
+      "type": "object",
+      "required": [
+        "minVersion"
+      ]
+    },
+    "netbird:resource:PostureOSVersionCheck": {
+      "properties": {
+        "android": {
+          "$ref": "#/types/netbird:resource:PostureMinVersionCheck",
+          "description": "Minimum version check for Android."
+        },
+        "darwin": {
+          "$ref": "#/types/netbird:resource:PostureMinVersionCheck",
+          "description": "Minimum version check for macOS."
+        },
+        "ios": {
+          "$ref": "#/types/netbird:resource:PostureMinVersionCheck",
+          "description": "Minimum version check for iOS."
+        },
+        "linux": {
+          "$ref": "#/types/netbird:resource:PostureMinKernelVersionCheck",
+          "description": "Minimum kernel version check for Linux."
+        },
+        "windows": {
+          "$ref": "#/types/netbird:resource:PostureMinKernelVersionCheck",
+          "description": "Minimum kernel version check for Windows."
+        }
+      },
+      "type": "object"
+    },
+    "netbird:resource:PosturePeerNetworkRangeAction": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "allow",
+          "description": "Allow peers whose local network matches.",
+          "value": "allow"
+        },
+        {
+          "name": "deny",
+          "description": "Deny peers whose local network matches.",
+          "value": "deny"
+        }
+      ]
+    },
+    "netbird:resource:PosturePeerNetworkRangeCheck": {
+      "properties": {
+        "action": {
+          "$ref": "#/types/netbird:resource:PosturePeerNetworkRangeAction",
+          "description": "Action to take when the peer's network range matches (allow or deny)."
+        },
+        "ranges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of CIDR network ranges to match against."
+        }
+      },
+      "type": "object",
+      "required": [
+        "action",
+        "ranges"
+      ]
+    },
+    "netbird:resource:PostureProcess": {
+      "properties": {
+        "linuxPath": {
+          "type": "string",
+          "description": "Path to the process executable on Linux."
+        },
+        "macPath": {
+          "type": "string",
+          "description": "Path to the process executable on macOS."
+        },
+        "windowsPath": {
+          "type": "string",
+          "description": "Path to the process executable on Windows."
+        }
+      },
+      "type": "object"
+    },
+    "netbird:resource:PostureProcessCheck": {
+      "properties": {
+        "processes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:PostureProcess"
+          },
+          "description": "List of processes that must be running on the peer."
+        }
+      },
+      "type": "object",
+      "required": [
+        "processes"
       ]
     },
     "netbird:resource:Protocol": {
@@ -1215,6 +1407,45 @@
         "name",
         "enabled",
         "rules"
+      ]
+    },
+    "netbird:resource:PostureCheck": {
+      "description": "A NetBird posture check used to validate peer properties before granting policy access.",
+      "properties": {
+        "checks": {
+          "$ref": "#/types/netbird:resource:PostureChecksConfig",
+          "description": "List of checks to perform against peer properties."
+        },
+        "description": {
+          "type": "string",
+          "description": "Posture check friendly description."
+        },
+        "name": {
+          "type": "string",
+          "description": "Posture check unique name identifier."
+        }
+      },
+      "required": [
+        "name",
+        "checks"
+      ],
+      "inputProperties": {
+        "checks": {
+          "$ref": "#/types/netbird:resource:PostureChecksConfig",
+          "description": "List of checks to perform against peer properties."
+        },
+        "description": {
+          "type": "string",
+          "description": "Posture check friendly description."
+        },
+        "name": {
+          "type": "string",
+          "description": "Posture check unique name identifier."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "checks"
       ]
     },
     "netbird:resource:ReverseProxyDomain": {

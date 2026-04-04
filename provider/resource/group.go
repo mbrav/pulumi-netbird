@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -289,4 +290,53 @@ func (*Group) WireDependencies(f infer.FieldSelector, args *GroupArgs, state *Gr
 	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
 	f.OutputField(&state.Peers).DependsOn(f.InputField(&args.Peers))
 	f.OutputField(&state.Resources).DependsOn(f.InputField(&args.Resources))
+}
+
+func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
+	if resourcesA == nil && resourcesB == nil {
+		return true
+	}
+
+	if resourcesA == nil || resourcesB == nil {
+		return false
+	}
+
+	if len(*resourcesA) != len(*resourcesB) {
+		return false
+	}
+
+	aSorted := slices.Clone(*resourcesA)
+	bSorted := slices.Clone(*resourcesB)
+
+	slices.SortFunc(aSorted, func(resA, resB Resource) int {
+		if resA.Type != resB.Type {
+			if resA.Type < resB.Type {
+				return -1
+			}
+
+			return 1
+		}
+
+		return strings.Compare(resA.ID, resB.ID)
+	})
+
+	slices.SortFunc(bSorted, func(resA, resB Resource) int {
+		if resA.Type != resB.Type {
+			if resA.Type < resB.Type {
+				return -1
+			}
+
+			return 1
+		}
+
+		return strings.Compare(resA.ID, resB.ID)
+	})
+
+	for i := range aSorted {
+		if !equalResourcePtr(&aSorted[i], &bSorted[i]) {
+			return false
+		}
+	}
+
+	return true
 }

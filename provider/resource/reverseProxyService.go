@@ -477,3 +477,23 @@ func (*ReverseProxyService) WireDependencies(field infer.FieldSelector, args *Re
 	field.OutputField(&state.RewriteRedirects).DependsOn(field.InputField(&args.RewriteRedirects))
 	field.OutputField(&state.ListenPort).DependsOn(field.InputField(&args.ListenPort))
 }
+
+// equalReverseProxyTargets compares two slices of ReverseProxyTarget by their key fields.
+func equalReverseProxyTargets(targetsA, targetsB []ReverseProxyTarget) bool {
+	if len(targetsA) != len(targetsB) {
+		return false
+	}
+
+	for idx := range targetsA {
+		if targetsA[idx].Enabled != targetsB[idx].Enabled ||
+			targetsA[idx].Port != targetsB[idx].Port ||
+			targetsA[idx].Protocol != targetsB[idx].Protocol ||
+			targetsA[idx].TargetType != targetsB[idx].TargetType ||
+			!equalPtr(targetsA[idx].Host, targetsB[idx].Host) ||
+			!equalPtr(targetsA[idx].Path, targetsB[idx].Path) {
+			return false
+		}
+	}
+
+	return true
+}

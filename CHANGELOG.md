@@ -2,6 +2,32 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.0] - 2026-04-04
+
+> **Note:** A minor version bump (0.2.x → 0.3.0) was necessary due to the large number of new resources and the scope of internal changes introduced in this release.
+
+### Added
+
+- **`DNSRecord`** (`netbird_dns_record`) — manage DNS records within a DNS zone. Supports A, AAAA, and CNAME record types. Fields: `zoneID`, `name`, `content`, `ttl`, `type`.
+- **`DNSSettings`** (`netbird_dns_settings`) — singleton resource managing global DNS settings. Fields: `disabledManagementGroups`. Create/Update call the settings endpoint; Delete is a no-op since global settings cannot be removed.
+- **`DNSZone`** (`netbird_dns_zone`) — manage DNS zones. Fields: `name`, `domain`, `enabled`, `enableSearchDomain`, `distributionGroups`. Domain changes trigger resource replacement.
+- **`PostureCheck`** (`netbird_posture_check`) — manage peer posture checks used by policies. Supports all check types:
+  - `geoLocationCheck` — allow/deny by country code and city, with `PostureGeoLocationAction` enum.
+  - `nbVersionCheck` — minimum NetBird client version (`minVersion`).
+  - `osVersionCheck` — per-platform minimum versions: `android`, `darwin`, `ios` (minVersion); `linux`, `windows` (minKernelVersion).
+  - `peerNetworkRangeCheck` — allow/deny by CIDR range list, with `PosturePeerNetworkRangeAction` enum.
+  - `processCheck` — required running processes per platform (`linuxPath`, `macPath`, `windowsPath`).
+- **`ReverseProxyDomain`** (`netbird_reverse_proxy_domain`) — manage custom reverse proxy domains. Fields: `domain`, `targetCluster`. Read-only outputs: `type`, `validated`, `requireSubdomain`, `supportsCustomPorts`. No Update endpoint exists — all input changes trigger replacement.
+- **`ReverseProxyService`** (`netbird_reverse_proxy_service`) — manage reverse proxy services. Fields: `name`, `domain`, `enabled`, `mode`, `targets[]`, `passHostHeader`, `rewriteRedirects`, `listenPort`. Read-only outputs: `proxyCluster`, `status`. New enums: `ReverseProxyServiceMode` (http/tcp/tls/udp), `ReverseProxyTargetProtocol` (http/https/tcp/udp), `ReverseProxyTargetType` (domain/host/peer/subnet). Domain changes trigger replacement.
+- New `DNSRecordType` enum: `A`, `AAAA`, `CNAME`.
+- New `ReverseProxyDomainType` enum: `custom`, `free`.
+
+### Changed
+
+- Bumped provider version from `0.2.0` to `0.3.0`.
+- Refactored `equalPtr` in `util.go` from a string-only function to a generic `equalPtr[T comparable]`, replacing the separate `equalBoolPtr`, `equalIntPtr`, `equalStringPtr`, and `equalReverseProxyServiceModePtr` helpers.
+- OS version check conversion logic in `PostureCheck` extracted into dedicated `toAPIOSVersionCheck` / `fromAPIOSVersionCheck` helpers to reduce nesting complexity.
+
 ## [0.2.0] - 2026-02-27
 
 ### Added

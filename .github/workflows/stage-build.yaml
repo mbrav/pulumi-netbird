@@ -87,7 +87,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          name: "v${{ github.ref_name }}"
+          name: "${{ github.ref_name }}"
           body_path: /tmp/release-notes.md
           files: |
             dist/*.tar.gz

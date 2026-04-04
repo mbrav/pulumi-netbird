@@ -14,8 +14,16 @@ outputs:
     value:
       name: ${net-r1.name}
       id: ${net-r1.id}
+  dnsZoneCorp:
+    value:
+      name: ${dns-zone-corp.name}
+      domain: ${dns-zone-corp.domain}
+      id: ${dns-zone-corp.id}
 
 resources:
+  # ── Groups ──────────────────────────────────────────────────────────────────
+  # Peer groups used to scope policies, network resources, and DNS zones.
+
   group-devops:
     type: netbird:resource:Group
     properties:
@@ -40,11 +48,17 @@ resources:
       name: HR
       peers: []
 
+  # ── Networks ─────────────────────────────────────────────────────────────────
+  # Overlay network for Region 1 that groups related subnets and routers.
+
   net-r1:
     type: netbird:resource:Network
     properties:
       name: R1
       description: Network for Region 1
+
+  # ── Network Resources ────────────────────────────────────────────────────────
+  # Subnet resources attached to net-r1; accessible by the DevOps group.
 
   netres-r1-net-01:
     type: netbird:resource:NetworkResource
@@ -61,7 +75,7 @@ resources:
     type: netbird:resource:NetworkResource
     properties:
       name: Region 1 Net 02
-      description: Network 02 in S1 Region 1
+      description: Network 02 in Region 1
       network_id: ${net-r1.id}
       address: 10.10.2.0/24
       enabled: true
@@ -79,6 +93,9 @@ resources:
       group_ids:
         - ${group-devops.id}
 
+  # ── Network Router ────────────────────────────────────────────────────────────
+  # Masquerading router for net-r1; uses DevOps group as peer group.
+
   router-r1:
     type: netbird:resource:NetworkRouter
     properties:
@@ -90,24 +107,57 @@ resources:
       peer_groups:
         - ${group-devops.id}
 
-  # # pulumi import
-  # test-import-peer:
-  #   type: netbird:resource:Peer
-  #   properties:
-  #     inactivity_expiration_enabled: false
-  #     login_expiration_enabled: false
-  #     name: test-import-peer
-  #     sshEnabled: true
-  #   options:
-  #     protect: true
-  #
+  # ── Posture Check ─────────────────────────────────────────────────────────────
+  # Validates peer properties before granting policy access.
+  # Combines: client version, OS version, geo location, network range, and process.
+
+  posture-devops:
+    type: netbird:resource:PostureCheck
+    properties:
+      name: DevOps Posture
+      description: "Enforce client version, OS, geo, network range, and process checks"
+      checks:
+        # Require minimum NetBird client version 0.28.0.
+        nbVersionCheck:
+          minVersion: "0.28.0"
+        # Require minimum OS versions per platform.
+        osVersionCheck:
+          darwin:
+            minVersion: "13.0"
+          linux:
+            minKernelVersion: "5.15"
+          windows:
+            minKernelVersion: "10.0"
+        # Allow peers only from Germany (DE) or United States (US).
+        geoLocationCheck:
+          action: allow
+          locations:
+            - countryCode: DE
+            - countryCode: US
+              cityName: New York
+        # Deny peers whose local network is a private RFC-1918 /8 range.
+        peerNetworkRangeCheck:
+          action: deny
+          ranges:
+            - 10.0.0.0/8
+        # Require the NetBird agent binary to be present on each platform.
+        processCheck:
+          processes:
+            - linuxPath: /usr/bin/netbird
+              macPath: /usr/local/bin/netbird
+              windowsPath: 'C:\Program Files\NetBird\netbird.exe'
+
+  # ── Policies ──────────────────────────────────────────────────────────────────
+  # Policy: DevOps/Dev → Region 1 Net 02 (subnet destination, with posture check).
+
   policy-ssh-grp-src-net-dest:
     type: netbird:resource:Policy
     properties:
       name: "SSH Policy - Group to Subnet"
       description: "Allow SSH (22/TCP) from DevOps and Dev groups to Region 1 Net 02"
       enabled: true
-      posture_checks: []
+      posture_checks:
+        - ${posture-devops.id}
       rules:
         - name: "SSH Access - Group → Subnet"
           description: "Allow unidirectional SSH from DevOps & Dev groups to Net 02"
@@ -124,28 +174,8 @@ resources:
             type: subnet
             id: ${netres-r1-net-02.id}
 
-  # policy-ssh-grp-src-host-dest:
-  #   type: netbird:resource:Policy
-  #   properties:
-  #     name: "SSH Policy - Group to Host"
-  #     description: "Allow SSH (22/TCP) from DevOps group to imported peer"
-  #     enabled: true
-  #     posture_checks: []
-  #     rules:
-  #       - name: "SSH Access - Group → Host"
-  #         description: "Allow SSH from DevOps to test-import-peer"
-  #         bidirectional: false
-  #         action: accept
-  #         enabled: true
-  #         protocol: tcp
-  #         ports:
-  #           - "22"
-  #         sources:
-  #           - ${group-devops.id}
-  #         destinationResource:
-  #           type: host
-  #           id: ${test-import-peer.id}
-  #
+  # Policy: DevOps → Backoffice (group-to-group destination, no posture).
+
   policy-ssh-grp-src-grp-dest:
     type: netbird:resource:Policy
     properties:
@@ -167,9 +197,80 @@ resources:
           destinations:
             - ${group-backoffice.id}
 
-  # component-acl-json:
-  #   type: netbird:component:ACLF
-  #   properties:
-  #     name: ACL File JSON
-  #     description: Generatated resource from ACL JSON
-  #     json_path: "./acls.json"
+  # ── DNS Settings ───────────────────────────────────────────────────────────────
+  # Singleton resource — only one exists per account.
+  # disabledManagementGroups: groups whose peers resolve DNS outside NetBird.
+
+  dns-settings:
+    type: netbird:resource:DNSSettings
+    properties:
+      disabledManagementGroups: []
+
+  # ── DNS Zone ───────────────────────────────────────────────────────────────────
+  # Internal DNS zone for corp.example.com distributed to DevOps and Dev groups.
+  # enableSearchDomain: allows bare hostnames to be resolved within the zone.
+
+  dns-zone-corp:
+    type: netbird:resource:DNSZone
+    properties:
+      name: corp-internal
+      domain: corp.example.com
+      enabled: true
+      enableSearchDomain: true
+      distributionGroups:
+        - ${group-devops.id}
+        - ${group-dev.id}
+
+  # ── DNS Records ────────────────────────────────────────────────────────────────
+  # A record pointing the gateway hostname to an internal IPv4 address.
+
+  dns-record-gw-a:
+    type: netbird:resource:DNSRecord
+    properties:
+      zoneID: ${dns-zone-corp.id}
+      name: gw.corp.example.com
+      type: A
+      content: 10.10.1.1
+      ttl: 300
+
+  # CNAME record aliasing api.corp.example.com to the gateway hostname.
+  dns-record-api-cname:
+    type: netbird:resource:DNSRecord
+    properties:
+      zoneID: ${dns-zone-corp.id}
+      name: api.corp.example.com
+      type: CNAME
+      content: gw.corp.example.com
+      ttl: 300
+
+  # ── Reverse Proxy Domain ───────────────────────────────────────────────────────
+  # Custom domain validated against a specific proxy cluster.
+  # Domain changes trigger resource replacement (no Update endpoint exists).
+
+  rp-domain-corp:
+    type: netbird:resource:ReverseProxyDomain
+    properties:
+      domain: proxy.corp.example.com
+      targetCluster: eu-central-1
+
+  # ── Reverse Proxy Service ──────────────────────────────────────────────────────
+  # HTTP (L7) reverse proxy routing traffic to an internal backend host.
+  # passHostHeader: preserves the original Host header forwarded to the backend.
+  # rewriteRedirects: rewrites Location headers in backend responses.
+
+  rp-svc-api:
+    type: netbird:resource:ReverseProxyService
+    properties:
+      name: api-service
+      domain: ${rp-domain-corp.domain}
+      enabled: true
+      mode: http
+      passHostHeader: true
+      rewriteRedirects: false
+      targets:
+        - enabled: true
+          host: 10.10.1.10
+          port: 8080
+          protocol: http
+          targetType: host
+          targetId: ""

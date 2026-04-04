@@ -1,0 +1,32 @@
+# GitHub auto-generated release notes configuration.
+# Used when release notes are generated from merged pull requests.
+# See: https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+
+changelog:
+  categories:
+    - title: "🚀 New Resources & Features"
+      labels:
+        - "feat"
+        - "feature"
+        - "enhancement"
+    - title: "🐛 Bug Fixes"
+      labels:
+        - "fix"
+        - "bug"
+    - title: "🔨 Refactoring"
+      labels:
+        - "refactor"
+    - title: "🧰 CI / Maintenance"
+      labels:
+        - "ci"
+        - "chore"
+        - "deps"
+        - "build"
+    - title: "📖 Documentation"
+      labels:
+        - "docs"
+        - "documentation"
+    - title: "⚠️ Breaking Changes"
+      labels:
+        - "breaking"
+        - "breaking-change"

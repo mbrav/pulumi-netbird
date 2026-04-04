@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup Go ✨
         uses: actions/setup-go@v6
@@ -61,14 +63,32 @@ jobs:
       - name: Cross build binaries 📦
         run: make cross_build
 
+      - name: Extract release notes from CHANGELOG 📋
+        id: changelog
+        shell: bash
+        run: |
+          # Strip leading 'v' from tag (v0.3.0 -> 0.3.0)
+          VERSION="${GITHUB_REF_NAME#v}"
+
+          # Extract the block for this version: from "## [VERSION]" up to (but not
+          # including) the next "## [" heading, then strip the leading blank line.
+          awk "/^## \[${VERSION}\]/{flag=1; next} /^## \[/{if(flag) exit} flag" \
+            CHANGELOG.md | sed '/./,$!d' > /tmp/release-notes.md
+
+          if [ ! -s /tmp/release-notes.md ]; then
+            echo "⚠️  No CHANGELOG entry found for version ${VERSION}, using empty notes."
+            echo "Release ${GITHUB_REF_NAME}" > /tmp/release-notes.md
+          fi
+
+          echo "✅ Release notes for ${VERSION}:"
+          cat /tmp/release-notes.md
+
       - name: Publish release with assets 📢
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          generate_release_notes: true
-          # draft: true
-          name: Release ${{ github.ref_name }}
-          body_path: ./CHANGELOG.md
+          name: "v${{ github.ref_name }}"
+          body_path: /tmp/release-notes.md
           files: |
             dist/*.tar.gz
             dist/checksums.txt

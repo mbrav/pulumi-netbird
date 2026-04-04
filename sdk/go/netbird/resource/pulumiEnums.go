@@ -180,11 +180,11 @@ const (
 	// All protocols
 	ProtocolAll = Protocol("all")
 	// ICMP protocol
-	ProtocolIcmp = Protocol("icmp")
+	ProtocolICMP = Protocol("icmp")
 	// TCP protocol
-	ProtocolTcp = Protocol("tcp")
+	ProtocolTCP = Protocol("tcp")
 	// UDP protocol
-	ProtocolUdp = Protocol("udp")
+	ProtocolUDP = Protocol("udp")
 )
 
 func (Protocol) ElementType() reflect.Type {
@@ -310,9 +310,9 @@ func (o ProtocolPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pul
 // A concrete instance of `ProtocolInput` can be one of the following:
 //
 //	ProtocolAll
-//	ProtocolIcmp
-//	ProtocolTcp
-//	ProtocolUdp
+//	ProtocolICMP
+//	ProtocolTCP
+//	ProtocolUDP
 type ProtocolInput interface {
 	pulumi.Input
 

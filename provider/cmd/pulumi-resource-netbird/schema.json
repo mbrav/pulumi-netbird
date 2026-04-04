@@ -325,6 +325,136 @@
         "type"
       ]
     },
+    "netbird:resource:ReverseProxyDomainType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "custom",
+          "description": "A custom domain managed by the user.",
+          "value": "custom"
+        },
+        {
+          "name": "free",
+          "description": "A free managed domain provided by NetBird.",
+          "value": "free"
+        }
+      ]
+    },
+    "netbird:resource:ReverseProxyServiceMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "http",
+          "description": "L7 HTTP reverse proxy mode.",
+          "value": "http"
+        },
+        {
+          "name": "tcp",
+          "description": "L4 TCP passthrough mode.",
+          "value": "tcp"
+        },
+        {
+          "name": "tls",
+          "description": "L4 TLS passthrough mode.",
+          "value": "tls"
+        },
+        {
+          "name": "udp",
+          "description": "L4 UDP passthrough mode.",
+          "value": "udp"
+        }
+      ]
+    },
+    "netbird:resource:ReverseProxyTarget": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether this target is enabled."
+        },
+        "host": {
+          "type": "string",
+          "description": "Backend IP or domain for this target."
+        },
+        "path": {
+          "type": "string",
+          "description": "URL path prefix for this target (HTTP only)."
+        },
+        "port": {
+          "type": "integer",
+          "description": "Backend port for this target."
+        },
+        "protocol": {
+          "$ref": "#/types/netbird:resource:ReverseProxyTargetProtocol",
+          "description": "Protocol to use when connecting to the backend."
+        },
+        "targetId": {
+          "type": "string",
+          "description": "Target ID (assigned by the server)."
+        },
+        "targetType": {
+          "$ref": "#/types/netbird:resource:ReverseProxyTargetType",
+          "description": "Target type."
+        }
+      },
+      "type": "object",
+      "required": [
+        "targetId",
+        "enabled",
+        "port",
+        "protocol",
+        "targetType"
+      ]
+    },
+    "netbird:resource:ReverseProxyTargetProtocol": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "http",
+          "description": "HTTP protocol.",
+          "value": "http"
+        },
+        {
+          "name": "https",
+          "description": "HTTPS protocol.",
+          "value": "https"
+        },
+        {
+          "name": "tcp",
+          "description": "TCP protocol.",
+          "value": "tcp"
+        },
+        {
+          "name": "udp",
+          "description": "UDP protocol.",
+          "value": "udp"
+        }
+      ]
+    },
+    "netbird:resource:ReverseProxyTargetType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "domain",
+          "description": "Domain-based target.",
+          "value": "domain"
+        },
+        {
+          "name": "host",
+          "description": "Host-based target.",
+          "value": "host"
+        },
+        {
+          "name": "peer",
+          "description": "Peer-based target.",
+          "value": "peer"
+        },
+        {
+          "name": "subnet",
+          "description": "Subnet-based target.",
+          "value": "subnet"
+        }
+      ]
+    },
     "netbird:resource:RuleAction": {
       "type": "string",
       "enum": [
@@ -1085,6 +1215,152 @@
         "name",
         "enabled",
         "rules"
+      ]
+    },
+    "netbird:resource:ReverseProxyDomain": {
+      "description": "A NetBird reverse proxy custom domain.",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Domain name for the reverse proxy."
+        },
+        "requireSubdomain": {
+          "type": "boolean",
+          "description": "Whether a subdomain label is required in front of this domain."
+        },
+        "supportsCustomPorts": {
+          "type": "boolean",
+          "description": "Whether the cluster supports binding arbitrary TCP/UDP ports."
+        },
+        "targetCluster": {
+          "type": "string",
+          "description": "The proxy cluster this domain is validated against."
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:ReverseProxyDomainType",
+          "description": "Type of the reverse proxy domain (custom or free)."
+        },
+        "validated": {
+          "type": "boolean",
+          "description": "Whether the domain has been validated."
+        }
+      },
+      "required": [
+        "domain",
+        "targetCluster",
+        "type",
+        "validated"
+      ],
+      "inputProperties": {
+        "domain": {
+          "type": "string",
+          "description": "Domain name for the reverse proxy."
+        },
+        "targetCluster": {
+          "type": "string",
+          "description": "The proxy cluster this domain should be validated against."
+        }
+      },
+      "requiredInputs": [
+        "domain",
+        "targetCluster"
+      ]
+    },
+    "netbird:resource:ReverseProxyService": {
+      "description": "A NetBird reverse proxy service.",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Domain for the service."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the service is enabled."
+        },
+        "listenPort": {
+          "type": "integer",
+          "description": "Port the proxy listens on (L4/TLS only)."
+        },
+        "mode": {
+          "$ref": "#/types/netbird:resource:ReverseProxyServiceMode",
+          "description": "Service mode: \"http\" for L7 reverse proxy, \"tcp\"/\"udp\"/\"tls\" for L4 passthrough."
+        },
+        "name": {
+          "type": "string",
+          "description": "Service name."
+        },
+        "passHostHeader": {
+          "type": "boolean",
+          "description": "When true, the original client Host header is passed through to the backend."
+        },
+        "proxyCluster": {
+          "type": "string",
+          "description": "The proxy cluster handling this service (derived from domain)."
+        },
+        "rewriteRedirects": {
+          "type": "boolean",
+          "description": "When true, Location headers in backend responses are rewritten to the public-facing domain."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the service."
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:ReverseProxyTarget"
+          },
+          "description": "List of target backends for this service."
+        }
+      },
+      "required": [
+        "name",
+        "domain",
+        "enabled",
+        "targets"
+      ],
+      "inputProperties": {
+        "domain": {
+          "type": "string",
+          "description": "Domain for the service."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the service is enabled."
+        },
+        "listenPort": {
+          "type": "integer",
+          "description": "Port the proxy listens on (L4/TLS only). Set to 0 for auto-assignment."
+        },
+        "mode": {
+          "$ref": "#/types/netbird:resource:ReverseProxyServiceMode",
+          "description": "Service mode: \"http\" for L7 reverse proxy, \"tcp\"/\"udp\"/\"tls\" for L4 passthrough."
+        },
+        "name": {
+          "type": "string",
+          "description": "Service name."
+        },
+        "passHostHeader": {
+          "type": "boolean",
+          "description": "When true, the original client Host header is passed through to the backend."
+        },
+        "rewriteRedirects": {
+          "type": "boolean",
+          "description": "When true, Location headers in backend responses are rewritten to the public-facing domain."
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:ReverseProxyTarget"
+          },
+          "description": "List of target backends for this service."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "domain",
+        "enabled",
+        "targets"
       ]
     },
     "netbird:resource:SetupKey": {

@@ -517,6 +517,617 @@ func (in *protocolPtr) ToProtocolPtrOutputWithContext(ctx context.Context) Proto
 	return pulumi.ToOutputWithContext(ctx, in).(ProtocolPtrOutput)
 }
 
+type ReverseProxyDomainType string
+
+const (
+	// A custom domain managed by the user.
+	ReverseProxyDomainTypeCustom = ReverseProxyDomainType("custom")
+	// A free managed domain provided by NetBird.
+	ReverseProxyDomainTypeFree = ReverseProxyDomainType("free")
+)
+
+type ReverseProxyDomainTypeOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyDomainTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyDomainType)(nil)).Elem()
+}
+
+func (o ReverseProxyDomainTypeOutput) ToReverseProxyDomainTypeOutput() ReverseProxyDomainTypeOutput {
+	return o
+}
+
+func (o ReverseProxyDomainTypeOutput) ToReverseProxyDomainTypeOutputWithContext(ctx context.Context) ReverseProxyDomainTypeOutput {
+	return o
+}
+
+func (o ReverseProxyDomainTypeOutput) ToReverseProxyDomainTypePtrOutput() ReverseProxyDomainTypePtrOutput {
+	return o.ToReverseProxyDomainTypePtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyDomainTypeOutput) ToReverseProxyDomainTypePtrOutputWithContext(ctx context.Context) ReverseProxyDomainTypePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyDomainType) *ReverseProxyDomainType {
+		return &v
+	}).(ReverseProxyDomainTypePtrOutput)
+}
+
+func (o ReverseProxyDomainTypeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyDomainTypeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyDomainType) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyDomainTypeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyDomainTypeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyDomainType) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyDomainTypePtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyDomainTypePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyDomainType)(nil)).Elem()
+}
+
+func (o ReverseProxyDomainTypePtrOutput) ToReverseProxyDomainTypePtrOutput() ReverseProxyDomainTypePtrOutput {
+	return o
+}
+
+func (o ReverseProxyDomainTypePtrOutput) ToReverseProxyDomainTypePtrOutputWithContext(ctx context.Context) ReverseProxyDomainTypePtrOutput {
+	return o
+}
+
+func (o ReverseProxyDomainTypePtrOutput) Elem() ReverseProxyDomainTypeOutput {
+	return o.ApplyT(func(v *ReverseProxyDomainType) ReverseProxyDomainType {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyDomainType
+		return ret
+	}).(ReverseProxyDomainTypeOutput)
+}
+
+func (o ReverseProxyDomainTypePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyDomainTypePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyDomainType) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyServiceMode string
+
+const (
+	// L7 HTTP reverse proxy mode.
+	ReverseProxyServiceModeHttp = ReverseProxyServiceMode("http")
+	// L4 TCP passthrough mode.
+	ReverseProxyServiceModeTcp = ReverseProxyServiceMode("tcp")
+	// L4 TLS passthrough mode.
+	ReverseProxyServiceModeTls = ReverseProxyServiceMode("tls")
+	// L4 UDP passthrough mode.
+	ReverseProxyServiceModeUdp = ReverseProxyServiceMode("udp")
+)
+
+func (ReverseProxyServiceMode) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyServiceMode)(nil)).Elem()
+}
+
+func (e ReverseProxyServiceMode) ToReverseProxyServiceModeOutput() ReverseProxyServiceModeOutput {
+	return pulumi.ToOutput(e).(ReverseProxyServiceModeOutput)
+}
+
+func (e ReverseProxyServiceMode) ToReverseProxyServiceModeOutputWithContext(ctx context.Context) ReverseProxyServiceModeOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(ReverseProxyServiceModeOutput)
+}
+
+func (e ReverseProxyServiceMode) ToReverseProxyServiceModePtrOutput() ReverseProxyServiceModePtrOutput {
+	return e.ToReverseProxyServiceModePtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyServiceMode) ToReverseProxyServiceModePtrOutputWithContext(ctx context.Context) ReverseProxyServiceModePtrOutput {
+	return ReverseProxyServiceMode(e).ToReverseProxyServiceModeOutputWithContext(ctx).ToReverseProxyServiceModePtrOutputWithContext(ctx)
+}
+
+func (e ReverseProxyServiceMode) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyServiceMode) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyServiceMode) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyServiceMode) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type ReverseProxyServiceModeOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyServiceModeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyServiceMode)(nil)).Elem()
+}
+
+func (o ReverseProxyServiceModeOutput) ToReverseProxyServiceModeOutput() ReverseProxyServiceModeOutput {
+	return o
+}
+
+func (o ReverseProxyServiceModeOutput) ToReverseProxyServiceModeOutputWithContext(ctx context.Context) ReverseProxyServiceModeOutput {
+	return o
+}
+
+func (o ReverseProxyServiceModeOutput) ToReverseProxyServiceModePtrOutput() ReverseProxyServiceModePtrOutput {
+	return o.ToReverseProxyServiceModePtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceModeOutput) ToReverseProxyServiceModePtrOutputWithContext(ctx context.Context) ReverseProxyServiceModePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyServiceMode) *ReverseProxyServiceMode {
+		return &v
+	}).(ReverseProxyServiceModePtrOutput)
+}
+
+func (o ReverseProxyServiceModeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceModeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyServiceMode) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyServiceModeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceModeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyServiceMode) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyServiceModePtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyServiceModePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyServiceMode)(nil)).Elem()
+}
+
+func (o ReverseProxyServiceModePtrOutput) ToReverseProxyServiceModePtrOutput() ReverseProxyServiceModePtrOutput {
+	return o
+}
+
+func (o ReverseProxyServiceModePtrOutput) ToReverseProxyServiceModePtrOutputWithContext(ctx context.Context) ReverseProxyServiceModePtrOutput {
+	return o
+}
+
+func (o ReverseProxyServiceModePtrOutput) Elem() ReverseProxyServiceModeOutput {
+	return o.ApplyT(func(v *ReverseProxyServiceMode) ReverseProxyServiceMode {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyServiceMode
+		return ret
+	}).(ReverseProxyServiceModeOutput)
+}
+
+func (o ReverseProxyServiceModePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceModePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyServiceMode) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// ReverseProxyServiceModeInput is an input type that accepts values of the ReverseProxyServiceMode enum
+// A concrete instance of `ReverseProxyServiceModeInput` can be one of the following:
+//
+//	ReverseProxyServiceModeHttp
+//	ReverseProxyServiceModeTcp
+//	ReverseProxyServiceModeTls
+//	ReverseProxyServiceModeUdp
+type ReverseProxyServiceModeInput interface {
+	pulumi.Input
+
+	ToReverseProxyServiceModeOutput() ReverseProxyServiceModeOutput
+	ToReverseProxyServiceModeOutputWithContext(context.Context) ReverseProxyServiceModeOutput
+}
+
+var reverseProxyServiceModePtrType = reflect.TypeOf((**ReverseProxyServiceMode)(nil)).Elem()
+
+type ReverseProxyServiceModePtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyServiceModePtrOutput() ReverseProxyServiceModePtrOutput
+	ToReverseProxyServiceModePtrOutputWithContext(context.Context) ReverseProxyServiceModePtrOutput
+}
+
+type reverseProxyServiceModePtr string
+
+func ReverseProxyServiceModePtr(v string) ReverseProxyServiceModePtrInput {
+	return (*reverseProxyServiceModePtr)(&v)
+}
+
+func (*reverseProxyServiceModePtr) ElementType() reflect.Type {
+	return reverseProxyServiceModePtrType
+}
+
+func (in *reverseProxyServiceModePtr) ToReverseProxyServiceModePtrOutput() ReverseProxyServiceModePtrOutput {
+	return pulumi.ToOutput(in).(ReverseProxyServiceModePtrOutput)
+}
+
+func (in *reverseProxyServiceModePtr) ToReverseProxyServiceModePtrOutputWithContext(ctx context.Context) ReverseProxyServiceModePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(ReverseProxyServiceModePtrOutput)
+}
+
+type ReverseProxyTargetProtocol string
+
+const (
+	// HTTP protocol.
+	ReverseProxyTargetProtocolHttp = ReverseProxyTargetProtocol("http")
+	// HTTPS protocol.
+	ReverseProxyTargetProtocolHttps = ReverseProxyTargetProtocol("https")
+	// TCP protocol.
+	ReverseProxyTargetProtocolTcp = ReverseProxyTargetProtocol("tcp")
+	// UDP protocol.
+	ReverseProxyTargetProtocolUdp = ReverseProxyTargetProtocol("udp")
+)
+
+func (ReverseProxyTargetProtocol) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetProtocol)(nil)).Elem()
+}
+
+func (e ReverseProxyTargetProtocol) ToReverseProxyTargetProtocolOutput() ReverseProxyTargetProtocolOutput {
+	return pulumi.ToOutput(e).(ReverseProxyTargetProtocolOutput)
+}
+
+func (e ReverseProxyTargetProtocol) ToReverseProxyTargetProtocolOutputWithContext(ctx context.Context) ReverseProxyTargetProtocolOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(ReverseProxyTargetProtocolOutput)
+}
+
+func (e ReverseProxyTargetProtocol) ToReverseProxyTargetProtocolPtrOutput() ReverseProxyTargetProtocolPtrOutput {
+	return e.ToReverseProxyTargetProtocolPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyTargetProtocol) ToReverseProxyTargetProtocolPtrOutputWithContext(ctx context.Context) ReverseProxyTargetProtocolPtrOutput {
+	return ReverseProxyTargetProtocol(e).ToReverseProxyTargetProtocolOutputWithContext(ctx).ToReverseProxyTargetProtocolPtrOutputWithContext(ctx)
+}
+
+func (e ReverseProxyTargetProtocol) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyTargetProtocol) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyTargetProtocol) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyTargetProtocol) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type ReverseProxyTargetProtocolOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetProtocolOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetProtocol)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToReverseProxyTargetProtocolOutput() ReverseProxyTargetProtocolOutput {
+	return o
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToReverseProxyTargetProtocolOutputWithContext(ctx context.Context) ReverseProxyTargetProtocolOutput {
+	return o
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToReverseProxyTargetProtocolPtrOutput() ReverseProxyTargetProtocolPtrOutput {
+	return o.ToReverseProxyTargetProtocolPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToReverseProxyTargetProtocolPtrOutputWithContext(ctx context.Context) ReverseProxyTargetProtocolPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyTargetProtocol) *ReverseProxyTargetProtocol {
+		return &v
+	}).(ReverseProxyTargetProtocolPtrOutput)
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyTargetProtocol) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetProtocolOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyTargetProtocol) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyTargetProtocolPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetProtocolPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyTargetProtocol)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetProtocolPtrOutput) ToReverseProxyTargetProtocolPtrOutput() ReverseProxyTargetProtocolPtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetProtocolPtrOutput) ToReverseProxyTargetProtocolPtrOutputWithContext(ctx context.Context) ReverseProxyTargetProtocolPtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetProtocolPtrOutput) Elem() ReverseProxyTargetProtocolOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetProtocol) ReverseProxyTargetProtocol {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyTargetProtocol
+		return ret
+	}).(ReverseProxyTargetProtocolOutput)
+}
+
+func (o ReverseProxyTargetProtocolPtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetProtocolPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyTargetProtocol) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// ReverseProxyTargetProtocolInput is an input type that accepts values of the ReverseProxyTargetProtocol enum
+// A concrete instance of `ReverseProxyTargetProtocolInput` can be one of the following:
+//
+//	ReverseProxyTargetProtocolHttp
+//	ReverseProxyTargetProtocolHttps
+//	ReverseProxyTargetProtocolTcp
+//	ReverseProxyTargetProtocolUdp
+type ReverseProxyTargetProtocolInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetProtocolOutput() ReverseProxyTargetProtocolOutput
+	ToReverseProxyTargetProtocolOutputWithContext(context.Context) ReverseProxyTargetProtocolOutput
+}
+
+var reverseProxyTargetProtocolPtrType = reflect.TypeOf((**ReverseProxyTargetProtocol)(nil)).Elem()
+
+type ReverseProxyTargetProtocolPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetProtocolPtrOutput() ReverseProxyTargetProtocolPtrOutput
+	ToReverseProxyTargetProtocolPtrOutputWithContext(context.Context) ReverseProxyTargetProtocolPtrOutput
+}
+
+type reverseProxyTargetProtocolPtr string
+
+func ReverseProxyTargetProtocolPtr(v string) ReverseProxyTargetProtocolPtrInput {
+	return (*reverseProxyTargetProtocolPtr)(&v)
+}
+
+func (*reverseProxyTargetProtocolPtr) ElementType() reflect.Type {
+	return reverseProxyTargetProtocolPtrType
+}
+
+func (in *reverseProxyTargetProtocolPtr) ToReverseProxyTargetProtocolPtrOutput() ReverseProxyTargetProtocolPtrOutput {
+	return pulumi.ToOutput(in).(ReverseProxyTargetProtocolPtrOutput)
+}
+
+func (in *reverseProxyTargetProtocolPtr) ToReverseProxyTargetProtocolPtrOutputWithContext(ctx context.Context) ReverseProxyTargetProtocolPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(ReverseProxyTargetProtocolPtrOutput)
+}
+
+type ReverseProxyTargetType string
+
+const (
+	// Domain-based target.
+	ReverseProxyTargetTypeDomain = ReverseProxyTargetType("domain")
+	// Host-based target.
+	ReverseProxyTargetTypeHost = ReverseProxyTargetType("host")
+	// Peer-based target.
+	ReverseProxyTargetTypePeer = ReverseProxyTargetType("peer")
+	// Subnet-based target.
+	ReverseProxyTargetTypeSubnet = ReverseProxyTargetType("subnet")
+)
+
+func (ReverseProxyTargetType) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetType)(nil)).Elem()
+}
+
+func (e ReverseProxyTargetType) ToReverseProxyTargetTypeOutput() ReverseProxyTargetTypeOutput {
+	return pulumi.ToOutput(e).(ReverseProxyTargetTypeOutput)
+}
+
+func (e ReverseProxyTargetType) ToReverseProxyTargetTypeOutputWithContext(ctx context.Context) ReverseProxyTargetTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(ReverseProxyTargetTypeOutput)
+}
+
+func (e ReverseProxyTargetType) ToReverseProxyTargetTypePtrOutput() ReverseProxyTargetTypePtrOutput {
+	return e.ToReverseProxyTargetTypePtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyTargetType) ToReverseProxyTargetTypePtrOutputWithContext(ctx context.Context) ReverseProxyTargetTypePtrOutput {
+	return ReverseProxyTargetType(e).ToReverseProxyTargetTypeOutputWithContext(ctx).ToReverseProxyTargetTypePtrOutputWithContext(ctx)
+}
+
+func (e ReverseProxyTargetType) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyTargetType) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyTargetType) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyTargetType) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type ReverseProxyTargetTypeOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetType)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetTypeOutput) ToReverseProxyTargetTypeOutput() ReverseProxyTargetTypeOutput {
+	return o
+}
+
+func (o ReverseProxyTargetTypeOutput) ToReverseProxyTargetTypeOutputWithContext(ctx context.Context) ReverseProxyTargetTypeOutput {
+	return o
+}
+
+func (o ReverseProxyTargetTypeOutput) ToReverseProxyTargetTypePtrOutput() ReverseProxyTargetTypePtrOutput {
+	return o.ToReverseProxyTargetTypePtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetTypeOutput) ToReverseProxyTargetTypePtrOutputWithContext(ctx context.Context) ReverseProxyTargetTypePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyTargetType) *ReverseProxyTargetType {
+		return &v
+	}).(ReverseProxyTargetTypePtrOutput)
+}
+
+func (o ReverseProxyTargetTypeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetTypeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyTargetType) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyTargetTypeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetTypeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyTargetType) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyTargetTypePtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetTypePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyTargetType)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetTypePtrOutput) ToReverseProxyTargetTypePtrOutput() ReverseProxyTargetTypePtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetTypePtrOutput) ToReverseProxyTargetTypePtrOutputWithContext(ctx context.Context) ReverseProxyTargetTypePtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetTypePtrOutput) Elem() ReverseProxyTargetTypeOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetType) ReverseProxyTargetType {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyTargetType
+		return ret
+	}).(ReverseProxyTargetTypeOutput)
+}
+
+func (o ReverseProxyTargetTypePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetTypePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyTargetType) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// ReverseProxyTargetTypeInput is an input type that accepts values of the ReverseProxyTargetType enum
+// A concrete instance of `ReverseProxyTargetTypeInput` can be one of the following:
+//
+//	ReverseProxyTargetTypeDomain
+//	ReverseProxyTargetTypeHost
+//	ReverseProxyTargetTypePeer
+//	ReverseProxyTargetTypeSubnet
+type ReverseProxyTargetTypeInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetTypeOutput() ReverseProxyTargetTypeOutput
+	ToReverseProxyTargetTypeOutputWithContext(context.Context) ReverseProxyTargetTypeOutput
+}
+
+var reverseProxyTargetTypePtrType = reflect.TypeOf((**ReverseProxyTargetType)(nil)).Elem()
+
+type ReverseProxyTargetTypePtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetTypePtrOutput() ReverseProxyTargetTypePtrOutput
+	ToReverseProxyTargetTypePtrOutputWithContext(context.Context) ReverseProxyTargetTypePtrOutput
+}
+
+type reverseProxyTargetTypePtr string
+
+func ReverseProxyTargetTypePtr(v string) ReverseProxyTargetTypePtrInput {
+	return (*reverseProxyTargetTypePtr)(&v)
+}
+
+func (*reverseProxyTargetTypePtr) ElementType() reflect.Type {
+	return reverseProxyTargetTypePtrType
+}
+
+func (in *reverseProxyTargetTypePtr) ToReverseProxyTargetTypePtrOutput() ReverseProxyTargetTypePtrOutput {
+	return pulumi.ToOutput(in).(ReverseProxyTargetTypePtrOutput)
+}
+
+func (in *reverseProxyTargetTypePtr) ToReverseProxyTargetTypePtrOutputWithContext(ctx context.Context) ReverseProxyTargetTypePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(ReverseProxyTargetTypePtrOutput)
+}
+
 type RuleAction string
 
 const (
@@ -1028,6 +1639,12 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypePtrInput)(nil)).Elem(), NameserverNsType("udp"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolInput)(nil)).Elem(), Protocol("all"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolPtrInput)(nil)).Elem(), Protocol("all"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyServiceModeInput)(nil)).Elem(), ReverseProxyServiceMode("http"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyServiceModePtrInput)(nil)).Elem(), ReverseProxyServiceMode("http"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetProtocolInput)(nil)).Elem(), ReverseProxyTargetProtocol("http"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetProtocolPtrInput)(nil)).Elem(), ReverseProxyTargetProtocol("http"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetTypeInput)(nil)).Elem(), ReverseProxyTargetType("domain"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetTypePtrInput)(nil)).Elem(), ReverseProxyTargetType("domain"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionInput)(nil)).Elem(), RuleAction("accept"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionPtrInput)(nil)).Elem(), RuleAction("accept"))
 	pulumi.RegisterInputType(reflect.TypeOf((*SetupKeyTypeInput)(nil)).Elem(), SetupKeyType("reusable"))
@@ -1040,6 +1657,14 @@ func init() {
 	pulumi.RegisterOutputType(NameserverNsTypePtrOutput{})
 	pulumi.RegisterOutputType(ProtocolOutput{})
 	pulumi.RegisterOutputType(ProtocolPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyDomainTypeOutput{})
+	pulumi.RegisterOutputType(ReverseProxyDomainTypePtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyServiceModeOutput{})
+	pulumi.RegisterOutputType(ReverseProxyServiceModePtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetProtocolOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetProtocolPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetTypeOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetTypePtrOutput{})
 	pulumi.RegisterOutputType(RuleActionOutput{})
 	pulumi.RegisterOutputType(RuleActionPtrOutput{})
 	pulumi.RegisterOutputType(SetupKeyTypeOutput{})

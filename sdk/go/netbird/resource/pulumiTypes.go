@@ -662,6 +662,157 @@ func (o ResourceArrayOutput) Index(i pulumi.IntInput) ResourceOutput {
 	}).(ResourceOutput)
 }
 
+type ReverseProxyTarget struct {
+	// Whether this target is enabled.
+	Enabled bool `pulumi:"enabled"`
+	// Backend IP or domain for this target.
+	Host *string `pulumi:"host"`
+	// URL path prefix for this target (HTTP only).
+	Path *string `pulumi:"path"`
+	// Backend port for this target.
+	Port int `pulumi:"port"`
+	// Protocol to use when connecting to the backend.
+	Protocol ReverseProxyTargetProtocol `pulumi:"protocol"`
+	// Target ID (assigned by the server).
+	TargetId string `pulumi:"targetId"`
+	// Target type.
+	TargetType ReverseProxyTargetType `pulumi:"targetType"`
+}
+
+// ReverseProxyTargetInput is an input type that accepts ReverseProxyTargetArgs and ReverseProxyTargetOutput values.
+// You can construct a concrete instance of `ReverseProxyTargetInput` via:
+//
+//	ReverseProxyTargetArgs{...}
+type ReverseProxyTargetInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetOutput() ReverseProxyTargetOutput
+	ToReverseProxyTargetOutputWithContext(context.Context) ReverseProxyTargetOutput
+}
+
+type ReverseProxyTargetArgs struct {
+	// Whether this target is enabled.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// Backend IP or domain for this target.
+	Host pulumi.StringPtrInput `pulumi:"host"`
+	// URL path prefix for this target (HTTP only).
+	Path pulumi.StringPtrInput `pulumi:"path"`
+	// Backend port for this target.
+	Port pulumi.IntInput `pulumi:"port"`
+	// Protocol to use when connecting to the backend.
+	Protocol ReverseProxyTargetProtocolInput `pulumi:"protocol"`
+	// Target ID (assigned by the server).
+	TargetId pulumi.StringInput `pulumi:"targetId"`
+	// Target type.
+	TargetType ReverseProxyTargetTypeInput `pulumi:"targetType"`
+}
+
+func (ReverseProxyTargetArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTarget)(nil)).Elem()
+}
+
+func (i ReverseProxyTargetArgs) ToReverseProxyTargetOutput() ReverseProxyTargetOutput {
+	return i.ToReverseProxyTargetOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyTargetArgs) ToReverseProxyTargetOutputWithContext(ctx context.Context) ReverseProxyTargetOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyTargetOutput)
+}
+
+// ReverseProxyTargetArrayInput is an input type that accepts ReverseProxyTargetArray and ReverseProxyTargetArrayOutput values.
+// You can construct a concrete instance of `ReverseProxyTargetArrayInput` via:
+//
+//	ReverseProxyTargetArray{ ReverseProxyTargetArgs{...} }
+type ReverseProxyTargetArrayInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetArrayOutput() ReverseProxyTargetArrayOutput
+	ToReverseProxyTargetArrayOutputWithContext(context.Context) ReverseProxyTargetArrayOutput
+}
+
+type ReverseProxyTargetArray []ReverseProxyTargetInput
+
+func (ReverseProxyTargetArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ReverseProxyTarget)(nil)).Elem()
+}
+
+func (i ReverseProxyTargetArray) ToReverseProxyTargetArrayOutput() ReverseProxyTargetArrayOutput {
+	return i.ToReverseProxyTargetArrayOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyTargetArray) ToReverseProxyTargetArrayOutputWithContext(ctx context.Context) ReverseProxyTargetArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyTargetArrayOutput)
+}
+
+type ReverseProxyTargetOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTarget)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetOutput) ToReverseProxyTargetOutput() ReverseProxyTargetOutput {
+	return o
+}
+
+func (o ReverseProxyTargetOutput) ToReverseProxyTargetOutputWithContext(ctx context.Context) ReverseProxyTargetOutput {
+	return o
+}
+
+// Whether this target is enabled.
+func (o ReverseProxyTargetOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// Backend IP or domain for this target.
+func (o ReverseProxyTargetOutput) Host() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) *string { return v.Host }).(pulumi.StringPtrOutput)
+}
+
+// URL path prefix for this target (HTTP only).
+func (o ReverseProxyTargetOutput) Path() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) *string { return v.Path }).(pulumi.StringPtrOutput)
+}
+
+// Backend port for this target.
+func (o ReverseProxyTargetOutput) Port() pulumi.IntOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) int { return v.Port }).(pulumi.IntOutput)
+}
+
+// Protocol to use when connecting to the backend.
+func (o ReverseProxyTargetOutput) Protocol() ReverseProxyTargetProtocolOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) ReverseProxyTargetProtocol { return v.Protocol }).(ReverseProxyTargetProtocolOutput)
+}
+
+// Target ID (assigned by the server).
+func (o ReverseProxyTargetOutput) TargetId() pulumi.StringOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) string { return v.TargetId }).(pulumi.StringOutput)
+}
+
+// Target type.
+func (o ReverseProxyTargetOutput) TargetType() ReverseProxyTargetTypeOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) ReverseProxyTargetType { return v.TargetType }).(ReverseProxyTargetTypeOutput)
+}
+
+type ReverseProxyTargetArrayOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ReverseProxyTarget)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetArrayOutput) ToReverseProxyTargetArrayOutput() ReverseProxyTargetArrayOutput {
+	return o
+}
+
+func (o ReverseProxyTargetArrayOutput) ToReverseProxyTargetArrayOutputWithContext(ctx context.Context) ReverseProxyTargetArrayOutput {
+	return o
+}
+
+func (o ReverseProxyTargetArrayOutput) Index(i pulumi.IntInput) ReverseProxyTargetOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ReverseProxyTarget {
+		return vs[0].([]ReverseProxyTarget)[vs[1].(int)]
+	}).(ReverseProxyTargetOutput)
+}
+
 type RuleGroup struct {
 	// The unique identifier of the group.
 	Id string `pulumi:"id"`
@@ -827,6 +978,8 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourcePtrInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceArrayInput)(nil)).Elem(), ResourceArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetInput)(nil)).Elem(), ReverseProxyTargetArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetArrayInput)(nil)).Elem(), ReverseProxyTargetArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeArrayInput)(nil)).Elem(), RulePortRangeArray{})
 	pulumi.RegisterOutputType(NameserverOutput{})
@@ -838,6 +991,8 @@ func init() {
 	pulumi.RegisterOutputType(ResourceOutput{})
 	pulumi.RegisterOutputType(ResourcePtrOutput{})
 	pulumi.RegisterOutputType(ResourceArrayOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetArrayOutput{})
 	pulumi.RegisterOutputType(RuleGroupOutput{})
 	pulumi.RegisterOutputType(RuleGroupArrayOutput{})
 	pulumi.RegisterOutputType(RulePortRangeOutput{})

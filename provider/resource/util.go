@@ -14,17 +14,17 @@ func strPtr(str *string) string {
 	return *str
 }
 
-// equalPtr helper function to compare string pointers safely.
-func equalPtr(atrA, strB *string) bool {
-	if atrA == nil && strB == nil {
+// equalPtr compares two pointers of any comparable type safely.
+func equalPtr[T comparable](ptrA, ptrB *T) bool {
+	if ptrA == nil && ptrB == nil {
 		return true
 	}
 
-	if atrA == nil || strB == nil {
+	if ptrA == nil || ptrB == nil {
 		return false
 	}
 
-	return *atrA == *strB
+	return *ptrA == *ptrB
 }
 
 // equalSlice compares two []string slices, ignoring order.
@@ -116,6 +116,26 @@ func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
 
 	for i := range aSorted {
 		if !equalResourcePtr(&aSorted[i], &bSorted[i]) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// equalReverseProxyTargets compares two slices of ReverseProxyTarget by their key fields.
+func equalReverseProxyTargets(targetsA, targetsB []ReverseProxyTarget) bool {
+	if len(targetsA) != len(targetsB) {
+		return false
+	}
+
+	for idx := range targetsA {
+		if targetsA[idx].Enabled != targetsB[idx].Enabled ||
+			targetsA[idx].Port != targetsB[idx].Port ||
+			targetsA[idx].Protocol != targetsB[idx].Protocol ||
+			targetsA[idx].TargetType != targetsB[idx].TargetType ||
+			!equalPtr(targetsA[idx].Host, targetsB[idx].Host) ||
+			!equalPtr(targetsA[idx].Path, targetsB[idx].Path) {
 			return false
 		}
 	}

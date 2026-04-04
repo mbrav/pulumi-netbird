@@ -10,6 +10,176 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+type DNSRecordType string
+
+const (
+	// IPv4 address record.
+	DNSRecordTypeA = DNSRecordType("A")
+	// IPv6 address record.
+	DNSRecordTypeAAAA = DNSRecordType("AAAA")
+	// Canonical name record.
+	DNSRecordTypeCNAME = DNSRecordType("CNAME")
+)
+
+func (DNSRecordType) ElementType() reflect.Type {
+	return reflect.TypeOf((*DNSRecordType)(nil)).Elem()
+}
+
+func (e DNSRecordType) ToDNSRecordTypeOutput() DNSRecordTypeOutput {
+	return pulumi.ToOutput(e).(DNSRecordTypeOutput)
+}
+
+func (e DNSRecordType) ToDNSRecordTypeOutputWithContext(ctx context.Context) DNSRecordTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(DNSRecordTypeOutput)
+}
+
+func (e DNSRecordType) ToDNSRecordTypePtrOutput() DNSRecordTypePtrOutput {
+	return e.ToDNSRecordTypePtrOutputWithContext(context.Background())
+}
+
+func (e DNSRecordType) ToDNSRecordTypePtrOutputWithContext(ctx context.Context) DNSRecordTypePtrOutput {
+	return DNSRecordType(e).ToDNSRecordTypeOutputWithContext(ctx).ToDNSRecordTypePtrOutputWithContext(ctx)
+}
+
+func (e DNSRecordType) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e DNSRecordType) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e DNSRecordType) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e DNSRecordType) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type DNSRecordTypeOutput struct{ *pulumi.OutputState }
+
+func (DNSRecordTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*DNSRecordType)(nil)).Elem()
+}
+
+func (o DNSRecordTypeOutput) ToDNSRecordTypeOutput() DNSRecordTypeOutput {
+	return o
+}
+
+func (o DNSRecordTypeOutput) ToDNSRecordTypeOutputWithContext(ctx context.Context) DNSRecordTypeOutput {
+	return o
+}
+
+func (o DNSRecordTypeOutput) ToDNSRecordTypePtrOutput() DNSRecordTypePtrOutput {
+	return o.ToDNSRecordTypePtrOutputWithContext(context.Background())
+}
+
+func (o DNSRecordTypeOutput) ToDNSRecordTypePtrOutputWithContext(ctx context.Context) DNSRecordTypePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v DNSRecordType) *DNSRecordType {
+		return &v
+	}).(DNSRecordTypePtrOutput)
+}
+
+func (o DNSRecordTypeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o DNSRecordTypeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e DNSRecordType) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o DNSRecordTypeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o DNSRecordTypeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e DNSRecordType) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type DNSRecordTypePtrOutput struct{ *pulumi.OutputState }
+
+func (DNSRecordTypePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**DNSRecordType)(nil)).Elem()
+}
+
+func (o DNSRecordTypePtrOutput) ToDNSRecordTypePtrOutput() DNSRecordTypePtrOutput {
+	return o
+}
+
+func (o DNSRecordTypePtrOutput) ToDNSRecordTypePtrOutputWithContext(ctx context.Context) DNSRecordTypePtrOutput {
+	return o
+}
+
+func (o DNSRecordTypePtrOutput) Elem() DNSRecordTypeOutput {
+	return o.ApplyT(func(v *DNSRecordType) DNSRecordType {
+		if v != nil {
+			return *v
+		}
+		var ret DNSRecordType
+		return ret
+	}).(DNSRecordTypeOutput)
+}
+
+func (o DNSRecordTypePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o DNSRecordTypePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *DNSRecordType) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// DNSRecordTypeInput is an input type that accepts values of the DNSRecordType enum
+// A concrete instance of `DNSRecordTypeInput` can be one of the following:
+//
+//	DNSRecordTypeA
+//	DNSRecordTypeAAAA
+//	DNSRecordTypeCNAME
+type DNSRecordTypeInput interface {
+	pulumi.Input
+
+	ToDNSRecordTypeOutput() DNSRecordTypeOutput
+	ToDNSRecordTypeOutputWithContext(context.Context) DNSRecordTypeOutput
+}
+
+var dnsrecordTypePtrType = reflect.TypeOf((**DNSRecordType)(nil)).Elem()
+
+type DNSRecordTypePtrInput interface {
+	pulumi.Input
+
+	ToDNSRecordTypePtrOutput() DNSRecordTypePtrOutput
+	ToDNSRecordTypePtrOutputWithContext(context.Context) DNSRecordTypePtrOutput
+}
+
+type dnsrecordTypePtr string
+
+func DNSRecordTypePtr(v string) DNSRecordTypePtrInput {
+	return (*dnsrecordTypePtr)(&v)
+}
+
+func (*dnsrecordTypePtr) ElementType() reflect.Type {
+	return dnsrecordTypePtrType
+}
+
+func (in *dnsrecordTypePtr) ToDNSRecordTypePtrOutput() DNSRecordTypePtrOutput {
+	return pulumi.ToOutput(in).(DNSRecordTypePtrOutput)
+}
+
+func (in *dnsrecordTypePtr) ToDNSRecordTypePtrOutputWithContext(ctx context.Context) DNSRecordTypePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(DNSRecordTypePtrOutput)
+}
+
 type NameserverNsType string
 
 const (
@@ -852,6 +1022,8 @@ func (in *typePtr) ToTypePtrOutputWithContext(ctx context.Context) TypePtrOutput
 }
 
 func init() {
+	pulumi.RegisterInputType(reflect.TypeOf((*DNSRecordTypeInput)(nil)).Elem(), DNSRecordType("A"))
+	pulumi.RegisterInputType(reflect.TypeOf((*DNSRecordTypePtrInput)(nil)).Elem(), DNSRecordType("A"))
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypeInput)(nil)).Elem(), NameserverNsType("udp"))
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypePtrInput)(nil)).Elem(), NameserverNsType("udp"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolInput)(nil)).Elem(), Protocol("all"))
@@ -862,6 +1034,8 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*SetupKeyTypePtrInput)(nil)).Elem(), SetupKeyType("reusable"))
 	pulumi.RegisterInputType(reflect.TypeOf((*TypeInput)(nil)).Elem(), Type("domain"))
 	pulumi.RegisterInputType(reflect.TypeOf((*TypePtrInput)(nil)).Elem(), Type("domain"))
+	pulumi.RegisterOutputType(DNSRecordTypeOutput{})
+	pulumi.RegisterOutputType(DNSRecordTypePtrOutput{})
 	pulumi.RegisterOutputType(NameserverNsTypeOutput{})
 	pulumi.RegisterOutputType(NameserverNsTypePtrOutput{})
 	pulumi.RegisterOutputType(ProtocolOutput{})

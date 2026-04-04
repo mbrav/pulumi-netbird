@@ -79,6 +79,26 @@
     ]
   },
   "types": {
+    "netbird:resource:DNSRecordType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "A",
+          "description": "IPv4 address record.",
+          "value": "A"
+        },
+        {
+          "name": "AAAA",
+          "description": "IPv6 address record.",
+          "value": "AAAA"
+        },
+        {
+          "name": "CNAME",
+          "description": "Canonical name record.",
+          "value": "CNAME"
+        }
+      ]
+    },
     "netbird:resource:Nameserver": {
       "properties": {
         "ip": {
@@ -554,6 +574,161 @@
         "primary",
         "nameservers",
         "searchDomainsEnabled"
+      ]
+    },
+    "netbird:resource:DNSRecord": {
+      "description": "A DNS record within a NetBird DNS zone.",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "DNS record content (IP address for A/AAAA, domain for CNAME)."
+        },
+        "name": {
+          "type": "string",
+          "description": "FQDN for the DNS record. Must be a subdomain within or match the zone's domain."
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "Time to live in seconds."
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:DNSRecordType",
+          "description": "DNS record type."
+        },
+        "zoneID": {
+          "type": "string",
+          "description": "ID of the DNS zone this record belongs to."
+        }
+      },
+      "required": [
+        "zoneID",
+        "name",
+        "content",
+        "ttl",
+        "type"
+      ],
+      "inputProperties": {
+        "content": {
+          "type": "string",
+          "description": "DNS record content (IP address for A/AAAA, domain for CNAME)."
+        },
+        "name": {
+          "type": "string",
+          "description": "FQDN for the DNS record. Must be a subdomain within or match the zone's domain."
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "Time to live in seconds."
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:DNSRecordType",
+          "description": "DNS record type."
+        },
+        "zoneID": {
+          "type": "string",
+          "description": "ID of the DNS zone this record belongs to."
+        }
+      },
+      "requiredInputs": [
+        "zoneID",
+        "name",
+        "content",
+        "ttl",
+        "type"
+      ]
+    },
+    "netbird:resource:DNSSettings": {
+      "description": "NetBird global DNS settings. This is a singleton resource — only one instance exists per account.",
+      "properties": {
+        "disabledManagementGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs whose DNS management is disabled."
+        }
+      },
+      "required": [
+        "disabledManagementGroups"
+      ],
+      "inputProperties": {
+        "disabledManagementGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs whose DNS management is disabled."
+        }
+      },
+      "requiredInputs": [
+        "disabledManagementGroups"
+      ]
+    },
+    "netbird:resource:DNSZone": {
+      "description": "A NetBird DNS zone.",
+      "properties": {
+        "distributionGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs that define groups of peers that will resolve this zone."
+        },
+        "domain": {
+          "type": "string",
+          "description": "Zone domain (FQDN)."
+        },
+        "enableSearchDomain": {
+          "type": "boolean",
+          "description": "Enable this zone as a search domain."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Zone status."
+        },
+        "name": {
+          "type": "string",
+          "description": "Zone name identifier."
+        }
+      },
+      "required": [
+        "name",
+        "domain",
+        "enabled",
+        "enableSearchDomain",
+        "distributionGroups"
+      ],
+      "inputProperties": {
+        "distributionGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs that define groups of peers that will resolve this zone."
+        },
+        "domain": {
+          "type": "string",
+          "description": "Zone domain (FQDN)."
+        },
+        "enableSearchDomain": {
+          "type": "boolean",
+          "description": "Enable this zone as a search domain."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Zone status."
+        },
+        "name": {
+          "type": "string",
+          "description": "Zone name identifier."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "domain",
+        "enabled",
+        "enableSearchDomain",
+        "distributionGroups"
       ]
     },
     "netbird:resource:Group": {

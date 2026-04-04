@@ -23,6 +23,12 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 	switch typ {
 	case "netbird:resource:DNS":
 		r = &DNS{}
+	case "netbird:resource:DNSRecord":
+		r = &DNSRecord{}
+	case "netbird:resource:DNSSettings":
+		r = &DNSSettings{}
+	case "netbird:resource:DNSZone":
+		r = &DNSZone{}
 	case "netbird:resource:Group":
 		r = &Group{}
 	case "netbird:resource:Network":

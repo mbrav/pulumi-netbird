@@ -38,6 +38,9 @@ func Provider() p.Provider { //nolint:funlen
 		WithConfig(infer.Config(&config.Config{})). //nolint:exhaustruct
 		WithResources(
 			infer.Resource(&resource.DNS{}),
+			infer.Resource(&resource.DNSRecord{}),
+			infer.Resource(&resource.DNSSettings{}),
+			infer.Resource(&resource.DNSZone{}),
 			infer.Resource(&resource.Group{}),
 			infer.Resource(&resource.Network{}),
 			infer.Resource(&resource.NetworkResource{}),

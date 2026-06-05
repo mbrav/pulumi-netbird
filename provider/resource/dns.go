@@ -11,8 +11,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// TEST: InputDiff: false
-
 // DNS represents a DNS Group.
 type DNS struct{}
 

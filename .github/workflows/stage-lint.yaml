@@ -33,5 +33,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-golangci-lint-
 
+      - name: Download Go modules 📥
+        run: go mod download
+
       - name: Lint 🧹
         run: make lint

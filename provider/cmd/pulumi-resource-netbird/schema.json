@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -137,6 +137,16 @@
           "$ref": "#/types/netbird:resource:RuleAction",
           "description": "Action Policy rule accept or drops packets"
         },
+        "authorizedGroups": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "Map of user group IDs to a list of local users for network access authorization"
+        },
         "bidirectional": {
           "type": "boolean",
           "description": "Bidirectional Define if the rule is applicable in both directions, sources, and destinations."
@@ -147,7 +157,7 @@
         },
         "destinationResource": {
           "$ref": "#/types/netbird:resource:Resource",
-          "description": "DestinationResource for the rule "
+          "description": "DestinationResource for the rule"
         },
         "destinations": {
           "type": "array",
@@ -213,6 +223,16 @@
           "$ref": "#/types/netbird:resource:RuleAction",
           "description": "Action Policy rule accept or drops packets"
         },
+        "authorizedGroups": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "AuthorizedGroups Map of user group IDs to a list of local users"
+        },
         "bidirectional": {
           "type": "boolean",
           "description": "Bidirectional Define if the rule is applicable in both directions, sources, and destinations."
@@ -223,7 +243,7 @@
         },
         "destinationResource": {
           "$ref": "#/types/netbird:resource:Resource",
-          "description": "DestinationResource for the rule "
+          "description": "DestinationResource for the rule"
         },
         "destinations": {
           "type": "array",
@@ -1492,6 +1512,13 @@
     "netbird:resource:ReverseProxyService": {
       "description": "A NetBird reverse proxy service.",
       "properties": {
+        "accessGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise."
+        },
         "domain": {
           "type": "string",
           "description": "Domain for the service."
@@ -1515,6 +1542,10 @@
         "passHostHeader": {
           "type": "boolean",
           "description": "When true, the original client Host header is passed through to the backend."
+        },
+        "private": {
+          "type": "boolean",
+          "description": "When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth."
         },
         "proxyCluster": {
           "type": "string",
@@ -1543,6 +1574,13 @@
         "targets"
       ],
       "inputProperties": {
+        "accessGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise."
+        },
         "domain": {
           "type": "string",
           "description": "Domain for the service."
@@ -1566,6 +1604,10 @@
         "passHostHeader": {
           "type": "boolean",
           "description": "When true, the original client Host header is passed through to the backend."
+        },
+        "private": {
+          "type": "boolean",
+          "description": "When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth."
         },
         "rewriteRedirects": {
           "type": "boolean",

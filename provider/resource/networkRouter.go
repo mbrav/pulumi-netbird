@@ -10,8 +10,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// TEST: InputDiff: false
-
 // NetworkRouter represents a Pulumi resource for NetBird network routers.
 type NetworkRouter struct{}
 

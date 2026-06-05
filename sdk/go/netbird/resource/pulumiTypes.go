@@ -131,6 +131,8 @@ func (o NameserverArrayOutput) Index(i pulumi.IntInput) NameserverOutput {
 type PolicyRuleArgs struct {
 	// Action Policy rule accept or drops packets
 	Action RuleAction `pulumi:"action"`
+	// Map of user group IDs to a list of local users for network access authorization
+	AuthorizedGroups map[string][]string `pulumi:"authorizedGroups"`
 	// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 	Bidirectional bool `pulumi:"bidirectional"`
 	// Description Policy rule friendly description
@@ -171,6 +173,8 @@ type PolicyRuleArgsInput interface {
 type PolicyRuleArgsArgs struct {
 	// Action Policy rule accept or drops packets
 	Action RuleActionInput `pulumi:"action"`
+	// Map of user group IDs to a list of local users for network access authorization
+	AuthorizedGroups pulumi.StringArrayMapInput `pulumi:"authorizedGroups"`
 	// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 	Bidirectional pulumi.BoolInput `pulumi:"bidirectional"`
 	// Description Policy rule friendly description
@@ -251,6 +255,11 @@ func (o PolicyRuleArgsOutput) ToPolicyRuleArgsOutputWithContext(ctx context.Cont
 // Action Policy rule accept or drops packets
 func (o PolicyRuleArgsOutput) Action() RuleActionOutput {
 	return o.ApplyT(func(v PolicyRuleArgs) RuleAction { return v.Action }).(RuleActionOutput)
+}
+
+// Map of user group IDs to a list of local users for network access authorization
+func (o PolicyRuleArgsOutput) AuthorizedGroups() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v PolicyRuleArgs) map[string][]string { return v.AuthorizedGroups }).(pulumi.StringArrayMapOutput)
 }
 
 // Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
@@ -336,6 +345,8 @@ func (o PolicyRuleArgsArrayOutput) Index(i pulumi.IntInput) PolicyRuleArgsOutput
 type PolicyRuleState struct {
 	// Action Policy rule accept or drops packets
 	Action RuleAction `pulumi:"action"`
+	// AuthorizedGroups Map of user group IDs to a list of local users
+	AuthorizedGroups map[string][]string `pulumi:"authorizedGroups"`
 	// Bidirectional Define if the rule is applicable in both directions, sources, and destinations.
 	Bidirectional bool `pulumi:"bidirectional"`
 	// Description Policy rule friendly description
@@ -379,6 +390,11 @@ func (o PolicyRuleStateOutput) ToPolicyRuleStateOutputWithContext(ctx context.Co
 // Action Policy rule accept or drops packets
 func (o PolicyRuleStateOutput) Action() RuleActionOutput {
 	return o.ApplyT(func(v PolicyRuleState) RuleAction { return v.Action }).(RuleActionOutput)
+}
+
+// AuthorizedGroups Map of user group IDs to a list of local users
+func (o PolicyRuleStateOutput) AuthorizedGroups() pulumi.StringArrayMapOutput {
+	return o.ApplyT(func(v PolicyRuleState) map[string][]string { return v.AuthorizedGroups }).(pulumi.StringArrayMapOutput)
 }
 
 // Bidirectional Define if the rule is applicable in both directions, sources, and destinations.

@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.7] - 2026-06-05
+
+### Added
+
+- Added `private` and `accessGroups` fields to the `ReverseProxyService` resource, tracking new fields introduced in NetBird v0.72.0's `ServiceRequest` / `Service` API types.
+  - `private` (`*bool`, optional) — when `true`, the service is NetBird-only: inbound peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from `accessGroups`. Requires `mode=http`. Mutually exclusive with SSO/bearer auth.
+  - `accessGroups` (`*[]string`, optional) — NetBird group IDs whose peers may reach this private service over the tunnel. Required when `private=true`; ignored otherwise.
+- Added `authorizedGroups` (`*map[string][]string`, optional) to `PolicyRule` inputs and state: a map of NetBird group IDs to lists of local users for network access authorization. Sent to the API on every `Create` and `Update`, round-tripped through `Read`, and included in the per-rule `Diff` comparison via a new `equalMapStringSlice` helper.
+
+### Changed
+
+- Regenerated Go SDK to expose `Private`, `AccessGroups` on `ReverseProxyServiceArgs`/`ReverseProxyServiceState` and `AuthorizedGroups` on `PolicyRuleArgs`/`PolicyRuleState`.
+
+### Fixed
+
+- Added `GOPATH: /home/runner/go` to the lint job and split its cache step into separate module-cache (shared key `linux-go-*`) and lint-analysis-cache (`linux-golangci-lint-*`) entries. Added explicit `go mod download` step so the module cache directory is created before the post-job cache save runs.
+- Switched the build job from `actions/setup-go` built-in cache to explicit `actions/cache` steps using the same `linux-go-*` key as the lint job, enabling true module-cache sharing between the two jobs.
+
 ## [0.3.6] - 2026-06-05
 
 ### Fixed

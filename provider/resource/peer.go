@@ -11,8 +11,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// TEST: InputDiff: false
-
 // Peer represents a resource for managing NetBird peers.
 type Peer struct{}
 

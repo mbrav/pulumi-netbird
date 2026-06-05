@@ -11,8 +11,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// TEST: InputDiff: false
-
 // Group represents a resource for managing NetBird groups.
 type Group struct{}
 
@@ -327,4 +325,3 @@ func groupStateResources(inputResources *[]Resource, apiResources []nbapi.Resour
 
 	return &sorted
 }
-

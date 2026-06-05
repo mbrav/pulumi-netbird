@@ -12,9 +12,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// TEST: InputDiff: false
-// TODO: Implement AuthorizedGroups
-
 // Policy defines the Pulumi resource handler for NetBird policy resources.
 type Policy struct{}
 
@@ -61,19 +58,20 @@ func (policy *PolicyState) Annotate(annotator infer.Annotator) {
 
 // PolicyRuleArgs represents user input for an individual rule in a policy.
 type PolicyRuleArgs struct {
-	ID                  *string          `pulumi:"id,optional"`                  // Optional rule ID (used for updates)
-	Name                string           `pulumi:"name"`                         // Rule name
-	Description         *string          `pulumi:"description,optional"`         // Optional rule description
-	Bidirectional       bool             `pulumi:"bidirectional"`                // Whether the rule is bidirectional
-	Action              RuleAction       `pulumi:"action"`                       // Rule action (accept/drop)
-	Enabled             bool             `pulumi:"enabled"`                      // Whether the rule is enabled
-	Protocol            Protocol         `pulumi:"protocol"`                     // Network protocol
-	Ports               *[]string        `pulumi:"ports,optional"`               // Optional list of specific ports
-	PortRanges          *[]RulePortRange `pulumi:"portRanges,optional"`          // Optional list of port ranges
-	Sources             *[]string        `pulumi:"sources,optional"`             // Optional list of source group IDs
-	Destinations        *[]string        `pulumi:"destinations,optional"`        // Optional list of destination group IDs
-	SourceResource      *Resource        `pulumi:"sourceResource,optional"`      // Optional single source resource
-	DestinationResource *Resource        `pulumi:"destinationResource,optional"` // Optional single destination resource
+	ID                  *string              `pulumi:"id,optional"`                  // Optional rule ID (used for updates)
+	Name                string               `pulumi:"name"`                         // Rule name
+	Description         *string              `pulumi:"description,optional"`         // Optional rule description
+	Bidirectional       bool                 `pulumi:"bidirectional"`                // Whether the rule is bidirectional
+	Action              RuleAction           `pulumi:"action"`                       // Rule action (accept/drop)
+	Enabled             bool                 `pulumi:"enabled"`                      // Whether the rule is enabled
+	Protocol            Protocol             `pulumi:"protocol"`                     // Network protocol
+	Ports               *[]string            `pulumi:"ports,optional"`               // Optional list of specific ports
+	PortRanges          *[]RulePortRange     `pulumi:"portRanges,optional"`          // Optional list of port ranges
+	Sources             *[]string            `pulumi:"sources,optional"`             // Optional list of source group IDs
+	Destinations        *[]string            `pulumi:"destinations,optional"`        // Optional list of destination group IDs
+	SourceResource      *Resource            `pulumi:"sourceResource,optional"`      // Optional single source resource
+	DestinationResource *Resource            `pulumi:"destinationResource,optional"` // Optional single destination resource
+	AuthorizedGroups    *map[string][]string `pulumi:"authorizedGroups,optional"`    // Optional map of group IDs to local users
 }
 
 // Annotate adds descriptive annotations to the PolicyRuleArgs fields for use in generated SDKs.
@@ -90,24 +88,26 @@ func (policy *PolicyRuleArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&policy.Sources, "Sources Policy rule source group IDs")
 	annotator.Describe(&policy.Destinations, "Destinations Policy rule destination group IDs")
 	annotator.Describe(&policy.SourceResource, "SourceResource for the rule")
-	annotator.Describe(&policy.DestinationResource, "DestinationResource for the rule ")
+	annotator.Describe(&policy.DestinationResource, "DestinationResource for the rule")
+	annotator.Describe(&policy.AuthorizedGroups, "Map of user group IDs to a list of local users for network access authorization")
 }
 
 // PolicyRuleState represents the state of an individual rule within a policy.
 type PolicyRuleState struct {
-	ID                  *string          `pulumi:"id,optional"`
-	Name                string           `pulumi:"name"`
-	Description         *string          `pulumi:"description,optional"`
-	Bidirectional       bool             `pulumi:"bidirectional"`
-	Action              RuleAction       `pulumi:"action"`
-	Enabled             bool             `pulumi:"enabled"`
-	Protocol            Protocol         `pulumi:"protocol"`
-	Ports               *[]string        `pulumi:"ports,optional"`
-	PortRanges          *[]RulePortRange `pulumi:"portRanges,optional"`
-	Sources             *[]RuleGroup     `pulumi:"sources,optional"` // Fully-resolved group info (not just IDs)
-	Destinations        *[]RuleGroup     `pulumi:"destinations,optional"`
-	SourceResource      *Resource        `pulumi:"sourceResource,optional"`
-	DestinationResource *Resource        `pulumi:"destinationResource,optional"`
+	ID                  *string              `pulumi:"id,optional"`
+	Name                string               `pulumi:"name"`
+	Description         *string              `pulumi:"description,optional"`
+	Bidirectional       bool                 `pulumi:"bidirectional"`
+	Action              RuleAction           `pulumi:"action"`
+	Enabled             bool                 `pulumi:"enabled"`
+	Protocol            Protocol             `pulumi:"protocol"`
+	Ports               *[]string            `pulumi:"ports,optional"`
+	PortRanges          *[]RulePortRange     `pulumi:"portRanges,optional"`
+	Sources             *[]RuleGroup         `pulumi:"sources,optional"` // Fully-resolved group info (not just IDs)
+	Destinations        *[]RuleGroup         `pulumi:"destinations,optional"`
+	SourceResource      *Resource            `pulumi:"sourceResource,optional"`
+	DestinationResource *Resource            `pulumi:"destinationResource,optional"`
+	AuthorizedGroups    *map[string][]string `pulumi:"authorizedGroups,optional"`
 }
 
 // Annotate adds descriptive annotations to the PolicyRuleState fields for use in generated SDKs.
@@ -124,7 +124,8 @@ func (policy *PolicyRuleState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&policy.Sources, "Sources Policy rule source group IDs")
 	annotator.Describe(&policy.Destinations, "Destinations Policy rule destination group IDs")
 	annotator.Describe(&policy.SourceResource, "SourceResource for the rule")
-	annotator.Describe(&policy.DestinationResource, "DestinationResource for the rule ")
+	annotator.Describe(&policy.DestinationResource, "DestinationResource for the rule")
+	annotator.Describe(&policy.AuthorizedGroups, "AuthorizedGroups Map of user group IDs to a list of local users")
 }
 
 // RulePortRange type.
@@ -236,6 +237,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 				Destinations:        destinations,
 				SourceResource:      rule.SourceResource,
 				DestinationResource: rule.DestinationResource,
+				AuthorizedGroups:    rule.AuthorizedGroups,
 			}
 		}
 
@@ -271,7 +273,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 			PortRanges:          toAPIPortRanges(rule.PortRanges),
 			Sources:             rule.Sources,
 			Destinations:        rule.Destinations,
-			AuthorizedGroups:    nil, // TODO: Implement AuthorizedGroups
+			AuthorizedGroups:    rule.AuthorizedGroups,
 			SourceResource:      toAPIResource(rule.SourceResource),
 			DestinationResource: toAPIResource(rule.DestinationResource),
 		}
@@ -309,6 +311,7 @@ func (*Policy) Create(ctx context.Context, req infer.CreateRequest[PolicyArgs]) 
 			Destinations:        fromAPIGroupMinimums(rule.Destinations),
 			SourceResource:      fromAPIResource(rule.SourceResource),
 			DestinationResource: fromAPIResource(rule.DestinationResource),
+			AuthorizedGroups:    rule.AuthorizedGroups,
 		}
 	}
 
@@ -362,6 +365,7 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 			Destinations:        fromAPIGroupMinimums(rule.Destinations),
 			SourceResource:      fromAPIResource(rule.SourceResource),
 			DestinationResource: fromAPIResource(rule.DestinationResource),
+			AuthorizedGroups:    rule.AuthorizedGroups,
 		}
 	}
 
@@ -440,6 +444,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 				Destinations:        destinations,
 				SourceResource:      rule.SourceResource,
 				DestinationResource: rule.DestinationResource,
+				AuthorizedGroups:    rule.AuthorizedGroups,
 			}
 		}
 
@@ -474,7 +479,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 			PortRanges:          toAPIPortRanges(rule.PortRanges),
 			Sources:             rule.Sources,
 			Destinations:        rule.Destinations,
-			AuthorizedGroups:    nil, // TODO: Implement AuthorizedGroups
+			AuthorizedGroups:    rule.AuthorizedGroups,
 			SourceResource:      toAPIResource(rule.SourceResource),
 			DestinationResource: toAPIResource(rule.DestinationResource),
 		}
@@ -508,6 +513,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 			Destinations:        fromAPIGroupMinimums(rule.Destinations),
 			SourceResource:      fromAPIResource(rule.SourceResource),
 			DestinationResource: fromAPIResource(rule.DestinationResource),
+			AuthorizedGroups:    rule.AuthorizedGroups,
 		}
 	}
 
@@ -591,7 +597,8 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 				!equalSlicePtr(input.Sources, toGroupIDs(state.Sources)) ||
 				!equalSlicePtr(input.Destinations, toGroupIDs(state.Destinations)) ||
 				!equalResourcePtr(input.SourceResource, state.SourceResource) ||
-				!equalResourcePtr(input.DestinationResource, state.DestinationResource) {
+				!equalResourcePtr(input.DestinationResource, state.DestinationResource) ||
+				!equalMapStringSlice(input.AuthorizedGroups, state.AuthorizedGroups) {
 				equal = false
 
 				break
@@ -859,6 +866,7 @@ func policyRulesToArgs(rules []nbapi.PolicyRule) []PolicyRuleArgs {
 			Destinations:        groupMinimumIDs(rule.Destinations),
 			SourceResource:      fromAPIResource(rule.SourceResource),
 			DestinationResource: fromAPIResource(rule.DestinationResource),
+			AuthorizedGroups:    rule.AuthorizedGroups,
 		}
 	}
 
@@ -901,6 +909,36 @@ func equalPortRangePtr(portRangeA, portRangeB *[]RulePortRange) bool {
 
 	for i := range *portRangeA {
 		if (*portRangeA)[i] != (*portRangeB)[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+// equalMapStringSlice compares two *map[string][]string values, treating nil and empty map as equal.
+func equalMapStringSlice(aSlice, bSlice *map[string][]string) bool {
+	aLen := 0
+	if aSlice != nil {
+		aLen = len(*aSlice)
+	}
+
+	bLen := 0
+	if bSlice != nil {
+		bLen = len(*bSlice)
+	}
+
+	if aLen == 0 && bLen == 0 {
+		return true
+	}
+
+	if aSlice == nil || bSlice == nil || aLen != bLen {
+		return false
+	}
+
+	for k, av := range *aSlice {
+		bv, ok := (*bSlice)[k]
+		if !ok || !equalSlice(av, bv) {
 			return false
 		}
 	}

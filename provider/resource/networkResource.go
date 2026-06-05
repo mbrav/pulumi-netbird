@@ -11,8 +11,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// TEST: InputDiff: false
-
 // NetworkResource represents a Pulumi resource for NetBird network resources.
 type NetworkResource struct{}
 

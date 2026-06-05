@@ -3,7 +3,7 @@ module github.com/mbrav/pulumi-netbird
 go 1.25.8
 
 require (
-	github.com/netbirdio/netbird v0.71.4
+	github.com/netbirdio/netbird v0.72.0
 	github.com/pulumi/pulumi-go-provider v1.3.2
 	github.com/pulumi/pulumi/sdk/v3 v3.245.0
 )

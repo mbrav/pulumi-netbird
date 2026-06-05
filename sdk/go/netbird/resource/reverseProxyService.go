@@ -16,6 +16,8 @@ import (
 type ReverseProxyService struct {
 	pulumi.CustomResourceState
 
+	// NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.
+	AccessGroups pulumi.StringArrayOutput `pulumi:"accessGroups"`
 	// Domain for the service.
 	Domain pulumi.StringOutput `pulumi:"domain"`
 	// Whether the service is enabled.
@@ -28,6 +30,8 @@ type ReverseProxyService struct {
 	Name pulumi.StringOutput `pulumi:"name"`
 	// When true, the original client Host header is passed through to the backend.
 	PassHostHeader pulumi.BoolPtrOutput `pulumi:"passHostHeader"`
+	// When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.
+	Private pulumi.BoolPtrOutput `pulumi:"private"`
 	// The proxy cluster handling this service (derived from domain).
 	ProxyCluster pulumi.StringPtrOutput `pulumi:"proxyCluster"`
 	// When true, Location headers in backend responses are rewritten to the public-facing domain.
@@ -90,6 +94,8 @@ func (ReverseProxyServiceState) ElementType() reflect.Type {
 }
 
 type reverseProxyServiceArgs struct {
+	// NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.
+	AccessGroups []string `pulumi:"accessGroups"`
 	// Domain for the service.
 	Domain string `pulumi:"domain"`
 	// Whether the service is enabled.
@@ -102,6 +108,8 @@ type reverseProxyServiceArgs struct {
 	Name string `pulumi:"name"`
 	// When true, the original client Host header is passed through to the backend.
 	PassHostHeader *bool `pulumi:"passHostHeader"`
+	// When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.
+	Private *bool `pulumi:"private"`
 	// When true, Location headers in backend responses are rewritten to the public-facing domain.
 	RewriteRedirects *bool `pulumi:"rewriteRedirects"`
 	// List of target backends for this service.
@@ -110,6 +118,8 @@ type reverseProxyServiceArgs struct {
 
 // The set of arguments for constructing a ReverseProxyService resource.
 type ReverseProxyServiceArgs struct {
+	// NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.
+	AccessGroups pulumi.StringArrayInput
 	// Domain for the service.
 	Domain pulumi.StringInput
 	// Whether the service is enabled.
@@ -122,6 +132,8 @@ type ReverseProxyServiceArgs struct {
 	Name pulumi.StringInput
 	// When true, the original client Host header is passed through to the backend.
 	PassHostHeader pulumi.BoolPtrInput
+	// When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.
+	Private pulumi.BoolPtrInput
 	// When true, Location headers in backend responses are rewritten to the public-facing domain.
 	RewriteRedirects pulumi.BoolPtrInput
 	// List of target backends for this service.
@@ -215,6 +227,11 @@ func (o ReverseProxyServiceOutput) ToReverseProxyServiceOutputWithContext(ctx co
 	return o
 }
 
+// NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.
+func (o ReverseProxyServiceOutput) AccessGroups() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ReverseProxyService) pulumi.StringArrayOutput { return v.AccessGroups }).(pulumi.StringArrayOutput)
+}
+
 // Domain for the service.
 func (o ReverseProxyServiceOutput) Domain() pulumi.StringOutput {
 	return o.ApplyT(func(v *ReverseProxyService) pulumi.StringOutput { return v.Domain }).(pulumi.StringOutput)
@@ -243,6 +260,11 @@ func (o ReverseProxyServiceOutput) Name() pulumi.StringOutput {
 // When true, the original client Host header is passed through to the backend.
 func (o ReverseProxyServiceOutput) PassHostHeader() pulumi.BoolPtrOutput {
 	return o.ApplyT(func(v *ReverseProxyService) pulumi.BoolPtrOutput { return v.PassHostHeader }).(pulumi.BoolPtrOutput)
+}
+
+// When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.
+func (o ReverseProxyServiceOutput) Private() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyService) pulumi.BoolPtrOutput { return v.Private }).(pulumi.BoolPtrOutput)
 }
 
 // The proxy cluster handling this service (derived from domain).

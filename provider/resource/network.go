@@ -10,8 +10,6 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
 
-// TEST: InputDiff: false
-
 // Network represents a resource for managing NetBird networks.
 type Network struct{}
 
@@ -97,8 +95,8 @@ func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, Net
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[NetworkArgs, NetworkState]{
 				ID:     "",
-				Inputs: NetworkArgs{},     //nolint:exhaustruct
-				State:  NetworkState{},    //nolint:exhaustruct
+				Inputs: NetworkArgs{},  //nolint:exhaustruct
+				State:  NetworkState{}, //nolint:exhaustruct
 			}, nil
 		}
 

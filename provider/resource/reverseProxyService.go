@@ -28,6 +28,8 @@ type ReverseProxyServiceArgs struct {
 	PassHostHeader   *bool                    `pulumi:"passHostHeader,optional"`
 	RewriteRedirects *bool                    `pulumi:"rewriteRedirects,optional"`
 	ListenPort       *int                     `pulumi:"listenPort,optional"`
+	Private          *bool                    `pulumi:"private,optional"`
+	AccessGroups     *[]string                `pulumi:"accessGroups,optional"`
 }
 
 // Annotate provides documentation for ReverseProxyServiceArgs fields.
@@ -40,6 +42,8 @@ func (r *ReverseProxyServiceArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.PassHostHeader, "When true, the original client Host header is passed through to the backend.")
 	annotator.Describe(&r.RewriteRedirects, "When true, Location headers in backend responses are rewritten to the public-facing domain.")
 	annotator.Describe(&r.ListenPort, "Port the proxy listens on (L4/TLS only). Set to 0 for auto-assignment.")
+	annotator.Describe(&r.Private, "When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.")
+	annotator.Describe(&r.AccessGroups, "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.")
 }
 
 // ReverseProxyServiceState represents the output state of a reverse proxy service resource.
@@ -52,6 +56,8 @@ type ReverseProxyServiceState struct {
 	PassHostHeader   *bool                    `pulumi:"passHostHeader,optional"`
 	RewriteRedirects *bool                    `pulumi:"rewriteRedirects,optional"`
 	ListenPort       *int                     `pulumi:"listenPort,optional"`
+	Private          *bool                    `pulumi:"private,optional"`
+	AccessGroups     *[]string                `pulumi:"accessGroups,optional"`
 	ProxyCluster     *string                  `pulumi:"proxyCluster,optional"`
 	Status           *string                  `pulumi:"status,optional"`
 }
@@ -66,6 +72,8 @@ func (r *ReverseProxyServiceState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.PassHostHeader, "When true, the original client Host header is passed through to the backend.")
 	annotator.Describe(&r.RewriteRedirects, "When true, Location headers in backend responses are rewritten to the public-facing domain.")
 	annotator.Describe(&r.ListenPort, "Port the proxy listens on (L4/TLS only).")
+	annotator.Describe(&r.Private, "When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.")
+	annotator.Describe(&r.AccessGroups, "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.")
 	annotator.Describe(&r.ProxyCluster, "The proxy cluster handling this service (derived from domain).")
 	annotator.Describe(&r.Status, "Current status of the service.")
 }
@@ -224,6 +232,8 @@ func serviceStateFromAPI(svc *nbapi.Service) ReverseProxyServiceState {
 		PassHostHeader:   svc.PassHostHeader,
 		RewriteRedirects: svc.RewriteRedirects,
 		ListenPort:       svc.ListenPort,
+		Private:          svc.Private,
+		AccessGroups:     svc.AccessGroups,
 		ProxyCluster:     svc.ProxyCluster,
 		Status:           status,
 	}
@@ -249,6 +259,8 @@ func buildServiceRequest(args ReverseProxyServiceArgs) nbapi.ServiceRequest {
 		PassHostHeader:     args.PassHostHeader,
 		RewriteRedirects:   args.RewriteRedirects,
 		ListenPort:         args.ListenPort,
+		Private:            args.Private,
+		AccessGroups:       args.AccessGroups,
 		Auth:               nil,
 		AccessRestrictions: nil,
 	}
@@ -270,6 +282,8 @@ func (*ReverseProxyService) Create(ctx context.Context, req infer.CreateRequest[
 				PassHostHeader:   req.Inputs.PassHostHeader,
 				RewriteRedirects: req.Inputs.RewriteRedirects,
 				ListenPort:       req.Inputs.ListenPort,
+				Private:          req.Inputs.Private,
+				AccessGroups:     req.Inputs.AccessGroups,
 				ProxyCluster:     nil,
 				Status:           nil,
 			},
@@ -319,6 +333,8 @@ func (*ReverseProxyService) Read(ctx context.Context, req infer.ReadRequest[Reve
 			PassHostHeader:   state.PassHostHeader,
 			RewriteRedirects: state.RewriteRedirects,
 			ListenPort:       state.ListenPort,
+			Private:          state.Private,
+			AccessGroups:     state.AccessGroups,
 		},
 		State: state,
 	}, nil
@@ -339,6 +355,8 @@ func (*ReverseProxyService) Update(ctx context.Context, req infer.UpdateRequest[
 				PassHostHeader:   req.Inputs.PassHostHeader,
 				RewriteRedirects: req.Inputs.RewriteRedirects,
 				ListenPort:       req.Inputs.ListenPort,
+				Private:          req.Inputs.Private,
+				AccessGroups:     req.Inputs.AccessGroups,
 				ProxyCluster:     req.State.ProxyCluster,
 				Status:           req.State.Status,
 			},
@@ -411,6 +429,14 @@ func (*ReverseProxyService) Diff(ctx context.Context, req infer.DiffRequest[Reve
 		diff["listenPort"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
+	if !equalPtr(req.Inputs.Private, req.State.Private) {
+		diff["private"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+	}
+
+	if !equalSlicePtr(req.Inputs.AccessGroups, req.State.AccessGroups) {
+		diff["accessGroups"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+	}
+
 	if !equalReverseProxyTargets(req.Inputs.Targets, req.State.Targets) {
 		diff["targets"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
@@ -476,6 +502,8 @@ func (*ReverseProxyService) WireDependencies(field infer.FieldSelector, args *Re
 	field.OutputField(&state.PassHostHeader).DependsOn(field.InputField(&args.PassHostHeader))
 	field.OutputField(&state.RewriteRedirects).DependsOn(field.InputField(&args.RewriteRedirects))
 	field.OutputField(&state.ListenPort).DependsOn(field.InputField(&args.ListenPort))
+	field.OutputField(&state.Private).DependsOn(field.InputField(&args.Private))
+	field.OutputField(&state.AccessGroups).DependsOn(field.InputField(&args.AccessGroups))
 }
 
 // equalReverseProxyTargets compares two slices of ReverseProxyTarget by their key fields.

@@ -75,6 +75,58 @@ export NETBIRD_TOKEN=<YOUR_API_TOKEN>
 | `url`   | `NETBIRD_URL`        | Yes      | `https://api.netbird.io` | URL of your NetBird management API |
 | `token` | `NETBIRD_TOKEN`      | Yes      | —       | API token for authentication (mark as secret) |
 
+## Pulumi.yaml reference
+
+For a project using the **published plugin** (no local build), the minimal `Pulumi.yaml` is:
+
+```yaml
+name: netbird
+description: NetBird infrastructure managed via Pulumi
+runtime: yaml
+
+config:
+  netbird:token:
+    type: string
+    secret: true
+  netbird:url:
+    type: string
+    default: https://api.netbird.io
+
+resources:
+  group-admin:
+    type: netbird:resource:Group
+    properties:
+      name: Admin
+      peers: []
+
+outputs: {}
+```
+
+> **Local development:** If you are building the provider from source, replace the `plugins` block with a `path` pointing at the compiled binary. The `server` key is **not** valid inside `Pulumi.yaml` — it is a CLI-only flag for `pulumi plugin install`.
+>
+> ```yaml
+> plugins:
+>   providers:
+>     - name: netbird
+>       path: ../../bin   # compiled binary; omit entirely when using the published plugin
+> ```
+
+## Syncing existing resources
+
+If a resource already exists in NetBird (created manually or by another tool), import it before running `pulumi up` to avoid creating a duplicate:
+
+```sh
+pulumi import netbird:resource:Group group-admin <GROUP_ID>
+```
+
+After import, `pulumi up` will converge any property differences. For ongoing drift detection:
+
+```sh
+pulumi refresh   # pull live NetBird state into Pulumi state
+pulumi preview   # show pending changes
+pulumi up        # apply
+```
+
 ## Supported Resources
 
 | Resource | Pulumi type |

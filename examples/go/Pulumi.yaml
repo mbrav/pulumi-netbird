@@ -1,5 +1,9 @@
 name: provider-netbird
 runtime: go
+
+# plugins.providers with path is for local development only (uses ../../bin binary).
+# When using the published plugin, remove this block and install via:
+#   pulumi plugin install resource netbird <version> --server github://api.github.com/mbrav/pulumi-netbird
 plugins:
   providers:
     - name: netbird

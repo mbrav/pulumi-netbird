@@ -79,7 +79,55 @@ pulumi up
 
 This deploys a sample NetBird environment with networks, groups, network resources, a router, and a policy.
 
-### Example `Pulumi.yaml`
+### 3. Sync existing resources
+
+If a resource already exists in NetBird and you add it to `Pulumi.yaml`, import it first to avoid creating a duplicate:
+
+```bash
+# Get the resource ID from the NetBird UI or API, then:
+pulumi import netbird:resource:Group group-admin <GROUP_ID>
+```
+
+After import, `pulumi up` will converge any property differences between your YAML and the live state.
+
+For ongoing drift detection:
+
+```bash
+pulumi refresh   # pull live NetBird state into Pulumi state (detects out-of-band changes)
+pulumi preview   # show what pulumi up would change
+pulumi up        # apply
+```
+
+### Example `Pulumi.yaml` (published plugin)
+
+When using the released plugin installed via `pulumi plugin install`, no `plugins:` block is needed. Use typed `config` entries so the token is encrypted in the stack config file:
+
+```yaml
+name: netbird
+description: NetBird infrastructure managed via Pulumi
+runtime: yaml
+
+config:
+  netbird:token:
+    type: string
+    secret: true
+  netbird:url:
+    type: string
+    default: https://api.netbird.io
+
+resources:
+  group-admin:
+    type: netbird:resource:Group
+    properties:
+      name: Admin
+      peers: []
+
+outputs: {}
+```
+
+### Example `Pulumi.yaml` (local dev build)
+
+When developing the provider locally, point `plugins.providers` at the compiled binary. The `path` field is the only supported alternative to CLI-installed plugins — `server` is not a valid key here:
 
 ```yaml
 name: provider-netbird
@@ -87,11 +135,15 @@ runtime: yaml
 plugins:
   providers:
     - name: netbird
-      path: ../../bin
+      path: ../../bin   # path to locally compiled binary
 
 config:
-  netbird:token: token
-  netbird:url: https://nb.domain:33073
+  netbird:token:
+    type: string
+    secret: true
+  netbird:url:
+    type: string
+    default: https://api.netbird.io
 
 outputs:
   networkR1:

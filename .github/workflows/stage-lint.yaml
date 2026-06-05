@@ -5,7 +5,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  # Override GOPATH so the module cache lands at /home/runner/go/pkg/mod —
+  # Override GOPATH so the module cache lands at /home/runner/go/pkg/mod
   # the same host path the build job uses — enabling shared cache hits.
   GOPATH: /home/runner/go
 

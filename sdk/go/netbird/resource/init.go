@@ -47,6 +47,8 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 		r = &ReverseProxyDomain{}
 	case "netbird:resource:ReverseProxyService":
 		r = &ReverseProxyService{}
+	case "netbird:resource:Route":
+		r = &Route{}
 	case "netbird:resource:SetupKey":
 		r = &SetupKey{}
 	case "netbird:resource:User":

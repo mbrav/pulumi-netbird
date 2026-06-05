@@ -13,7 +13,7 @@ import (
 // Change to var to enable semver Version management.
 const (
 	Name    string = "netbird"
-	Version string = "0.3.3"
+	Version string = "0.3.4"
 )
 
 // Provider creates and returns a new Pulumi provider for managing NetBird resources.
@@ -50,6 +50,7 @@ func Provider() p.Provider { //nolint:funlen
 			infer.Resource(&resource.PostureCheck{}),
 			infer.Resource(&resource.ReverseProxyDomain{}),
 			infer.Resource(&resource.ReverseProxyService{}),
+			infer.Resource(&resource.Route{}),
 			infer.Resource(&resource.SetupKey{}),
 			infer.Resource(&resource.User{}),
 		).
@@ -95,7 +96,6 @@ func Provider() p.Provider { //nolint:funlen
 			},
 		}).
 		Build()
-		// Check error
 	if err != nil {
 		panic("failed to build provider: " + err.Error())
 	}

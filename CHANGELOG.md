@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.4] - 2026-06-05
+
+### Added
+
+- Added the `Route` resource (`netbird:resource:Route`) for managing NetBird network routes through routing peers or peer groups.
+- Added generated Go SDK support for `Route`, including `NewRoute`, `GetRoute`, route inputs/outputs, and package construction wiring.
+
+### Changed
+
+- Bumped provider, schema, and Go SDK metadata from `0.3.3` to `0.3.4`.
+- Updated the Go example module to consume SDK `v0.3.3`.
+
 ## [0.3.3] - 2026-06-05
 
 ### Fixed

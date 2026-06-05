@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -1584,6 +1584,163 @@
         "domain",
         "enabled",
         "targets"
+      ]
+    },
+    "netbird:resource:Route": {
+      "description": "A NetBird route resource for directing traffic through exit nodes or routing peers.",
+      "properties": {
+        "accessControlGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Access control group IDs associated with this route."
+        },
+        "description": {
+          "type": "string",
+          "description": "Route description."
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domain list for dynamic resolution."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the route is enabled."
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs whose peers will use this route."
+        },
+        "keepRoute": {
+          "type": "boolean",
+          "description": "Keep the route after a domain no longer resolves to the IP."
+        },
+        "masquerade": {
+          "type": "boolean",
+          "description": "Whether masquerading is enabled for this route."
+        },
+        "metric": {
+          "type": "integer",
+          "description": "Route metric; lower value means higher priority."
+        },
+        "network": {
+          "type": "string",
+          "description": "Network CIDR range."
+        },
+        "networkId": {
+          "type": "string",
+          "description": "Route network identifier, used to group HA routes."
+        },
+        "networkType": {
+          "type": "string",
+          "description": "Network type (IPv4, IPv6, or domain) — computed by the API."
+        },
+        "peer": {
+          "type": "string",
+          "description": "Peer ID acting as the routing peer."
+        },
+        "peerGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Peer group IDs acting as routing peers."
+        },
+        "skipAutoApply": {
+          "type": "boolean",
+          "description": "Skip auto-application for exit-node (0.0.0.0/0) routes."
+        }
+      },
+      "required": [
+        "networkId",
+        "description",
+        "enabled",
+        "masquerade",
+        "metric",
+        "keepRoute",
+        "groups"
+      ],
+      "inputProperties": {
+        "accessControlGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Access control group IDs associated with this route."
+        },
+        "description": {
+          "type": "string",
+          "description": "Route description."
+        },
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domain list for dynamic resolution (conflicts with network)."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the route is enabled."
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs whose peers will use this route."
+        },
+        "keepRoute": {
+          "type": "boolean",
+          "description": "Keep the route after a domain no longer resolves to the IP."
+        },
+        "masquerade": {
+          "type": "boolean",
+          "description": "Whether masquerading is enabled for this route."
+        },
+        "metric": {
+          "type": "integer",
+          "description": "Route metric; lower value means higher priority."
+        },
+        "network": {
+          "type": "string",
+          "description": "Network CIDR range (conflicts with domains)."
+        },
+        "networkId": {
+          "type": "string",
+          "description": "Route network identifier, used to group HA routes."
+        },
+        "peer": {
+          "type": "string",
+          "description": "Peer ID acting as the routing peer (conflicts with peerGroups)."
+        },
+        "peerGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Peer group IDs acting as routing peers (conflicts with peer)."
+        },
+        "skipAutoApply": {
+          "type": "boolean",
+          "description": "Skip auto-application for exit-node (0.0.0.0/0) routes."
+        }
+      },
+      "requiredInputs": [
+        "networkId",
+        "description",
+        "enabled",
+        "masquerade",
+        "metric",
+        "keepRoute",
+        "groups"
       ]
     },
     "netbird:resource:SetupKey": {

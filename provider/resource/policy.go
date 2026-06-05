@@ -373,6 +373,11 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 	postureChecks := slices.Clone(policy.SourcePostureChecks)
 	slices.Sort(postureChecks)
 
+	var stateDescription *string
+	if req.Inputs.Description != nil {
+		stateDescription = policy.Description
+	}
+
 	return infer.ReadResponse[PolicyArgs, PolicyState]{
 		ID: req.ID,
 		Inputs: PolicyArgs{
@@ -384,7 +389,7 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 		},
 		State: PolicyState{
 			Name:                policy.Name,
-			Description:         policy.Description,
+			Description:         stateDescription,
 			Enabled:             policy.Enabled,
 			Rules:               rules,
 			SourcePostureChecks: &postureChecks,
@@ -547,7 +552,7 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 		}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
@@ -576,7 +581,7 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 			p.GetLogger(ctx).Debugf("Diff:Policy[%s]:Rules[%d] a=%+v b=%+v", req.ID, ruleIndex, input, state)
 
 			if input.Name != state.Name ||
-				!equalPtr(input.Description, state.Description) ||
+				(input.Description != nil && !equalPtr(input.Description, state.Description)) ||
 				input.Bidirectional != state.Bidirectional ||
 				input.Action != state.Action ||
 				input.Enabled != state.Enabled ||

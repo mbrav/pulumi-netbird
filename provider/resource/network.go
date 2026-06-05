@@ -107,6 +107,11 @@ func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, Net
 
 	p.GetLogger(ctx).Debugf("Read:NetworkAPI[%s] name=%s", net.Id, net.Name)
 
+	var stateDescription *string
+	if req.Inputs.Description != nil {
+		stateDescription = net.Description
+	}
+
 	return infer.ReadResponse[NetworkArgs, NetworkState]{
 		ID: req.ID,
 		Inputs: NetworkArgs{
@@ -115,7 +120,7 @@ func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, Net
 		},
 		State: NetworkState{
 			Name:        net.Name,
-			Description: net.Description,
+			Description: stateDescription,
 		},
 	}, nil
 }
@@ -184,7 +189,7 @@ func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, Net
 		}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,

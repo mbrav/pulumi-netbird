@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.6] - 2026-06-05
+
+### Fixed
+
+- Fixed persistent description diffs on `Policy`, `Network`, `NetworkResource`, and `PostureCheck` when the `description` field is not declared in the Pulumi program (inputs.Description is nil). The `Diff` now skips the comparison entirely when `inputs.Description` is nil, and `Read` returns `nil` for `State.Description` in that case — so a refresh always sees nil vs nil and no spurious update is planned. Resources that do declare `description` continue to track it and detect changes normally.
+
 ## [0.3.5] - 2026-06-05
 
 ### Fixed
@@ -30,10 +36,6 @@ All notable changes to this project are documented in this file.
 - Added the `Route` resource (`netbird:resource:Route`) for managing NetBird network routes through routing peers or peer groups.
 - Added generated Go SDK support for `Route`, including `NewRoute`, `GetRoute`, route inputs/outputs, and package construction wiring.
 
-### Changed
-
-- Updated the Go example module to consume SDK `v0.3.3`.
-
 ## [0.3.3] - 2026-06-05
 
 ### Fixed
@@ -45,10 +47,6 @@ All notable changes to this project are documented in this file.
   - `User.autoGroups`
 - Treated nil and empty peer/resource lists as equivalent in `Group` diffs.
 - Avoided tracking externally-populated `Group.resources` unless resources are explicitly declared in the Pulumi inputs.
-
-### Changed
-
-- Updated the Go example module to consume SDK `v0.3.2`.
 
 ## [0.3.2] - 2026-06-05
 

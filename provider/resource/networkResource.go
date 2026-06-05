@@ -151,6 +151,11 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 
 	p.GetLogger(ctx).Debugf("Read:NetworkResourceAPI[%s] name=%s", net.Id, net.Name)
 
+	var stateDescription *string
+	if req.Inputs.Description != nil {
+		stateDescription = net.Description
+	}
+
 	return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{
 		ID: net.Id,
 		Inputs: NetworkResourceArgs{
@@ -163,7 +168,7 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 		},
 		State: NetworkResourceState{
 			Name:        net.Name,
-			Description: net.Description,
+			Description: stateDescription,
 			NetworkID:   networkID,
 			Address:     net.Address,
 			Enabled:     net.Enabled,
@@ -256,7 +261,7 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 		}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,

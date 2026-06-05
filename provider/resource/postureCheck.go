@@ -455,6 +455,10 @@ func (*PostureCheck) Read(ctx context.Context, req infer.ReadRequest[PostureChec
 
 	state := postureCheckStateFromAPI(apiCheck)
 
+	if req.Inputs.Description == nil {
+		state.Description = nil
+	}
+
 	return infer.ReadResponse[PostureCheckArgs, PostureCheckState]{
 		ID:     req.ID,
 		Inputs: PostureCheckArgs(state),
@@ -518,7 +522,7 @@ func (*PostureCheck) Diff(ctx context.Context, req infer.DiffRequest[PostureChec
 		diff["name"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 

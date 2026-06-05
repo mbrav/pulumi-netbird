@@ -5,6 +5,9 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Override GOPATH so the module cache lands at /home/runner/go/pkg/mod —
+  # the same host path the build job uses — enabling shared cache hits.
+  GOPATH: /home/runner/go
 
 jobs:
   lint:
@@ -14,16 +17,21 @@ jobs:
       - name: Checkout Repo ✅
         uses: actions/checkout@v6
 
-      - name: Cache Go modules and lint cache 📦
+      - name: Cache Go modules 📦
         uses: actions/cache@v5
         with:
-          path: |
-            /root/go/pkg/mod
-            /root/.cache/go-build
-            /root/.cache/golangci-lint
-          key: ${{ runner.os }}-golangci-${{ hashFiles('**/go.sum') }}
+          path: /home/runner/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('go.mod', 'go.sum') }}
           restore-keys: |
-            ${{ runner.os }}-golangci-
+            ${{ runner.os }}-go-
+
+      - name: Cache golangci-lint analysis 🧹
+        uses: actions/cache@v5
+        with:
+          path: /root/.cache/golangci-lint
+          key: ${{ runner.os }}-golangci-lint-${{ hashFiles('go.mod', 'go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-golangci-lint-
 
       - name: Lint 🧹
         run: make lint

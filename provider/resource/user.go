@@ -97,7 +97,7 @@ func (*User) Create(ctx context.Context, req infer.CreateRequest[UserArgs]) (inf
 		AutoGroups:    req.Inputs.AutoGroups,
 	})
 	if err != nil {
-		return infer.CreateResponse[UserState]{}, fmt.Errorf("creating network failed: %w", err)
+		return infer.CreateResponse[UserState]{}, fmt.Errorf("creating user failed: %w", err)
 	}
 
 	p.GetLogger(ctx).Debugf("Create:UserAPI name=%s, id=%s", user.Name, user.Id)

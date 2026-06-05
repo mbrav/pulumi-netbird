@@ -488,7 +488,7 @@ func (*Policy) Update(ctx context.Context, req infer.UpdateRequest[PolicyArgs, P
 		SourcePostureChecks: req.Inputs.SourcePostureChecks,
 	})
 	if err != nil {
-		return infer.UpdateResponse[PolicyState]{}, fmt.Errorf("updating policy failed: %w", err)
+		return infer.UpdateResponse[PolicyState]{}, fmt.Errorf("updating policy %s failed: %w", req.Inputs.Name, err)
 	}
 
 	// Convert updated rules to PolicyRuleState

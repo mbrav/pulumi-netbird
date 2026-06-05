@@ -120,30 +120,7 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 	// Always sort peer IDs before comparison or use
 	slices.Sort(peerIDs)
 
-	// Only track resources in state when the user declared them in inputs.
-	// Group resources are often populated externally (e.g. by NetworkResource
-	// associations); if the user doesn't manage them, keep state nil so Diff
-	// never reports a spurious change on every refresh.
-	var stateResources *[]Resource
-
-	if req.Inputs.Resources != nil {
-		apiResources := fromAPIResourceList(&group.Resources)
-		if apiResources != nil {
-			sorted := slices.Clone(*apiResources)
-			slices.SortFunc(sorted, func(a, b Resource) int {
-				if a.Type != b.Type {
-					if a.Type < b.Type {
-						return -1
-					}
-
-					return 1
-				}
-
-				return strings.Compare(a.ID, b.ID)
-			})
-			stateResources = &sorted
-		}
-	}
+	stateResources := groupStateResources(req.Inputs.Resources, group.Resources)
 
 	return infer.ReadResponse[GroupArgs, GroupState]{
 		ID: req.ID,
@@ -348,32 +325,8 @@ func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
 		return false
 	}
 
-	aSorted := slices.Clone(*resourcesA)
-	bSorted := slices.Clone(*resourcesB)
-
-	slices.SortFunc(aSorted, func(resA, resB Resource) int {
-		if resA.Type != resB.Type {
-			if resA.Type < resB.Type {
-				return -1
-			}
-
-			return 1
-		}
-
-		return strings.Compare(resA.ID, resB.ID)
-	})
-
-	slices.SortFunc(bSorted, func(resA, resB Resource) int {
-		if resA.Type != resB.Type {
-			if resA.Type < resB.Type {
-				return -1
-			}
-
-			return 1
-		}
-
-		return strings.Compare(resA.ID, resB.ID)
-	})
+	aSorted := sortedResources(*resourcesA)
+	bSorted := sortedResources(*resourcesB)
 
 	for i := range aSorted {
 		if !equalResourcePtr(&aSorted[i], &bSorted[i]) {
@@ -382,4 +335,38 @@ func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
 	}
 
 	return true
+}
+
+// Only track resources in state when the user declared them in inputs.
+// Group resources are often populated externally (e.g. by NetworkResource
+// associations); if the user doesn't manage them, keep state nil so Diff
+// never reports a spurious change on every refresh.
+func groupStateResources(inputResources *[]Resource, apiResources []nbapi.Resource) *[]Resource {
+	if inputResources == nil {
+		return nil
+	}
+
+	resources := fromAPIResourceList(&apiResources)
+	if resources == nil {
+		return nil
+	}
+
+	sorted := sortedResources(*resources)
+
+	return &sorted
+}
+
+func sortedResources(resources []Resource) []Resource {
+	sorted := slices.Clone(resources)
+	slices.SortFunc(sorted, compareResources)
+
+	return sorted
+}
+
+func compareResources(resA, resB Resource) int {
+	if typeCompare := strings.Compare(string(resA.Type), string(resB.Type)); typeCompare != 0 {
+		return typeCompare
+	}
+
+	return strings.Compare(resA.ID, resB.ID)
 }

@@ -78,3 +78,5 @@ linters:
     - goconst
     # Allow overides for dex specified in ./go.mod
     - gomoddirectives
+    # Replaced by gomodguard_v2.
+    - gomodguard

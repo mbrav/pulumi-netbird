@@ -5,6 +5,12 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - "go.mod"
+      - "go.sum"
+      - "provider/**"
+      - "examples/**"
+      - ".github/workflows/**"
     tags:
       - "*"
 

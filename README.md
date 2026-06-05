@@ -14,15 +14,16 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## ✨ Features
 
-- Manage NetBird resources using Pulumi in Go or YAML
+- Manage 15 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
 - Built natively with Pulumi's Go SDK
+- Works with NetBird Cloud (`https://api.netbird.io`) and self-hosted management servers
 
 ## 📦 Installing plugin
 
-To manually install the Pulumi NetBird resource plugin replace the version number (`0.1.0`) with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
+To install the Pulumi NetBird resource plugin, replace the version number with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.1.0 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.3.1 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -115,10 +116,10 @@ resources:
     properties:
       name: Region 1 Net 01
       description: Network 01 in Region 1
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       address: 10.10.1.0/24
       enabled: true
-      group_ids:
+      groupIDs:
         - ${group-devops.id}
 
   netres-r1-net-02:
@@ -126,10 +127,10 @@ resources:
     properties:
       name: Region 1 Net 02
       description: Network 02 in S1 Region 1
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       address: 10.10.2.0/24
       enabled: true
-      group_ids:
+      groupIDs:
         - ${group-devops.id}
 
   netres-r1-net-03:
@@ -137,21 +138,21 @@ resources:
     properties:
       name: Region 1 Net 03
       description: Network 03 in Region 1
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       address: 10.10.3.0/24
       enabled: true
-      group_ids:
+      groupIDs:
         - ${group-devops.id}
 
   router-r1:
     type: netbird:resource:NetworkRouter
     properties:
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       enabled: true
       masquerade: true
       metric: 10
       peer: ""
-      peer_groups:
+      peerGroups:
         - ${group-devops.id}
 
   policy-ssh-grp-src-net-dest:
@@ -160,7 +161,7 @@ resources:
       name: "SSH Policy - Group to Subnet"
       description: "Allow SSH (22/TCP) from DevOps and Dev groups to Region 1 Net 02"
       enabled: true
-      posture_checks: []
+      postureChecks: []
       rules:
         - name: "SSH Access - Group → Subnet"
           description: "Allow unidirectional SSH from DevOps & Dev groups to Net 02"
@@ -183,7 +184,7 @@ resources:
       name: "SSH Policy - Group to Group"
       description: "Allow SSH (22/TCP) from DevOps to Backoffice group resources"
       enabled: true
-      posture_checks: []
+      postureChecks: []
       rules:
         - name: "SSH Access - Group → Group"
           description: "SSH from DevOps group to Backoffice group"
@@ -215,7 +216,7 @@ go list -m -versions github.com/mbrav/pulumi-netbird/sdk
 Output:
 
 ```bash
-github.com/mbrav/pulumi-netbird/sdk v0.0.11 v0.0.12 v0.0.13 # and so on
+github.com/mbrav/pulumi-netbird/sdk v0.3.0 v0.3.1 # and so on
 ```
 
 ### 1. Setup
@@ -249,14 +250,14 @@ You can use this provider with **Pulumi Python** to manage NetBird infrastructur
 First, you must generate the python SDK:
 
 ```bash
-make provider 
+make provider
 make sdk_python
 ```
 
 Then install the wheel:
 
 ```bash
-pip install sdk/python/bin/dist/pulumi_netbird-0.0.25.tar.gz
+pip install sdk/python/bin/dist/pulumi_netbird-0.3.1.tar.gz
 ```
 
 Navigate to the Python example directory:

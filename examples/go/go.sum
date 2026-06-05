@@ -144,8 +144,8 @@ github.com/mattn/go-localereader v0.0.1/go.mod h1:8fBrzywKY7BI3czFoHkuzRoWE9C+Ei
 github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/mattn/go-runewidth v0.0.24 h1:cpokDiIn0MGnhdHwuWnJBITySJ20QyNGnY2kR/ay2DU=
 github.com/mattn/go-runewidth v0.0.24/go.mod h1:XBkDxAl56ILZc9knddidhrOlY5R/pDhgLpndooCuJAs=
-github.com/mbrav/pulumi-netbird/sdk v0.3.0 h1:yeXspXnLdMZ73xnapBMOkwkyoJaZB/3QUdDajnLuQd4=
-github.com/mbrav/pulumi-netbird/sdk v0.3.0/go.mod h1:e0S/maVFkYPOQY3KV0EBHLpTmW1S6RRHJXNR99xUHgQ=
+github.com/mbrav/pulumi-netbird/sdk v0.3.1 h1:npaHo6F5o8m0Fy1CoYKP/ftoKWOpGMlKFN6EGSg7wOk=
+github.com/mbrav/pulumi-netbird/sdk v0.3.1/go.mod h1:u4mCfn9atdSi2+BHom2jjTLFSSMZ0iCwNJIyLQ02xX0=
 github.com/mitchellh/go-ps v1.0.0 h1:i6ampVEEF4wQFF+bkYfwYgY+F/uYJDktmvLPf7qIgjc=
 github.com/mitchellh/go-ps v1.0.0/go.mod h1:J4lOc8z8yJs6vUwklHw2XEIiT4z4C40KtWVN3nvg8Pg=
 github.com/mitchellh/go-wordwrap v1.0.1 h1:TLuKupo69TCn6TQSyGxwI1EblZZEsQ0vMlAFQflz0v0=

@@ -168,6 +168,14 @@ func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) 
 
 	group, err := client.DNS.GetNameserverGroup(ctx, req.ID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[DNSArgs, DNSState]{
+				ID:     "",
+				Inputs: DNSArgs{},  //nolint:exhaustruct
+				State:  DNSState{}, //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[DNSArgs, DNSState]{}, fmt.Errorf("reading DNS group failed: %w", err)
 	}
 
@@ -303,7 +311,7 @@ func (*DNS) Delete(ctx context.Context, req infer.DeleteRequest[DNSState]) (infe
 	}
 
 	err = client.DNS.DeleteNameserverGroup(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting DNS entry failed: %w", err)
 	}
 

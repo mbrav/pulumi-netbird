@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"slices"
-	"strings"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -110,6 +109,14 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 
 	group, err := client.Groups.Get(ctx, req.ID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[GroupArgs, GroupState]{
+				ID:     "",
+				Inputs: GroupArgs{},  //nolint:exhaustruct
+				State:  GroupState{}, //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[GroupArgs, GroupState]{}, fmt.Errorf("reading group failed: %w", err)
 	}
 
@@ -189,7 +196,7 @@ func (*Group) Delete(ctx context.Context, req infer.DeleteRequest[GroupState]) (
 	}
 
 	err = client.Groups.Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting group failed: %w", err)
 	}
 
@@ -302,41 +309,6 @@ func (*Group) WireDependencies(f infer.FieldSelector, args *GroupArgs, state *Gr
 	f.OutputField(&state.Resources).DependsOn(f.InputField(&args.Resources))
 }
 
-func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
-	aLen := 0
-	if resourcesA != nil {
-		aLen = len(*resourcesA)
-	}
-
-	bLen := 0
-	if resourcesB != nil {
-		bLen = len(*resourcesB)
-	}
-
-	if aLen == 0 && bLen == 0 {
-		return true
-	}
-
-	if resourcesA == nil || resourcesB == nil {
-		return false
-	}
-
-	if aLen != bLen {
-		return false
-	}
-
-	aSorted := sortedResources(*resourcesA)
-	bSorted := sortedResources(*resourcesB)
-
-	for i := range aSorted {
-		if !equalResourcePtr(&aSorted[i], &bSorted[i]) {
-			return false
-		}
-	}
-
-	return true
-}
-
 // Only track resources in state when the user declared them in inputs.
 // Group resources are often populated externally (e.g. by NetworkResource
 // associations); if the user doesn't manage them, keep state nil so Diff
@@ -356,17 +328,3 @@ func groupStateResources(inputResources *[]Resource, apiResources []nbapi.Resour
 	return &sorted
 }
 
-func sortedResources(resources []Resource) []Resource {
-	sorted := slices.Clone(resources)
-	slices.SortFunc(sorted, compareResources)
-
-	return sorted
-}
-
-func compareResources(resA, resB Resource) int {
-	if typeCompare := strings.Compare(string(resA.Type), string(resB.Type)); typeCompare != 0 {
-		return typeCompare
-	}
-
-	return strings.Compare(resA.ID, resB.ID)
-}

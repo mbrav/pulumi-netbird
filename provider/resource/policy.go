@@ -335,6 +335,14 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 
 	policy, err := client.Policies.Get(ctx, req.ID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[PolicyArgs, PolicyState]{
+				ID:     "",
+				Inputs: PolicyArgs{},  //nolint:exhaustruct
+				State:  PolicyState{}, //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[PolicyArgs, PolicyState]{}, fmt.Errorf("reading policy failed: %w", err)
 	}
 
@@ -519,7 +527,7 @@ func (*Policy) Delete(ctx context.Context, req infer.DeleteRequest[PolicyState])
 	}
 
 	err = client.Policies.Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting policy failed: %w", err)
 	}
 
@@ -539,7 +547,7 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 		}
 	}
 
-	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
+	if !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
@@ -568,6 +576,7 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 			p.GetLogger(ctx).Debugf("Diff:Policy[%s]:Rules[%d] a=%+v b=%+v", req.ID, ruleIndex, input, state)
 
 			if input.Name != state.Name ||
+				!equalPtr(input.Description, state.Description) ||
 				input.Bidirectional != state.Bidirectional ||
 				input.Action != state.Action ||
 				input.Enabled != state.Enabled ||

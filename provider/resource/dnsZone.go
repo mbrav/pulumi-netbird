@@ -3,7 +3,6 @@ package resource
 import (
 	"context"
 	"fmt"
-	"slices"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -59,7 +58,7 @@ func (d *DNSZoneState) Annotate(annotator infer.Annotator) {
 func (*DNSZone) Create(ctx context.Context, req infer.CreateRequest[DNSZoneArgs]) (infer.CreateResponse[DNSZoneState], error) {
 	p.GetLogger(ctx).Debugf("Create:DNSZone name=%s, domain=%s", req.Inputs.Name, req.Inputs.Domain)
 
-	slices.Sort(req.Inputs.DistributionGroups)
+	distGroups := sortedStrings(req.Inputs.DistributionGroups)
 
 	if req.DryRun {
 		return infer.CreateResponse[DNSZoneState]{
@@ -69,7 +68,7 @@ func (*DNSZone) Create(ctx context.Context, req infer.CreateRequest[DNSZoneArgs]
 				Domain:             req.Inputs.Domain,
 				Enabled:            req.Inputs.Enabled,
 				EnableSearchDomain: req.Inputs.EnableSearchDomain,
-				DistributionGroups: req.Inputs.DistributionGroups,
+				DistributionGroups: distGroups,
 			},
 		}, nil
 	}
@@ -86,7 +85,7 @@ func (*DNSZone) Create(ctx context.Context, req infer.CreateRequest[DNSZoneArgs]
 		Domain:             req.Inputs.Domain,
 		Enabled:            &enabled,
 		EnableSearchDomain: req.Inputs.EnableSearchDomain,
-		DistributionGroups: req.Inputs.DistributionGroups,
+		DistributionGroups: distGroups,
 	})
 	if err != nil {
 		return infer.CreateResponse[DNSZoneState]{}, fmt.Errorf("creating DNS zone failed: %w", err)
@@ -115,6 +114,14 @@ func (*DNSZone) Read(ctx context.Context, req infer.ReadRequest[DNSZoneArgs, DNS
 
 	zone, err := client.DNSZones.GetZone(ctx, req.ID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[DNSZoneArgs, DNSZoneState]{
+				ID:     "",
+				Inputs: DNSZoneArgs{},  //nolint:exhaustruct
+				State:  DNSZoneState{}, //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[DNSZoneArgs, DNSZoneState]{}, fmt.Errorf("reading DNS zone failed: %w", err)
 	}
 
@@ -141,7 +148,7 @@ func (*DNSZone) Read(ctx context.Context, req infer.ReadRequest[DNSZoneArgs, DNS
 func (*DNSZone) Update(ctx context.Context, req infer.UpdateRequest[DNSZoneArgs, DNSZoneState]) (infer.UpdateResponse[DNSZoneState], error) {
 	p.GetLogger(ctx).Debugf("Update:DNSZone[%s]", req.ID)
 
-	slices.Sort(req.Inputs.DistributionGroups)
+	distGroups := sortedStrings(req.Inputs.DistributionGroups)
 
 	if req.DryRun {
 		return infer.UpdateResponse[DNSZoneState]{
@@ -150,7 +157,7 @@ func (*DNSZone) Update(ctx context.Context, req infer.UpdateRequest[DNSZoneArgs,
 				Domain:             req.Inputs.Domain,
 				Enabled:            req.Inputs.Enabled,
 				EnableSearchDomain: req.Inputs.EnableSearchDomain,
-				DistributionGroups: req.Inputs.DistributionGroups,
+				DistributionGroups: distGroups,
 			},
 		}, nil
 	}
@@ -167,7 +174,7 @@ func (*DNSZone) Update(ctx context.Context, req infer.UpdateRequest[DNSZoneArgs,
 		Domain:             req.Inputs.Domain,
 		Enabled:            &enabled,
 		EnableSearchDomain: req.Inputs.EnableSearchDomain,
-		DistributionGroups: req.Inputs.DistributionGroups,
+		DistributionGroups: distGroups,
 	})
 	if err != nil {
 		return infer.UpdateResponse[DNSZoneState]{}, fmt.Errorf("updating DNS zone failed: %w", err)
@@ -194,7 +201,7 @@ func (*DNSZone) Delete(ctx context.Context, req infer.DeleteRequest[DNSZoneState
 	}
 
 	err = client.DNSZones.DeleteZone(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting DNS zone failed: %w", err)
 	}
 

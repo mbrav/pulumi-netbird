@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 )
@@ -83,4 +84,28 @@ func boolVal(p *bool) bool {
 
 func isBlank(v string) bool {
 	return strings.TrimSpace(v) == ""
+}
+
+// isNotFoundErr returns true when err represents a 404 / "not found" response from the NetBird API.
+func isNotFoundErr(err error) bool {
+	return err != nil && strings.Contains(strings.ToLower(err.Error()), "not found")
+}
+
+// parseNestedID splits a compound "<parentID>/<childID>" import ID.
+// Both parts must be non-empty; otherwise an error is returned to the caller.
+func parseNestedID(kind, id string) (string, string, error) {
+	parts := strings.SplitN(id, "/", 2)
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return "", "", fmt.Errorf("%s import ID must be in the format <parentID>/<childID>, got %q", kind, id)
+	}
+
+	return parts[0], parts[1], nil
+}
+
+// sortedStrings returns a sorted clone of s, leaving the original unmodified.
+func sortedStrings(s []string) []string {
+	c := slices.Clone(s)
+	slices.Sort(c)
+
+	return c
 }

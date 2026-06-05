@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.5] - 2026-06-05
+
+### Fixed
+
+- Applied consistent 404 / drift handling across all resources (`Group`, `Network`, `Policy`, `NetworkResource`, `NetworkRouter`, `Route`, `DNS`, `DNSZone`): `Read` now returns an empty ID when the resource is gone so Pulumi removes it from state, and `Delete` treats 404 as success (idempotent destroy).
+- Fixed false-positive description diffs in `Network`, `NetworkResource`, and `Policy` caused by a nil guard that prevented detecting when the user removed an optional description field.
+- Fixed false-positive `Policy` rule diffs: rule `description` is now included in the per-rule comparison inside `Diff`.
+- Fixed `Route.Diff`: `networkId` is now diffed as `UpdateReplace` (changing the parent network requires resource replacement).
+- Fixed in-place slice mutation in `NetworkResource` and `DNSZone`: replaced `slices.Sort(req.Inputs.GroupIDs / DistributionGroups)` with `sortedStrings()` so the original input slice is never modified.
+- Fixed `NetworkResource.Diff` group comparison: replaced sorted in-place + `slices.Equal` with `equalSlice` (order-insensitive, non-mutating).
+- Fixed `NetworkResource.Read` and `NetworkRouter.Read` compound import ID parsing: replaced manual `strings.SplitN` with `parseNestedID`, which validates both parts are non-empty.
+
+### Added
+
+- Added `isNotFoundErr(err error) bool` helper in `util.go`: matches "not found" in the lowercased error message, since the NetBird REST client returns plain `errors.New` strings with no typed 404 sentinel.
+- Added `parseNestedID(kind, id string) (string, string, error)` helper in `util.go`: splits `<parentID>/<childID>` compound import IDs and returns a clear error if either part is blank.
+- Added `sortedStrings(s []string) []string` helper in `util.go`: returns a sorted clone, leaving the original slice unmodified.
+- Moved shared resource-list helpers (`equalResourcesPtr`, `sortedResources`, `compareResources`) from `group.go` into `common.go` so they can be reused across resources.
+- Extracted `routeCheckArgs` helper in `route.go` to satisfy `gocognit`/`cyclop` limits; added complete validation: blank `networkId`, `network`/`domains` mutual exclusion, blank entries in `domains`, `groups`, `peerGroups`, `accessControlGroups`, and `peer`/`peerGroups` at-least-one constraint.
+- Updated `CLAUDE.md` with an "Established patterns" section covering: the 404 read/delete pattern, optional-field diff guards, safe slice handling, compound import IDs, parent-ID `UpdateReplace`, shared helpers in `common.go`, and Check validation completeness.
+
 ## [0.3.4] - 2026-06-05
 
 ### Added
@@ -11,7 +32,6 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- Bumped provider, schema, and Go SDK metadata from `0.3.3` to `0.3.4`.
 - Updated the Go example module to consume SDK `v0.3.3`.
 
 ## [0.3.3] - 2026-06-05
@@ -28,7 +48,6 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- Bumped provider, schema, and Go SDK metadata from `0.3.2` to `0.3.3`.
 - Updated the Go example module to consume SDK `v0.3.2`.
 
 ## [0.3.2] - 2026-06-05

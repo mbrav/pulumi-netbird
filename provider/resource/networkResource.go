@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"slices"
-	"strings"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -66,8 +65,7 @@ func (s *NetworkResourceState) Annotate(annotator infer.Annotator) {
 func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[NetworkResourceArgs]) (infer.CreateResponse[NetworkResourceState], error) {
 	p.GetLogger(ctx).Debugf("Create:NetworkResource name=%s, description=%s net_id=%s", req.Inputs.Name, strPtr(req.Inputs.Description), req.Inputs.NetworkID)
 
-	// Always sort Input group IDS
-	slices.Sort(req.Inputs.GroupIDs)
+	groupIDs := sortedStrings(req.Inputs.GroupIDs)
 
 	if req.DryRun {
 		return infer.CreateResponse[NetworkResourceState]{
@@ -78,7 +76,7 @@ func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[Netw
 				NetworkID:   req.Inputs.NetworkID,
 				Address:     req.Inputs.Address,
 				Enabled:     req.Inputs.Enabled,
-				GroupIDs:    req.Inputs.GroupIDs,
+				GroupIDs:    groupIDs,
 			},
 		}, nil
 	}
@@ -93,7 +91,7 @@ func (*NetworkResource) Create(ctx context.Context, req infer.CreateRequest[Netw
 		Description: req.Inputs.Description,
 		Address:     req.Inputs.Address,
 		Enabled:     req.Inputs.Enabled,
-		Groups:      req.Inputs.GroupIDs,
+		Groups:      groupIDs,
 	})
 	if err != nil {
 		return infer.CreateResponse[NetworkResourceState]{}, fmt.Errorf("creating network failed: %w", err)
@@ -123,10 +121,13 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 	networkID := req.State.NetworkID
 
 	resourceID := req.ID
+
 	if networkID == "" {
-		if parts := strings.SplitN(req.ID, "/", 2); len(parts) == 2 {
-			networkID = parts[0]
-			resourceID = parts[1]
+		var parseErr error
+
+		networkID, resourceID, parseErr = parseNestedID("NetworkResource", req.ID)
+		if parseErr != nil {
+			return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, parseErr
 		}
 	}
 
@@ -137,7 +138,15 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 
 	net, err := client.Networks.Resources(networkID).Get(ctx, resourceID)
 	if err != nil {
-		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, fmt.Errorf("reading network failed: %w", err)
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{
+				ID:     "",
+				Inputs: NetworkResourceArgs{},  //nolint:exhaustruct
+				State:  NetworkResourceState{}, //nolint:exhaustruct
+			}, nil
+		}
+
+		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, fmt.Errorf("reading network resource failed: %w", err)
 	}
 
 	p.GetLogger(ctx).Debugf("Read:NetworkResourceAPI[%s] name=%s", net.Id, net.Name)
@@ -167,8 +176,7 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 func (*NetworkResource) Update(ctx context.Context, req infer.UpdateRequest[NetworkResourceArgs, NetworkResourceState]) (infer.UpdateResponse[NetworkResourceState], error) {
 	p.GetLogger(ctx).Debugf("Update:NetworkResource[%s] name=%s", req.ID, req.Inputs.Name)
 
-	// Always sort group IDs before comparison or use
-	slices.Sort(req.Inputs.GroupIDs)
+	groupIDs := sortedStrings(req.Inputs.GroupIDs)
 
 	if req.DryRun {
 		return infer.UpdateResponse[NetworkResourceState]{
@@ -178,7 +186,7 @@ func (*NetworkResource) Update(ctx context.Context, req infer.UpdateRequest[Netw
 				NetworkID:   req.Inputs.NetworkID,
 				Address:     req.Inputs.Address,
 				Enabled:     req.Inputs.Enabled,
-				GroupIDs:    req.Inputs.GroupIDs,
+				GroupIDs:    groupIDs,
 			},
 		}, nil
 	}
@@ -193,7 +201,7 @@ func (*NetworkResource) Update(ctx context.Context, req infer.UpdateRequest[Netw
 		Description: req.Inputs.Description,
 		Address:     req.Inputs.Address,
 		Enabled:     req.Inputs.Enabled,
-		Groups:      req.Inputs.GroupIDs,
+		Groups:      groupIDs,
 	})
 	if err != nil {
 		return infer.UpdateResponse[NetworkResourceState]{}, fmt.Errorf("updating network resource failed: %w", err)
@@ -221,7 +229,7 @@ func (*NetworkResource) Delete(ctx context.Context, req infer.DeleteRequest[Netw
 	}
 
 	err = client.Networks.Resources(req.State.NetworkID).Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting network resource failed: %w", err)
 	}
 
@@ -248,7 +256,7 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 		}
 	}
 
-	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
+	if !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
@@ -269,18 +277,13 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 		}
 	}
 
-	if req.Inputs.GroupIDs != nil && req.State.GroupIDs != nil {
-		slices.Sort(req.Inputs.GroupIDs)
-		slices.Sort(req.State.GroupIDs)
-
-		if !slices.Equal(req.Inputs.GroupIDs, req.State.GroupIDs) {
-			diff["groupIDs"] = p.PropertyDiff{
-				InputDiff: false,
-				Kind:      p.Update,
-			}
-
-			p.GetLogger(ctx).Debugf("Diff:NetworkResource GroupIDs input=%s output=%s", req.Inputs.GroupIDs, req.State.GroupIDs)
+	if !equalSlice(req.Inputs.GroupIDs, req.State.GroupIDs) {
+		diff["groupIDs"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
 		}
+
+		p.GetLogger(ctx).Debugf("Diff:NetworkResource GroupIDs input=%s output=%s", req.Inputs.GroupIDs, req.State.GroupIDs)
 	}
 
 	p.GetLogger(ctx).Debugf("Diff:NetworkResource[%s] diff=%d", req.ID, len(diff))

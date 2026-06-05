@@ -94,6 +94,14 @@ func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, Net
 
 	net, err := client.Networks.Get(ctx, req.ID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[NetworkArgs, NetworkState]{
+				ID:     "",
+				Inputs: NetworkArgs{},     //nolint:exhaustruct
+				State:  NetworkState{},    //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[NetworkArgs, NetworkState]{}, fmt.Errorf("reading network failed: %w", err)
 	}
 
@@ -156,7 +164,7 @@ func (*Network) Delete(ctx context.Context, req infer.DeleteRequest[NetworkState
 	}
 
 	err = client.Networks.Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting network failed: %w", err)
 	}
 
@@ -176,7 +184,7 @@ func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, Net
 		}
 	}
 
-	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
+	if !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,

@@ -3,7 +3,6 @@ package resource
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -118,10 +117,13 @@ func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRou
 	networkID := req.State.NetworkID
 
 	routerID := req.ID
+
 	if networkID == "" {
-		if parts := strings.SplitN(req.ID, "/", 2); len(parts) == 2 {
-			networkID = parts[0]
-			routerID = parts[1]
+		var parseErr error
+
+		networkID, routerID, parseErr = parseNestedID("NetworkRouter", req.ID)
+		if parseErr != nil {
+			return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{}, parseErr
 		}
 	}
 
@@ -132,6 +134,14 @@ func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRou
 
 	router, err := client.Networks.Routers(networkID).Get(ctx, routerID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{
+				ID:     "",
+				Inputs: NetworkRouterArgs{},  //nolint:exhaustruct
+				State:  NetworkRouterState{}, //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{}, fmt.Errorf("reading network router failed: %w", err)
 	}
 
@@ -213,7 +223,7 @@ func (*NetworkRouter) Delete(ctx context.Context, req infer.DeleteRequest[Networ
 	}
 
 	err = client.Networks.Routers(req.State.NetworkID).Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting network router failed: %w", err)
 	}
 

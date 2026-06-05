@@ -231,6 +231,14 @@ func (*Route) Read(ctx context.Context, req infer.ReadRequest[RouteArgs, RouteSt
 
 	route, err := client.Routes.Get(ctx, req.ID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[RouteArgs, RouteState]{
+				ID:     "",
+				Inputs: RouteArgs{},  //nolint:exhaustruct
+				State:  RouteState{}, //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[RouteArgs, RouteState]{}, fmt.Errorf("reading route failed: %w", err)
 	}
 
@@ -294,7 +302,7 @@ func (*Route) Delete(ctx context.Context, req infer.DeleteRequest[RouteState]) (
 	}
 
 	err = client.Routes.Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting route failed: %w", err)
 	}
 
@@ -308,7 +316,7 @@ func (*Route) Diff(ctx context.Context, req infer.DiffRequest[RouteArgs, RouteSt
 	diff := map[string]p.PropertyDiff{}
 
 	if req.Inputs.NetworkID != req.State.NetworkID {
-		diff["networkId"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+		diff["networkId"] = p.PropertyDiff{InputDiff: false, Kind: p.UpdateReplace}
 	}
 
 	if req.Inputs.Description != req.State.Description {
@@ -373,9 +381,18 @@ func (*Route) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckRes
 	p.GetLogger(ctx).Debugf("Check:Route old=%s, new=%s", req.OldInputs.GoString(), req.NewInputs.GoString())
 
 	args, failures, err := infer.DefaultCheck[RouteArgs](ctx, req.NewInputs)
+	failures = routeCheckArgs(args, failures)
 
+	return infer.CheckResponse[RouteArgs]{Inputs: args, Failures: failures}, err
+}
+
+func routeCheckArgs(args RouteArgs, failures []p.CheckFailure) []p.CheckFailure { //nolint:cyclop,gocognit
 	if isBlank(args.NetworkID) {
 		failures = append(failures, p.CheckFailure{Property: "networkId", Reason: "networkId must not be empty"})
+	}
+
+	if args.Network != nil && isBlank(*args.Network) {
+		failures = append(failures, p.CheckFailure{Property: "network", Reason: "network must not be blank when provided"})
 	}
 
 	if args.Network == nil && (args.Domains == nil || len(*args.Domains) == 0) {
@@ -386,14 +403,44 @@ func (*Route) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckRes
 		failures = append(failures, p.CheckFailure{Property: "network", Reason: "network and domains are mutually exclusive"})
 	}
 
-	hasPeer := args.Peer != nil && !isBlank(*args.Peer)
+	if args.Domains != nil {
+		for i, d := range *args.Domains {
+			if isBlank(d) {
+				failures = append(failures, p.CheckFailure{Property: fmt.Sprintf("domains[%d]", i), Reason: "domain must not be empty"})
+			}
+		}
+	}
 
+	for i, g := range args.Groups {
+		if isBlank(g) {
+			failures = append(failures, p.CheckFailure{Property: fmt.Sprintf("groups[%d]", i), Reason: "group id must not be empty"})
+		}
+	}
+
+	hasPeer := args.Peer != nil && !isBlank(*args.Peer)
 	hasPeerGroups := args.PeerGroups != nil && len(*args.PeerGroups) > 0
+
 	if !hasPeer && !hasPeerGroups {
 		failures = append(failures, p.CheckFailure{Property: "peer", Reason: "either peer or peerGroups must be provided"})
 	}
 
-	return infer.CheckResponse[RouteArgs]{Inputs: args, Failures: failures}, err
+	if args.PeerGroups != nil {
+		for i, pg := range *args.PeerGroups {
+			if isBlank(pg) {
+				failures = append(failures, p.CheckFailure{Property: fmt.Sprintf("peerGroups[%d]", i), Reason: "peer group id must not be empty"})
+			}
+		}
+	}
+
+	if args.AccessControlGroups != nil {
+		for i, acg := range *args.AccessControlGroups {
+			if isBlank(acg) {
+				failures = append(failures, p.CheckFailure{Property: fmt.Sprintf("accessControlGroups[%d]", i), Reason: "access control group id must not be empty"})
+			}
+		}
+	}
+
+	return failures
 }
 
 // WireDependencies defines input/output field relationships.

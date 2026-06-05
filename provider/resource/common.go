@@ -2,6 +2,9 @@
 package resource
 
 import (
+	"slices"
+	"strings"
+
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
 	"github.com/pulumi/pulumi-go-provider/infer"
 )
@@ -91,9 +94,57 @@ func fromAPIResourceList(apiResources *[]nbapi.Resource) *[]Resource {
 	return &converted
 }
 
-// Refactored equalResourcePtr to explicitly check for both pointers being nil
-// before comparing their fields. This ensures correct equality checks and
-// prevents potential nil pointer dereference issues.
+// equalResourcesPtr compares two *[]Resource slices by value, treating nil and empty as equal.
+func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
+	aLen := 0
+	if resourcesA != nil {
+		aLen = len(*resourcesA)
+	}
+
+	bLen := 0
+	if resourcesB != nil {
+		bLen = len(*resourcesB)
+	}
+
+	if aLen == 0 && bLen == 0 {
+		return true
+	}
+
+	if resourcesA == nil || resourcesB == nil {
+		return false
+	}
+
+	if aLen != bLen {
+		return false
+	}
+
+	aSorted := sortedResources(*resourcesA)
+	bSorted := sortedResources(*resourcesB)
+
+	for i := range aSorted {
+		if !equalResourcePtr(&aSorted[i], &bSorted[i]) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func sortedResources(resources []Resource) []Resource {
+	sorted := slices.Clone(resources)
+	slices.SortFunc(sorted, compareResources)
+
+	return sorted
+}
+
+func compareResources(resA, resB Resource) int {
+	if typeCompare := strings.Compare(string(resA.Type), string(resB.Type)); typeCompare != 0 {
+		return typeCompare
+	}
+
+	return strings.Compare(resA.ID, resB.ID)
+}
+
 func equalResourcePtr(resourceA, resourceB *Resource) bool {
 	if resourceA == nil && resourceB == nil {
 		return true

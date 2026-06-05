@@ -120,6 +120,31 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 	// Always sort peer IDs before comparison or use
 	slices.Sort(peerIDs)
 
+	// Only track resources in state when the user declared them in inputs.
+	// Group resources are often populated externally (e.g. by NetworkResource
+	// associations); if the user doesn't manage them, keep state nil so Diff
+	// never reports a spurious change on every refresh.
+	var stateResources *[]Resource
+
+	if req.Inputs.Resources != nil {
+		apiResources := fromAPIResourceList(&group.Resources)
+		if apiResources != nil {
+			sorted := slices.Clone(*apiResources)
+			slices.SortFunc(sorted, func(a, b Resource) int {
+				if a.Type != b.Type {
+					if a.Type < b.Type {
+						return -1
+					}
+
+					return 1
+				}
+
+				return strings.Compare(a.ID, b.ID)
+			})
+			stateResources = &sorted
+		}
+	}
+
 	return infer.ReadResponse[GroupArgs, GroupState]{
 		ID: req.ID,
 		Inputs: GroupArgs{
@@ -130,7 +155,7 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 		State: GroupState{
 			Name:      group.Name,
 			Peers:     &peerIDs,
-			Resources: fromAPIResourceList(&group.Resources),
+			Resources: stateResources,
 		},
 	}, nil
 }
@@ -208,24 +233,32 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 		}
 	}
 
-	// Peers: compare if both are non-nil
-	if req.Inputs.Peers != nil && req.State.Peers != nil {
-		inPeers := slices.Clone(*req.Inputs.Peers)
-		stPeers := slices.Clone(*req.State.Peers)
-
-		slices.Sort(inPeers)
-		slices.Sort(stPeers)
-
-		if !slices.Equal(inPeers, stPeers) {
-			diff["peers"] = p.PropertyDiff{
-				InputDiff: false,
-				Kind:      p.Update,
-			}
+	// Peers: treat nil and empty slice as equal
+	{
+		inLen := 0
+		if req.Inputs.Peers != nil {
+			inLen = len(*req.Inputs.Peers)
 		}
-	} else if (req.Inputs.Peers == nil) != (req.State.Peers == nil) {
-		diff["peers"] = p.PropertyDiff{
-			InputDiff: false,
-			Kind:      p.Update,
+
+		stLen := 0
+		if req.State.Peers != nil {
+			stLen = len(*req.State.Peers)
+		}
+
+		if inLen != 0 || stLen != 0 {
+			if inLen != stLen {
+				diff["peers"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+			} else {
+				inPeers := slices.Clone(*req.Inputs.Peers)
+				stPeers := slices.Clone(*req.State.Peers)
+
+				slices.Sort(inPeers)
+				slices.Sort(stPeers)
+
+				if !slices.Equal(inPeers, stPeers) {
+					diff["peers"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+				}
+			}
 		}
 	}
 
@@ -293,7 +326,17 @@ func (*Group) WireDependencies(f infer.FieldSelector, args *GroupArgs, state *Gr
 }
 
 func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
-	if resourcesA == nil && resourcesB == nil {
+	aLen := 0
+	if resourcesA != nil {
+		aLen = len(*resourcesA)
+	}
+
+	bLen := 0
+	if resourcesB != nil {
+		bLen = len(*resourcesB)
+	}
+
+	if aLen == 0 && bLen == 0 {
 		return true
 	}
 
@@ -301,7 +344,7 @@ func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
 		return false
 	}
 
-	if len(*resourcesA) != len(*resourcesB) {
+	if aLen != bLen {
 		return false
 	}
 

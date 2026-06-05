@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.3] - 2026-06-05
+
+### Fixed
+
+- Normalized ordering for API-returned slice fields to reduce false positive diffs after refresh/import:
+  - `DNS.domains` and `DNS.groups`
+  - `Policy.postureChecks`
+  - policy rule source and destination groups
+  - `User.autoGroups`
+- Treated nil and empty peer/resource lists as equivalent in `Group` diffs.
+- Avoided tracking externally-populated `Group.resources` unless resources are explicitly declared in the Pulumi inputs.
+
+### Changed
+
+- Bumped provider, schema, and Go SDK metadata from `0.3.2` to `0.3.3`.
+- Updated the Go example module to consume SDK `v0.3.2`.
+
 ## [0.3.2] - 2026-06-05
 
 ### Fixed

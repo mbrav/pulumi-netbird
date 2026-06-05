@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -145,6 +146,9 @@ func (*User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState
 
 	p.GetLogger(ctx).Debugf("Read:UserAPI[%s] name=%s, email=%s", foundUser.Id, foundUser.Name, foundUser.Email)
 
+	autoGroups := slices.Clone(foundUser.AutoGroups)
+	slices.Sort(autoGroups)
+
 	return infer.ReadResponse[UserArgs, UserState]{
 		ID: req.ID,
 		Inputs: UserArgs{
@@ -152,7 +156,7 @@ func (*User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState
 			Email:         &foundUser.Email,
 			Role:          foundUser.Role,
 			IsServiceUser: foundUser.IsServiceUser != nil && *foundUser.IsServiceUser,
-			AutoGroups:    foundUser.AutoGroups,
+			AutoGroups:    autoGroups,
 			IsBlocked:     &foundUser.IsBlocked,
 		},
 		State: UserState{
@@ -160,7 +164,7 @@ func (*User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState
 			Email:         &foundUser.Email,
 			Role:          foundUser.Role,
 			IsServiceUser: foundUser.IsServiceUser != nil && *foundUser.IsServiceUser,
-			AutoGroups:    foundUser.AutoGroups,
+			AutoGroups:    autoGroups,
 			IsBlocked:     &foundUser.IsBlocked,
 		},
 	}, nil

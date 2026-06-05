@@ -181,15 +181,21 @@ func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) 
 		}
 	}
 
+	domains := slices.Clone(group.Domains)
+	slices.Sort(domains)
+
+	groups := slices.Clone(group.Groups)
+	slices.Sort(groups)
+
 	// Return response with both current Inputs and updated State
 	return infer.ReadResponse[DNSArgs, DNSState]{
 		ID: req.ID,
 		Inputs: DNSArgs{
 			Name:                 group.Name,
 			Description:          group.Description,
-			Domains:              group.Domains,
+			Domains:              domains,
 			Enabled:              group.Enabled,
-			Groups:               group.Groups,
+			Groups:               groups,
 			Primary:              group.Primary,
 			Nameservers:          stateNameservers,
 			SearchDomainsEnabled: group.SearchDomainsEnabled,
@@ -197,9 +203,9 @@ func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) 
 		State: DNSState{
 			Name:                 group.Name,
 			Description:          group.Description,
-			Domains:              group.Domains,
+			Domains:              domains,
 			Enabled:              group.Enabled,
-			Groups:               group.Groups,
+			Groups:               groups,
 			Primary:              group.Primary,
 			Nameservers:          stateNameservers,
 			SearchDomainsEnabled: group.SearchDomainsEnabled,
@@ -324,7 +330,7 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 		}
 	}
 
-	if !slices.Equal(req.Inputs.Domains, req.State.Domains) {
+	if !equalSlice(req.Inputs.Domains, req.State.Domains) {
 		diff["domains"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
@@ -338,7 +344,7 @@ func (*DNS) Diff(ctx context.Context, req infer.DiffRequest[DNSArgs, DNSState]) 
 		}
 	}
 
-	if !slices.Equal(req.Inputs.Groups, req.State.Groups) {
+	if !equalSlice(req.Inputs.Groups, req.State.Groups) {
 		diff["groups"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,

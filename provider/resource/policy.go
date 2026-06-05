@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -361,6 +362,9 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 		inputRules = policyRulesToArgs(policy.Rules)
 	}
 
+	postureChecks := slices.Clone(policy.SourcePostureChecks)
+	slices.Sort(postureChecks)
+
 	return infer.ReadResponse[PolicyArgs, PolicyState]{
 		ID: req.ID,
 		Inputs: PolicyArgs{
@@ -368,14 +372,14 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 			Description:         req.Inputs.Description,
 			Enabled:             policy.Enabled,
 			Rules:               inputRules,
-			SourcePostureChecks: &policy.SourcePostureChecks,
+			SourcePostureChecks: &postureChecks,
 		},
 		State: PolicyState{
 			Name:                policy.Name,
 			Description:         policy.Description,
 			Enabled:             policy.Enabled,
 			Rules:               rules,
-			SourcePostureChecks: &policy.SourcePostureChecks,
+			SourcePostureChecks: &postureChecks,
 		},
 	}, nil
 }
@@ -785,7 +789,7 @@ func fromAPIPortRanges(reulePortRangeAPI *[]nbapi.RulePortRange) *[]RulePortRang
 	return &out
 }
 
-// Converts a slice of nbapi.GroupMinimum to state RuleGroup.
+// Converts a slice of nbapi.GroupMinimum to state RuleGroup, sorted by ID.
 func fromAPIGroupMinimums(group *[]nbapi.GroupMinimum) *[]RuleGroup {
 	if group == nil {
 		return nil
@@ -795,6 +799,18 @@ func fromAPIGroupMinimums(group *[]nbapi.GroupMinimum) *[]RuleGroup {
 	for groupIndex, group := range *group {
 		out[groupIndex] = RuleGroup{ID: group.Id, Name: group.Name}
 	}
+
+	slices.SortFunc(out, func(a, b RuleGroup) int {
+		if a.ID < b.ID {
+			return -1
+		}
+
+		if a.ID > b.ID {
+			return 1
+		}
+
+		return 0
+	})
 
 	return &out
 }
@@ -844,6 +860,8 @@ func groupMinimumIDs(groups *[]nbapi.GroupMinimum) *[]string {
 	for i, group := range *groups {
 		out[i] = group.Id
 	}
+
+	slices.Sort(out)
 
 	return &out
 }

@@ -142,8 +142,9 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 		InactivityExpirationEnabled: req.Inputs.InactivityExpirationEnabled,
 		LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
 		SshEnabled:                  req.Inputs.SSHEnabled,
-		ApprovalRequired:            nil, // ApprovalRequired is not supported in for Cloud version only
+		ApprovalRequired:            nil, // Cloud only
 		Ip:                          nil,
+		Ipv6:                        nil,
 	})
 	if err != nil {
 		return infer.UpdateResponse[PeerState]{}, fmt.Errorf("updating peer failed: %w", err)

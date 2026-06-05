@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.1] - 2026-06-05
+
+### Fixed
+
+- Added `replace` directives in `go.mod` to redirect `github.com/dexidp/dex` and `github.com/dexidp/dex/api/v2` to NetBird's own fork (`github.com/netbirdio/dex`). Go replace directives from dependencies do not propagate to dependent modules, causing `go mod tidy` to fail with "module does not contain package `github.com/dexidp/dex/server/signer`".
+- Added missing `Ipv6` field (`nil`) to `PeerRequest` struct literal in `peer.go` to satisfy the `exhaustruct` linter.
+
+### Changed
+
+- Bumped provider version from `0.3.0` to `0.3.1`.
+- Updated CI actions: `pulumi/actions` v6 → v7, `softprops/action-gh-release` v2 → v3.
+- Updated golangci-lint container image to `v2.12.2`.
+- Disabled `goconst` and `gomoddirectives` linters in `.golangci.yml` to allow the dex replace override and repeated string literals.
+
 ## [0.3.0] - 2026-04-04
 
 > **Note:** A minor version bump (0.2.x → 0.3.0) was necessary due to the large number of new resources and the scope of internal changes introduced in this release.

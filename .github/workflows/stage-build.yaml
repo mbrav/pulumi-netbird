@@ -22,7 +22,7 @@ jobs:
             go.sum
 
       - name: Install Pulumi CLI 🚀
-        uses: pulumi/actions@v6
+        uses: pulumi/actions@v7
         with:
           pulumi-version: ^3
       #
@@ -84,7 +84,7 @@ jobs:
           cat /tmp/release-notes.md
 
       - name: Publish release with assets 📢
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: github.ref_type == 'tag'
         with:
           name: "${{ github.ref_name }}"

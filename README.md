@@ -38,17 +38,36 @@ You can use this provider with **Pulumi YAML** to manage NetBird infrastructure 
 
 ### 1. Setup
 
+Install the plugin (required before first `pulumi up`):
+
+```bash
+pulumi plugin install resource netbird 0.3.1 --server github://api.github.com/mbrav/pulumi-netbird
+```
+
+> **Note:** `--server` is a CLI-only flag. Do **not** add it to `Pulumi.yaml` — the `plugins.providers` block only accepts `name`, `path` (local binary), and `version`. For GitHub-hosted plugins, the CLI install above is sufficient.
+
 Navigate to the YAML example directory:
 
 ```bash
 cd examples/yaml
 ```
 
-Initialize a new stack and configure your credentials:
+Initialize a new stack. If you are using the **local file backend** (`pulumi login --local`), the organization is always the literal string `organization` — use a simple name or the `organization/<project>/<stack>` form:
 
 ```bash
-pulumi stack init test
-pulumi config set netbird:token YOUR_TOKEN
+# Pulumi Cloud
+pulumi stack init myorg/myproject/dev
+
+# Local backend
+pulumi stack init dev
+# or fully qualified:
+pulumi stack init organization/myproject/dev
+```
+
+Configure your credentials. Always use `--secret` for the token so it is encrypted in the stack config file:
+
+```bash
+pulumi config set --secret netbird:token YOUR_TOKEN
 pulumi config set netbird:url https://nb.domain:33073
 ```
 
@@ -231,7 +250,7 @@ Initialize a new stack and configure your credentials:
 
 ```bash
 pulumi stack init test
-pulumi config set netbird:token YOUR_TOKEN
+pulumi config set --secret netbird:token YOUR_TOKEN
 pulumi config set netbird:url https://nb.domain:33073
 ```
 
@@ -270,7 +289,7 @@ Initialize a new stack and configure your credentials:
 
 ```bash
 pulumi stack init test
-pulumi config set netbird:token YOUR_TOKEN
+pulumi config set --secret netbird:token YOUR_TOKEN
 pulumi config set netbird:url https://nb.domain:33073
 ```
 

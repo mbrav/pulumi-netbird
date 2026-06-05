@@ -12,21 +12,54 @@ The NetBird Pulumi provider is available for multiple Pulumi-supported languages
 - **Go**: [`github.com/mbrav/pulumi-netbird/sdk/go/netbird`](https://pkg.go.dev/github.com/mbrav/pulumi-netbird/sdk)
 - **.NET**: [`Mbrav.PulumiNetbird`](https://www.nuget.org/packages/Mbrav.PulumiNetbird)
 
-The provider plugin is distributed via GitHub Releases. Pulumi will install it automatically on first use, or you can install it explicitly:
+The provider plugin is distributed via GitHub Releases. Install it explicitly before running `pulumi up`:
 
 ```sh
 pulumi plugin install resource netbird v0.3.1 \
   --server github://api.github.com/mbrav/pulumi-netbird
 ```
 
+> **Note:** The `--server` flag is a CLI-only option. It cannot be used inside `Pulumi.yaml`. The `plugins.providers` block in `Pulumi.yaml` only accepts `name`, `path` (local binary), and `version`. For GitHub-hosted plugins, install via the CLI command above and omit the `plugins:` block from your `Pulumi.yaml`.
+
+## Backend & Stack Initialization
+
+### Pulumi Cloud
+
+Log in to Pulumi Cloud and initialize a stack using your organization name:
+
+```sh
+pulumi login
+pulumi stack init <org>/<project>/<stack>
+```
+
+### Local file backend
+
+To manage state locally without Pulumi Cloud:
+
+```sh
+pulumi login --local
+```
+
+With the local backend the organization is always the literal string `organization` — custom org names are not supported. Initialize a stack with either form:
+
+```sh
+# simple (recommended for local)
+pulumi stack init <stack-name>
+
+# fully qualified (org must be literally 'organization')
+pulumi stack init organization/<project>/<stack-name>
+```
+
 ## Configuration
 
-Configure the provider using the Pulumi CLI. The `token` value is sensitive and should always be set as a secret:
+Configure the provider using the Pulumi CLI. The `token` value is sensitive and must always be set as a secret:
 
 ```sh
 pulumi config set netbird:url https://api.netbird.io
 pulumi config set --secret netbird:token <YOUR_API_TOKEN>
 ```
+
+> **Note:** Omitting `--secret` stores the token in plaintext in your stack config file. Always use `--secret` for credentials.
 
 Alternatively, set the equivalent environment variables before running `pulumi up`:
 

@@ -49,8 +49,19 @@ func equalSlice(sliceA, sliceB []string) bool {
 }
 
 // equalSlicePtr compares two *[]string values by delegating to equalSlice.
+// Treats nil and empty slice as equal.
 func equalSlicePtr(sliceA, sliceB *[]string) bool {
-	if sliceA == nil && sliceB == nil {
+	aLen := 0
+	if sliceA != nil {
+		aLen = len(*sliceA)
+	}
+
+	bLen := 0
+	if sliceB != nil {
+		bLen = len(*sliceB)
+	}
+
+	if aLen == 0 && bLen == 0 {
 		return true
 	}
 

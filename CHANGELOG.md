@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.2] - 2026-06-05
+
+### Fixed
+
+- Fixed `NetworkRouter` and `NetworkResource` imports by supporting compound import IDs in the form `<networkID>/<routerID>` and `<networkID>/<resourceID>`.
+- Fixed `Peer.approvalRequired` and peer management booleans so imported peers no longer require cloud-only or client-controlled fields in Pulumi programs.
+- Fixed persistent `Policy.rules` diffs caused by nil-vs-empty optional slices and API-generated rule descriptions.
+- Fixed policy imports by reconstructing rule inputs from the NetBird API when stored Pulumi inputs are empty.
+- Reduced false positive description diffs for `Network`, `NetworkResource`, and `Policy` when NetBird returns API-generated descriptions.
+
+### Changed
+
+- `Peer.Create` now returns an explicit error because peers must be imported and cannot be created through the NetBird management API.
+- Documented compound import ID formats in generated `NetworkRouter` and `NetworkResource` resource descriptions.
+- Bumped provider, schema, and Go SDK metadata from `0.3.1` to `0.3.2`.
+- Regenerated the Go SDK so optional peer fields and updated resource descriptions are reflected for Go consumers.
+
 ## [0.3.1] - 2026-06-05
 
 ### Fixed

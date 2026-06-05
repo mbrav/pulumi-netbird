@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"strings"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -18,7 +19,7 @@ type NetworkResource struct{}
 
 // Annotate adds a description annotation for the NetworkResource type for generated SDKs.
 func (net *NetworkResource) Annotate(a infer.Annotator) {
-	a.Describe(net, "A NetBird network resource, such as a CIDR range assigned to the network.")
+	a.Describe(net, "A NetBird network resource, such as a CIDR range assigned to the network. Import ID format: <networkID>/<resourceID>.")
 }
 
 // NetworkResourceArgs represents the input arguments for creating or updating a network resource.
@@ -118,12 +119,23 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 	p.GetLogger(ctx).Debugf("Read:NetworkReourceArgs[%s] name=%s", req.ID, req.Inputs.Name)
 	p.GetLogger(ctx).Debugf("Read:NetworkResourceState[%s] name=%s, netd_id=%s", req.ID, req.State.Name, req.State.NetworkID)
 
+	// Support compound import ID "networkID/resourceID" when state has no networkID yet.
+	networkID := req.State.NetworkID
+
+	resourceID := req.ID
+	if networkID == "" {
+		if parts := strings.SplitN(req.ID, "/", 2); len(parts) == 2 {
+			networkID = parts[0]
+			resourceID = parts[1]
+		}
+	}
+
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
-	net, err := client.Networks.Resources(req.State.NetworkID).Get(ctx, req.ID)
+	net, err := client.Networks.Resources(networkID).Get(ctx, resourceID)
 	if err != nil {
 		return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{}, fmt.Errorf("reading network failed: %w", err)
 	}
@@ -131,11 +143,11 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 	p.GetLogger(ctx).Debugf("Read:NetworkResourceAPI[%s] name=%s", net.Id, net.Name)
 
 	return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{
-		ID: req.ID,
+		ID: net.Id,
 		Inputs: NetworkResourceArgs{
 			Name:        net.Name,
-			Description: net.Description,
-			NetworkID:   req.State.NetworkID,
+			Description: req.Inputs.Description,
+			NetworkID:   networkID,
 			Address:     net.Address,
 			Enabled:     net.Enabled,
 			GroupIDs:    getNetworkResourceGroupIDs(net),
@@ -143,7 +155,7 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 		State: NetworkResourceState{
 			Name:        net.Name,
 			Description: net.Description,
-			NetworkID:   req.State.NetworkID,
+			NetworkID:   networkID,
 			Address:     net.Address,
 			Enabled:     net.Enabled,
 			GroupIDs:    getNetworkResourceGroupIDs(net),
@@ -236,7 +248,7 @@ func (*NetworkResource) Diff(ctx context.Context, req infer.DiffRequest[NetworkR
 		}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,

@@ -12,7 +12,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// A NetBird network resource, such as a CIDR range assigned to the network.
+// A NetBird network resource, such as a CIDR range assigned to the network. Import ID format: <networkID>/<resourceID>.
 type NetworkResource struct {
 	pulumi.CustomResourceState
 

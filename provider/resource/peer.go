@@ -2,6 +2,7 @@ package resource
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
@@ -23,11 +24,11 @@ func (peer *Peer) Annotate(a infer.Annotator) {
 // PeerArgs represents the input arguments for a peer resource.
 type PeerArgs struct {
 	Name                        string `pulumi:"name"`
-	InactivityExpirationEnabled bool   `pulumi:"inactivityExpirationEnabled"`
-	LoginExpirationEnabled      bool   `pulumi:"loginExpirationEnabled"`
-	SSHEnabled                  bool   `pulumi:"sshEnabled"`
-	// Cloud Only
-	ApprovalRequired *bool `pulumi:"approvalRequired"`
+	InactivityExpirationEnabled bool   `pulumi:"inactivityExpirationEnabled,optional"`
+	LoginExpirationEnabled      bool   `pulumi:"loginExpirationEnabled,optional"`
+	SSHEnabled                  bool   `pulumi:"sshEnabled,optional"`
+	// Cloud Only — deprecated, not maintained by this provider, always stored as nil
+	ApprovalRequired *bool `pulumi:"approvalRequired,optional"`
 }
 
 // Annotate adds descriptive annotations to the PeerArgs fields for use in generated SDKs.
@@ -42,11 +43,11 @@ func (p *PeerArgs) Annotate(a infer.Annotator) {
 // PeerState represents the state of the peer resource.
 type PeerState struct {
 	Name                        string `pulumi:"name"`
-	InactivityExpirationEnabled bool   `pulumi:"inactivityExpirationEnabled"`
-	LoginExpirationEnabled      bool   `pulumi:"loginExpirationEnabled"`
-	SSHEnabled                  bool   `pulumi:"sshEnabled"`
-	// Cloud Only
-	ApprovalRequired *bool `pulumi:"approvalRequired"`
+	InactivityExpirationEnabled bool   `pulumi:"inactivityExpirationEnabled,optional"`
+	LoginExpirationEnabled      bool   `pulumi:"loginExpirationEnabled,optional"`
+	SSHEnabled                  bool   `pulumi:"sshEnabled,optional"`
+	// Cloud Only — deprecated, not maintained by this provider, always stored as nil
+	ApprovalRequired *bool `pulumi:"approvalRequired,optional"`
 }
 
 // Annotate adds descriptive annotations to the PeerState fields for use in generated SDKs.
@@ -75,10 +76,7 @@ func (*Peer) Create(_ context.Context, req infer.CreateRequest[PeerArgs]) (infer
 		}, nil
 	}
 
-	return infer.CreateResponse[PeerState]{
-		ID:     req.Inputs.Name,
-		Output: state,
-	}, nil
+	return infer.CreateResponse[PeerState]{}, errors.New("peers must be imported; creation via Pulumi is not supported")
 }
 
 // Read fetches the current state of a peer from NetBird.

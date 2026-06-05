@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -1132,7 +1132,7 @@
       ]
     },
     "netbird:resource:NetworkResource": {
-      "description": "A NetBird network resource, such as a CIDR range assigned to the network.",
+      "description": "A NetBird network resource, such as a CIDR range assigned to the network. Import ID format: \u003cnetworkID\u003e/\u003cresourceID\u003e.",
       "properties": {
         "address": {
           "type": "string",
@@ -1207,7 +1207,7 @@
       ]
     },
     "netbird:resource:NetworkRouter": {
-      "description": "A NetBird network router resource.",
+      "description": "A NetBird network router resource. Import ID format: \u003cnetworkID\u003e/\u003crouterID\u003e.",
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -1304,11 +1304,7 @@
         }
       },
       "required": [
-        "name",
-        "inactivityExpirationEnabled",
-        "loginExpirationEnabled",
-        "sshEnabled",
-        "approvalRequired"
+        "name"
       ],
       "inputProperties": {
         "approvalRequired": {
@@ -1333,11 +1329,7 @@
         }
       },
       "requiredInputs": [
-        "name",
-        "inactivityExpirationEnabled",
-        "loginExpirationEnabled",
-        "sshEnabled",
-        "approvalRequired"
+        "name"
       ]
     },
     "netbird:resource:Policy": {

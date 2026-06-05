@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -17,7 +18,7 @@ type NetworkRouter struct{}
 
 // Annotate provides documentation for NetworkRouter.
 func (netR *NetworkRouter) Annotate(a infer.Annotator) {
-	a.Describe(netR, "A NetBird network router resource.")
+	a.Describe(netR, "A NetBird network router resource. Import ID format: <networkID>/<routerID>.")
 }
 
 // NetworkRouterArgs represents the input arguments for creating or updating a network router.
@@ -113,12 +114,23 @@ func (*NetworkRouter) Create(ctx context.Context, req infer.CreateRequest[Networ
 func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRouterArgs, NetworkRouterState]) (infer.ReadResponse[NetworkRouterArgs, NetworkRouterState], error) {
 	p.GetLogger(ctx).Debugf("Read:NetworkRouter[%s]", req.ID)
 
+	// Support compound import ID "networkID/routerID" when state has no networkID yet.
+	networkID := req.State.NetworkID
+
+	routerID := req.ID
+	if networkID == "" {
+		if parts := strings.SplitN(req.ID, "/", 2); len(parts) == 2 {
+			networkID = parts[0]
+			routerID = parts[1]
+		}
+	}
+
 	client, err := config.GetNetBirdClient(ctx)
 	if err != nil {
 		return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
-	router, err := client.Networks.Routers(req.State.NetworkID).Get(ctx, req.ID)
+	router, err := client.Networks.Routers(networkID).Get(ctx, routerID)
 	if err != nil {
 		return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{}, fmt.Errorf("reading network router failed: %w", err)
 	}
@@ -126,9 +138,9 @@ func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRou
 	p.GetLogger(ctx).Debugf("Read:NetworkRouterAPI[%s]", router.Id)
 
 	return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{
-		ID: req.ID,
+		ID: router.Id,
 		Inputs: NetworkRouterArgs{
-			NetworkID:  req.State.NetworkID,
+			NetworkID:  networkID,
 			Enabled:    router.Enabled,
 			Masquerade: router.Masquerade,
 			Metric:     router.Metric,
@@ -136,7 +148,7 @@ func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRou
 			PeerGroups: router.PeerGroups,
 		},
 		State: NetworkRouterState{
-			NetworkID:  req.State.NetworkID,
+			NetworkID:  networkID,
 			Enabled:    router.Enabled,
 			Masquerade: router.Masquerade,
 			Metric:     router.Metric,

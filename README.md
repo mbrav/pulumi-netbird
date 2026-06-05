@@ -23,7 +23,7 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 To install the Pulumi NetBird resource plugin, replace the version number with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.3.1 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.3.2 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -41,7 +41,7 @@ You can use this provider with **Pulumi YAML** to manage NetBird infrastructure 
 Install the plugin (required before first `pulumi up`):
 
 ```bash
-pulumi plugin install resource netbird 0.3.1 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.3.2 --server github://api.github.com/mbrav/pulumi-netbird
 ```
 
 > **Note:** `--server` is a CLI-only flag. Do **not** add it to `Pulumi.yaml` — the `plugins.providers` block only accepts `name`, `path` (local binary), and `version`. For GitHub-hosted plugins, the CLI install above is sufficient.
@@ -79,16 +79,45 @@ pulumi up
 
 This deploys a sample NetBird environment with networks, groups, network resources, a router, and a policy.
 
-### 3. Sync existing resources
+### 3. Import existing resources
 
-If a resource already exists in NetBird and you add it to `Pulumi.yaml`, import it first to avoid creating a duplicate:
+If resources already exist in NetBird, import them before running `pulumi up` so Pulumi adopts the live resources instead of creating duplicates.
+
+1. Define the resource in your Pulumi program with the same logical name you will use in the import command.
+2. Find the resource ID in the NetBird UI, API, or exported state from the tool that currently manages it.
+3. Run `pulumi import <type> <name> <id>`.
+4. Run `pulumi preview` and adjust the program until there are no unintended changes.
+5. Run `pulumi up` to persist the reconciled inputs.
+
+For most resources, the import ID is the NetBird resource ID:
 
 ```bash
-# Get the resource ID from the NetBird UI or API, then:
 pulumi import netbird:resource:Group group-admin <GROUP_ID>
+pulumi import netbird:resource:Network net-r1 <NETWORK_ID>
+pulumi import netbird:resource:Policy policy-admin <POLICY_ID>
+pulumi import netbird:resource:Peer peer-mp1 <PEER_ID>
 ```
 
-After import, `pulumi up` will converge any property differences between your YAML and the live state.
+`NetworkRouter` and `NetworkResource` belong to a NetBird network, so their import IDs must include both the parent network ID and the child resource ID:
+
+```bash
+pulumi import netbird:resource:NetworkRouter router-r1 <NETWORK_ID>/<ROUTER_ID>
+pulumi import netbird:resource:NetworkResource netres-r1-net-01 <NETWORK_ID>/<RESOURCE_ID>
+```
+
+Peers must be imported. They cannot be created through the NetBird management API, so `pulumi up` for a new `Peer` resource will fail unless the peer already exists in state. A minimal YAML declaration for an imported peer can look like this:
+
+```yaml
+resources:
+  peer-mp1:
+    type: netbird:resource:Peer
+    properties:
+      name: mp1
+    options:
+      protect: true
+```
+
+For policies, keep the intended `rules` in your Pulumi program after import. The provider can reconstruct rule inputs during import, but declaring the rules explicitly keeps future previews understandable and makes drift intentional.
 
 For ongoing drift detection:
 
@@ -287,7 +316,7 @@ go list -m -versions github.com/mbrav/pulumi-netbird/sdk
 Output:
 
 ```bash
-github.com/mbrav/pulumi-netbird/sdk v0.3.0 v0.3.1 # and so on
+github.com/mbrav/pulumi-netbird/sdk v0.3.0 v0.3.1 v0.3.2 # and so on
 ```
 
 ### 1. Setup
@@ -328,7 +357,7 @@ make sdk_python
 Then install the wheel:
 
 ```bash
-pip install sdk/python/bin/dist/pulumi_netbird-0.3.1.tar.gz
+pip install sdk/python/bin/dist/pulumi_netbird-0.3.2.tar.gz
 ```
 
 Navigate to the Python example directory:

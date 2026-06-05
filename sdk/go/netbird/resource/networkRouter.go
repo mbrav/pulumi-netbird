@@ -12,7 +12,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// A NetBird network router resource.
+// A NetBird network router resource. Import ID format: <networkID>/<routerID>.
 type NetworkRouter struct {
 	pulumi.CustomResourceState
 

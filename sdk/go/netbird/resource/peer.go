@@ -17,15 +17,15 @@ type Peer struct {
 	pulumi.CustomResourceState
 
 	// Deprecated: Cloud only, not maintained in this provider
-	ApprovalRequired pulumi.BoolOutput `pulumi:"approvalRequired"`
+	ApprovalRequired pulumi.BoolPtrOutput `pulumi:"approvalRequired"`
 	// Whether Inactivity Expiration is enabled.
-	InactivityExpirationEnabled pulumi.BoolOutput `pulumi:"inactivityExpirationEnabled"`
+	InactivityExpirationEnabled pulumi.BoolPtrOutput `pulumi:"inactivityExpirationEnabled"`
 	// Whether Login Expiration is enabled.
-	LoginExpirationEnabled pulumi.BoolOutput `pulumi:"loginExpirationEnabled"`
+	LoginExpirationEnabled pulumi.BoolPtrOutput `pulumi:"loginExpirationEnabled"`
 	// The name of the peer.
 	Name pulumi.StringOutput `pulumi:"name"`
 	// Whether SSH is enabled.
-	SshEnabled pulumi.BoolOutput `pulumi:"sshEnabled"`
+	SshEnabled pulumi.BoolPtrOutput `pulumi:"sshEnabled"`
 }
 
 // NewPeer registers a new resource with the given unique name, arguments, and options.
@@ -35,20 +35,8 @@ func NewPeer(ctx *pulumi.Context,
 		return nil, errors.New("missing one or more required arguments")
 	}
 
-	if args.ApprovalRequired == nil {
-		return nil, errors.New("invalid value for required argument 'ApprovalRequired'")
-	}
-	if args.InactivityExpirationEnabled == nil {
-		return nil, errors.New("invalid value for required argument 'InactivityExpirationEnabled'")
-	}
-	if args.LoginExpirationEnabled == nil {
-		return nil, errors.New("invalid value for required argument 'LoginExpirationEnabled'")
-	}
 	if args.Name == nil {
 		return nil, errors.New("invalid value for required argument 'Name'")
-	}
-	if args.SshEnabled == nil {
-		return nil, errors.New("invalid value for required argument 'SshEnabled'")
 	}
 	opts = internal.PkgResourceDefaultOpts(opts)
 	var resource Peer
@@ -84,29 +72,29 @@ func (PeerState) ElementType() reflect.Type {
 
 type peerArgs struct {
 	// Deprecated: Cloud only, not maintained in this provider
-	ApprovalRequired bool `pulumi:"approvalRequired"`
+	ApprovalRequired *bool `pulumi:"approvalRequired"`
 	// Whether Inactivity Expiration is enabled.
-	InactivityExpirationEnabled bool `pulumi:"inactivityExpirationEnabled"`
+	InactivityExpirationEnabled *bool `pulumi:"inactivityExpirationEnabled"`
 	// Whether Login Expiration is enabled.
-	LoginExpirationEnabled bool `pulumi:"loginExpirationEnabled"`
+	LoginExpirationEnabled *bool `pulumi:"loginExpirationEnabled"`
 	// The name of the peer.
 	Name string `pulumi:"name"`
 	// Whether SSH is enabled.
-	SshEnabled bool `pulumi:"sshEnabled"`
+	SshEnabled *bool `pulumi:"sshEnabled"`
 }
 
 // The set of arguments for constructing a Peer resource.
 type PeerArgs struct {
 	// Deprecated: Cloud only, not maintained in this provider
-	ApprovalRequired pulumi.BoolInput
+	ApprovalRequired pulumi.BoolPtrInput
 	// Whether Inactivity Expiration is enabled.
-	InactivityExpirationEnabled pulumi.BoolInput
+	InactivityExpirationEnabled pulumi.BoolPtrInput
 	// Whether Login Expiration is enabled.
-	LoginExpirationEnabled pulumi.BoolInput
+	LoginExpirationEnabled pulumi.BoolPtrInput
 	// The name of the peer.
 	Name pulumi.StringInput
 	// Whether SSH is enabled.
-	SshEnabled pulumi.BoolInput
+	SshEnabled pulumi.BoolPtrInput
 }
 
 func (PeerArgs) ElementType() reflect.Type {
@@ -197,18 +185,18 @@ func (o PeerOutput) ToPeerOutputWithContext(ctx context.Context) PeerOutput {
 }
 
 // Deprecated: Cloud only, not maintained in this provider
-func (o PeerOutput) ApprovalRequired() pulumi.BoolOutput {
-	return o.ApplyT(func(v *Peer) pulumi.BoolOutput { return v.ApprovalRequired }).(pulumi.BoolOutput)
+func (o PeerOutput) ApprovalRequired() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *Peer) pulumi.BoolPtrOutput { return v.ApprovalRequired }).(pulumi.BoolPtrOutput)
 }
 
 // Whether Inactivity Expiration is enabled.
-func (o PeerOutput) InactivityExpirationEnabled() pulumi.BoolOutput {
-	return o.ApplyT(func(v *Peer) pulumi.BoolOutput { return v.InactivityExpirationEnabled }).(pulumi.BoolOutput)
+func (o PeerOutput) InactivityExpirationEnabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *Peer) pulumi.BoolPtrOutput { return v.InactivityExpirationEnabled }).(pulumi.BoolPtrOutput)
 }
 
 // Whether Login Expiration is enabled.
-func (o PeerOutput) LoginExpirationEnabled() pulumi.BoolOutput {
-	return o.ApplyT(func(v *Peer) pulumi.BoolOutput { return v.LoginExpirationEnabled }).(pulumi.BoolOutput)
+func (o PeerOutput) LoginExpirationEnabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *Peer) pulumi.BoolPtrOutput { return v.LoginExpirationEnabled }).(pulumi.BoolPtrOutput)
 }
 
 // The name of the peer.
@@ -217,8 +205,8 @@ func (o PeerOutput) Name() pulumi.StringOutput {
 }
 
 // Whether SSH is enabled.
-func (o PeerOutput) SshEnabled() pulumi.BoolOutput {
-	return o.ApplyT(func(v *Peer) pulumi.BoolOutput { return v.SshEnabled }).(pulumi.BoolOutput)
+func (o PeerOutput) SshEnabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *Peer) pulumi.BoolPtrOutput { return v.SshEnabled }).(pulumi.BoolPtrOutput)
 }
 
 type PeerArrayOutput struct{ *pulumi.OutputState }

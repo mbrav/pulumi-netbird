@@ -356,13 +356,18 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 		}
 	}
 
+	inputRules := req.Inputs.Rules
+	if len(inputRules) == 0 && len(policy.Rules) > 0 {
+		inputRules = policyRulesToArgs(policy.Rules)
+	}
+
 	return infer.ReadResponse[PolicyArgs, PolicyState]{
 		ID: req.ID,
 		Inputs: PolicyArgs{
 			Name:                policy.Name,
-			Description:         policy.Description,
+			Description:         req.Inputs.Description,
 			Enabled:             policy.Enabled,
-			Rules:               req.Inputs.Rules, // Not strictly accurate; optional improvement: reconstruct from `policy.Rules`
+			Rules:               inputRules,
 			SourcePostureChecks: &policy.SourcePostureChecks,
 		},
 		State: PolicyState{
@@ -530,7 +535,7 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 		}
 	}
 
-	if strPtr(req.Inputs.Description) != strPtr(req.State.Description) {
+	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,
@@ -559,7 +564,6 @@ func (*Policy) Diff(ctx context.Context, req infer.DiffRequest[PolicyArgs, Polic
 			p.GetLogger(ctx).Debugf("Diff:Policy[%s]:Rules[%d] a=%+v b=%+v", req.ID, ruleIndex, input, state)
 
 			if input.Name != state.Name ||
-				!equalPtr(input.Description, state.Description) ||
 				input.Bidirectional != state.Bidirectional ||
 				input.Action != state.Action ||
 				input.Enabled != state.Enabled ||
@@ -808,12 +812,58 @@ func toGroupIDs(groups *[]RuleGroup) *[]string {
 	return &iDs
 }
 
+func policyRulesToArgs(rules []nbapi.PolicyRule) []PolicyRuleArgs {
+	out := make([]PolicyRuleArgs, len(rules))
+	for i, rule := range rules {
+		out[i] = PolicyRuleArgs{
+			ID:                  rule.Id,
+			Name:                rule.Name,
+			Description:         nil,
+			Bidirectional:       rule.Bidirectional,
+			Action:              RuleAction(rule.Action),
+			Enabled:             rule.Enabled,
+			Protocol:            Protocol(rule.Protocol),
+			Ports:               rule.Ports,
+			PortRanges:          fromAPIPortRanges(rule.PortRanges),
+			Sources:             groupMinimumIDs(rule.Sources),
+			Destinations:        groupMinimumIDs(rule.Destinations),
+			SourceResource:      fromAPIResource(rule.SourceResource),
+			DestinationResource: fromAPIResource(rule.DestinationResource),
+		}
+	}
+
+	return out
+}
+
+func groupMinimumIDs(groups *[]nbapi.GroupMinimum) *[]string {
+	if groups == nil {
+		return nil
+	}
+
+	out := make([]string, len(*groups))
+	for i, group := range *groups {
+		out[i] = group.Id
+	}
+
+	return &out
+}
+
 func equalPortRangePtr(portRangeA, portRangeB *[]RulePortRange) bool {
-	if portRangeA == nil && portRangeB == nil {
+	aLen := 0
+	if portRangeA != nil {
+		aLen = len(*portRangeA)
+	}
+
+	bLen := 0
+	if portRangeB != nil {
+		bLen = len(*portRangeB)
+	}
+
+	if aLen == 0 && bLen == 0 {
 		return true
 	}
 
-	if portRangeA == nil || portRangeB == nil || len(*portRangeA) != len(*portRangeB) {
+	if portRangeA == nil || portRangeB == nil || aLen != bLen {
 		return false
 	}
 

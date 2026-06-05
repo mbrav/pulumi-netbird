@@ -103,7 +103,7 @@ func (*Network) Read(ctx context.Context, req infer.ReadRequest[NetworkArgs, Net
 		ID: req.ID,
 		Inputs: NetworkArgs{
 			Name:        net.Name,
-			Description: net.Description,
+			Description: req.Inputs.Description,
 		},
 		State: NetworkState{
 			Name:        net.Name,
@@ -176,7 +176,7 @@ func (*Network) Diff(ctx context.Context, req infer.DiffRequest[NetworkArgs, Net
 		}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if req.Inputs.Description != nil && !equalPtr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.Update,

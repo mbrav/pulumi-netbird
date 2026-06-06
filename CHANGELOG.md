@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.8] - 2026-06-06
+
+### Changed
+
+- Bumped `github.com/netbirdio/netbird` dependency from `v0.72.0` to `v0.72.1`.
+- Bumped provider, schema, and Go SDK metadata from `0.3.7` to `0.3.8`.
+
 ## [0.3.7] - 2026-06-05
 
 ### Added

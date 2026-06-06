@@ -110,7 +110,6 @@ func main() {
 			Enabled:    pulumi.Bool(true),
 			Masquerade: pulumi.Bool(true),
 			Metric:     pulumi.Int(10),
-			Peer:       pulumi.StringPtr(""),
 			PeerGroups: pulumi.StringArray{
 				groupDevops.ID(),
 			},
@@ -297,6 +296,63 @@ func main() {
 			Type:    resource.DNSRecordTypeCNAME,
 			Content: pulumi.String("gw.corp.example.com"),
 			Ttl:     pulumi.Int(300),
+		})
+		if err != nil {
+			return err
+		}
+
+		// ── Setup Key ─────────────────────────────────────────────────────────
+		// Reusable setup key for onboarding new peers into the DevOps group.
+		// UsageLimit 0 = unlimited uses; ExpiresIn 0 = no expiry.
+
+		_, err = resource.NewSetupKey(ctx, "setup-key-devops", &resource.SetupKeyArgs{
+			Name:                pulumi.String("DevOps Onboarding"),
+			Type:                resource.SetupKeyTypeReusable,
+			ExpiresIn:           pulumi.Int(0),
+			UsageLimit:          pulumi.Int(0),
+			Ephemeral:           pulumi.BoolPtr(false),
+			AllowExtraDnsLabels: pulumi.BoolPtr(false),
+			AutoGroups: pulumi.StringArray{
+				groupDevops.ID(),
+			},
+		})
+		if err != nil {
+			return err
+		}
+
+		// ── Route ─────────────────────────────────────────────────────────────
+		// Network route advertising 192.168.10.0/24 through the DevOps peer group.
+		// Masquerade hides the source IP behind the router's address.
+
+		_, err = resource.NewRoute(ctx, "route-r1-mgmt", &resource.RouteArgs{
+			NetworkId:   pulumi.String("route-r1-mgmt"),
+			Description: pulumi.String("Management subnet route via Region 1"),
+			Enabled:     pulumi.Bool(true),
+			Network:     pulumi.StringPtr("192.168.10.0/24"),
+			Masquerade:  pulumi.Bool(true),
+			Metric:      pulumi.Int(100),
+			KeepRoute:   pulumi.Bool(true),
+			Groups: pulumi.StringArray{
+				groupDevops.ID(),
+			},
+			PeerGroups: pulumi.StringArray{
+				groupDevops.ID(),
+			},
+		})
+		if err != nil {
+			return err
+		}
+
+		// ── Service User ──────────────────────────────────────────────────────
+		// Automation service user with admin role; placed in the DevOps group.
+
+		_, err = resource.NewUser(ctx, "user-ci-bot", &resource.UserArgs{
+			Role:          pulumi.String("admin"),
+			IsServiceUser: pulumi.BoolPtr(true),
+			Name:          pulumi.StringPtr("ci-bot"),
+			AutoGroups: pulumi.StringArray{
+				groupDevops.ID(),
+			},
 		})
 		if err != nil {
 			return err

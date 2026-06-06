@@ -52,7 +52,7 @@ The root `go.mod` has a `replace` block that redirects `github.com/dexidp/dex` t
 
 ### Provider registration (`provider/provider.go`)
 
-All 15 resources are registered in a single `infer.Provider(...)` call. Adding a new resource requires: (1) implementing it under `provider/resource/`, (2) adding it to the `Resources` slice in `provider/provider.go`.
+All 16 resources are registered in a single `infer.Provider(...)` call. Adding a new resource requires: (1) implementing it under `provider/resource/`, (2) adding it to the `Resources` slice in `provider/provider.go`.
 
 ### Resource implementation pattern
 

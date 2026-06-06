@@ -14,7 +14,7 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## ✨ Features
 
-- Manage 15 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
+- Manage 16 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
 - Built natively with Pulumi's Go SDK
 - Works with NetBird Cloud (`https://api.netbird.io`) and self-hosted management servers
 
@@ -379,6 +379,27 @@ pulumi config set netbird:url https://nb.domain:33073
 ```bash
 pulumi up
 ```
+
+## 📋 Supported Resources
+
+| Resource | Pulumi type |
+| -------- | ----------- |
+| DNS nameserver group | `netbird:resource:DNS` |
+| DNS record | `netbird:resource:DNSRecord` |
+| DNS settings | `netbird:resource:DNSSettings` |
+| DNS zone | `netbird:resource:DNSZone` |
+| Group | `netbird:resource:Group` |
+| Network | `netbird:resource:Network` |
+| Network resource | `netbird:resource:NetworkResource` |
+| Network router | `netbird:resource:NetworkRouter` |
+| Peer | `netbird:resource:Peer` |
+| Policy | `netbird:resource:Policy` |
+| Posture check | `netbird:resource:PostureCheck` |
+| Reverse proxy domain | `netbird:resource:ReverseProxyDomain` |
+| Reverse proxy service | `netbird:resource:ReverseProxyService` |
+| Route | `netbird:resource:Route` |
+| Setup key | `netbird:resource:SetupKey` |
+| User | `netbird:resource:User` |
 
 ## 📁 Repository Structure
 

@@ -15,7 +15,7 @@ The NetBird Pulumi provider is available for multiple Pulumi-supported languages
 The provider plugin is distributed via GitHub Releases. Install it explicitly before running `pulumi up`:
 
 ```sh
-pulumi plugin install resource netbird v0.3.1 \
+pulumi plugin install resource netbird 0.3.8 \
   --server github://api.github.com/mbrav/pulumi-netbird
 ```
 
@@ -127,22 +127,3 @@ pulumi preview   # show pending changes
 pulumi up        # apply
 ```
 
-## Supported Resources
-
-| Resource | Pulumi type |
-| -------- | ----------- |
-| DNS nameserver group | `netbird:resource:DNS` |
-| DNS record | `netbird:resource:DNSRecord` |
-| DNS settings | `netbird:resource:DNSSettings` |
-| DNS zone | `netbird:resource:DNSZone` |
-| Group | `netbird:resource:Group` |
-| Network | `netbird:resource:Network` |
-| Network resource | `netbird:resource:NetworkResource` |
-| Network router | `netbird:resource:NetworkRouter` |
-| Peer | `netbird:resource:Peer` |
-| Policy | `netbird:resource:Policy` |
-| Posture check | `netbird:resource:PostureCheck` |
-| Reverse proxy domain | `netbird:resource:ReverseProxyDomain` |
-| Reverse proxy service | `netbird:resource:ReverseProxyService` |
-| Setup key | `netbird:resource:SetupKey` |
-| User | `netbird:resource:User` |

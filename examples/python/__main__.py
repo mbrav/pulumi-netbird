@@ -59,7 +59,6 @@ resource.NetworkRouter(
     enabled=True,
     masquerade=True,
     metric=10,
-    peer="",
     peer_groups=[group_devops.id],
 )
 
@@ -200,6 +199,49 @@ resource.DNSRecord(
     type=resource.DNSRecordType.CNAME,
     content="gw.corp.example.com",
     ttl=300,
+)
+
+# ── Setup Key ─────────────────────────────────────────────────────────────────
+# Reusable setup key for onboarding new peers into the DevOps group.
+# usage_limit=0: unlimited uses; expires_in=0: no expiry.
+
+resource.SetupKey(
+    "setup-key-devops",
+    name="DevOps Onboarding",
+    type=resource.SetupKeyType.REUSABLE,
+    expires_in=0,
+    usage_limit=0,
+    ephemeral=False,
+    allow_extra_dns_labels=False,
+    auto_groups=[group_devops.id],
+)
+
+# ── Route ─────────────────────────────────────────────────────────────────────
+# Network route advertising 192.168.10.0/24 through the DevOps peer group.
+# masquerade=True hides the source IP behind the router's address.
+
+resource.Route(
+    "route-r1-mgmt",
+    network_id="route-r1-mgmt",
+    description="Management subnet route via Region 1",
+    enabled=True,
+    network="192.168.10.0/24",
+    masquerade=True,
+    metric=100,
+    keep_route=True,
+    groups=[group_devops.id],
+    peer_groups=[group_devops.id],
+)
+
+# ── Service User ──────────────────────────────────────────────────────────────
+# Automation service user with admin role; placed in the DevOps group.
+
+resource.User(
+    "user-ci-bot",
+    role="admin",
+    is_service_user=True,
+    name="ci-bot",
+    auto_groups=[group_devops.id],
 )
 
 # ── Reverse Proxy Domain ──────────────────────────────────────────────────────

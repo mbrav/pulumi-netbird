@@ -73,10 +73,10 @@ resources:
     properties:
       name: Region 1 Net 01
       description: Network 01 in Region 1
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       address: 10.10.1.0/24
       enabled: true
-      group_ids:
+      groupIDs:
         - ${group-devops.id}
 
   netres-r1-net-02:
@@ -84,10 +84,10 @@ resources:
     properties:
       name: Region 1 Net 02
       description: Network 02 in Region 1
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       address: 10.10.2.0/24
       enabled: true
-      group_ids:
+      groupIDs:
         - ${group-devops.id}
 
   netres-r1-net-03:
@@ -95,10 +95,10 @@ resources:
     properties:
       name: Region 1 Net 03
       description: Network 03 in Region 1
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       address: 10.10.3.0/24
       enabled: true
-      group_ids:
+      groupIDs:
         - ${group-devops.id}
 
   # ── Network Router ────────────────────────────────────────────────────────────
@@ -107,12 +107,11 @@ resources:
   router-r1:
     type: netbird:resource:NetworkRouter
     properties:
-      network_id: ${net-r1.id}
+      networkID: ${net-r1.id}
       enabled: true
       masquerade: true
       metric: 10
-      peer: ""
-      peer_groups:
+      peerGroups:
         - ${group-devops.id}
 
   # ── Posture Check ─────────────────────────────────────────────────────────────
@@ -164,7 +163,7 @@ resources:
       name: "SSH Policy - Group to Subnet"
       description: "Allow SSH (22/TCP) from DevOps and Dev groups to Region 1 Net 02"
       enabled: true
-      posture_checks:
+      postureChecks:
         - ${posture-devops.id}
       rules:
         - name: "SSH Access - Group → Subnet"
@@ -190,7 +189,7 @@ resources:
       name: "SSH Policy - Group to Group"
       description: "Allow SSH (22/TCP) from DevOps to Backoffice group resources"
       enabled: true
-      posture_checks: []
+      postureChecks: []
       rules:
         - name: "SSH Access - Group → Group"
           description: "SSH from DevOps group to Backoffice group"
@@ -260,6 +259,53 @@ resources:
     properties:
       domain: proxy.corp.example.com
       targetCluster: eu-central-1
+
+  # ── Setup Key ─────────────────────────────────────────────────────────────────
+  # Reusable setup key for onboarding new peers into the DevOps group.
+  # usageLimit 0 = unlimited uses; expiresIn 0 = no expiry.
+
+  setup-key-devops:
+    type: netbird:resource:SetupKey
+    properties:
+      name: DevOps Onboarding
+      type: reusable
+      expiresIn: 0
+      usageLimit: 0
+      ephemeral: false
+      allowExtraDnsLabels: false
+      autoGroups:
+        - ${group-devops.id}
+
+  # ── Route ─────────────────────────────────────────────────────────────────────
+  # Network route advertising 192.168.10.0/24 through the DevOps peer group.
+  # masquerade: true hides the source IP behind the router's address.
+
+  route-r1-mgmt:
+    type: netbird:resource:Route
+    properties:
+      networkId: route-r1-mgmt
+      description: Management subnet route via Region 1
+      enabled: true
+      network: 192.168.10.0/24
+      masquerade: true
+      metric: 100
+      keepRoute: true
+      groups:
+        - ${group-devops.id}
+      peerGroups:
+        - ${group-devops.id}
+
+  # ── Service User ──────────────────────────────────────────────────────────────
+  # Automation service user with admin role; placed in the DevOps group.
+
+  user-ci-bot:
+    type: netbird:resource:User
+    properties:
+      role: admin
+      isServiceUser: true
+      name: ci-bot
+      autoGroups:
+        - ${group-devops.id}
 
   # ── Reverse Proxy Service ──────────────────────────────────────────────────────
   # HTTP (L7) reverse proxy routing traffic to an internal backend host.

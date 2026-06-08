@@ -2,6 +2,7 @@
 package provider
 
 import (
+	"github.com/mbrav/pulumi-netbird/provider/component"
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	"github.com/mbrav/pulumi-netbird/provider/function"
 	"github.com/mbrav/pulumi-netbird/provider/resource"
@@ -38,10 +39,8 @@ func Provider() p.Provider { //nolint:funlen
 		// WithWrapped(provider p.Provider),
 		WithConfig(infer.Config(&config.Config{})). //nolint:exhaustruct
 		WithResources(resource.All()...).
-		// WithComponents(
-		// 	infer.ComponentF(component.NewACLFileComponent),
-		// ).
 		WithFunctions(function.All()...).
+		WithComponents(component.All()...).
 		WithModuleMap(map[tokens.ModuleName]tokens.ModuleName{
 			"auto-naming": "index",
 		}).

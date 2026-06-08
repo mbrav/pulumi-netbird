@@ -2,6 +2,29 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.0] - 2026-06-08
+
+### Added
+
+- **Invoke functions** (data sources) — 6 read-only provider functions that query live NetBird state without managing resources. Useful for cross-stack references and referencing objects that exist outside the current Pulumi program:
+  - **`netbird:function:getPeers`** — list all peers in the account, with an optional `groupId` filter to return only peers belonging to a specific group. Returns `peers[]` with `peerId`, `name`, `ip`, `dnsLabel`, `connected`, `hostname`, and `groups[]`.
+  - **`netbird:function:lookupGroup`** — look up a group by `name`. Returns `groupId`, `peersCount`, `resourcesCount`, `peers[]`, and `resources[]`. Useful for referencing groups not managed by Pulumi (e.g. the built-in "All" group).
+  - **`netbird:function:lookupPeer`** — look up a peer by `name`. Returns `peerId`, `ip`, `dnsLabel`, `connected`, `hostname`, `os`, and `groups[]`. Peers cannot be created via the API, so this is the standard way to resolve a peer ID from its hostname.
+  - **`netbird:function:lookupRoute`** — look up the first route whose `network` CIDR matches the input. Returns `routeId`, `description`, `network`, `domains[]`, `enabled`, `masquerade`, `metric`, `peer`, `peerGroups[]`, and `groups[]`.
+  - **`netbird:function:lookupSetupKey`** — look up a setup key by `name`. Returns `setupKeyId`, `type`, `state`, `revoked`, `ephemeral`, `usageLimit`, `autoGroups[]`, `expires`, and `lastUsed`.
+  - **`netbird:function:lookupUser`** — look up a user by `email`. Returns `userId`, `name`, `email`, `role`, `isBlocked`, and `autoGroups[]`.
+- **`provider/resource/all.go`** — `resource.All()` helper that returns all 16 registered resources as `[]infer.InferredResource`. `provider.go` now calls `WithResources(resource.All()...)`, keeping the registration list in one place.
+- **`provider/function/all.go`** — `function.All()` helper that returns all 6 functions as `[]infer.InferredFunction`, used by `WithFunctions(function.All()...)` in `provider.go`.
+- Function examples added to `examples/yaml/Pulumi.yaml`: three `variables` blocks using `fn::invoke` for `lookupGroup` (All group), `getPeers` (all peers), and `getPeers` filtered by `${group-devops.id}`, with results exported as stack outputs.
+- Function examples added to `examples/go/main.go`: `function.LookupGroup`, `function.GetPeers` (unfiltered), and `function.GetPeers` filtered by the resolved All-group ID, with peer counts exported as stack outputs.
+
+### Changed
+
+- `provider.go` refactored to use `resource.All()...` and `function.All()...` spreads instead of listing every resource and function inline. Adding a new resource or function now requires editing only its registration file.
+- Bumped provider, schema, and Go SDK metadata from `0.3.8` to `0.4.0`.
+- `examples/go/go.mod` updated to require `github.com/mbrav/pulumi-netbird/sdk v0.4.0` with a local `replace` directive (`../../sdk`) for development builds prior to the published release.
+- Regenerated Go SDK (`sdk/go/netbird/function/`) to expose all six functions with typed `Args`, `Result`, `OutputArgs`, and `ResultOutput` variants for each.
+
 ## [0.3.8] - 2026-06-06
 
 ### Changed

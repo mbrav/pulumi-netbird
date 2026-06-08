@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -79,6 +79,100 @@
     ]
   },
   "types": {
+    "netbird:component:DNSRecordSpec": {
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Record value: an IP address for A/AAAA or a hostname for CNAME."
+        },
+        "name": {
+          "type": "string",
+          "description": "Fully-qualified DNS record name (e.g. api.corp.example.com)."
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "Time-to-live in seconds."
+        },
+        "type": {
+          "type": "string",
+          "description": "Record type: A, AAAA, or CNAME."
+        }
+      },
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "content",
+        "ttl"
+      ]
+    },
+    "netbird:component:NetworkRouterSpec": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the router is enabled."
+        },
+        "masquerade": {
+          "type": "boolean",
+          "description": "Whether to masquerade traffic through the router."
+        },
+        "metric": {
+          "type": "integer",
+          "description": "Route metric; lower values have higher priority."
+        },
+        "peer": {
+          "type": "string",
+          "description": "Specific peer to use as router."
+        },
+        "peerGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Peer groups to use as router peers."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "masquerade",
+        "metric"
+      ]
+    },
+    "netbird:component:NetworkSubnetSpec": {
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "CIDR block for the subnet (e.g. 10.10.1.0/24)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description for the subnet resource."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the subnet resource is enabled."
+        },
+        "groupIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Group IDs that have access to this subnet."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the subnet resource."
+        }
+      },
+      "type": "object",
+      "required": [
+        "name",
+        "address",
+        "enabled",
+        "groupIDs"
+      ]
+    },
     "netbird:function:PeerSummary": {
       "properties": {
         "connected": {
@@ -871,6 +965,126 @@
     ]
   },
   "resources": {
+    "netbird:component:DNSZoneBundle": {
+      "properties": {
+        "recordIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "plain": true
+          },
+          "description": "IDs of the created DNSRecord resources, in declaration order."
+        },
+        "zoneId": {
+          "type": "string",
+          "description": "ID of the created DNSZone resource."
+        }
+      },
+      "required": [
+        "zoneId",
+        "recordIds"
+      ],
+      "inputProperties": {
+        "distributionGroups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "plain": true
+          },
+          "description": "Group IDs whose peers receive this DNS zone."
+        },
+        "domain": {
+          "type": "string",
+          "plain": true,
+          "description": "DNS domain (e.g. corp.example.com)."
+        },
+        "enableSearchDomain": {
+          "type": "boolean",
+          "plain": true,
+          "description": "Whether to enable the zone as a search domain for peers."
+        },
+        "enabled": {
+          "type": "boolean",
+          "plain": true,
+          "description": "Whether the DNS zone is active."
+        },
+        "name": {
+          "type": "string",
+          "plain": true,
+          "description": "Logical name for the DNS zone resource."
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:component:DNSRecordSpec"
+          },
+          "description": "DNS records to create within the zone."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "domain",
+        "enabled",
+        "enableSearchDomain",
+        "distributionGroups",
+        "records"
+      ],
+      "isComponent": true
+    },
+    "netbird:component:NetworkBundle": {
+      "properties": {
+        "networkId": {
+          "type": "string",
+          "description": "ID of the created Network resource."
+        },
+        "routerId": {
+          "type": "string",
+          "description": "ID of the created NetworkRouter resource."
+        },
+        "subnetIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "plain": true
+          },
+          "description": "IDs of the created NetworkResource (subnet) resources, in declaration order."
+        }
+      },
+      "required": [
+        "networkId",
+        "routerId",
+        "subnetIds"
+      ],
+      "inputProperties": {
+        "description": {
+          "type": "string",
+          "plain": true,
+          "description": "Optional description for the network."
+        },
+        "name": {
+          "type": "string",
+          "plain": true,
+          "description": "Name of the overlay network."
+        },
+        "router": {
+          "$ref": "#/types/netbird:component:NetworkRouterSpec",
+          "description": "Router configuration attached to the network."
+        },
+        "subnets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:component:NetworkSubnetSpec"
+          },
+          "description": "Subnet resources to attach to the network."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "router",
+        "subnets"
+      ],
+      "isComponent": true
+    },
     "netbird:resource:DNS": {
       "description": "A NetBird network.",
       "properties": {

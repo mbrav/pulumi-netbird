@@ -467,6 +467,75 @@ _, err = netbird.NewSetupKey(ctx, "setup-key-devops", &netbird.SetupKeyArgs{
 })
 ```
 
+## 🧪 Experimental Components
+
+> **These components are a proof of concept.** They explore the `pulumi-go-provider` component API and demonstrate how multiple resources can be bundled into a single declaration. The interface may change without notice. Do not rely on them in production.
+
+Components are higher-level abstractions that create several NetBird resources together and wire them automatically. They appear in the schema under the `netbird:component:*` token prefix.
+
+| Component | Pulumi type | Creates |
+| --------- | ----------- | ------- |
+| Network bundle | `netbird:component:NetworkBundle` | `Network` + `NetworkRouter` + N `NetworkResource` subnets |
+| DNS zone bundle | `netbird:component:DNSZoneBundle` | `DNSZone` + N `DNSRecord`s |
+
+### Example: NetworkBundle in YAML
+
+```yaml
+resources:
+  r1:
+    type: netbird:component:NetworkBundle
+    properties:
+      name: Region1
+      router:
+        enabled: true
+        masquerade: true
+        metric: 10
+        peerGroups:
+          - ${group-devops.id}
+      subnets:
+        - name: Net01
+          address: 10.10.1.0/24
+          enabled: true
+          groupIDs:
+            - ${group-devops.id}
+        - name: Net02
+          address: 10.10.2.0/24
+          enabled: true
+          groupIDs:
+            - ${group-devops.id}
+
+outputs:
+  networkId: ${r1.networkId}
+  subnetIds: ${r1.subnetIds}
+```
+
+### Example: DNSZoneBundle in YAML
+
+```yaml
+resources:
+  corp-zone:
+    type: netbird:component:DNSZoneBundle
+    properties:
+      name: corp-internal
+      domain: corp.example.com
+      enabled: true
+      enableSearchDomain: true
+      distributionGroups:
+        - ${group-devops.id}
+      records:
+        - name: gw.corp.example.com
+          type: A
+          content: 10.10.1.1
+          ttl: 300
+        - name: api.corp.example.com
+          type: CNAME
+          content: gw.corp.example.com
+          ttl: 300
+
+outputs:
+  zoneId: ${corp-zone.zoneId}
+```
+
 ## 📁 Repository Structure
 
 - `provider/` – Go implementation of the provider

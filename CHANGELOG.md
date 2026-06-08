@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.1] - 2026-06-08
+
+### Added
+
+- **Experimental components** (proof of concept) — two composite resources that bundle multiple related NetBird resources into a single Pulumi declaration. These are an exploration of the `pulumi-go-provider` component API; the interface may change without notice and they should not be relied upon in production.
+  - **`netbird:component:NetworkBundle`** — declares a `Network`, a `NetworkRouter`, and one `NetworkResource` (subnet) per entry in `subnets[]` as a single unit. The `networkID` is wired automatically between all child resources. Inputs: `name`, `description?`, `router` (`enabled`, `masquerade`, `metric`, `peerGroups?`, `peer?`), `subnets[]` (`name`, `address`, `enabled`, `groupIDs`, `description?`). Outputs: `networkId`, `routerId`, `subnetIds[]`.
+  - **`netbird:component:DNSZoneBundle`** — declares a `DNSZone` and one `DNSRecord` per entry in `records[]` as a single unit. The `zoneID` is wired automatically into each record. Inputs: `name`, `domain`, `enabled`, `enableSearchDomain`, `distributionGroups[]`, `records[]` (`name`, `type`, `content`, `ttl`). Outputs: `zoneId`, `recordIds[]`.
+- **`provider/component/`** package with `networkBundle.go`, `dnsZoneBundle.go`, and `all.go`. Components are registered via `infer.Component` . Child resources use `var child pulumi.CustomResourceState` directly — no wrapper struct needed.
+
+### Changed
+
+- Bumped provider version from `0.4.0` to `0.4.1`.
+- Regenerated Go SDK (`sdk/go/netbird/component/`) to expose `NewNetworkBundle` and `NewDNSZoneBundle` with typed `Args` and output structs.
+
 ## [0.4.0] - 2026-06-08
 
 ### Added

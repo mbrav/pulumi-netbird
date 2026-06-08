@@ -7,7 +7,7 @@ layout: overview
 The NetBird Pulumi Provider enables you to manage [NetBird](https://netbird.io) resources declaratively using Pulumi infrastructure as code.
 It supports all major Pulumi-supported languages and works with both NetBird Cloud (`https://api.netbird.io`) and self-hosted management servers.
 
-The provider covers 16 resource types including groups, peers, policies, setup keys, DNS, networks, posture checks, users, and reverse proxy services, plus 6 **invoke functions** (data sources) for reading existing NetBird objects by name, email, or CIDR without managing them as resources. See the [Installation & Configuration](installation-configuration/) page for the full list and setup instructions.
+The provider covers 16 resource types including groups, peers, policies, setup keys, DNS, networks, posture checks, users, and reverse proxy services, plus 6 **invoke functions** (data sources) for reading existing NetBird objects by name, email, or CIDR without managing them as resources. It also ships two **experimental components** (`NetworkBundle`, `DNSZoneBundle`) as a proof of concept — see the note below before using them. See the [Installation & Configuration](installation-configuration/) page for the full list and setup instructions.
 
 ## Example
 
@@ -143,3 +143,34 @@ var devopsGroup = await Netbird.LookupGroup.InvokeAsync(new LookupGroupArgs { Na
 {{% /choosable %}}
 
 {{< /chooser >}}
+
+## Experimental Components
+
+> **Proof of concept only.** These components explore the `pulumi-go-provider` component API. Their interface may change without notice; do not use them in production.
+
+Components bundle multiple NetBird resources into a single declaration, wiring resource IDs automatically.
+
+| Component | Pulumi type | Child resources created |
+| --------- | ----------- | ----------------------- |
+| Network bundle | `netbird:component:NetworkBundle` | `Network` + `NetworkRouter` + N `NetworkResource` subnets |
+| DNS zone bundle | `netbird:component:DNSZoneBundle` | `DNSZone` + N `DNSRecord`s |
+
+```yaml
+resources:
+  r1:
+    type: netbird:component:NetworkBundle
+    properties:
+      name: Region1
+      router:
+        enabled: true
+        masquerade: true
+        metric: 10
+        peerGroups:
+          - ${group-devops.id}
+      subnets:
+        - name: Net01
+          address: 10.10.1.0/24
+          enabled: true
+          groupIDs:
+            - ${group-devops.id}
+```

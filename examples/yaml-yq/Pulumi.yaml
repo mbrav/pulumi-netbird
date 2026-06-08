@@ -1,4 +1,4 @@
-name: netbird-yaml-jq
+name: netbird-yaml-yq
 description: NetBird infrastructure managed via Pulumi YAML — multi-file layout built with yq
 runtime: yaml
 # plugins.providers with path is for local development only (uses ../../bin binary).

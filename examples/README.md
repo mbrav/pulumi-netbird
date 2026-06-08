@@ -7,7 +7,7 @@ This directory contains example Pulumi projects that demonstrate different ways 
 | Example | Runtime | Description |
 |---------|---------|-------------|
 | [`yaml`](./yaml/) | Pulumi YAML | All resources in a single `Pulumi.yaml` — good starting point |
-| [`yaml-jq`](./yaml-jq/) | Pulumi YAML + `yq` | Resources split across multiple `src/*.yaml` files, assembled by `make build` |
+| [`yaml-yq`](./yaml-yq/) | Pulumi YAML + `yq` | Resources split across multiple `src/*.yaml` files, assembled by `make build` |
 | [`go`](./go/) | Pulumi Go | Provider usage via the generated Go SDK |
 | [`python`](./python/) | Pulumi Python | Provider usage via the generated Python SDK |
 
@@ -29,12 +29,12 @@ pulumi config set netbird:url https://nb.example.com:33073
 pulumi up
 ```
 
-## `yaml-jq` — Multi-file YAML with `yq`
+## `yaml-yq` — Multi-file YAML with `yq`
 
 Resources are split into focused files under `src/` and deep-merged into a single `Pulumi.yaml` at build time using [`yq`](https://github.com/mikefarah/yq). The `Makefile` drives the workflow.
 
 ```
-yaml-jq/
+yaml-yq/
   Pulumi.base.yaml   # stack metadata and config schema
   Makefile           # build / preview / up / destroy targets
   src/
@@ -59,7 +59,7 @@ yq eval-all '. as $item ireduce ({}; . * $item)' Pulumi.base.yaml src/*.yaml > P
 brew install yq
 
 # Install the provider plugin
-cd yaml-jq
+cd yaml-yq
 make setup
 
 pulumi stack init dev

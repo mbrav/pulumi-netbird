@@ -40,7 +40,7 @@ All runnable examples live in [`examples/`](./examples/README.md). The table bel
 | Example | Runtime | Description |
 |---------|---------|-------------|
 | [`yaml`](./examples/yaml/) | Pulumi YAML | All resources in a single `Pulumi.yaml` |
-| [`yaml-jq`](./examples/yaml-jq/) | Pulumi YAML + `yq` | Resources split across `src/*.yaml`, assembled by `make build` |
+| [`yaml-yq`](./examples/yaml-yq/) | Pulumi YAML + `yq` | Resources split across `src/*.yaml`, assembled by `make build` |
 | [`go`](./examples/go/) | Pulumi Go | Provider usage via the generated Go SDK |
 | [`python`](./examples/python/) | Pulumi Python | Provider usage via the generated Python SDK |
 

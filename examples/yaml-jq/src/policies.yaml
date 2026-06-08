@@ -1,0 +1,160 @@
+resources:
+  policy-admin-allow-all-icmp:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin ICMP Access
+      enabled: true
+      rules:
+        - name: "Admin → All: ICMP"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: icmp
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-all.id}
+    options:
+      protect: true
+
+  policy-admin-allow-all-ssh:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin SSH Access
+      enabled: true
+      rules:
+        - name: "Admin → All: SSH TCP/22"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "22"
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-all.id}
+    options:
+      protect: true
+
+  policy-svc-node-exporter-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Node Exporter Access"
+      enabled: true
+      rules:
+        - name: "🤖Node Exporter → ⚙️Node Exporter: TCP/9100"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "9100"
+          sources:
+            - ${group-svc-node-exporter-clients.id}
+          destinations:
+            - ${group-svc-node-exporter.id}
+    options:
+      protect: true
+
+  policy-svc-prometheus-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Prometheus Access"
+      enabled: true
+      rules:
+        - name: "🤖Prometheus → ⚙️Prometheus: TCP/9090"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "9090"
+          sources:
+            - ${group-svc-prometheus-clients.id}
+          destinations:
+            - ${group-svc-prometheus.id}
+    options:
+      protect: true
+
+  policy-svc-grafana-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Grafana Access"
+      enabled: true
+      rules:
+        - name: "🤖Grafana → ⚙️Grafana: TCP/3000"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "3000"
+          sources:
+            - ${group-svc-grafana-clients.id}
+          destinations:
+            - ${group-svc-grafana.id}
+    options:
+      protect: true
+
+  policy-svc-postgres-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Postgres Access"
+      enabled: true
+      rules:
+        - name: "🤖Postgres → ⚙️Postgres: TCP/5432"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "5432"
+          sources:
+            - ${group-svc-postgres-clients.id}
+          destinations:
+            - ${group-svc-postgres.id}
+    options:
+      protect: true
+
+  policy-admin-proxy-access:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin Home Access
+      enabled: true
+      rules:
+        - name: "Admin → Home: TCP proxy ports"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "3000"
+            - "3001"
+            - "8080"
+            - "8443"
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-home.id}
+    options:
+      protect: true
+
+  policy-admin-exit-nodes-access:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin Exit Nodes Access
+      enabled: true
+      rules:
+        - name: "Admin → Exit Nodes: all"
+          action: accept
+          bidirectional: true
+          enabled: true
+          protocol: all
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-exit-us.id}
+            - ${group-exit-eu.id}
+    options:
+      protect: true

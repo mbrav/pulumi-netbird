@@ -1,0 +1,76 @@
+resources:
+  # Peers are imported, never created via the API.
+  # All fields use ignoreChanges because the peer client controls its own settings.
+  # Reference peers elsewhere by ${peer-<name>.id}.
+
+  peer-server-us:
+    type: netbird:resource:Peer
+    properties:
+      name: server-us
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+
+  peer-server-eu:
+    type: netbird:resource:Peer
+    properties:
+      name: server-eu
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+
+  peer-server-ap:
+    type: netbird:resource:Peer
+    properties:
+      name: server-ap
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+
+  peer-laptop-admin:
+    type: netbird:resource:Peer
+    properties:
+      name: laptop-admin
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+
+  peer-phone-admin:
+    type: netbird:resource:Peer
+    properties:
+      name: phone-admin
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+
+  peer-router-home:
+    type: netbird:resource:Peer
+    properties:
+      name: router-home
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled

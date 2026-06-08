@@ -1,0 +1,36 @@
+resources:
+  route-exit-us:
+    type: netbird:resource:Route
+    properties:
+      networkId: "Exit Node US"
+      description: "Default route via US exit node. Available to Admin group, manual apply only."
+      enabled: true
+      masquerade: true
+      metric: 9999
+      keepRoute: false
+      network: "0.0.0.0/0"
+      peerGroups:
+        - ${group-exit-us.id}
+      groups:
+        - ${group-admin.id}
+      skipAutoApply: true
+    options:
+      protect: true
+
+  route-exit-eu:
+    type: netbird:resource:Route
+    properties:
+      networkId: "Exit Node EU"
+      description: "Default route via EU exit node. Available to Admin group, manual apply only."
+      enabled: true
+      masquerade: true
+      metric: 9999
+      keepRoute: false
+      network: "0.0.0.0/0"
+      peerGroups:
+        - ${group-exit-eu.id}
+      groups:
+        - ${group-admin.id}
+      skipAutoApply: true
+    options:
+      protect: true

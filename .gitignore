@@ -32,6 +32,7 @@ go.work.sum
 **/.ionide
 .pulumi
 Pulumi.*.yaml
+!examples/yaml-jq/Pulumi.base.yaml
 ci-scripts
 provider/**/schema-embed
 ./pulumi-go-provider

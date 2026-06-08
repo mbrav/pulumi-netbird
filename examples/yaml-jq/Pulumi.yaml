@@ -1,0 +1,437 @@
+name: netbird-yaml-jq
+description: NetBird infrastructure managed via Pulumi YAML — multi-file layout built with yq
+runtime: yaml
+# plugins.providers with path is for local development only (uses ../../bin binary).
+# When using the published plugin, remove this block and install via:
+#   pulumi plugin install resource netbird <version> --server github://api.github.com/mbrav/pulumi-netbird
+plugins:
+  providers:
+    - name: netbird
+      path: ../../bin
+config:
+  netbird:token:
+    type: string
+    secret: true
+  netbird:url:
+    type: string
+    default: https://api.netbird.io
+resources:
+  # ── Base groups ──────────────────────────────────────────────────────────────
+  group-all:
+    type: netbird:resource:Group
+    properties:
+      name: All
+    options:
+      ignoreChanges:
+        - resources
+        - peers
+      protect: true
+  group-admin:
+    type: netbird:resource:Group
+    properties:
+      name: Admin
+      peers:
+        - ${peer-laptop-admin.id}
+        - ${peer-phone-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  group-servers:
+    type: netbird:resource:Group
+    properties:
+      name: Servers
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-eu.id}
+        - ${peer-server-ap.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  group-exit-us:
+    type: netbird:resource:Group
+    properties:
+      name: Exit US
+      peers:
+        - ${peer-server-us.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  group-exit-eu:
+    type: netbird:resource:Group
+    properties:
+      name: Exit EU
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  group-home:
+    type: netbird:resource:Group
+    properties:
+      name: Home
+      peers:
+        - ${peer-router-home.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # ── Service groups ───────────────────────────────────────────────────────────
+  # Convention: ⚙️ prefix = targets (listeners), 🤖 prefix = clients (scrapers/callers)
+
+  # Prometheus Node Exporter targets
+  group-svc-node-exporter:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Node Exporter"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-eu.id}
+        - ${peer-server-ap.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Prometheus Node Exporter clients
+  group-svc-node-exporter-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "\U0001F916Node Exporter"
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Prometheus targets
+  group-svc-prometheus:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Prometheus"
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Prometheus clients
+  group-svc-prometheus-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "\U0001F916Prometheus"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-ap.id}
+        - ${peer-laptop-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Grafana targets
+  group-svc-grafana:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Grafana"
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Grafana clients
+  group-svc-grafana-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "\U0001F916Grafana"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-laptop-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Postgres targets
+  group-svc-postgres:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Postgres"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Postgres clients
+  group-svc-postgres-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "\U0001F916Postgres"
+      peers:
+        - ${peer-server-ap.id}
+        - ${peer-server-eu.id}
+        - ${peer-server-us.id}
+        - ${peer-laptop-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+  # Peers are imported, never created via the API.
+  # All fields use ignoreChanges because the peer client controls its own settings.
+  # Reference peers elsewhere by ${peer-<name>.id}.
+  peer-server-us:
+    type: netbird:resource:Peer
+    properties:
+      name: server-us
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+  peer-server-eu:
+    type: netbird:resource:Peer
+    properties:
+      name: server-eu
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+  peer-server-ap:
+    type: netbird:resource:Peer
+    properties:
+      name: server-ap
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+  peer-laptop-admin:
+    type: netbird:resource:Peer
+    properties:
+      name: laptop-admin
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+  peer-phone-admin:
+    type: netbird:resource:Peer
+    properties:
+      name: phone-admin
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+  peer-router-home:
+    type: netbird:resource:Peer
+    properties:
+      name: router-home
+    options:
+      protect: true
+      ignoreChanges:
+        - name
+        - loginExpirationEnabled
+        - inactivityExpirationEnabled
+        - sshEnabled
+  policy-admin-allow-all-icmp:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin ICMP Access
+      enabled: true
+      rules:
+        - name: "Admin → All: ICMP"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: icmp
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-all.id}
+    options:
+      protect: true
+  policy-admin-allow-all-ssh:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin SSH Access
+      enabled: true
+      rules:
+        - name: "Admin → All: SSH TCP/22"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "22"
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-all.id}
+    options:
+      protect: true
+  policy-svc-node-exporter-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Node Exporter Access"
+      enabled: true
+      rules:
+        - name: "\U0001F916Node Exporter → ⚙️Node Exporter: TCP/9100"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "9100"
+          sources:
+            - ${group-svc-node-exporter-clients.id}
+          destinations:
+            - ${group-svc-node-exporter.id}
+    options:
+      protect: true
+  policy-svc-prometheus-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Prometheus Access"
+      enabled: true
+      rules:
+        - name: "\U0001F916Prometheus → ⚙️Prometheus: TCP/9090"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "9090"
+          sources:
+            - ${group-svc-prometheus-clients.id}
+          destinations:
+            - ${group-svc-prometheus.id}
+    options:
+      protect: true
+  policy-svc-grafana-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Grafana Access"
+      enabled: true
+      rules:
+        - name: "\U0001F916Grafana → ⚙️Grafana: TCP/3000"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "3000"
+          sources:
+            - ${group-svc-grafana-clients.id}
+          destinations:
+            - ${group-svc-grafana.id}
+    options:
+      protect: true
+  policy-svc-postgres-access:
+    type: netbird:resource:Policy
+    properties:
+      name: "⚙️ Postgres Access"
+      enabled: true
+      rules:
+        - name: "\U0001F916Postgres → ⚙️Postgres: TCP/5432"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "5432"
+          sources:
+            - ${group-svc-postgres-clients.id}
+          destinations:
+            - ${group-svc-postgres.id}
+    options:
+      protect: true
+  policy-admin-proxy-access:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin Home Access
+      enabled: true
+      rules:
+        - name: "Admin → Home: TCP proxy ports"
+          action: accept
+          bidirectional: false
+          enabled: true
+          protocol: tcp
+          ports:
+            - "3000"
+            - "3001"
+            - "8080"
+            - "8443"
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-home.id}
+    options:
+      protect: true
+  policy-admin-exit-nodes-access:
+    type: netbird:resource:Policy
+    properties:
+      name: Admin Exit Nodes Access
+      enabled: true
+      rules:
+        - name: "Admin → Exit Nodes: all"
+          action: accept
+          bidirectional: true
+          enabled: true
+          protocol: all
+          sources:
+            - ${group-admin.id}
+          destinations:
+            - ${group-exit-us.id}
+            - ${group-exit-eu.id}
+    options:
+      protect: true
+  route-exit-us:
+    type: netbird:resource:Route
+    properties:
+      networkId: "Exit Node US"
+      description: "Default route via US exit node. Available to Admin group, manual apply only."
+      enabled: true
+      masquerade: true
+      metric: 9999
+      keepRoute: false
+      network: "0.0.0.0/0"
+      peerGroups:
+        - ${group-exit-us.id}
+      groups:
+        - ${group-admin.id}
+      skipAutoApply: true
+    options:
+      protect: true
+  route-exit-eu:
+    type: netbird:resource:Route
+    properties:
+      networkId: "Exit Node EU"
+      description: "Default route via EU exit node. Available to Admin group, manual apply only."
+      enabled: true
+      masquerade: true
+      metric: 9999
+      keepRoute: false
+      network: "0.0.0.0/0"
+      peerGroups:
+        - ${group-exit-eu.id}
+      groups:
+        - ${group-admin.id}
+      skipAutoApply: true
+    options:
+      protect: true
+outputs: {}

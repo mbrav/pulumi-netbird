@@ -32,6 +32,19 @@ pulumi plugin install resource netbird 0.3.8 --server github://api.github.com/mb
 make help                 # View available build/test commands
 ````
 
+## 🗂️ Examples
+
+All runnable examples live in [`examples/`](./examples/README.md). The table below summarises what is available:
+
+| Example | Runtime | Description |
+|---------|---------|-------------|
+| [`yaml`](./examples/yaml/) | Pulumi YAML | All resources in a single `Pulumi.yaml` |
+| [`yaml-jq`](./examples/yaml-jq/) | Pulumi YAML + `yq` | Resources split across `src/*.yaml`, assembled by `make build` |
+| [`go`](./examples/go/) | Pulumi Go | Provider usage via the generated Go SDK |
+| [`python`](./examples/python/) | Pulumi Python | Provider usage via the generated Python SDK |
+
+See **[examples/README.md](./examples/README.md)** for setup instructions for each example.
+
 ## 🚀 Example Usage with Pulumi YAML
 
 You can use this provider with **Pulumi YAML** to manage NetBird infrastructure declaratively.

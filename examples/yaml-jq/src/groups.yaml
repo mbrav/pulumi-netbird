@@ -1,0 +1,178 @@
+resources:
+  # ── Base groups ──────────────────────────────────────────────────────────────
+
+  group-all:
+    type: netbird:resource:Group
+    properties:
+      name: All
+    options:
+      ignoreChanges:
+        - resources
+        - peers
+      protect: true
+
+  group-admin:
+    type: netbird:resource:Group
+    properties:
+      name: Admin
+      peers:
+        - ${peer-laptop-admin.id}
+        - ${peer-phone-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  group-servers:
+    type: netbird:resource:Group
+    properties:
+      name: Servers
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-eu.id}
+        - ${peer-server-ap.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  group-exit-us:
+    type: netbird:resource:Group
+    properties:
+      name: Exit US
+      peers:
+        - ${peer-server-us.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  group-exit-eu:
+    type: netbird:resource:Group
+    properties:
+      name: Exit EU
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  group-home:
+    type: netbird:resource:Group
+    properties:
+      name: Home
+      peers:
+        - ${peer-router-home.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # ── Service groups ───────────────────────────────────────────────────────────
+  # Convention: ⚙️ prefix = targets (listeners), 🤖 prefix = clients (scrapers/callers)
+
+  # Prometheus Node Exporter targets
+  group-svc-node-exporter:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Node Exporter"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-eu.id}
+        - ${peer-server-ap.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # Prometheus Node Exporter clients
+  group-svc-node-exporter-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "🤖Node Exporter"
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # Prometheus targets
+  group-svc-prometheus:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Prometheus"
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # Prometheus clients
+  group-svc-prometheus-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "🤖Prometheus"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-ap.id}
+        - ${peer-laptop-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # Grafana targets
+  group-svc-grafana:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Grafana"
+      peers:
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # Grafana clients
+  group-svc-grafana-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "🤖Grafana"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-laptop-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # Postgres targets
+  group-svc-postgres:
+    type: netbird:resource:Group
+    properties:
+      name: "⚙️Postgres"
+      peers:
+        - ${peer-server-us.id}
+        - ${peer-server-eu.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true
+
+  # Postgres clients
+  group-svc-postgres-clients:
+    type: netbird:resource:Group
+    properties:
+      name: "🤖Postgres"
+      peers:
+        - ${peer-server-ap.id}
+        - ${peer-server-eu.id}
+        - ${peer-server-us.id}
+        - ${peer-laptop-admin.id}
+    options:
+      ignoreChanges:
+        - resources
+      protect: true

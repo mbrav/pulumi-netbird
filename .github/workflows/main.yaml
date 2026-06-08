@@ -22,11 +22,12 @@ jobs:
 
   test:
     name: Provider Tests
-    needs: lint
     uses: ./.github/workflows/stage-test.yaml
 
   build:
     name: Build and Release
-    needs: test
+    needs:
+      - lint
+      - test
     if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '.')
     uses: ./.github/workflows/stage-build.yaml

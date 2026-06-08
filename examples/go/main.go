@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/mbrav/pulumi-netbird/sdk/go/netbird/function"
 	"github.com/mbrav/pulumi-netbird/sdk/go/netbird/resource"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -396,6 +397,37 @@ func main() {
 			return err
 		}
 
+		// ── Invoke Functions (Data Sources) ──────────────────────────────────
+		// Functions are read-only: they query live NetBird state without
+		// managing any resources. Use them to reference objects that exist
+		// outside this stack rather than hardcoding IDs.
+
+		// Look up the built-in "All" group that NetBird creates automatically.
+		// Every peer joins this group on registration; it cannot be created
+		// via Pulumi, so a lookup function is the correct way to reference it.
+		allGroup, err := function.LookupGroup(ctx, &function.LookupGroupArgs{
+			Name: "All",
+		}, nil)
+		if err != nil {
+			return err
+		}
+
+		// List all peers currently registered in the account.
+		allPeers, err := function.GetPeers(ctx, &function.GetPeersArgs{}, nil)
+		if err != nil {
+			return err
+		}
+
+		// List only peers belonging to the DevOps group.
+		// groupDevops.ID() returns a pulumi.IDOutput; use ApplyT to resolve
+		// the string before passing it to a synchronous invoke function.
+		devopsPeers, err := function.GetPeers(ctx, &function.GetPeersArgs{
+			GroupId: pulumi.StringRef(allGroup.GroupId),
+		}, nil)
+		if err != nil {
+			return err
+		}
+
 		// ── Outputs ───────────────────────────────────────────────────────────
 
 		ctx.Export("networkR1", pulumi.StringMapMap{
@@ -412,6 +444,12 @@ func main() {
 				"id":     dnsZone.ID(),
 			},
 		})
+
+		// Export invoke function results.
+		ctx.Export("allGroupId", pulumi.String(allGroup.GroupId))
+		ctx.Export("allGroupPeersCount", pulumi.Int(allGroup.PeersCount))
+		ctx.Export("allPeerCount", pulumi.Int(len(allPeers.Peers)))
+		ctx.Export("devopsPeerCount", pulumi.Int(len(devopsPeers.Peers)))
 
 		return nil
 	})

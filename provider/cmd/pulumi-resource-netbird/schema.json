@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.3.8",
+  "version": "0.4.0",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -79,6 +79,68 @@
     ]
   },
   "types": {
+    "netbird:function:PeerSummary": {
+      "properties": {
+        "connected": {
+          "type": "boolean",
+          "description": "Whether the peer is currently connected to the management server."
+        },
+        "dnsLabel": {
+          "type": "string",
+          "description": "The DNS label used to form the peer's FQDN."
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "IDs of groups the peer belongs to."
+        },
+        "hostname": {
+          "type": "string",
+          "description": "The OS hostname of the machine."
+        },
+        "id": {
+          "type": "string",
+          "description": "The peer ID."
+        },
+        "ip": {
+          "type": "string",
+          "description": "The WireGuard IP address assigned to the peer."
+        },
+        "name": {
+          "type": "string",
+          "description": "The peer name."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "ip",
+        "dnsLabel",
+        "connected",
+        "hostname",
+        "groups"
+      ]
+    },
+    "netbird:function:ResourceRef": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier of the resource."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of resource: 'domain', 'host', or 'subnet'."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ]
+    },
     "netbird:resource:DNSRecordType": {
       "type": "string",
       "enum": [
@@ -1959,6 +2021,368 @@
       "requiredInputs": [
         "role"
       ]
+    }
+  },
+  "functions": {
+    "netbird:function:getPeers": {
+      "description": "List all NetBird peers, optionally filtered to those belonging to a specific group ID.",
+      "inputs": {
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "description": "Optional group ID to filter peers. When set, only peers that belong to this group are returned."
+          }
+        },
+        "type": "object"
+      },
+      "outputs": {
+        "properties": {
+          "peers": {
+            "description": "The list of peers matching the filter criteria.",
+            "items": {
+              "$ref": "#/types/netbird:function:PeerSummary"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "peers"
+        ],
+        "type": "object"
+      }
+    },
+    "netbird:function:lookupGroup": {
+      "description": "Look up an existing NetBird group by name and return its ID, peer list, and resource list.",
+      "inputs": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the group to look up."
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ]
+      },
+      "outputs": {
+        "properties": {
+          "groupId": {
+            "description": "The NetBird group ID.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The group name.",
+            "type": "string"
+          },
+          "peers": {
+            "description": "IDs of peers belonging to the group.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "peersCount": {
+            "description": "Number of peers in the group.",
+            "type": "integer"
+          },
+          "resources": {
+            "description": "Resources associated with the group.",
+            "items": {
+              "$ref": "#/types/netbird:function:ResourceRef"
+            },
+            "type": "array"
+          },
+          "resourcesCount": {
+            "description": "Number of resources in the group.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "groupId",
+          "name",
+          "peersCount",
+          "resourcesCount",
+          "peers",
+          "resources"
+        ],
+        "type": "object"
+      }
+    },
+    "netbird:function:lookupPeer": {
+      "description": "Look up an existing NetBird peer by name and return its ID, IP address, and group memberships.",
+      "inputs": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name (hostname) of the peer to look up."
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ]
+      },
+      "outputs": {
+        "properties": {
+          "connected": {
+            "description": "Whether the peer is currently connected to the management server.",
+            "type": "boolean"
+          },
+          "dnsLabel": {
+            "description": "The DNS label used to form the peer's FQDN.",
+            "type": "string"
+          },
+          "groups": {
+            "description": "IDs of groups the peer belongs to.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "hostname": {
+            "description": "The OS hostname of the machine.",
+            "type": "string"
+          },
+          "ip": {
+            "description": "The WireGuard IP address assigned to the peer.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The peer name.",
+            "type": "string"
+          },
+          "os": {
+            "description": "Operating system string reported by the peer.",
+            "type": "string"
+          },
+          "peerId": {
+            "description": "The NetBird peer ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "peerId",
+          "name",
+          "ip",
+          "dnsLabel",
+          "connected",
+          "hostname",
+          "os",
+          "groups"
+        ],
+        "type": "object"
+      }
+    },
+    "netbird:function:lookupRoute": {
+      "description": "Look up an existing NetBird route by network CIDR and return its ID, routing peers, and configuration.",
+      "inputs": {
+        "properties": {
+          "network": {
+            "type": "string",
+            "description": "The network CIDR (e.g. '10.0.0.0/8') to look up. Returns the first matching route."
+          }
+        },
+        "type": "object",
+        "required": [
+          "network"
+        ]
+      },
+      "outputs": {
+        "properties": {
+          "description": {
+            "description": "The route description.",
+            "type": "string"
+          },
+          "domains": {
+            "description": "Domain list for dynamic resolution (if this is a domain route).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "enabled": {
+            "description": "Whether the route is enabled.",
+            "type": "boolean"
+          },
+          "groups": {
+            "description": "Group IDs that have access to this route.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "masquerade": {
+            "description": "Whether the routing peer masquerades traffic to this prefix.",
+            "type": "boolean"
+          },
+          "metric": {
+            "description": "Route metric; lower number means higher priority.",
+            "type": "integer"
+          },
+          "network": {
+            "description": "The network CIDR range.",
+            "type": "string"
+          },
+          "peer": {
+            "description": "The peer ID acting as the routing peer (mutually exclusive with peerGroups).",
+            "type": "string"
+          },
+          "peerGroups": {
+            "description": "Group IDs whose peers act as routing peers (mutually exclusive with peer).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "routeId": {
+            "description": "The NetBird route ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "routeId",
+          "description",
+          "network",
+          "domains",
+          "enabled",
+          "masquerade",
+          "metric",
+          "peerGroups",
+          "groups"
+        ],
+        "type": "object"
+      }
+    },
+    "netbird:function:lookupSetupKey": {
+      "description": "Look up an existing NetBird setup key by name and return its metadata (not the secret key value).",
+      "inputs": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the setup key to look up."
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ]
+      },
+      "outputs": {
+        "properties": {
+          "autoGroups": {
+            "description": "Group IDs automatically assigned to peers that register with this key.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "ephemeral": {
+            "description": "Whether peers registered with this key are ephemeral.",
+            "type": "boolean"
+          },
+          "expires": {
+            "description": "Key expiration timestamp in RFC3339 format.",
+            "type": "string"
+          },
+          "lastUsed": {
+            "description": "Timestamp of last key use in RFC3339 format.",
+            "type": "string"
+          },
+          "name": {
+            "description": "The setup key name.",
+            "type": "string"
+          },
+          "revoked": {
+            "description": "Whether the setup key has been revoked.",
+            "type": "boolean"
+          },
+          "setupKeyId": {
+            "description": "The NetBird setup key ID.",
+            "type": "string"
+          },
+          "state": {
+            "description": "The setup key state: 'valid', 'overused', 'expired', or 'revoked'.",
+            "type": "string"
+          },
+          "type": {
+            "description": "The setup key type: 'one-off' or 'reusable'.",
+            "type": "string"
+          },
+          "usageLimit": {
+            "description": "Maximum number of times the key can be used (0 = unlimited for reusable).",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "setupKeyId",
+          "name",
+          "type",
+          "state",
+          "revoked",
+          "ephemeral",
+          "usageLimit",
+          "autoGroups",
+          "expires",
+          "lastUsed"
+        ],
+        "type": "object"
+      }
+    },
+    "netbird:function:lookupUser": {
+      "description": "Look up an existing NetBird user by email and return their ID, role, and auto-group assignments.",
+      "inputs": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email address of the user to look up."
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ]
+      },
+      "outputs": {
+        "properties": {
+          "autoGroups": {
+            "description": "Group IDs automatically assigned to peers registered by this user.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "email": {
+            "description": "The user's email address.",
+            "type": "string"
+          },
+          "isBlocked": {
+            "description": "Whether the user is blocked from accessing the system.",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "The user's display name.",
+            "type": "string"
+          },
+          "role": {
+            "description": "The user's role in the NetBird account (e.g. admin, user).",
+            "type": "string"
+          },
+          "userId": {
+            "description": "The NetBird user ID.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "name",
+          "email",
+          "role",
+          "isBlocked",
+          "autoGroups"
+        ],
+        "type": "object"
+      }
     }
   }
 }

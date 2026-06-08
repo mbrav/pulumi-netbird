@@ -17,6 +17,29 @@ config:
     type: string
     default: https://api.netbird.io
 
+variables:
+  # ── Invoke Functions (Data Sources) ────────────────────────────────────────
+  # Look up the built-in "All" group that NetBird creates automatically.
+  # Every peer joins this group on registration; it cannot be created via Pulumi.
+  allGroup:
+    fn::invoke:
+      function: netbird:function:lookupGroup
+      arguments:
+        name: All
+
+  # List every peer currently registered in the account.
+  allPeers:
+    fn::invoke:
+      function: netbird:function:getPeers
+      arguments: {}
+
+  # List only peers that belong to the DevOps group (resolved from the resource above).
+  devopsPeers:
+    fn::invoke:
+      function: netbird:function:getPeers
+      arguments:
+        groupId: ${group-devops.id}
+
 outputs:
   networkR1:
     value:
@@ -27,6 +50,15 @@ outputs:
       name: ${dns-zone-corp.name}
       domain: ${dns-zone-corp.domain}
       id: ${dns-zone-corp.id}
+  # Outputs from invoke functions
+  allGroupId:
+    value: ${allGroup.groupId}
+  allGroupPeersCount:
+    value: ${allGroup.peersCount}
+  allPeerCount:
+    value: ${allPeers.peers}
+  devopsPeerCount:
+    value: ${devopsPeers.peers}
 
 resources:
   # ── Groups ──────────────────────────────────────────────────────────────────

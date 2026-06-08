@@ -1,4 +1,3 @@
-// Package resource provides the NetBird resource types
 package resource
 
 import (

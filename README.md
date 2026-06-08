@@ -15,6 +15,7 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 ## ✨ Features
 
 - Manage 16 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
+- 6 read-only **invoke functions** (data sources) for referencing existing NetBird objects by name, email, or CIDR
 - Built natively with Pulumi's Go SDK
 - Works with NetBird Cloud (`https://api.netbird.io`) and self-hosted management servers
 
@@ -413,6 +414,58 @@ pulumi up
 | Route | `netbird:resource:Route` |
 | Setup key | `netbird:resource:SetupKey` |
 | User | `netbird:resource:User` |
+
+## 🔍 Invoke Functions (Data Sources)
+
+Invoke functions are **read-only** — they query live NetBird state and return data without managing any resources. Use them to reference existing objects by a human-readable key rather than a hardcoded ID.
+
+| Function | Pulumi type | Looks up by | Key output fields |
+| -------- | ----------- | ----------- | ----------------- |
+| Get peers | `netbird:function:getPeers` | optional group ID filter | `peers[]` (id, name, ip, connected, groups) |
+| Lookup group | `netbird:function:lookupGroup` | group name | `groupId`, `peers[]`, `resources[]` |
+| Lookup peer | `netbird:function:lookupPeer` | peer name | `peerId`, `ip`, `dnsLabel`, `connected`, `groups[]` |
+| Lookup route | `netbird:function:lookupRoute` | network CIDR | `routeId`, `peerGroups[]`, `groups[]` |
+| Lookup setup key | `netbird:function:lookupSetupKey` | key name | `setupKeyId`, `state`, `expires` |
+| Lookup user | `netbird:function:lookupUser` | email address | `userId`, `role`, `autoGroups[]` |
+
+### Example: cross-referencing an existing group in YAML
+
+```yaml
+variables:
+  devopsGroup:
+    fn::invoke:
+      function: netbird:function:lookupGroup
+      arguments:
+        name: DevOps
+
+resources:
+  setup-key-devops:
+    type: netbird:resource:SetupKey
+    properties:
+      name: devops-onboarding
+      type: reusable
+      expiresIn: 86400
+      autoGroups:
+        - ${devopsGroup.groupId}
+```
+
+### Example: cross-referencing in Go
+
+```go
+devopsGroup, err := netbird.LookupGroup(ctx, &netbird.LookupGroupArgs{
+    Name: "DevOps",
+}, nil)
+if err != nil {
+    return err
+}
+
+_, err = netbird.NewSetupKey(ctx, "setup-key-devops", &netbird.SetupKeyArgs{
+    Name:       pulumi.String("devops-onboarding"),
+    Type:       pulumi.String("reusable"),
+    ExpiresIn:  pulumi.Int(86400),
+    AutoGroups: pulumi.StringArray{pulumi.String(devopsGroup.GroupId)},
+})
+```
 
 ## 📁 Repository Structure
 

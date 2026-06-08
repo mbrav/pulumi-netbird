@@ -3,6 +3,7 @@ package provider
 
 import (
 	"github.com/mbrav/pulumi-netbird/provider/config"
+	"github.com/mbrav/pulumi-netbird/provider/function"
 	"github.com/mbrav/pulumi-netbird/provider/resource"
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -13,7 +14,7 @@ import (
 // Change to var to enable semver Version management.
 const (
 	Name    string = "netbird"
-	Version string = "0.3.8"
+	Version string = "0.4.0"
 )
 
 // Provider creates and returns a new Pulumi provider for managing NetBird resources.
@@ -36,28 +37,11 @@ func Provider() p.Provider { //nolint:funlen
 		WithNamespace("pulumi").
 		// WithWrapped(provider p.Provider),
 		WithConfig(infer.Config(&config.Config{})). //nolint:exhaustruct
-		WithResources(
-			infer.Resource(&resource.DNS{}),
-			infer.Resource(&resource.DNSRecord{}),
-			infer.Resource(&resource.DNSSettings{}),
-			infer.Resource(&resource.DNSZone{}),
-			infer.Resource(&resource.Group{}),
-			infer.Resource(&resource.Network{}),
-			infer.Resource(&resource.NetworkResource{}),
-			infer.Resource(&resource.NetworkRouter{}),
-			infer.Resource(&resource.Peer{}),
-			infer.Resource(&resource.Policy{}),
-			infer.Resource(&resource.PostureCheck{}),
-			infer.Resource(&resource.ReverseProxyDomain{}),
-			infer.Resource(&resource.ReverseProxyService{}),
-			infer.Resource(&resource.Route{}),
-			infer.Resource(&resource.SetupKey{}),
-			infer.Resource(&resource.User{}),
-		).
+		WithResources(resource.All()...).
 		// WithComponents(
 		// 	infer.ComponentF(component.NewACLFileComponent),
 		// ).
-		// WithFunctions(functions ...infer.InferredFunction)
+		WithFunctions(function.All()...).
 		WithModuleMap(map[tokens.ModuleName]tokens.ModuleName{
 			"auto-naming": "index",
 		}).

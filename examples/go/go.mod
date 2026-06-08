@@ -3,9 +3,12 @@ module github.com/mbrav/pulumi-netbird/examples/go
 go 1.25.8
 
 require (
-	github.com/mbrav/pulumi-netbird/sdk v0.3.8
+	github.com/mbrav/pulumi-netbird/sdk v0.4.0
 	github.com/pulumi/pulumi/sdk/v3 v3.245.0
 )
+
+// Use the local SDK during development; remove before publishing.
+replace github.com/mbrav/pulumi-netbird/sdk => ../../sdk
 
 require (
 	dario.cat/mergo v1.0.2 // indirect

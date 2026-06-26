@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [Unreleased]
+
+## [0.5.0] - 2026-06-26
+
+### Changed
+
+- **Breaking:** `Group` no longer accepts `peers` or `resources` as inputs. Group membership remains visible as read-only outputs, but should be managed from the resources that own the assignment to avoid drift and destroy-order failures.
+- Bumped provider version from `0.4.1` to `0.5.0`.
+
+### Fixed
+
+- Pinned `github.com/pulumi/pulumi/pkg/v3` and `github.com/pulumi/pulumi/sdk/v3` to `v3.232.0` (down from `v3.248.0`). `pulumi-go-provider v1.3.2` is built against Pulumi `v3.232.0`, and `v3.248.0` changed the schema codegen `pkg.Provider` field from `schema.ResourceSpec` to `*schema.ResourceSpec`, which broke compilation of the go-provider dependency and surfaced as a `golangci-lint` typecheck error (`could not import .../infer`). Keep these two modules in lockstep with whatever `pulumi-go-provider` requires.
+- Cleaned up lint fallout from the `Group` input change: added explicit `nil` `Peers`/`Resources` fields to the `nbapi.GroupRequest` and `GroupState` struct literals in `group.go` (`exhaustruct`), and removed the now-unused `toAPIResourceList` and `equalResourcesPtr` helpers from `common.go` (`unused`).
+
 ## [0.4.1] - 2026-06-08
 
 ### Added

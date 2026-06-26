@@ -15,7 +15,7 @@ import (
 // Change to var to enable semver Version management.
 const (
 	Name    string = "netbird"
-	Version string = "0.4.1"
+	Version string = "0.5.0"
 )
 
 // Provider creates and returns a new Pulumi provider for managing NetBird resources.
@@ -36,7 +36,7 @@ func Provider() p.Provider { //nolint:funlen
 		WithPublisher("mbrav").
 		WithLogoURL("https://raw.githubusercontent.com/mbrav/pulumi-netbird/master/assets/logo.webp").
 		WithNamespace("pulumi").
-		// WithWrapped(provider p.Provider),
+		// WithWrapped(pro5ider p.Provider),
 		WithConfig(infer.Config(&config.Config{})). //nolint:exhaustruct
 		WithResources(resource.All()...).
 		WithFunctions(function.All()...).

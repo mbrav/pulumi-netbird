@@ -69,20 +69,12 @@ func (GroupState) ElementType() reflect.Type {
 type groupArgs struct {
 	// The name of the NetBird group.
 	Name string `pulumi:"name"`
-	// An optional list of peer IDs to associate with this group.
-	Peers []string `pulumi:"peers"`
-	// An optional list of resources to associate with this group.
-	Resources []Resource `pulumi:"resources"`
 }
 
 // The set of arguments for constructing a Group resource.
 type GroupArgs struct {
 	// The name of the NetBird group.
 	Name pulumi.StringInput
-	// An optional list of peer IDs to associate with this group.
-	Peers pulumi.StringArrayInput
-	// An optional list of resources to associate with this group.
-	Resources ResourceArrayInput
 }
 
 func (GroupArgs) ElementType() reflect.Type {

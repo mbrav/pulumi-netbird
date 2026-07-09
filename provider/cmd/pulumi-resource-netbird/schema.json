@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -693,6 +693,105 @@
         "type"
       ]
     },
+    "netbird:resource:ReverseProxyAccessRestrictions": {
+      "properties": {
+        "allowedCidrs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed."
+        },
+        "allowedCountries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted."
+        },
+        "blockedCidrs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowedCidrs."
+        },
+        "blockedCountries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ISO 3166-1 alpha-2 country codes to block."
+        },
+        "crowdsecMode": {
+          "$ref": "#/types/netbird:resource:ReverseProxyCrowdsecMode",
+          "description": "CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec."
+        }
+      },
+      "type": "object"
+    },
+    "netbird:resource:ReverseProxyAuth": {
+      "properties": {
+        "bearerAuth": {
+          "$ref": "#/types/netbird:resource:ReverseProxyBearerAuth",
+          "description": "Bearer (SSO) authentication configuration."
+        },
+        "headerAuths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:ReverseProxyHeaderAuth"
+          },
+          "description": "Header-based authentication entries."
+        },
+        "linkAuth": {
+          "$ref": "#/types/netbird:resource:ReverseProxyLinkAuth",
+          "description": "Link-based authentication configuration."
+        },
+        "passwordAuth": {
+          "$ref": "#/types/netbird:resource:ReverseProxyPasswordAuth",
+          "description": "Password-based authentication configuration."
+        },
+        "pinAuth": {
+          "$ref": "#/types/netbird:resource:ReverseProxyPINAuth",
+          "description": "PIN-based authentication configuration."
+        }
+      },
+      "type": "object"
+    },
+    "netbird:resource:ReverseProxyBearerAuth": {
+      "properties": {
+        "distributionGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of group IDs that can use bearer auth."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether bearer auth is enabled."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled"
+      ]
+    },
+    "netbird:resource:ReverseProxyCrowdsecMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "enforce",
+          "description": "Block connections flagged by CrowdSec.",
+          "value": "enforce"
+        },
+        {
+          "name": "observe",
+          "description": "Only log connections flagged by CrowdSec.",
+          "value": "observe"
+        }
+      ]
+    },
     "netbird:resource:ReverseProxyDomainType": {
       "type": "string",
       "enum": [
@@ -705,6 +804,86 @@
           "name": "free",
           "description": "A free managed domain provided by NetBird.",
           "value": "free"
+        }
+      ]
+    },
+    "netbird:resource:ReverseProxyHeaderAuth": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether this header auth entry is enabled."
+        },
+        "header": {
+          "type": "string",
+          "description": "The header name to match."
+        },
+        "value": {
+          "type": "string",
+          "description": "The header value to match."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "header",
+        "value"
+      ]
+    },
+    "netbird:resource:ReverseProxyLinkAuth": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether link auth is enabled."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled"
+      ]
+    },
+    "netbird:resource:ReverseProxyPINAuth": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether PIN auth is enabled."
+        },
+        "pin": {
+          "type": "string",
+          "description": "The PIN required to access the service.",
+          "secret": true
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "pin"
+      ]
+    },
+    "netbird:resource:ReverseProxyPasswordAuth": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether password auth is enabled."
+        },
+        "password": {
+          "type": "string",
+          "description": "The password required to access the service.",
+          "secret": true
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "password"
+      ]
+    },
+    "netbird:resource:ReverseProxyPathRewrite": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "preserve",
+          "description": "Keep the full original request path instead of stripping the matched prefix.",
+          "value": "preserve"
         }
       ]
     },
@@ -743,6 +922,10 @@
           "type": "string",
           "description": "Backend IP or domain for this target."
         },
+        "options": {
+          "$ref": "#/types/netbird:resource:ReverseProxyTargetOptions",
+          "description": "Advanced per-target proxy options."
+        },
         "path": {
           "type": "string",
           "description": "URL path prefix for this target (HTTP only)."
@@ -773,6 +956,42 @@
         "targetType"
       ]
     },
+    "netbird:resource:ReverseProxyTargetOptions": {
+      "properties": {
+        "customHeaders": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Extra headers sent to the backend. Hop-by-hop and proxy-managed headers are rejected."
+        },
+        "directUpstream": {
+          "type": "boolean",
+          "description": "When true, the proxy dials this target via the host's network stack instead of through its embedded NetBird client."
+        },
+        "pathRewrite": {
+          "$ref": "#/types/netbird:resource:ReverseProxyPathRewrite",
+          "description": "How the request path is rewritten before forwarding. Default strips the matched prefix; \"preserve\" keeps the full path."
+        },
+        "proxyProtocol": {
+          "type": "boolean",
+          "description": "Send PROXY Protocol v2 header to this backend (TCP/TLS only)."
+        },
+        "requestTimeout": {
+          "type": "string",
+          "description": "Per-target response timeout as a Go duration string (e.g. \"30s\", \"2m\")."
+        },
+        "sessionIdleTimeout": {
+          "type": "string",
+          "description": "Idle timeout before a UDP session is reaped, as a Go duration string (e.g. \"30s\", \"2m\")."
+        },
+        "skipTlsVerify": {
+          "type": "boolean",
+          "description": "Skip TLS certificate verification for this backend."
+        }
+      },
+      "type": "object"
+    },
     "netbird:resource:ReverseProxyTargetProtocol": {
       "type": "string",
       "enum": [
@@ -801,6 +1020,11 @@
     "netbird:resource:ReverseProxyTargetType": {
       "type": "string",
       "enum": [
+        {
+          "name": "cluster",
+          "description": "Proxy-cluster target.",
+          "value": "cluster"
+        },
         {
           "name": "domain",
           "description": "Domain-based target.",
@@ -1795,6 +2019,14 @@
           },
           "description": "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise."
         },
+        "accessRestrictions": {
+          "$ref": "#/types/netbird:resource:ReverseProxyAccessRestrictions",
+          "description": "Connection-level access restrictions based on IP address or geography."
+        },
+        "auth": {
+          "$ref": "#/types/netbird:resource:ReverseProxyAuth",
+          "description": "Authentication configuration for the service."
+        },
         "domain": {
           "type": "string",
           "description": "Domain for the service."
@@ -1819,6 +2051,10 @@
           "type": "boolean",
           "description": "When true, the original client Host header is passed through to the backend."
         },
+        "portAutoAssigned": {
+          "type": "boolean",
+          "description": "Whether the listen port was auto-assigned."
+        },
         "private": {
           "type": "boolean",
           "description": "When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth."
@@ -1841,6 +2077,10 @@
             "$ref": "#/types/netbird:resource:ReverseProxyTarget"
           },
           "description": "List of target backends for this service."
+        },
+        "terminated": {
+          "type": "boolean",
+          "description": "Whether the service has been terminated. Terminated services cannot be updated."
         }
       },
       "required": [
@@ -1856,6 +2096,14 @@
             "type": "string"
           },
           "description": "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise."
+        },
+        "accessRestrictions": {
+          "$ref": "#/types/netbird:resource:ReverseProxyAccessRestrictions",
+          "description": "Connection-level access restrictions based on IP address or geography. Applies to both HTTP and L4 services."
+        },
+        "auth": {
+          "$ref": "#/types/netbird:resource:ReverseProxyAuth",
+          "description": "Authentication configuration for the service (bearer/header/link/password/pin). Mutually exclusive with private=true."
         },
         "domain": {
           "type": "string",

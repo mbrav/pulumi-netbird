@@ -343,6 +343,9 @@ resources:
   # HTTP (L7) reverse proxy routing traffic to an internal backend host.
   # passHostHeader: preserves the original Host header forwarded to the backend.
   # rewriteRedirects: rewrites Location headers in backend responses.
+  # auth: gate access behind SSO (bearer) restricted to the DevOps group.
+  # accessRestrictions: allow only a corporate CIDR and observe via CrowdSec.
+  # target.options: per-target proxy tuning (headers, timeouts, path rewrite).
 
   rp-svc-api:
     type: netbird:resource:ReverseProxyService
@@ -353,6 +356,15 @@ resources:
       mode: http
       passHostHeader: true
       rewriteRedirects: false
+      auth:
+        bearerAuth:
+          enabled: true
+          distributionGroups:
+            - ${group-devops.id}
+      accessRestrictions:
+        allowedCidrs:
+          - 10.10.0.0/16
+        crowdsecMode: observe
       targets:
         - enabled: true
           host: 10.10.1.10
@@ -360,3 +372,10 @@ resources:
           protocol: http
           targetType: host
           targetId: ""
+          path: /api
+          options:
+            pathRewrite: preserve
+            requestTimeout: 30s
+            skipTlsVerify: false
+            customHeaders:
+              X-Forwarded-Proto: https

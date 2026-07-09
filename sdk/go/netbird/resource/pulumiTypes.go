@@ -1923,11 +1923,1159 @@ func (o ResourceArrayOutput) Index(i pulumi.IntInput) ResourceOutput {
 	}).(ResourceOutput)
 }
 
+type ReverseProxyAccessRestrictions struct {
+	// CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed.
+	AllowedCidrs []string `pulumi:"allowedCidrs"`
+	// ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted.
+	AllowedCountries []string `pulumi:"allowedCountries"`
+	// CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowedCidrs.
+	BlockedCidrs []string `pulumi:"blockedCidrs"`
+	// ISO 3166-1 alpha-2 country codes to block.
+	BlockedCountries []string `pulumi:"blockedCountries"`
+	// CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec.
+	CrowdsecMode *ReverseProxyCrowdsecMode `pulumi:"crowdsecMode"`
+}
+
+// ReverseProxyAccessRestrictionsInput is an input type that accepts ReverseProxyAccessRestrictionsArgs and ReverseProxyAccessRestrictionsOutput values.
+// You can construct a concrete instance of `ReverseProxyAccessRestrictionsInput` via:
+//
+//	ReverseProxyAccessRestrictionsArgs{...}
+type ReverseProxyAccessRestrictionsInput interface {
+	pulumi.Input
+
+	ToReverseProxyAccessRestrictionsOutput() ReverseProxyAccessRestrictionsOutput
+	ToReverseProxyAccessRestrictionsOutputWithContext(context.Context) ReverseProxyAccessRestrictionsOutput
+}
+
+type ReverseProxyAccessRestrictionsArgs struct {
+	// CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed.
+	AllowedCidrs pulumi.StringArrayInput `pulumi:"allowedCidrs"`
+	// ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted.
+	AllowedCountries pulumi.StringArrayInput `pulumi:"allowedCountries"`
+	// CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowedCidrs.
+	BlockedCidrs pulumi.StringArrayInput `pulumi:"blockedCidrs"`
+	// ISO 3166-1 alpha-2 country codes to block.
+	BlockedCountries pulumi.StringArrayInput `pulumi:"blockedCountries"`
+	// CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec.
+	CrowdsecMode ReverseProxyCrowdsecModePtrInput `pulumi:"crowdsecMode"`
+}
+
+func (ReverseProxyAccessRestrictionsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyAccessRestrictions)(nil)).Elem()
+}
+
+func (i ReverseProxyAccessRestrictionsArgs) ToReverseProxyAccessRestrictionsOutput() ReverseProxyAccessRestrictionsOutput {
+	return i.ToReverseProxyAccessRestrictionsOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyAccessRestrictionsArgs) ToReverseProxyAccessRestrictionsOutputWithContext(ctx context.Context) ReverseProxyAccessRestrictionsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyAccessRestrictionsOutput)
+}
+
+func (i ReverseProxyAccessRestrictionsArgs) ToReverseProxyAccessRestrictionsPtrOutput() ReverseProxyAccessRestrictionsPtrOutput {
+	return i.ToReverseProxyAccessRestrictionsPtrOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyAccessRestrictionsArgs) ToReverseProxyAccessRestrictionsPtrOutputWithContext(ctx context.Context) ReverseProxyAccessRestrictionsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyAccessRestrictionsOutput).ToReverseProxyAccessRestrictionsPtrOutputWithContext(ctx)
+}
+
+// ReverseProxyAccessRestrictionsPtrInput is an input type that accepts ReverseProxyAccessRestrictionsArgs, ReverseProxyAccessRestrictionsPtr and ReverseProxyAccessRestrictionsPtrOutput values.
+// You can construct a concrete instance of `ReverseProxyAccessRestrictionsPtrInput` via:
+//
+//	        ReverseProxyAccessRestrictionsArgs{...}
+//
+//	or:
+//
+//	        nil
+type ReverseProxyAccessRestrictionsPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyAccessRestrictionsPtrOutput() ReverseProxyAccessRestrictionsPtrOutput
+	ToReverseProxyAccessRestrictionsPtrOutputWithContext(context.Context) ReverseProxyAccessRestrictionsPtrOutput
+}
+
+type reverseProxyAccessRestrictionsPtrType ReverseProxyAccessRestrictionsArgs
+
+func ReverseProxyAccessRestrictionsPtr(v *ReverseProxyAccessRestrictionsArgs) ReverseProxyAccessRestrictionsPtrInput {
+	return (*reverseProxyAccessRestrictionsPtrType)(v)
+}
+
+func (*reverseProxyAccessRestrictionsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyAccessRestrictions)(nil)).Elem()
+}
+
+func (i *reverseProxyAccessRestrictionsPtrType) ToReverseProxyAccessRestrictionsPtrOutput() ReverseProxyAccessRestrictionsPtrOutput {
+	return i.ToReverseProxyAccessRestrictionsPtrOutputWithContext(context.Background())
+}
+
+func (i *reverseProxyAccessRestrictionsPtrType) ToReverseProxyAccessRestrictionsPtrOutputWithContext(ctx context.Context) ReverseProxyAccessRestrictionsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyAccessRestrictionsPtrOutput)
+}
+
+type ReverseProxyAccessRestrictionsOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyAccessRestrictionsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyAccessRestrictions)(nil)).Elem()
+}
+
+func (o ReverseProxyAccessRestrictionsOutput) ToReverseProxyAccessRestrictionsOutput() ReverseProxyAccessRestrictionsOutput {
+	return o
+}
+
+func (o ReverseProxyAccessRestrictionsOutput) ToReverseProxyAccessRestrictionsOutputWithContext(ctx context.Context) ReverseProxyAccessRestrictionsOutput {
+	return o
+}
+
+func (o ReverseProxyAccessRestrictionsOutput) ToReverseProxyAccessRestrictionsPtrOutput() ReverseProxyAccessRestrictionsPtrOutput {
+	return o.ToReverseProxyAccessRestrictionsPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyAccessRestrictionsOutput) ToReverseProxyAccessRestrictionsPtrOutputWithContext(ctx context.Context) ReverseProxyAccessRestrictionsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyAccessRestrictions) *ReverseProxyAccessRestrictions {
+		return &v
+	}).(ReverseProxyAccessRestrictionsPtrOutput)
+}
+
+// CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed.
+func (o ReverseProxyAccessRestrictionsOutput) AllowedCidrs() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ReverseProxyAccessRestrictions) []string { return v.AllowedCidrs }).(pulumi.StringArrayOutput)
+}
+
+// ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted.
+func (o ReverseProxyAccessRestrictionsOutput) AllowedCountries() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ReverseProxyAccessRestrictions) []string { return v.AllowedCountries }).(pulumi.StringArrayOutput)
+}
+
+// CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowedCidrs.
+func (o ReverseProxyAccessRestrictionsOutput) BlockedCidrs() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ReverseProxyAccessRestrictions) []string { return v.BlockedCidrs }).(pulumi.StringArrayOutput)
+}
+
+// ISO 3166-1 alpha-2 country codes to block.
+func (o ReverseProxyAccessRestrictionsOutput) BlockedCountries() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ReverseProxyAccessRestrictions) []string { return v.BlockedCountries }).(pulumi.StringArrayOutput)
+}
+
+// CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec.
+func (o ReverseProxyAccessRestrictionsOutput) CrowdsecMode() ReverseProxyCrowdsecModePtrOutput {
+	return o.ApplyT(func(v ReverseProxyAccessRestrictions) *ReverseProxyCrowdsecMode { return v.CrowdsecMode }).(ReverseProxyCrowdsecModePtrOutput)
+}
+
+type ReverseProxyAccessRestrictionsPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyAccessRestrictionsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyAccessRestrictions)(nil)).Elem()
+}
+
+func (o ReverseProxyAccessRestrictionsPtrOutput) ToReverseProxyAccessRestrictionsPtrOutput() ReverseProxyAccessRestrictionsPtrOutput {
+	return o
+}
+
+func (o ReverseProxyAccessRestrictionsPtrOutput) ToReverseProxyAccessRestrictionsPtrOutputWithContext(ctx context.Context) ReverseProxyAccessRestrictionsPtrOutput {
+	return o
+}
+
+func (o ReverseProxyAccessRestrictionsPtrOutput) Elem() ReverseProxyAccessRestrictionsOutput {
+	return o.ApplyT(func(v *ReverseProxyAccessRestrictions) ReverseProxyAccessRestrictions {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyAccessRestrictions
+		return ret
+	}).(ReverseProxyAccessRestrictionsOutput)
+}
+
+// CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed.
+func (o ReverseProxyAccessRestrictionsPtrOutput) AllowedCidrs() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ReverseProxyAccessRestrictions) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowedCidrs
+	}).(pulumi.StringArrayOutput)
+}
+
+// ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted.
+func (o ReverseProxyAccessRestrictionsPtrOutput) AllowedCountries() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ReverseProxyAccessRestrictions) []string {
+		if v == nil {
+			return nil
+		}
+		return v.AllowedCountries
+	}).(pulumi.StringArrayOutput)
+}
+
+// CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowedCidrs.
+func (o ReverseProxyAccessRestrictionsPtrOutput) BlockedCidrs() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ReverseProxyAccessRestrictions) []string {
+		if v == nil {
+			return nil
+		}
+		return v.BlockedCidrs
+	}).(pulumi.StringArrayOutput)
+}
+
+// ISO 3166-1 alpha-2 country codes to block.
+func (o ReverseProxyAccessRestrictionsPtrOutput) BlockedCountries() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ReverseProxyAccessRestrictions) []string {
+		if v == nil {
+			return nil
+		}
+		return v.BlockedCountries
+	}).(pulumi.StringArrayOutput)
+}
+
+// CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec.
+func (o ReverseProxyAccessRestrictionsPtrOutput) CrowdsecMode() ReverseProxyCrowdsecModePtrOutput {
+	return o.ApplyT(func(v *ReverseProxyAccessRestrictions) *ReverseProxyCrowdsecMode {
+		if v == nil {
+			return nil
+		}
+		return v.CrowdsecMode
+	}).(ReverseProxyCrowdsecModePtrOutput)
+}
+
+type ReverseProxyAuth struct {
+	// Bearer (SSO) authentication configuration.
+	BearerAuth *ReverseProxyBearerAuth `pulumi:"bearerAuth"`
+	// Header-based authentication entries.
+	HeaderAuths []ReverseProxyHeaderAuth `pulumi:"headerAuths"`
+	// Link-based authentication configuration.
+	LinkAuth *ReverseProxyLinkAuth `pulumi:"linkAuth"`
+	// Password-based authentication configuration.
+	PasswordAuth *ReverseProxyPasswordAuth `pulumi:"passwordAuth"`
+	// PIN-based authentication configuration.
+	PinAuth *ReverseProxyPINAuth `pulumi:"pinAuth"`
+}
+
+// ReverseProxyAuthInput is an input type that accepts ReverseProxyAuthArgs and ReverseProxyAuthOutput values.
+// You can construct a concrete instance of `ReverseProxyAuthInput` via:
+//
+//	ReverseProxyAuthArgs{...}
+type ReverseProxyAuthInput interface {
+	pulumi.Input
+
+	ToReverseProxyAuthOutput() ReverseProxyAuthOutput
+	ToReverseProxyAuthOutputWithContext(context.Context) ReverseProxyAuthOutput
+}
+
+type ReverseProxyAuthArgs struct {
+	// Bearer (SSO) authentication configuration.
+	BearerAuth ReverseProxyBearerAuthPtrInput `pulumi:"bearerAuth"`
+	// Header-based authentication entries.
+	HeaderAuths ReverseProxyHeaderAuthArrayInput `pulumi:"headerAuths"`
+	// Link-based authentication configuration.
+	LinkAuth ReverseProxyLinkAuthPtrInput `pulumi:"linkAuth"`
+	// Password-based authentication configuration.
+	PasswordAuth ReverseProxyPasswordAuthPtrInput `pulumi:"passwordAuth"`
+	// PIN-based authentication configuration.
+	PinAuth ReverseProxyPINAuthPtrInput `pulumi:"pinAuth"`
+}
+
+func (ReverseProxyAuthArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyAuth)(nil)).Elem()
+}
+
+func (i ReverseProxyAuthArgs) ToReverseProxyAuthOutput() ReverseProxyAuthOutput {
+	return i.ToReverseProxyAuthOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyAuthArgs) ToReverseProxyAuthOutputWithContext(ctx context.Context) ReverseProxyAuthOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyAuthOutput)
+}
+
+func (i ReverseProxyAuthArgs) ToReverseProxyAuthPtrOutput() ReverseProxyAuthPtrOutput {
+	return i.ToReverseProxyAuthPtrOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyAuthArgs) ToReverseProxyAuthPtrOutputWithContext(ctx context.Context) ReverseProxyAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyAuthOutput).ToReverseProxyAuthPtrOutputWithContext(ctx)
+}
+
+// ReverseProxyAuthPtrInput is an input type that accepts ReverseProxyAuthArgs, ReverseProxyAuthPtr and ReverseProxyAuthPtrOutput values.
+// You can construct a concrete instance of `ReverseProxyAuthPtrInput` via:
+//
+//	        ReverseProxyAuthArgs{...}
+//
+//	or:
+//
+//	        nil
+type ReverseProxyAuthPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyAuthPtrOutput() ReverseProxyAuthPtrOutput
+	ToReverseProxyAuthPtrOutputWithContext(context.Context) ReverseProxyAuthPtrOutput
+}
+
+type reverseProxyAuthPtrType ReverseProxyAuthArgs
+
+func ReverseProxyAuthPtr(v *ReverseProxyAuthArgs) ReverseProxyAuthPtrInput {
+	return (*reverseProxyAuthPtrType)(v)
+}
+
+func (*reverseProxyAuthPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyAuth)(nil)).Elem()
+}
+
+func (i *reverseProxyAuthPtrType) ToReverseProxyAuthPtrOutput() ReverseProxyAuthPtrOutput {
+	return i.ToReverseProxyAuthPtrOutputWithContext(context.Background())
+}
+
+func (i *reverseProxyAuthPtrType) ToReverseProxyAuthPtrOutputWithContext(ctx context.Context) ReverseProxyAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyAuthPtrOutput)
+}
+
+type ReverseProxyAuthOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyAuthOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyAuthOutput) ToReverseProxyAuthOutput() ReverseProxyAuthOutput {
+	return o
+}
+
+func (o ReverseProxyAuthOutput) ToReverseProxyAuthOutputWithContext(ctx context.Context) ReverseProxyAuthOutput {
+	return o
+}
+
+func (o ReverseProxyAuthOutput) ToReverseProxyAuthPtrOutput() ReverseProxyAuthPtrOutput {
+	return o.ToReverseProxyAuthPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyAuthOutput) ToReverseProxyAuthPtrOutputWithContext(ctx context.Context) ReverseProxyAuthPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyAuth) *ReverseProxyAuth {
+		return &v
+	}).(ReverseProxyAuthPtrOutput)
+}
+
+// Bearer (SSO) authentication configuration.
+func (o ReverseProxyAuthOutput) BearerAuth() ReverseProxyBearerAuthPtrOutput {
+	return o.ApplyT(func(v ReverseProxyAuth) *ReverseProxyBearerAuth { return v.BearerAuth }).(ReverseProxyBearerAuthPtrOutput)
+}
+
+// Header-based authentication entries.
+func (o ReverseProxyAuthOutput) HeaderAuths() ReverseProxyHeaderAuthArrayOutput {
+	return o.ApplyT(func(v ReverseProxyAuth) []ReverseProxyHeaderAuth { return v.HeaderAuths }).(ReverseProxyHeaderAuthArrayOutput)
+}
+
+// Link-based authentication configuration.
+func (o ReverseProxyAuthOutput) LinkAuth() ReverseProxyLinkAuthPtrOutput {
+	return o.ApplyT(func(v ReverseProxyAuth) *ReverseProxyLinkAuth { return v.LinkAuth }).(ReverseProxyLinkAuthPtrOutput)
+}
+
+// Password-based authentication configuration.
+func (o ReverseProxyAuthOutput) PasswordAuth() ReverseProxyPasswordAuthPtrOutput {
+	return o.ApplyT(func(v ReverseProxyAuth) *ReverseProxyPasswordAuth { return v.PasswordAuth }).(ReverseProxyPasswordAuthPtrOutput)
+}
+
+// PIN-based authentication configuration.
+func (o ReverseProxyAuthOutput) PinAuth() ReverseProxyPINAuthPtrOutput {
+	return o.ApplyT(func(v ReverseProxyAuth) *ReverseProxyPINAuth { return v.PinAuth }).(ReverseProxyPINAuthPtrOutput)
+}
+
+type ReverseProxyAuthPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyAuthPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyAuthPtrOutput) ToReverseProxyAuthPtrOutput() ReverseProxyAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyAuthPtrOutput) ToReverseProxyAuthPtrOutputWithContext(ctx context.Context) ReverseProxyAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyAuthPtrOutput) Elem() ReverseProxyAuthOutput {
+	return o.ApplyT(func(v *ReverseProxyAuth) ReverseProxyAuth {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyAuth
+		return ret
+	}).(ReverseProxyAuthOutput)
+}
+
+// Bearer (SSO) authentication configuration.
+func (o ReverseProxyAuthPtrOutput) BearerAuth() ReverseProxyBearerAuthPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyAuth) *ReverseProxyBearerAuth {
+		if v == nil {
+			return nil
+		}
+		return v.BearerAuth
+	}).(ReverseProxyBearerAuthPtrOutput)
+}
+
+// Header-based authentication entries.
+func (o ReverseProxyAuthPtrOutput) HeaderAuths() ReverseProxyHeaderAuthArrayOutput {
+	return o.ApplyT(func(v *ReverseProxyAuth) []ReverseProxyHeaderAuth {
+		if v == nil {
+			return nil
+		}
+		return v.HeaderAuths
+	}).(ReverseProxyHeaderAuthArrayOutput)
+}
+
+// Link-based authentication configuration.
+func (o ReverseProxyAuthPtrOutput) LinkAuth() ReverseProxyLinkAuthPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyAuth) *ReverseProxyLinkAuth {
+		if v == nil {
+			return nil
+		}
+		return v.LinkAuth
+	}).(ReverseProxyLinkAuthPtrOutput)
+}
+
+// Password-based authentication configuration.
+func (o ReverseProxyAuthPtrOutput) PasswordAuth() ReverseProxyPasswordAuthPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyAuth) *ReverseProxyPasswordAuth {
+		if v == nil {
+			return nil
+		}
+		return v.PasswordAuth
+	}).(ReverseProxyPasswordAuthPtrOutput)
+}
+
+// PIN-based authentication configuration.
+func (o ReverseProxyAuthPtrOutput) PinAuth() ReverseProxyPINAuthPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyAuth) *ReverseProxyPINAuth {
+		if v == nil {
+			return nil
+		}
+		return v.PinAuth
+	}).(ReverseProxyPINAuthPtrOutput)
+}
+
+type ReverseProxyBearerAuth struct {
+	// List of group IDs that can use bearer auth.
+	DistributionGroups []string `pulumi:"distributionGroups"`
+	// Whether bearer auth is enabled.
+	Enabled bool `pulumi:"enabled"`
+}
+
+// ReverseProxyBearerAuthInput is an input type that accepts ReverseProxyBearerAuthArgs and ReverseProxyBearerAuthOutput values.
+// You can construct a concrete instance of `ReverseProxyBearerAuthInput` via:
+//
+//	ReverseProxyBearerAuthArgs{...}
+type ReverseProxyBearerAuthInput interface {
+	pulumi.Input
+
+	ToReverseProxyBearerAuthOutput() ReverseProxyBearerAuthOutput
+	ToReverseProxyBearerAuthOutputWithContext(context.Context) ReverseProxyBearerAuthOutput
+}
+
+type ReverseProxyBearerAuthArgs struct {
+	// List of group IDs that can use bearer auth.
+	DistributionGroups pulumi.StringArrayInput `pulumi:"distributionGroups"`
+	// Whether bearer auth is enabled.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+}
+
+func (ReverseProxyBearerAuthArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyBearerAuth)(nil)).Elem()
+}
+
+func (i ReverseProxyBearerAuthArgs) ToReverseProxyBearerAuthOutput() ReverseProxyBearerAuthOutput {
+	return i.ToReverseProxyBearerAuthOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyBearerAuthArgs) ToReverseProxyBearerAuthOutputWithContext(ctx context.Context) ReverseProxyBearerAuthOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyBearerAuthOutput)
+}
+
+func (i ReverseProxyBearerAuthArgs) ToReverseProxyBearerAuthPtrOutput() ReverseProxyBearerAuthPtrOutput {
+	return i.ToReverseProxyBearerAuthPtrOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyBearerAuthArgs) ToReverseProxyBearerAuthPtrOutputWithContext(ctx context.Context) ReverseProxyBearerAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyBearerAuthOutput).ToReverseProxyBearerAuthPtrOutputWithContext(ctx)
+}
+
+// ReverseProxyBearerAuthPtrInput is an input type that accepts ReverseProxyBearerAuthArgs, ReverseProxyBearerAuthPtr and ReverseProxyBearerAuthPtrOutput values.
+// You can construct a concrete instance of `ReverseProxyBearerAuthPtrInput` via:
+//
+//	        ReverseProxyBearerAuthArgs{...}
+//
+//	or:
+//
+//	        nil
+type ReverseProxyBearerAuthPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyBearerAuthPtrOutput() ReverseProxyBearerAuthPtrOutput
+	ToReverseProxyBearerAuthPtrOutputWithContext(context.Context) ReverseProxyBearerAuthPtrOutput
+}
+
+type reverseProxyBearerAuthPtrType ReverseProxyBearerAuthArgs
+
+func ReverseProxyBearerAuthPtr(v *ReverseProxyBearerAuthArgs) ReverseProxyBearerAuthPtrInput {
+	return (*reverseProxyBearerAuthPtrType)(v)
+}
+
+func (*reverseProxyBearerAuthPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyBearerAuth)(nil)).Elem()
+}
+
+func (i *reverseProxyBearerAuthPtrType) ToReverseProxyBearerAuthPtrOutput() ReverseProxyBearerAuthPtrOutput {
+	return i.ToReverseProxyBearerAuthPtrOutputWithContext(context.Background())
+}
+
+func (i *reverseProxyBearerAuthPtrType) ToReverseProxyBearerAuthPtrOutputWithContext(ctx context.Context) ReverseProxyBearerAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyBearerAuthPtrOutput)
+}
+
+type ReverseProxyBearerAuthOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyBearerAuthOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyBearerAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyBearerAuthOutput) ToReverseProxyBearerAuthOutput() ReverseProxyBearerAuthOutput {
+	return o
+}
+
+func (o ReverseProxyBearerAuthOutput) ToReverseProxyBearerAuthOutputWithContext(ctx context.Context) ReverseProxyBearerAuthOutput {
+	return o
+}
+
+func (o ReverseProxyBearerAuthOutput) ToReverseProxyBearerAuthPtrOutput() ReverseProxyBearerAuthPtrOutput {
+	return o.ToReverseProxyBearerAuthPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyBearerAuthOutput) ToReverseProxyBearerAuthPtrOutputWithContext(ctx context.Context) ReverseProxyBearerAuthPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyBearerAuth) *ReverseProxyBearerAuth {
+		return &v
+	}).(ReverseProxyBearerAuthPtrOutput)
+}
+
+// List of group IDs that can use bearer auth.
+func (o ReverseProxyBearerAuthOutput) DistributionGroups() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v ReverseProxyBearerAuth) []string { return v.DistributionGroups }).(pulumi.StringArrayOutput)
+}
+
+// Whether bearer auth is enabled.
+func (o ReverseProxyBearerAuthOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v ReverseProxyBearerAuth) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+type ReverseProxyBearerAuthPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyBearerAuthPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyBearerAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyBearerAuthPtrOutput) ToReverseProxyBearerAuthPtrOutput() ReverseProxyBearerAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyBearerAuthPtrOutput) ToReverseProxyBearerAuthPtrOutputWithContext(ctx context.Context) ReverseProxyBearerAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyBearerAuthPtrOutput) Elem() ReverseProxyBearerAuthOutput {
+	return o.ApplyT(func(v *ReverseProxyBearerAuth) ReverseProxyBearerAuth {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyBearerAuth
+		return ret
+	}).(ReverseProxyBearerAuthOutput)
+}
+
+// List of group IDs that can use bearer auth.
+func (o ReverseProxyBearerAuthPtrOutput) DistributionGroups() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *ReverseProxyBearerAuth) []string {
+		if v == nil {
+			return nil
+		}
+		return v.DistributionGroups
+	}).(pulumi.StringArrayOutput)
+}
+
+// Whether bearer auth is enabled.
+func (o ReverseProxyBearerAuthPtrOutput) Enabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyBearerAuth) *bool {
+		if v == nil {
+			return nil
+		}
+		return &v.Enabled
+	}).(pulumi.BoolPtrOutput)
+}
+
+type ReverseProxyHeaderAuth struct {
+	// Whether this header auth entry is enabled.
+	Enabled bool `pulumi:"enabled"`
+	// The header name to match.
+	Header string `pulumi:"header"`
+	// The header value to match.
+	Value string `pulumi:"value"`
+}
+
+// ReverseProxyHeaderAuthInput is an input type that accepts ReverseProxyHeaderAuthArgs and ReverseProxyHeaderAuthOutput values.
+// You can construct a concrete instance of `ReverseProxyHeaderAuthInput` via:
+//
+//	ReverseProxyHeaderAuthArgs{...}
+type ReverseProxyHeaderAuthInput interface {
+	pulumi.Input
+
+	ToReverseProxyHeaderAuthOutput() ReverseProxyHeaderAuthOutput
+	ToReverseProxyHeaderAuthOutputWithContext(context.Context) ReverseProxyHeaderAuthOutput
+}
+
+type ReverseProxyHeaderAuthArgs struct {
+	// Whether this header auth entry is enabled.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// The header name to match.
+	Header pulumi.StringInput `pulumi:"header"`
+	// The header value to match.
+	Value pulumi.StringInput `pulumi:"value"`
+}
+
+func (ReverseProxyHeaderAuthArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyHeaderAuth)(nil)).Elem()
+}
+
+func (i ReverseProxyHeaderAuthArgs) ToReverseProxyHeaderAuthOutput() ReverseProxyHeaderAuthOutput {
+	return i.ToReverseProxyHeaderAuthOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyHeaderAuthArgs) ToReverseProxyHeaderAuthOutputWithContext(ctx context.Context) ReverseProxyHeaderAuthOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyHeaderAuthOutput)
+}
+
+// ReverseProxyHeaderAuthArrayInput is an input type that accepts ReverseProxyHeaderAuthArray and ReverseProxyHeaderAuthArrayOutput values.
+// You can construct a concrete instance of `ReverseProxyHeaderAuthArrayInput` via:
+//
+//	ReverseProxyHeaderAuthArray{ ReverseProxyHeaderAuthArgs{...} }
+type ReverseProxyHeaderAuthArrayInput interface {
+	pulumi.Input
+
+	ToReverseProxyHeaderAuthArrayOutput() ReverseProxyHeaderAuthArrayOutput
+	ToReverseProxyHeaderAuthArrayOutputWithContext(context.Context) ReverseProxyHeaderAuthArrayOutput
+}
+
+type ReverseProxyHeaderAuthArray []ReverseProxyHeaderAuthInput
+
+func (ReverseProxyHeaderAuthArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ReverseProxyHeaderAuth)(nil)).Elem()
+}
+
+func (i ReverseProxyHeaderAuthArray) ToReverseProxyHeaderAuthArrayOutput() ReverseProxyHeaderAuthArrayOutput {
+	return i.ToReverseProxyHeaderAuthArrayOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyHeaderAuthArray) ToReverseProxyHeaderAuthArrayOutputWithContext(ctx context.Context) ReverseProxyHeaderAuthArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyHeaderAuthArrayOutput)
+}
+
+type ReverseProxyHeaderAuthOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyHeaderAuthOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyHeaderAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyHeaderAuthOutput) ToReverseProxyHeaderAuthOutput() ReverseProxyHeaderAuthOutput {
+	return o
+}
+
+func (o ReverseProxyHeaderAuthOutput) ToReverseProxyHeaderAuthOutputWithContext(ctx context.Context) ReverseProxyHeaderAuthOutput {
+	return o
+}
+
+// Whether this header auth entry is enabled.
+func (o ReverseProxyHeaderAuthOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v ReverseProxyHeaderAuth) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// The header name to match.
+func (o ReverseProxyHeaderAuthOutput) Header() pulumi.StringOutput {
+	return o.ApplyT(func(v ReverseProxyHeaderAuth) string { return v.Header }).(pulumi.StringOutput)
+}
+
+// The header value to match.
+func (o ReverseProxyHeaderAuthOutput) Value() pulumi.StringOutput {
+	return o.ApplyT(func(v ReverseProxyHeaderAuth) string { return v.Value }).(pulumi.StringOutput)
+}
+
+type ReverseProxyHeaderAuthArrayOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyHeaderAuthArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ReverseProxyHeaderAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyHeaderAuthArrayOutput) ToReverseProxyHeaderAuthArrayOutput() ReverseProxyHeaderAuthArrayOutput {
+	return o
+}
+
+func (o ReverseProxyHeaderAuthArrayOutput) ToReverseProxyHeaderAuthArrayOutputWithContext(ctx context.Context) ReverseProxyHeaderAuthArrayOutput {
+	return o
+}
+
+func (o ReverseProxyHeaderAuthArrayOutput) Index(i pulumi.IntInput) ReverseProxyHeaderAuthOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ReverseProxyHeaderAuth {
+		return vs[0].([]ReverseProxyHeaderAuth)[vs[1].(int)]
+	}).(ReverseProxyHeaderAuthOutput)
+}
+
+type ReverseProxyLinkAuth struct {
+	// Whether link auth is enabled.
+	Enabled bool `pulumi:"enabled"`
+}
+
+// ReverseProxyLinkAuthInput is an input type that accepts ReverseProxyLinkAuthArgs and ReverseProxyLinkAuthOutput values.
+// You can construct a concrete instance of `ReverseProxyLinkAuthInput` via:
+//
+//	ReverseProxyLinkAuthArgs{...}
+type ReverseProxyLinkAuthInput interface {
+	pulumi.Input
+
+	ToReverseProxyLinkAuthOutput() ReverseProxyLinkAuthOutput
+	ToReverseProxyLinkAuthOutputWithContext(context.Context) ReverseProxyLinkAuthOutput
+}
+
+type ReverseProxyLinkAuthArgs struct {
+	// Whether link auth is enabled.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+}
+
+func (ReverseProxyLinkAuthArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyLinkAuth)(nil)).Elem()
+}
+
+func (i ReverseProxyLinkAuthArgs) ToReverseProxyLinkAuthOutput() ReverseProxyLinkAuthOutput {
+	return i.ToReverseProxyLinkAuthOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyLinkAuthArgs) ToReverseProxyLinkAuthOutputWithContext(ctx context.Context) ReverseProxyLinkAuthOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyLinkAuthOutput)
+}
+
+func (i ReverseProxyLinkAuthArgs) ToReverseProxyLinkAuthPtrOutput() ReverseProxyLinkAuthPtrOutput {
+	return i.ToReverseProxyLinkAuthPtrOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyLinkAuthArgs) ToReverseProxyLinkAuthPtrOutputWithContext(ctx context.Context) ReverseProxyLinkAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyLinkAuthOutput).ToReverseProxyLinkAuthPtrOutputWithContext(ctx)
+}
+
+// ReverseProxyLinkAuthPtrInput is an input type that accepts ReverseProxyLinkAuthArgs, ReverseProxyLinkAuthPtr and ReverseProxyLinkAuthPtrOutput values.
+// You can construct a concrete instance of `ReverseProxyLinkAuthPtrInput` via:
+//
+//	        ReverseProxyLinkAuthArgs{...}
+//
+//	or:
+//
+//	        nil
+type ReverseProxyLinkAuthPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyLinkAuthPtrOutput() ReverseProxyLinkAuthPtrOutput
+	ToReverseProxyLinkAuthPtrOutputWithContext(context.Context) ReverseProxyLinkAuthPtrOutput
+}
+
+type reverseProxyLinkAuthPtrType ReverseProxyLinkAuthArgs
+
+func ReverseProxyLinkAuthPtr(v *ReverseProxyLinkAuthArgs) ReverseProxyLinkAuthPtrInput {
+	return (*reverseProxyLinkAuthPtrType)(v)
+}
+
+func (*reverseProxyLinkAuthPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyLinkAuth)(nil)).Elem()
+}
+
+func (i *reverseProxyLinkAuthPtrType) ToReverseProxyLinkAuthPtrOutput() ReverseProxyLinkAuthPtrOutput {
+	return i.ToReverseProxyLinkAuthPtrOutputWithContext(context.Background())
+}
+
+func (i *reverseProxyLinkAuthPtrType) ToReverseProxyLinkAuthPtrOutputWithContext(ctx context.Context) ReverseProxyLinkAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyLinkAuthPtrOutput)
+}
+
+type ReverseProxyLinkAuthOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyLinkAuthOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyLinkAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyLinkAuthOutput) ToReverseProxyLinkAuthOutput() ReverseProxyLinkAuthOutput {
+	return o
+}
+
+func (o ReverseProxyLinkAuthOutput) ToReverseProxyLinkAuthOutputWithContext(ctx context.Context) ReverseProxyLinkAuthOutput {
+	return o
+}
+
+func (o ReverseProxyLinkAuthOutput) ToReverseProxyLinkAuthPtrOutput() ReverseProxyLinkAuthPtrOutput {
+	return o.ToReverseProxyLinkAuthPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyLinkAuthOutput) ToReverseProxyLinkAuthPtrOutputWithContext(ctx context.Context) ReverseProxyLinkAuthPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyLinkAuth) *ReverseProxyLinkAuth {
+		return &v
+	}).(ReverseProxyLinkAuthPtrOutput)
+}
+
+// Whether link auth is enabled.
+func (o ReverseProxyLinkAuthOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v ReverseProxyLinkAuth) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+type ReverseProxyLinkAuthPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyLinkAuthPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyLinkAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyLinkAuthPtrOutput) ToReverseProxyLinkAuthPtrOutput() ReverseProxyLinkAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyLinkAuthPtrOutput) ToReverseProxyLinkAuthPtrOutputWithContext(ctx context.Context) ReverseProxyLinkAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyLinkAuthPtrOutput) Elem() ReverseProxyLinkAuthOutput {
+	return o.ApplyT(func(v *ReverseProxyLinkAuth) ReverseProxyLinkAuth {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyLinkAuth
+		return ret
+	}).(ReverseProxyLinkAuthOutput)
+}
+
+// Whether link auth is enabled.
+func (o ReverseProxyLinkAuthPtrOutput) Enabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyLinkAuth) *bool {
+		if v == nil {
+			return nil
+		}
+		return &v.Enabled
+	}).(pulumi.BoolPtrOutput)
+}
+
+type ReverseProxyPINAuth struct {
+	// Whether PIN auth is enabled.
+	Enabled bool `pulumi:"enabled"`
+	// The PIN required to access the service.
+	Pin string `pulumi:"pin"`
+}
+
+// ReverseProxyPINAuthInput is an input type that accepts ReverseProxyPINAuthArgs and ReverseProxyPINAuthOutput values.
+// You can construct a concrete instance of `ReverseProxyPINAuthInput` via:
+//
+//	ReverseProxyPINAuthArgs{...}
+type ReverseProxyPINAuthInput interface {
+	pulumi.Input
+
+	ToReverseProxyPINAuthOutput() ReverseProxyPINAuthOutput
+	ToReverseProxyPINAuthOutputWithContext(context.Context) ReverseProxyPINAuthOutput
+}
+
+type ReverseProxyPINAuthArgs struct {
+	// Whether PIN auth is enabled.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// The PIN required to access the service.
+	Pin pulumi.StringInput `pulumi:"pin"`
+}
+
+func (ReverseProxyPINAuthArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyPINAuth)(nil)).Elem()
+}
+
+func (i ReverseProxyPINAuthArgs) ToReverseProxyPINAuthOutput() ReverseProxyPINAuthOutput {
+	return i.ToReverseProxyPINAuthOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyPINAuthArgs) ToReverseProxyPINAuthOutputWithContext(ctx context.Context) ReverseProxyPINAuthOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyPINAuthOutput)
+}
+
+func (i ReverseProxyPINAuthArgs) ToReverseProxyPINAuthPtrOutput() ReverseProxyPINAuthPtrOutput {
+	return i.ToReverseProxyPINAuthPtrOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyPINAuthArgs) ToReverseProxyPINAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPINAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyPINAuthOutput).ToReverseProxyPINAuthPtrOutputWithContext(ctx)
+}
+
+// ReverseProxyPINAuthPtrInput is an input type that accepts ReverseProxyPINAuthArgs, ReverseProxyPINAuthPtr and ReverseProxyPINAuthPtrOutput values.
+// You can construct a concrete instance of `ReverseProxyPINAuthPtrInput` via:
+//
+//	        ReverseProxyPINAuthArgs{...}
+//
+//	or:
+//
+//	        nil
+type ReverseProxyPINAuthPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyPINAuthPtrOutput() ReverseProxyPINAuthPtrOutput
+	ToReverseProxyPINAuthPtrOutputWithContext(context.Context) ReverseProxyPINAuthPtrOutput
+}
+
+type reverseProxyPINAuthPtrType ReverseProxyPINAuthArgs
+
+func ReverseProxyPINAuthPtr(v *ReverseProxyPINAuthArgs) ReverseProxyPINAuthPtrInput {
+	return (*reverseProxyPINAuthPtrType)(v)
+}
+
+func (*reverseProxyPINAuthPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyPINAuth)(nil)).Elem()
+}
+
+func (i *reverseProxyPINAuthPtrType) ToReverseProxyPINAuthPtrOutput() ReverseProxyPINAuthPtrOutput {
+	return i.ToReverseProxyPINAuthPtrOutputWithContext(context.Background())
+}
+
+func (i *reverseProxyPINAuthPtrType) ToReverseProxyPINAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPINAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyPINAuthPtrOutput)
+}
+
+type ReverseProxyPINAuthOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyPINAuthOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyPINAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyPINAuthOutput) ToReverseProxyPINAuthOutput() ReverseProxyPINAuthOutput {
+	return o
+}
+
+func (o ReverseProxyPINAuthOutput) ToReverseProxyPINAuthOutputWithContext(ctx context.Context) ReverseProxyPINAuthOutput {
+	return o
+}
+
+func (o ReverseProxyPINAuthOutput) ToReverseProxyPINAuthPtrOutput() ReverseProxyPINAuthPtrOutput {
+	return o.ToReverseProxyPINAuthPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyPINAuthOutput) ToReverseProxyPINAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPINAuthPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyPINAuth) *ReverseProxyPINAuth {
+		return &v
+	}).(ReverseProxyPINAuthPtrOutput)
+}
+
+// Whether PIN auth is enabled.
+func (o ReverseProxyPINAuthOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v ReverseProxyPINAuth) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// The PIN required to access the service.
+func (o ReverseProxyPINAuthOutput) Pin() pulumi.StringOutput {
+	return o.ApplyT(func(v ReverseProxyPINAuth) string { return v.Pin }).(pulumi.StringOutput)
+}
+
+type ReverseProxyPINAuthPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyPINAuthPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyPINAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyPINAuthPtrOutput) ToReverseProxyPINAuthPtrOutput() ReverseProxyPINAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyPINAuthPtrOutput) ToReverseProxyPINAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPINAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyPINAuthPtrOutput) Elem() ReverseProxyPINAuthOutput {
+	return o.ApplyT(func(v *ReverseProxyPINAuth) ReverseProxyPINAuth {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyPINAuth
+		return ret
+	}).(ReverseProxyPINAuthOutput)
+}
+
+// Whether PIN auth is enabled.
+func (o ReverseProxyPINAuthPtrOutput) Enabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyPINAuth) *bool {
+		if v == nil {
+			return nil
+		}
+		return &v.Enabled
+	}).(pulumi.BoolPtrOutput)
+}
+
+// The PIN required to access the service.
+func (o ReverseProxyPINAuthPtrOutput) Pin() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyPINAuth) *string {
+		if v == nil {
+			return nil
+		}
+		return &v.Pin
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyPasswordAuth struct {
+	// Whether password auth is enabled.
+	Enabled bool `pulumi:"enabled"`
+	// The password required to access the service.
+	Password string `pulumi:"password"`
+}
+
+// ReverseProxyPasswordAuthInput is an input type that accepts ReverseProxyPasswordAuthArgs and ReverseProxyPasswordAuthOutput values.
+// You can construct a concrete instance of `ReverseProxyPasswordAuthInput` via:
+//
+//	ReverseProxyPasswordAuthArgs{...}
+type ReverseProxyPasswordAuthInput interface {
+	pulumi.Input
+
+	ToReverseProxyPasswordAuthOutput() ReverseProxyPasswordAuthOutput
+	ToReverseProxyPasswordAuthOutputWithContext(context.Context) ReverseProxyPasswordAuthOutput
+}
+
+type ReverseProxyPasswordAuthArgs struct {
+	// Whether password auth is enabled.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// The password required to access the service.
+	Password pulumi.StringInput `pulumi:"password"`
+}
+
+func (ReverseProxyPasswordAuthArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyPasswordAuth)(nil)).Elem()
+}
+
+func (i ReverseProxyPasswordAuthArgs) ToReverseProxyPasswordAuthOutput() ReverseProxyPasswordAuthOutput {
+	return i.ToReverseProxyPasswordAuthOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyPasswordAuthArgs) ToReverseProxyPasswordAuthOutputWithContext(ctx context.Context) ReverseProxyPasswordAuthOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyPasswordAuthOutput)
+}
+
+func (i ReverseProxyPasswordAuthArgs) ToReverseProxyPasswordAuthPtrOutput() ReverseProxyPasswordAuthPtrOutput {
+	return i.ToReverseProxyPasswordAuthPtrOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyPasswordAuthArgs) ToReverseProxyPasswordAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPasswordAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyPasswordAuthOutput).ToReverseProxyPasswordAuthPtrOutputWithContext(ctx)
+}
+
+// ReverseProxyPasswordAuthPtrInput is an input type that accepts ReverseProxyPasswordAuthArgs, ReverseProxyPasswordAuthPtr and ReverseProxyPasswordAuthPtrOutput values.
+// You can construct a concrete instance of `ReverseProxyPasswordAuthPtrInput` via:
+//
+//	        ReverseProxyPasswordAuthArgs{...}
+//
+//	or:
+//
+//	        nil
+type ReverseProxyPasswordAuthPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyPasswordAuthPtrOutput() ReverseProxyPasswordAuthPtrOutput
+	ToReverseProxyPasswordAuthPtrOutputWithContext(context.Context) ReverseProxyPasswordAuthPtrOutput
+}
+
+type reverseProxyPasswordAuthPtrType ReverseProxyPasswordAuthArgs
+
+func ReverseProxyPasswordAuthPtr(v *ReverseProxyPasswordAuthArgs) ReverseProxyPasswordAuthPtrInput {
+	return (*reverseProxyPasswordAuthPtrType)(v)
+}
+
+func (*reverseProxyPasswordAuthPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyPasswordAuth)(nil)).Elem()
+}
+
+func (i *reverseProxyPasswordAuthPtrType) ToReverseProxyPasswordAuthPtrOutput() ReverseProxyPasswordAuthPtrOutput {
+	return i.ToReverseProxyPasswordAuthPtrOutputWithContext(context.Background())
+}
+
+func (i *reverseProxyPasswordAuthPtrType) ToReverseProxyPasswordAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPasswordAuthPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyPasswordAuthPtrOutput)
+}
+
+type ReverseProxyPasswordAuthOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyPasswordAuthOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyPasswordAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyPasswordAuthOutput) ToReverseProxyPasswordAuthOutput() ReverseProxyPasswordAuthOutput {
+	return o
+}
+
+func (o ReverseProxyPasswordAuthOutput) ToReverseProxyPasswordAuthOutputWithContext(ctx context.Context) ReverseProxyPasswordAuthOutput {
+	return o
+}
+
+func (o ReverseProxyPasswordAuthOutput) ToReverseProxyPasswordAuthPtrOutput() ReverseProxyPasswordAuthPtrOutput {
+	return o.ToReverseProxyPasswordAuthPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyPasswordAuthOutput) ToReverseProxyPasswordAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPasswordAuthPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyPasswordAuth) *ReverseProxyPasswordAuth {
+		return &v
+	}).(ReverseProxyPasswordAuthPtrOutput)
+}
+
+// Whether password auth is enabled.
+func (o ReverseProxyPasswordAuthOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v ReverseProxyPasswordAuth) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// The password required to access the service.
+func (o ReverseProxyPasswordAuthOutput) Password() pulumi.StringOutput {
+	return o.ApplyT(func(v ReverseProxyPasswordAuth) string { return v.Password }).(pulumi.StringOutput)
+}
+
+type ReverseProxyPasswordAuthPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyPasswordAuthPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyPasswordAuth)(nil)).Elem()
+}
+
+func (o ReverseProxyPasswordAuthPtrOutput) ToReverseProxyPasswordAuthPtrOutput() ReverseProxyPasswordAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyPasswordAuthPtrOutput) ToReverseProxyPasswordAuthPtrOutputWithContext(ctx context.Context) ReverseProxyPasswordAuthPtrOutput {
+	return o
+}
+
+func (o ReverseProxyPasswordAuthPtrOutput) Elem() ReverseProxyPasswordAuthOutput {
+	return o.ApplyT(func(v *ReverseProxyPasswordAuth) ReverseProxyPasswordAuth {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyPasswordAuth
+		return ret
+	}).(ReverseProxyPasswordAuthOutput)
+}
+
+// Whether password auth is enabled.
+func (o ReverseProxyPasswordAuthPtrOutput) Enabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyPasswordAuth) *bool {
+		if v == nil {
+			return nil
+		}
+		return &v.Enabled
+	}).(pulumi.BoolPtrOutput)
+}
+
+// The password required to access the service.
+func (o ReverseProxyPasswordAuthPtrOutput) Password() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyPasswordAuth) *string {
+		if v == nil {
+			return nil
+		}
+		return &v.Password
+	}).(pulumi.StringPtrOutput)
+}
+
 type ReverseProxyTarget struct {
 	// Whether this target is enabled.
 	Enabled bool `pulumi:"enabled"`
 	// Backend IP or domain for this target.
 	Host *string `pulumi:"host"`
+	// Advanced per-target proxy options.
+	Options *ReverseProxyTargetOptions `pulumi:"options"`
 	// URL path prefix for this target (HTTP only).
 	Path *string `pulumi:"path"`
 	// Backend port for this target.
@@ -1956,6 +3104,8 @@ type ReverseProxyTargetArgs struct {
 	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// Backend IP or domain for this target.
 	Host pulumi.StringPtrInput `pulumi:"host"`
+	// Advanced per-target proxy options.
+	Options ReverseProxyTargetOptionsPtrInput `pulumi:"options"`
 	// URL path prefix for this target (HTTP only).
 	Path pulumi.StringPtrInput `pulumi:"path"`
 	// Backend port for this target.
@@ -2029,6 +3179,11 @@ func (o ReverseProxyTargetOutput) Host() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v ReverseProxyTarget) *string { return v.Host }).(pulumi.StringPtrOutput)
 }
 
+// Advanced per-target proxy options.
+func (o ReverseProxyTargetOutput) Options() ReverseProxyTargetOptionsPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) *ReverseProxyTargetOptions { return v.Options }).(ReverseProxyTargetOptionsPtrOutput)
+}
+
 // URL path prefix for this target (HTTP only).
 func (o ReverseProxyTargetOutput) Path() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v ReverseProxyTarget) *string { return v.Path }).(pulumi.StringPtrOutput)
@@ -2072,6 +3227,257 @@ func (o ReverseProxyTargetArrayOutput) Index(i pulumi.IntInput) ReverseProxyTarg
 	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ReverseProxyTarget {
 		return vs[0].([]ReverseProxyTarget)[vs[1].(int)]
 	}).(ReverseProxyTargetOutput)
+}
+
+type ReverseProxyTargetOptions struct {
+	// Extra headers sent to the backend. Hop-by-hop and proxy-managed headers are rejected.
+	CustomHeaders map[string]string `pulumi:"customHeaders"`
+	// When true, the proxy dials this target via the host's network stack instead of through its embedded NetBird client.
+	DirectUpstream *bool `pulumi:"directUpstream"`
+	// How the request path is rewritten before forwarding. Default strips the matched prefix; "preserve" keeps the full path.
+	PathRewrite *ReverseProxyPathRewrite `pulumi:"pathRewrite"`
+	// Send PROXY Protocol v2 header to this backend (TCP/TLS only).
+	ProxyProtocol *bool `pulumi:"proxyProtocol"`
+	// Per-target response timeout as a Go duration string (e.g. "30s", "2m").
+	RequestTimeout *string `pulumi:"requestTimeout"`
+	// Idle timeout before a UDP session is reaped, as a Go duration string (e.g. "30s", "2m").
+	SessionIdleTimeout *string `pulumi:"sessionIdleTimeout"`
+	// Skip TLS certificate verification for this backend.
+	SkipTlsVerify *bool `pulumi:"skipTlsVerify"`
+}
+
+// ReverseProxyTargetOptionsInput is an input type that accepts ReverseProxyTargetOptionsArgs and ReverseProxyTargetOptionsOutput values.
+// You can construct a concrete instance of `ReverseProxyTargetOptionsInput` via:
+//
+//	ReverseProxyTargetOptionsArgs{...}
+type ReverseProxyTargetOptionsInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetOptionsOutput() ReverseProxyTargetOptionsOutput
+	ToReverseProxyTargetOptionsOutputWithContext(context.Context) ReverseProxyTargetOptionsOutput
+}
+
+type ReverseProxyTargetOptionsArgs struct {
+	// Extra headers sent to the backend. Hop-by-hop and proxy-managed headers are rejected.
+	CustomHeaders pulumi.StringMapInput `pulumi:"customHeaders"`
+	// When true, the proxy dials this target via the host's network stack instead of through its embedded NetBird client.
+	DirectUpstream pulumi.BoolPtrInput `pulumi:"directUpstream"`
+	// How the request path is rewritten before forwarding. Default strips the matched prefix; "preserve" keeps the full path.
+	PathRewrite ReverseProxyPathRewritePtrInput `pulumi:"pathRewrite"`
+	// Send PROXY Protocol v2 header to this backend (TCP/TLS only).
+	ProxyProtocol pulumi.BoolPtrInput `pulumi:"proxyProtocol"`
+	// Per-target response timeout as a Go duration string (e.g. "30s", "2m").
+	RequestTimeout pulumi.StringPtrInput `pulumi:"requestTimeout"`
+	// Idle timeout before a UDP session is reaped, as a Go duration string (e.g. "30s", "2m").
+	SessionIdleTimeout pulumi.StringPtrInput `pulumi:"sessionIdleTimeout"`
+	// Skip TLS certificate verification for this backend.
+	SkipTlsVerify pulumi.BoolPtrInput `pulumi:"skipTlsVerify"`
+}
+
+func (ReverseProxyTargetOptionsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetOptions)(nil)).Elem()
+}
+
+func (i ReverseProxyTargetOptionsArgs) ToReverseProxyTargetOptionsOutput() ReverseProxyTargetOptionsOutput {
+	return i.ToReverseProxyTargetOptionsOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyTargetOptionsArgs) ToReverseProxyTargetOptionsOutputWithContext(ctx context.Context) ReverseProxyTargetOptionsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyTargetOptionsOutput)
+}
+
+func (i ReverseProxyTargetOptionsArgs) ToReverseProxyTargetOptionsPtrOutput() ReverseProxyTargetOptionsPtrOutput {
+	return i.ToReverseProxyTargetOptionsPtrOutputWithContext(context.Background())
+}
+
+func (i ReverseProxyTargetOptionsArgs) ToReverseProxyTargetOptionsPtrOutputWithContext(ctx context.Context) ReverseProxyTargetOptionsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyTargetOptionsOutput).ToReverseProxyTargetOptionsPtrOutputWithContext(ctx)
+}
+
+// ReverseProxyTargetOptionsPtrInput is an input type that accepts ReverseProxyTargetOptionsArgs, ReverseProxyTargetOptionsPtr and ReverseProxyTargetOptionsPtrOutput values.
+// You can construct a concrete instance of `ReverseProxyTargetOptionsPtrInput` via:
+//
+//	        ReverseProxyTargetOptionsArgs{...}
+//
+//	or:
+//
+//	        nil
+type ReverseProxyTargetOptionsPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetOptionsPtrOutput() ReverseProxyTargetOptionsPtrOutput
+	ToReverseProxyTargetOptionsPtrOutputWithContext(context.Context) ReverseProxyTargetOptionsPtrOutput
+}
+
+type reverseProxyTargetOptionsPtrType ReverseProxyTargetOptionsArgs
+
+func ReverseProxyTargetOptionsPtr(v *ReverseProxyTargetOptionsArgs) ReverseProxyTargetOptionsPtrInput {
+	return (*reverseProxyTargetOptionsPtrType)(v)
+}
+
+func (*reverseProxyTargetOptionsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyTargetOptions)(nil)).Elem()
+}
+
+func (i *reverseProxyTargetOptionsPtrType) ToReverseProxyTargetOptionsPtrOutput() ReverseProxyTargetOptionsPtrOutput {
+	return i.ToReverseProxyTargetOptionsPtrOutputWithContext(context.Background())
+}
+
+func (i *reverseProxyTargetOptionsPtrType) ToReverseProxyTargetOptionsPtrOutputWithContext(ctx context.Context) ReverseProxyTargetOptionsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ReverseProxyTargetOptionsPtrOutput)
+}
+
+type ReverseProxyTargetOptionsOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetOptionsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetOptions)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetOptionsOutput) ToReverseProxyTargetOptionsOutput() ReverseProxyTargetOptionsOutput {
+	return o
+}
+
+func (o ReverseProxyTargetOptionsOutput) ToReverseProxyTargetOptionsOutputWithContext(ctx context.Context) ReverseProxyTargetOptionsOutput {
+	return o
+}
+
+func (o ReverseProxyTargetOptionsOutput) ToReverseProxyTargetOptionsPtrOutput() ReverseProxyTargetOptionsPtrOutput {
+	return o.ToReverseProxyTargetOptionsPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetOptionsOutput) ToReverseProxyTargetOptionsPtrOutputWithContext(ctx context.Context) ReverseProxyTargetOptionsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyTargetOptions) *ReverseProxyTargetOptions {
+		return &v
+	}).(ReverseProxyTargetOptionsPtrOutput)
+}
+
+// Extra headers sent to the backend. Hop-by-hop and proxy-managed headers are rejected.
+func (o ReverseProxyTargetOptionsOutput) CustomHeaders() pulumi.StringMapOutput {
+	return o.ApplyT(func(v ReverseProxyTargetOptions) map[string]string { return v.CustomHeaders }).(pulumi.StringMapOutput)
+}
+
+// When true, the proxy dials this target via the host's network stack instead of through its embedded NetBird client.
+func (o ReverseProxyTargetOptionsOutput) DirectUpstream() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTargetOptions) *bool { return v.DirectUpstream }).(pulumi.BoolPtrOutput)
+}
+
+// How the request path is rewritten before forwarding. Default strips the matched prefix; "preserve" keeps the full path.
+func (o ReverseProxyTargetOptionsOutput) PathRewrite() ReverseProxyPathRewritePtrOutput {
+	return o.ApplyT(func(v ReverseProxyTargetOptions) *ReverseProxyPathRewrite { return v.PathRewrite }).(ReverseProxyPathRewritePtrOutput)
+}
+
+// Send PROXY Protocol v2 header to this backend (TCP/TLS only).
+func (o ReverseProxyTargetOptionsOutput) ProxyProtocol() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTargetOptions) *bool { return v.ProxyProtocol }).(pulumi.BoolPtrOutput)
+}
+
+// Per-target response timeout as a Go duration string (e.g. "30s", "2m").
+func (o ReverseProxyTargetOptionsOutput) RequestTimeout() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTargetOptions) *string { return v.RequestTimeout }).(pulumi.StringPtrOutput)
+}
+
+// Idle timeout before a UDP session is reaped, as a Go duration string (e.g. "30s", "2m").
+func (o ReverseProxyTargetOptionsOutput) SessionIdleTimeout() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTargetOptions) *string { return v.SessionIdleTimeout }).(pulumi.StringPtrOutput)
+}
+
+// Skip TLS certificate verification for this backend.
+func (o ReverseProxyTargetOptionsOutput) SkipTlsVerify() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTargetOptions) *bool { return v.SkipTlsVerify }).(pulumi.BoolPtrOutput)
+}
+
+type ReverseProxyTargetOptionsPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetOptionsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyTargetOptions)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetOptionsPtrOutput) ToReverseProxyTargetOptionsPtrOutput() ReverseProxyTargetOptionsPtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetOptionsPtrOutput) ToReverseProxyTargetOptionsPtrOutputWithContext(ctx context.Context) ReverseProxyTargetOptionsPtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetOptionsPtrOutput) Elem() ReverseProxyTargetOptionsOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) ReverseProxyTargetOptions {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyTargetOptions
+		return ret
+	}).(ReverseProxyTargetOptionsOutput)
+}
+
+// Extra headers sent to the backend. Hop-by-hop and proxy-managed headers are rejected.
+func (o ReverseProxyTargetOptionsPtrOutput) CustomHeaders() pulumi.StringMapOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) map[string]string {
+		if v == nil {
+			return nil
+		}
+		return v.CustomHeaders
+	}).(pulumi.StringMapOutput)
+}
+
+// When true, the proxy dials this target via the host's network stack instead of through its embedded NetBird client.
+func (o ReverseProxyTargetOptionsPtrOutput) DirectUpstream() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.DirectUpstream
+	}).(pulumi.BoolPtrOutput)
+}
+
+// How the request path is rewritten before forwarding. Default strips the matched prefix; "preserve" keeps the full path.
+func (o ReverseProxyTargetOptionsPtrOutput) PathRewrite() ReverseProxyPathRewritePtrOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) *ReverseProxyPathRewrite {
+		if v == nil {
+			return nil
+		}
+		return v.PathRewrite
+	}).(ReverseProxyPathRewritePtrOutput)
+}
+
+// Send PROXY Protocol v2 header to this backend (TCP/TLS only).
+func (o ReverseProxyTargetOptionsPtrOutput) ProxyProtocol() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.ProxyProtocol
+	}).(pulumi.BoolPtrOutput)
+}
+
+// Per-target response timeout as a Go duration string (e.g. "30s", "2m").
+func (o ReverseProxyTargetOptionsPtrOutput) RequestTimeout() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) *string {
+		if v == nil {
+			return nil
+		}
+		return v.RequestTimeout
+	}).(pulumi.StringPtrOutput)
+}
+
+// Idle timeout before a UDP session is reaped, as a Go duration string (e.g. "30s", "2m").
+func (o ReverseProxyTargetOptionsPtrOutput) SessionIdleTimeout() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) *string {
+		if v == nil {
+			return nil
+		}
+		return v.SessionIdleTimeout
+	}).(pulumi.StringPtrOutput)
+}
+
+// Skip TLS certificate verification for this backend.
+func (o ReverseProxyTargetOptionsPtrOutput) SkipTlsVerify() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetOptions) *bool {
+		if v == nil {
+			return nil
+		}
+		return v.SkipTlsVerify
+	}).(pulumi.BoolPtrOutput)
 }
 
 type RuleGroup struct {
@@ -2256,8 +3662,24 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourcePtrInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceArrayInput)(nil)).Elem(), ResourceArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyAccessRestrictionsInput)(nil)).Elem(), ReverseProxyAccessRestrictionsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyAccessRestrictionsPtrInput)(nil)).Elem(), ReverseProxyAccessRestrictionsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyAuthInput)(nil)).Elem(), ReverseProxyAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyAuthPtrInput)(nil)).Elem(), ReverseProxyAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyBearerAuthInput)(nil)).Elem(), ReverseProxyBearerAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyBearerAuthPtrInput)(nil)).Elem(), ReverseProxyBearerAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyHeaderAuthInput)(nil)).Elem(), ReverseProxyHeaderAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyHeaderAuthArrayInput)(nil)).Elem(), ReverseProxyHeaderAuthArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyLinkAuthInput)(nil)).Elem(), ReverseProxyLinkAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyLinkAuthPtrInput)(nil)).Elem(), ReverseProxyLinkAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyPINAuthInput)(nil)).Elem(), ReverseProxyPINAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyPINAuthPtrInput)(nil)).Elem(), ReverseProxyPINAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyPasswordAuthInput)(nil)).Elem(), ReverseProxyPasswordAuthArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyPasswordAuthPtrInput)(nil)).Elem(), ReverseProxyPasswordAuthArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetInput)(nil)).Elem(), ReverseProxyTargetArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetArrayInput)(nil)).Elem(), ReverseProxyTargetArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetOptionsInput)(nil)).Elem(), ReverseProxyTargetOptionsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetOptionsPtrInput)(nil)).Elem(), ReverseProxyTargetOptionsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeArrayInput)(nil)).Elem(), RulePortRangeArray{})
 	pulumi.RegisterOutputType(NameserverOutput{})
@@ -2286,8 +3708,24 @@ func init() {
 	pulumi.RegisterOutputType(ResourceOutput{})
 	pulumi.RegisterOutputType(ResourcePtrOutput{})
 	pulumi.RegisterOutputType(ResourceArrayOutput{})
+	pulumi.RegisterOutputType(ReverseProxyAccessRestrictionsOutput{})
+	pulumi.RegisterOutputType(ReverseProxyAccessRestrictionsPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyAuthOutput{})
+	pulumi.RegisterOutputType(ReverseProxyAuthPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyBearerAuthOutput{})
+	pulumi.RegisterOutputType(ReverseProxyBearerAuthPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyHeaderAuthOutput{})
+	pulumi.RegisterOutputType(ReverseProxyHeaderAuthArrayOutput{})
+	pulumi.RegisterOutputType(ReverseProxyLinkAuthOutput{})
+	pulumi.RegisterOutputType(ReverseProxyLinkAuthPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyPINAuthOutput{})
+	pulumi.RegisterOutputType(ReverseProxyPINAuthPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyPasswordAuthOutput{})
+	pulumi.RegisterOutputType(ReverseProxyPasswordAuthPtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetArrayOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetOptionsOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetOptionsPtrOutput{})
 	pulumi.RegisterOutputType(RuleGroupOutput{})
 	pulumi.RegisterOutputType(RuleGroupArrayOutput{})
 	pulumi.RegisterOutputType(RulePortRangeOutput{})

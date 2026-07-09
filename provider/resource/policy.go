@@ -907,13 +907,7 @@ func equalPortRangePtr(portRangeA, portRangeB *[]RulePortRange) bool {
 		return false
 	}
 
-	for i := range *portRangeA {
-		if (*portRangeA)[i] != (*portRangeB)[i] {
-			return false
-		}
-	}
-
-	return true
+	return slices.Equal(*portRangeA, *portRangeB)
 }
 
 // equalMapStringSlice compares two *map[string][]string values, treating nil and empty map as equal.

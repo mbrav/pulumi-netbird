@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"github.com/mbrav/pulumi-netbird/provider/config"
 	nbapi "github.com/netbirdio/netbird/shared/management/http/api"
@@ -20,16 +21,18 @@ func (r *ReverseProxyService) Annotate(annotator infer.Annotator) {
 
 // ReverseProxyServiceArgs defines input fields for creating or updating a reverse proxy service.
 type ReverseProxyServiceArgs struct {
-	Name             string                   `pulumi:"name"`
-	Domain           string                   `pulumi:"domain"`
-	Enabled          bool                     `pulumi:"enabled"`
-	Mode             *ReverseProxyServiceMode `pulumi:"mode,optional"`
-	Targets          []ReverseProxyTarget     `pulumi:"targets"`
-	PassHostHeader   *bool                    `pulumi:"passHostHeader,optional"`
-	RewriteRedirects *bool                    `pulumi:"rewriteRedirects,optional"`
-	ListenPort       *int                     `pulumi:"listenPort,optional"`
-	Private          *bool                    `pulumi:"private,optional"`
-	AccessGroups     *[]string                `pulumi:"accessGroups,optional"`
+	Name               string                          `pulumi:"name"`
+	Domain             string                          `pulumi:"domain"`
+	Enabled            bool                            `pulumi:"enabled"`
+	Mode               *ReverseProxyServiceMode        `pulumi:"mode,optional"`
+	Targets            []ReverseProxyTarget            `pulumi:"targets"`
+	PassHostHeader     *bool                           `pulumi:"passHostHeader,optional"`
+	RewriteRedirects   *bool                           `pulumi:"rewriteRedirects,optional"`
+	ListenPort         *int                            `pulumi:"listenPort,optional"`
+	Private            *bool                           `pulumi:"private,optional"`
+	AccessGroups       *[]string                       `pulumi:"accessGroups,optional"`
+	Auth               *ReverseProxyAuth               `pulumi:"auth,optional"`
+	AccessRestrictions *ReverseProxyAccessRestrictions `pulumi:"accessRestrictions,optional"`
 }
 
 // Annotate provides documentation for ReverseProxyServiceArgs fields.
@@ -44,22 +47,28 @@ func (r *ReverseProxyServiceArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.ListenPort, "Port the proxy listens on (L4/TLS only). Set to 0 for auto-assignment.")
 	annotator.Describe(&r.Private, "When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.")
 	annotator.Describe(&r.AccessGroups, "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.")
+	annotator.Describe(&r.Auth, "Authentication configuration for the service (bearer/header/link/password/pin). Mutually exclusive with private=true.")
+	annotator.Describe(&r.AccessRestrictions, "Connection-level access restrictions based on IP address or geography. Applies to both HTTP and L4 services.")
 }
 
 // ReverseProxyServiceState represents the output state of a reverse proxy service resource.
 type ReverseProxyServiceState struct {
-	Name             string                   `pulumi:"name"`
-	Domain           string                   `pulumi:"domain"`
-	Enabled          bool                     `pulumi:"enabled"`
-	Mode             *ReverseProxyServiceMode `pulumi:"mode,optional"`
-	Targets          []ReverseProxyTarget     `pulumi:"targets"`
-	PassHostHeader   *bool                    `pulumi:"passHostHeader,optional"`
-	RewriteRedirects *bool                    `pulumi:"rewriteRedirects,optional"`
-	ListenPort       *int                     `pulumi:"listenPort,optional"`
-	Private          *bool                    `pulumi:"private,optional"`
-	AccessGroups     *[]string                `pulumi:"accessGroups,optional"`
-	ProxyCluster     *string                  `pulumi:"proxyCluster,optional"`
-	Status           *string                  `pulumi:"status,optional"`
+	Name               string                          `pulumi:"name"`
+	Domain             string                          `pulumi:"domain"`
+	Enabled            bool                            `pulumi:"enabled"`
+	Mode               *ReverseProxyServiceMode        `pulumi:"mode,optional"`
+	Targets            []ReverseProxyTarget            `pulumi:"targets"`
+	PassHostHeader     *bool                           `pulumi:"passHostHeader,optional"`
+	RewriteRedirects   *bool                           `pulumi:"rewriteRedirects,optional"`
+	ListenPort         *int                            `pulumi:"listenPort,optional"`
+	Private            *bool                           `pulumi:"private,optional"`
+	AccessGroups       *[]string                       `pulumi:"accessGroups,optional"`
+	Auth               *ReverseProxyAuth               `pulumi:"auth,optional"`
+	AccessRestrictions *ReverseProxyAccessRestrictions `pulumi:"accessRestrictions,optional"`
+	ProxyCluster       *string                         `pulumi:"proxyCluster,optional"`
+	Status             *string                         `pulumi:"status,optional"`
+	Terminated         *bool                           `pulumi:"terminated,optional"`
+	PortAutoAssigned   *bool                           `pulumi:"portAutoAssigned,optional"`
 }
 
 // Annotate provides documentation for ReverseProxyServiceState fields.
@@ -74,8 +83,12 @@ func (r *ReverseProxyServiceState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.ListenPort, "Port the proxy listens on (L4/TLS only).")
 	annotator.Describe(&r.Private, "When true, the service is NetBird-only: peers authenticate via WireGuard tunnel identity and an ACL policy is auto-generated from accessGroups. Requires mode=http. Mutually exclusive with SSO/bearer auth.")
 	annotator.Describe(&r.AccessGroups, "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.")
+	annotator.Describe(&r.Auth, "Authentication configuration for the service.")
+	annotator.Describe(&r.AccessRestrictions, "Connection-level access restrictions based on IP address or geography.")
 	annotator.Describe(&r.ProxyCluster, "The proxy cluster handling this service (derived from domain).")
 	annotator.Describe(&r.Status, "Current status of the service.")
+	annotator.Describe(&r.Terminated, "Whether the service has been terminated. Terminated services cannot be updated.")
+	annotator.Describe(&r.PortAutoAssigned, "Whether the listen port was auto-assigned.")
 }
 
 // ReverseProxyServiceMode defines the allowed service modes.
@@ -130,6 +143,8 @@ func (ReverseProxyTargetProtocol) Values() []infer.EnumValue[ReverseProxyTargetP
 type ReverseProxyTargetType string
 
 const (
+	// ReverseProxyTargetTypeCluster represents a proxy-cluster target.
+	ReverseProxyTargetTypeCluster ReverseProxyTargetType = ReverseProxyTargetType(nbapi.ServiceTargetTargetTypeCluster)
 	// ReverseProxyTargetTypeDomain represents a domain-based target.
 	ReverseProxyTargetTypeDomain ReverseProxyTargetType = ReverseProxyTargetType(nbapi.ServiceTargetTargetTypeDomain)
 	// ReverseProxyTargetTypeHost represents a host-based target.
@@ -143,11 +158,65 @@ const (
 // Values returns the valid enum values for ReverseProxyTargetType.
 func (ReverseProxyTargetType) Values() []infer.EnumValue[ReverseProxyTargetType] {
 	return []infer.EnumValue[ReverseProxyTargetType]{
+		{Name: "cluster", Value: ReverseProxyTargetTypeCluster, Description: "Proxy-cluster target."},
 		{Name: "domain", Value: ReverseProxyTargetTypeDomain, Description: "Domain-based target."},
 		{Name: "host", Value: ReverseProxyTargetTypeHost, Description: "Host-based target."},
 		{Name: "peer", Value: ReverseProxyTargetTypePeer, Description: "Peer-based target."},
 		{Name: "subnet", Value: ReverseProxyTargetTypeSubnet, Description: "Subnet-based target."},
 	}
+}
+
+// ReverseProxyPathRewrite controls how the request path is rewritten before forwarding to the backend.
+type ReverseProxyPathRewrite string
+
+// ReverseProxyPathRewritePreserve keeps the full original request path (default strips the matched prefix).
+const ReverseProxyPathRewritePreserve ReverseProxyPathRewrite = ReverseProxyPathRewrite(nbapi.ServiceTargetOptionsPathRewritePreserve)
+
+// Values returns the valid enum values for ReverseProxyPathRewrite.
+func (ReverseProxyPathRewrite) Values() []infer.EnumValue[ReverseProxyPathRewrite] {
+	return []infer.EnumValue[ReverseProxyPathRewrite]{
+		{Name: "preserve", Value: ReverseProxyPathRewritePreserve, Description: "Keep the full original request path instead of stripping the matched prefix."},
+	}
+}
+
+// ReverseProxyCrowdsecMode defines the CrowdSec IP reputation mode.
+type ReverseProxyCrowdsecMode string
+
+const (
+	// ReverseProxyCrowdsecModeEnforce blocks connections flagged by CrowdSec.
+	ReverseProxyCrowdsecModeEnforce ReverseProxyCrowdsecMode = ReverseProxyCrowdsecMode(nbapi.AccessRestrictionsCrowdsecModeEnforce)
+	// ReverseProxyCrowdsecModeObserve only logs connections flagged by CrowdSec.
+	ReverseProxyCrowdsecModeObserve ReverseProxyCrowdsecMode = ReverseProxyCrowdsecMode(nbapi.AccessRestrictionsCrowdsecModeObserve)
+)
+
+// Values returns the valid enum values for ReverseProxyCrowdsecMode.
+func (ReverseProxyCrowdsecMode) Values() []infer.EnumValue[ReverseProxyCrowdsecMode] {
+	return []infer.EnumValue[ReverseProxyCrowdsecMode]{
+		{Name: "enforce", Value: ReverseProxyCrowdsecModeEnforce, Description: "Block connections flagged by CrowdSec."},
+		{Name: "observe", Value: ReverseProxyCrowdsecModeObserve, Description: "Only log connections flagged by CrowdSec."},
+	}
+}
+
+// ReverseProxyTargetOptions defines advanced per-target proxy options.
+type ReverseProxyTargetOptions struct {
+	CustomHeaders      *map[string]string       `pulumi:"customHeaders,optional"`
+	DirectUpstream     *bool                    `pulumi:"directUpstream,optional"`
+	PathRewrite        *ReverseProxyPathRewrite `pulumi:"pathRewrite,optional"`
+	ProxyProtocol      *bool                    `pulumi:"proxyProtocol,optional"`
+	RequestTimeout     *string                  `pulumi:"requestTimeout,optional"`
+	SessionIdleTimeout *string                  `pulumi:"sessionIdleTimeout,optional"`
+	SkipTLSVerify      *bool                    `pulumi:"skipTlsVerify,optional"`
+}
+
+// Annotate provides documentation for ReverseProxyTargetOptions fields.
+func (r *ReverseProxyTargetOptions) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.CustomHeaders, "Extra headers sent to the backend. Hop-by-hop and proxy-managed headers are rejected.")
+	annotator.Describe(&r.DirectUpstream, "When true, the proxy dials this target via the host's network stack instead of through its embedded NetBird client.")
+	annotator.Describe(&r.PathRewrite, `How the request path is rewritten before forwarding. Default strips the matched prefix; "preserve" keeps the full path.`)
+	annotator.Describe(&r.ProxyProtocol, "Send PROXY Protocol v2 header to this backend (TCP/TLS only).")
+	annotator.Describe(&r.RequestTimeout, `Per-target response timeout as a Go duration string (e.g. "30s", "2m").`)
+	annotator.Describe(&r.SessionIdleTimeout, `Idle timeout before a UDP session is reaped, as a Go duration string (e.g. "30s", "2m").`)
+	annotator.Describe(&r.SkipTLSVerify, "Skip TLS certificate verification for this backend.")
 }
 
 // ReverseProxyTarget defines a single backend target for a reverse proxy service.
@@ -159,6 +228,7 @@ type ReverseProxyTarget struct {
 	Protocol   ReverseProxyTargetProtocol `pulumi:"protocol"`
 	TargetType ReverseProxyTargetType     `pulumi:"targetType"`
 	Path       *string                    `pulumi:"path,optional"`
+	Options    *ReverseProxyTargetOptions `pulumi:"options,optional"`
 }
 
 // Annotate provides documentation for ReverseProxyTarget fields.
@@ -170,6 +240,151 @@ func (r *ReverseProxyTarget) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.Protocol, "Protocol to use when connecting to the backend.")
 	annotator.Describe(&r.TargetType, "Target type.")
 	annotator.Describe(&r.Path, "URL path prefix for this target (HTTP only).")
+	annotator.Describe(&r.Options, "Advanced per-target proxy options.")
+}
+
+// ReverseProxyBearerAuth configures bearer (SSO) authentication.
+type ReverseProxyBearerAuth struct {
+	Enabled            bool      `pulumi:"enabled"`
+	DistributionGroups *[]string `pulumi:"distributionGroups,optional"`
+}
+
+// Annotate provides documentation for ReverseProxyBearerAuth fields.
+func (r *ReverseProxyBearerAuth) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.Enabled, "Whether bearer auth is enabled.")
+	annotator.Describe(&r.DistributionGroups, "List of group IDs that can use bearer auth.")
+}
+
+// ReverseProxyHeaderAuth configures header-based authentication.
+type ReverseProxyHeaderAuth struct {
+	Enabled bool   `pulumi:"enabled"`
+	Header  string `pulumi:"header"`
+	Value   string `pulumi:"value"`
+}
+
+// Annotate provides documentation for ReverseProxyHeaderAuth fields.
+func (r *ReverseProxyHeaderAuth) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.Enabled, "Whether this header auth entry is enabled.")
+	annotator.Describe(&r.Header, "The header name to match.")
+	annotator.Describe(&r.Value, "The header value to match.")
+}
+
+// ReverseProxyLinkAuth configures link-based authentication.
+type ReverseProxyLinkAuth struct {
+	Enabled bool `pulumi:"enabled"`
+}
+
+// Annotate provides documentation for ReverseProxyLinkAuth fields.
+func (r *ReverseProxyLinkAuth) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.Enabled, "Whether link auth is enabled.")
+}
+
+// ReverseProxyPasswordAuth configures password-based authentication.
+type ReverseProxyPasswordAuth struct {
+	Enabled  bool   `pulumi:"enabled"`
+	Password string `provider:"secret" pulumi:"password"`
+}
+
+// Annotate provides documentation for ReverseProxyPasswordAuth fields.
+func (r *ReverseProxyPasswordAuth) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.Enabled, "Whether password auth is enabled.")
+	annotator.Describe(&r.Password, "The password required to access the service.")
+}
+
+// ReverseProxyPINAuth configures PIN-based authentication.
+type ReverseProxyPINAuth struct {
+	Enabled bool   `pulumi:"enabled"`
+	Pin     string `provider:"secret" pulumi:"pin"`
+}
+
+// Annotate provides documentation for ReverseProxyPINAuth fields.
+func (r *ReverseProxyPINAuth) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.Enabled, "Whether PIN auth is enabled.")
+	annotator.Describe(&r.Pin, "The PIN required to access the service.")
+}
+
+// ReverseProxyAuth defines the authentication configuration for a service.
+type ReverseProxyAuth struct {
+	BearerAuth   *ReverseProxyBearerAuth   `pulumi:"bearerAuth,optional"`
+	HeaderAuths  *[]ReverseProxyHeaderAuth `pulumi:"headerAuths,optional"`
+	LinkAuth     *ReverseProxyLinkAuth     `pulumi:"linkAuth,optional"`
+	PasswordAuth *ReverseProxyPasswordAuth `pulumi:"passwordAuth,optional"`
+	PinAuth      *ReverseProxyPINAuth      `pulumi:"pinAuth,optional"`
+}
+
+// Annotate provides documentation for ReverseProxyAuth fields.
+func (r *ReverseProxyAuth) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.BearerAuth, "Bearer (SSO) authentication configuration.")
+	annotator.Describe(&r.HeaderAuths, "Header-based authentication entries.")
+	annotator.Describe(&r.LinkAuth, "Link-based authentication configuration.")
+	annotator.Describe(&r.PasswordAuth, "Password-based authentication configuration.")
+	annotator.Describe(&r.PinAuth, "PIN-based authentication configuration.")
+}
+
+// ReverseProxyAccessRestrictions defines connection-level access restrictions.
+type ReverseProxyAccessRestrictions struct {
+	AllowedCidrs     *[]string                 `pulumi:"allowedCidrs,optional"`
+	AllowedCountries *[]string                 `pulumi:"allowedCountries,optional"`
+	BlockedCidrs     *[]string                 `pulumi:"blockedCidrs,optional"`
+	BlockedCountries *[]string                 `pulumi:"blockedCountries,optional"`
+	CrowdsecMode     *ReverseProxyCrowdsecMode `pulumi:"crowdsecMode,optional"`
+}
+
+// Annotate provides documentation for ReverseProxyAccessRestrictions fields.
+func (r *ReverseProxyAccessRestrictions) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r.AllowedCidrs, "CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed.")
+	annotator.Describe(&r.AllowedCountries, "ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted.")
+	annotator.Describe(&r.BlockedCidrs, "CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowedCidrs.")
+	annotator.Describe(&r.BlockedCountries, "ISO 3166-1 alpha-2 country codes to block.")
+	annotator.Describe(&r.CrowdsecMode, "CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec.")
+}
+
+// toAPITargetOptions converts Pulumi target options to API target options.
+func toAPITargetOptions(options *ReverseProxyTargetOptions) *nbapi.ServiceTargetOptions {
+	if options == nil {
+		return nil
+	}
+
+	var pathRewrite *nbapi.ServiceTargetOptionsPathRewrite
+
+	if options.PathRewrite != nil {
+		pr := nbapi.ServiceTargetOptionsPathRewrite(*options.PathRewrite)
+		pathRewrite = &pr
+	}
+
+	return &nbapi.ServiceTargetOptions{
+		CustomHeaders:      options.CustomHeaders,
+		DirectUpstream:     options.DirectUpstream,
+		PathRewrite:        pathRewrite,
+		ProxyProtocol:      options.ProxyProtocol,
+		RequestTimeout:     options.RequestTimeout,
+		SessionIdleTimeout: options.SessionIdleTimeout,
+		SkipTlsVerify:      options.SkipTLSVerify,
+	}
+}
+
+// fromAPITargetOptions converts API target options to Pulumi target options.
+func fromAPITargetOptions(options *nbapi.ServiceTargetOptions) *ReverseProxyTargetOptions {
+	if options == nil {
+		return nil
+	}
+
+	var pathRewrite *ReverseProxyPathRewrite
+
+	if options.PathRewrite != nil {
+		pr := ReverseProxyPathRewrite(*options.PathRewrite)
+		pathRewrite = &pr
+	}
+
+	return &ReverseProxyTargetOptions{
+		CustomHeaders:      options.CustomHeaders,
+		DirectUpstream:     options.DirectUpstream,
+		PathRewrite:        pathRewrite,
+		ProxyProtocol:      options.ProxyProtocol,
+		RequestTimeout:     options.RequestTimeout,
+		SessionIdleTimeout: options.SessionIdleTimeout,
+		SkipTLSVerify:      options.SkipTlsVerify,
+	}
 }
 
 // toAPITargets converts Pulumi targets to API targets.
@@ -184,7 +399,7 @@ func toAPITargets(targets []ReverseProxyTarget) []nbapi.ServiceTarget {
 			Protocol:   nbapi.ServiceTargetProtocol(target.Protocol),
 			TargetType: nbapi.ServiceTargetTargetType(target.TargetType),
 			Path:       target.Path,
-			Options:    nil,
+			Options:    toAPITargetOptions(target.Options),
 		}
 	}
 
@@ -203,10 +418,175 @@ func fromAPITargets(targets []nbapi.ServiceTarget) []ReverseProxyTarget {
 			Protocol:   ReverseProxyTargetProtocol(apiTarget.Protocol),
 			TargetType: ReverseProxyTargetType(apiTarget.TargetType),
 			Path:       apiTarget.Path,
+			Options:    fromAPITargetOptions(apiTarget.Options),
 		}
 	}
 
 	return result
+}
+
+// toAPIAuth converts Pulumi auth config to an API auth config.
+func toAPIAuth(auth *ReverseProxyAuth) *nbapi.ServiceAuthConfig {
+	if auth == nil {
+		return nil
+	}
+
+	var bearer *nbapi.BearerAuthConfig
+
+	if auth.BearerAuth != nil {
+		bearer = &nbapi.BearerAuthConfig{
+			Enabled:            auth.BearerAuth.Enabled,
+			DistributionGroups: auth.BearerAuth.DistributionGroups,
+		}
+	}
+
+	var headers *[]nbapi.HeaderAuthConfig
+
+	if auth.HeaderAuths != nil {
+		list := make([]nbapi.HeaderAuthConfig, len(*auth.HeaderAuths))
+		for idx, header := range *auth.HeaderAuths {
+			list[idx] = nbapi.HeaderAuthConfig{
+				Enabled: header.Enabled,
+				Header:  header.Header,
+				Value:   header.Value,
+			}
+		}
+
+		headers = &list
+	}
+
+	var link *nbapi.LinkAuthConfig
+
+	if auth.LinkAuth != nil {
+		link = &nbapi.LinkAuthConfig{Enabled: auth.LinkAuth.Enabled}
+	}
+
+	var password *nbapi.PasswordAuthConfig
+
+	if auth.PasswordAuth != nil {
+		password = &nbapi.PasswordAuthConfig{
+			Enabled:  auth.PasswordAuth.Enabled,
+			Password: auth.PasswordAuth.Password,
+		}
+	}
+
+	var pin *nbapi.PINAuthConfig
+
+	if auth.PinAuth != nil {
+		pin = &nbapi.PINAuthConfig{
+			Enabled: auth.PinAuth.Enabled,
+			Pin:     auth.PinAuth.Pin,
+		}
+	}
+
+	return &nbapi.ServiceAuthConfig{
+		BearerAuth:   bearer,
+		HeaderAuths:  headers,
+		LinkAuth:     link,
+		PasswordAuth: password,
+		PinAuth:      pin,
+	}
+}
+
+// fromAPIAuth converts an API auth config to a Pulumi auth config.
+// Returns nil when no sub-configuration is set, keeping state clean.
+func fromAPIAuth(auth nbapi.ServiceAuthConfig) *ReverseProxyAuth {
+	result := &ReverseProxyAuth{
+		BearerAuth:   nil,
+		HeaderAuths:  nil,
+		LinkAuth:     nil,
+		PasswordAuth: nil,
+		PinAuth:      nil,
+	}
+
+	if auth.BearerAuth != nil {
+		result.BearerAuth = &ReverseProxyBearerAuth{
+			Enabled:            auth.BearerAuth.Enabled,
+			DistributionGroups: auth.BearerAuth.DistributionGroups,
+		}
+	}
+
+	if auth.HeaderAuths != nil {
+		list := make([]ReverseProxyHeaderAuth, len(*auth.HeaderAuths))
+		for idx, header := range *auth.HeaderAuths {
+			list[idx] = ReverseProxyHeaderAuth{
+				Enabled: header.Enabled,
+				Header:  header.Header,
+				Value:   header.Value,
+			}
+		}
+
+		result.HeaderAuths = &list
+	}
+
+	if auth.LinkAuth != nil {
+		result.LinkAuth = &ReverseProxyLinkAuth{Enabled: auth.LinkAuth.Enabled}
+	}
+
+	if auth.PasswordAuth != nil {
+		result.PasswordAuth = &ReverseProxyPasswordAuth{
+			Enabled:  auth.PasswordAuth.Enabled,
+			Password: auth.PasswordAuth.Password,
+		}
+	}
+
+	if auth.PinAuth != nil {
+		result.PinAuth = &ReverseProxyPINAuth{
+			Enabled: auth.PinAuth.Enabled,
+			Pin:     auth.PinAuth.Pin,
+		}
+	}
+
+	if result.BearerAuth == nil && result.HeaderAuths == nil && result.LinkAuth == nil &&
+		result.PasswordAuth == nil && result.PinAuth == nil {
+		return nil
+	}
+
+	return result
+}
+
+// toAPIAccessRestrictions converts Pulumi access restrictions to API access restrictions.
+func toAPIAccessRestrictions(restrictions *ReverseProxyAccessRestrictions) *nbapi.AccessRestrictions {
+	if restrictions == nil {
+		return nil
+	}
+
+	var crowdsec *nbapi.AccessRestrictionsCrowdsecMode
+
+	if restrictions.CrowdsecMode != nil {
+		mode := nbapi.AccessRestrictionsCrowdsecMode(*restrictions.CrowdsecMode)
+		crowdsec = &mode
+	}
+
+	return &nbapi.AccessRestrictions{
+		AllowedCidrs:     restrictions.AllowedCidrs,
+		AllowedCountries: restrictions.AllowedCountries,
+		BlockedCidrs:     restrictions.BlockedCidrs,
+		BlockedCountries: restrictions.BlockedCountries,
+		CrowdsecMode:     crowdsec,
+	}
+}
+
+// fromAPIAccessRestrictions converts API access restrictions to Pulumi access restrictions.
+func fromAPIAccessRestrictions(restrictions *nbapi.AccessRestrictions) *ReverseProxyAccessRestrictions {
+	if restrictions == nil {
+		return nil
+	}
+
+	var crowdsec *ReverseProxyCrowdsecMode
+
+	if restrictions.CrowdsecMode != nil {
+		mode := ReverseProxyCrowdsecMode(*restrictions.CrowdsecMode)
+		crowdsec = &mode
+	}
+
+	return &ReverseProxyAccessRestrictions{
+		AllowedCidrs:     restrictions.AllowedCidrs,
+		AllowedCountries: restrictions.AllowedCountries,
+		BlockedCidrs:     restrictions.BlockedCidrs,
+		BlockedCountries: restrictions.BlockedCountries,
+		CrowdsecMode:     crowdsec,
+	}
 }
 
 // serviceStateFromAPI builds a ReverseProxyServiceState from an API Service response.
@@ -218,24 +598,25 @@ func serviceStateFromAPI(svc *nbapi.Service) ReverseProxyServiceState {
 		mode = &m
 	}
 
-	var status *string
-
 	statusVal := string(svc.Meta.Status)
-	status = &statusVal
 
 	return ReverseProxyServiceState{
-		Name:             svc.Name,
-		Domain:           svc.Domain,
-		Enabled:          svc.Enabled,
-		Mode:             mode,
-		Targets:          fromAPITargets(svc.Targets),
-		PassHostHeader:   svc.PassHostHeader,
-		RewriteRedirects: svc.RewriteRedirects,
-		ListenPort:       svc.ListenPort,
-		Private:          svc.Private,
-		AccessGroups:     svc.AccessGroups,
-		ProxyCluster:     svc.ProxyCluster,
-		Status:           status,
+		Name:               svc.Name,
+		Domain:             svc.Domain,
+		Enabled:            svc.Enabled,
+		Mode:               mode,
+		Targets:            fromAPITargets(svc.Targets),
+		PassHostHeader:     svc.PassHostHeader,
+		RewriteRedirects:   svc.RewriteRedirects,
+		ListenPort:         svc.ListenPort,
+		Private:            svc.Private,
+		AccessGroups:       svc.AccessGroups,
+		Auth:               fromAPIAuth(svc.Auth),
+		AccessRestrictions: fromAPIAccessRestrictions(svc.AccessRestrictions),
+		ProxyCluster:       svc.ProxyCluster,
+		Status:             &statusVal,
+		Terminated:         svc.Terminated,
+		PortAutoAssigned:   svc.PortAutoAssigned,
 	}
 }
 
@@ -261,8 +642,8 @@ func buildServiceRequest(args ReverseProxyServiceArgs) nbapi.ServiceRequest {
 		ListenPort:         args.ListenPort,
 		Private:            args.Private,
 		AccessGroups:       args.AccessGroups,
-		Auth:               nil,
-		AccessRestrictions: nil,
+		Auth:               toAPIAuth(args.Auth),
+		AccessRestrictions: toAPIAccessRestrictions(args.AccessRestrictions),
 	}
 }
 
@@ -272,21 +653,8 @@ func (*ReverseProxyService) Create(ctx context.Context, req infer.CreateRequest[
 
 	if req.DryRun {
 		return infer.CreateResponse[ReverseProxyServiceState]{
-			ID: "preview",
-			Output: ReverseProxyServiceState{
-				Name:             req.Inputs.Name,
-				Domain:           req.Inputs.Domain,
-				Enabled:          req.Inputs.Enabled,
-				Mode:             req.Inputs.Mode,
-				Targets:          req.Inputs.Targets,
-				PassHostHeader:   req.Inputs.PassHostHeader,
-				RewriteRedirects: req.Inputs.RewriteRedirects,
-				ListenPort:       req.Inputs.ListenPort,
-				Private:          req.Inputs.Private,
-				AccessGroups:     req.Inputs.AccessGroups,
-				ProxyCluster:     nil,
-				Status:           nil,
-			},
+			ID:     "preview",
+			Output: dryRunState(req.Inputs, nil, nil),
 		}, nil
 	}
 
@@ -317,6 +685,14 @@ func (*ReverseProxyService) Read(ctx context.Context, req infer.ReadRequest[Reve
 
 	svc, err := client.ReverseProxyServices.Get(ctx, req.ID)
 	if err != nil {
+		if isNotFoundErr(err) {
+			return infer.ReadResponse[ReverseProxyServiceArgs, ReverseProxyServiceState]{
+				ID:     "",
+				Inputs: ReverseProxyServiceArgs{},  //nolint:exhaustruct
+				State:  ReverseProxyServiceState{}, //nolint:exhaustruct
+			}, nil
+		}
+
 		return infer.ReadResponse[ReverseProxyServiceArgs, ReverseProxyServiceState]{}, fmt.Errorf("reading reverse proxy service failed: %w", err)
 	}
 
@@ -325,16 +701,18 @@ func (*ReverseProxyService) Read(ctx context.Context, req infer.ReadRequest[Reve
 	return infer.ReadResponse[ReverseProxyServiceArgs, ReverseProxyServiceState]{
 		ID: req.ID,
 		Inputs: ReverseProxyServiceArgs{
-			Name:             state.Name,
-			Domain:           state.Domain,
-			Enabled:          state.Enabled,
-			Mode:             state.Mode,
-			Targets:          state.Targets,
-			PassHostHeader:   state.PassHostHeader,
-			RewriteRedirects: state.RewriteRedirects,
-			ListenPort:       state.ListenPort,
-			Private:          state.Private,
-			AccessGroups:     state.AccessGroups,
+			Name:               state.Name,
+			Domain:             state.Domain,
+			Enabled:            state.Enabled,
+			Mode:               state.Mode,
+			Targets:            state.Targets,
+			PassHostHeader:     state.PassHostHeader,
+			RewriteRedirects:   state.RewriteRedirects,
+			ListenPort:         state.ListenPort,
+			Private:            state.Private,
+			AccessGroups:       state.AccessGroups,
+			Auth:               state.Auth,
+			AccessRestrictions: state.AccessRestrictions,
 		},
 		State: state,
 	}, nil
@@ -346,20 +724,7 @@ func (*ReverseProxyService) Update(ctx context.Context, req infer.UpdateRequest[
 
 	if req.DryRun {
 		return infer.UpdateResponse[ReverseProxyServiceState]{
-			Output: ReverseProxyServiceState{
-				Name:             req.Inputs.Name,
-				Domain:           req.Inputs.Domain,
-				Enabled:          req.Inputs.Enabled,
-				Mode:             req.Inputs.Mode,
-				Targets:          req.Inputs.Targets,
-				PassHostHeader:   req.Inputs.PassHostHeader,
-				RewriteRedirects: req.Inputs.RewriteRedirects,
-				ListenPort:       req.Inputs.ListenPort,
-				Private:          req.Inputs.Private,
-				AccessGroups:     req.Inputs.AccessGroups,
-				ProxyCluster:     req.State.ProxyCluster,
-				Status:           req.State.Status,
-			},
+			Output: dryRunState(req.Inputs, req.State.ProxyCluster, req.State.Status),
 		}, nil
 	}
 
@@ -378,6 +743,29 @@ func (*ReverseProxyService) Update(ctx context.Context, req infer.UpdateRequest[
 	}, nil
 }
 
+// dryRunState builds a preview state from inputs, carrying over server-derived
+// outputs when they are known (Update) and leaving them nil otherwise (Create).
+func dryRunState(inputs ReverseProxyServiceArgs, proxyCluster *string, status *string) ReverseProxyServiceState {
+	return ReverseProxyServiceState{
+		Name:               inputs.Name,
+		Domain:             inputs.Domain,
+		Enabled:            inputs.Enabled,
+		Mode:               inputs.Mode,
+		Targets:            inputs.Targets,
+		PassHostHeader:     inputs.PassHostHeader,
+		RewriteRedirects:   inputs.RewriteRedirects,
+		ListenPort:         inputs.ListenPort,
+		Private:            inputs.Private,
+		AccessGroups:       inputs.AccessGroups,
+		Auth:               inputs.Auth,
+		AccessRestrictions: inputs.AccessRestrictions,
+		ProxyCluster:       proxyCluster,
+		Status:             status,
+		Terminated:         nil,
+		PortAutoAssigned:   nil,
+	}
+}
+
 // Delete removes a reverse proxy service from NetBird.
 func (*ReverseProxyService) Delete(ctx context.Context, req infer.DeleteRequest[ReverseProxyServiceState]) (infer.DeleteResponse, error) {
 	p.GetLogger(ctx).Debugf("Delete:ReverseProxyService[%s]", req.ID)
@@ -388,7 +776,7 @@ func (*ReverseProxyService) Delete(ctx context.Context, req infer.DeleteRequest[
 	}
 
 	err = client.ReverseProxyServices.Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
 		return infer.DeleteResponse{}, fmt.Errorf("deleting reverse proxy service failed: %w", err)
 	}
 
@@ -441,6 +829,14 @@ func (*ReverseProxyService) Diff(ctx context.Context, req infer.DiffRequest[Reve
 		diff["targets"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
+	if !reflect.DeepEqual(req.Inputs.Auth, req.State.Auth) {
+		diff["auth"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+	}
+
+	if !reflect.DeepEqual(req.Inputs.AccessRestrictions, req.State.AccessRestrictions) {
+		diff["accessRestrictions"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+	}
+
 	p.GetLogger(ctx).Debugf("Diff:ReverseProxyService[%s] diff=%d", req.ID, len(diff))
 
 	return infer.DiffResponse{
@@ -456,40 +852,78 @@ func (*ReverseProxyService) Check(ctx context.Context, req infer.CheckRequest) (
 
 	args, failures, err := infer.DefaultCheck[ReverseProxyServiceArgs](ctx, req.NewInputs)
 
-	if isBlank(args.Name) {
-		failures = append(failures, p.CheckFailure{
-			Property: "name",
-			Reason:   "name must not be empty",
-		})
-	}
-
-	if isBlank(args.Domain) {
-		failures = append(failures, p.CheckFailure{
-			Property: "domain",
-			Reason:   "domain must not be empty",
-		})
-	}
-
-	if len(args.Targets) == 0 {
-		failures = append(failures, p.CheckFailure{
-			Property: "targets",
-			Reason:   "at least one target is required",
-		})
-	}
-
-	for i, target := range args.Targets {
-		if target.Port < 1 || target.Port > 65535 {
-			failures = append(failures, p.CheckFailure{
-				Property: fmt.Sprintf("targets[%d].port", i),
-				Reason:   "port must be between 1 and 65535",
-			})
-		}
-	}
+	failures = append(failures, reverseProxyCheckArgs(args)...)
 
 	return infer.CheckResponse[ReverseProxyServiceArgs]{
 		Inputs:   args,
 		Failures: failures,
 	}, err
+}
+
+// reverseProxyCheckArgs validates a ReverseProxyServiceArgs and returns all failures.
+//
+//nolint:cyclop
+func reverseProxyCheckArgs(args ReverseProxyServiceArgs) []p.CheckFailure {
+	var failures []p.CheckFailure
+
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{Property: "name", Reason: "name must not be empty"})
+	}
+
+	if isBlank(args.Domain) {
+		failures = append(failures, p.CheckFailure{Property: "domain", Reason: "domain must not be empty"})
+	}
+
+	if len(args.Targets) == 0 {
+		failures = append(failures, p.CheckFailure{Property: "targets", Reason: "at least one target is required"})
+	}
+
+	for idx, target := range args.Targets {
+		if target.Port < 1 || target.Port > 65535 {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("targets[%d].port", idx),
+				Reason:   "port must be between 1 and 65535",
+			})
+		}
+
+		if target.TargetType == ReverseProxyTargetTypeDomain || target.TargetType == ReverseProxyTargetTypeHost {
+			if target.Host == nil || isBlank(*target.Host) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("targets[%d].host", idx),
+					Reason:   "host must not be empty for domain or host target types",
+				})
+			}
+		}
+	}
+
+	if args.AccessGroups != nil {
+		for i, group := range *args.AccessGroups {
+			if isBlank(group) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("accessGroups[%d]", i),
+					Reason:   "access group id must not be empty",
+				})
+			}
+		}
+	}
+
+	if boolVal(args.Private) {
+		if args.Mode == nil || *args.Mode != ReverseProxyServiceModeHTTP {
+			failures = append(failures, p.CheckFailure{
+				Property: "mode",
+				Reason:   "mode must be http when private is true",
+			})
+		}
+
+		if args.AccessGroups == nil || len(*args.AccessGroups) == 0 {
+			failures = append(failures, p.CheckFailure{
+				Property: "accessGroups",
+				Reason:   "accessGroups must not be empty when private is true",
+			})
+		}
+	}
+
+	return failures
 }
 
 // WireDependencies explicitly defines input/output relationships.
@@ -504,6 +938,8 @@ func (*ReverseProxyService) WireDependencies(field infer.FieldSelector, args *Re
 	field.OutputField(&state.ListenPort).DependsOn(field.InputField(&args.ListenPort))
 	field.OutputField(&state.Private).DependsOn(field.InputField(&args.Private))
 	field.OutputField(&state.AccessGroups).DependsOn(field.InputField(&args.AccessGroups))
+	field.OutputField(&state.Auth).DependsOn(field.InputField(&args.Auth))
+	field.OutputField(&state.AccessRestrictions).DependsOn(field.InputField(&args.AccessRestrictions))
 }
 
 // equalReverseProxyTargets compares two slices of ReverseProxyTarget by their key fields.
@@ -518,7 +954,8 @@ func equalReverseProxyTargets(targetsA, targetsB []ReverseProxyTarget) bool {
 			targetsA[idx].Protocol != targetsB[idx].Protocol ||
 			targetsA[idx].TargetType != targetsB[idx].TargetType ||
 			!equalPtr(targetsA[idx].Host, targetsB[idx].Host) ||
-			!equalPtr(targetsA[idx].Path, targetsB[idx].Path) {
+			!equalPtr(targetsA[idx].Path, targetsB[idx].Path) ||
+			!reflect.DeepEqual(targetsA[idx].Options, targetsB[idx].Options) {
 			return false
 		}
 	}

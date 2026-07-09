@@ -258,6 +258,9 @@ rp_domain = resource.ReverseProxyDomain(
 # HTTP (L7) reverse proxy routing traffic to an internal backend host.
 # pass_host_header: preserves the original Host header forwarded to the backend.
 # rewrite_redirects: rewrites Location headers in backend responses.
+# auth: gates access behind SSO (bearer) restricted to the DevOps group.
+# access_restrictions: allow only a corporate CIDR and observe via CrowdSec.
+# target options: tune per-target proxy behaviour (headers, timeouts, path).
 
 resource.ReverseProxyService(
     "rp-svc-api",
@@ -267,6 +270,16 @@ resource.ReverseProxyService(
     mode=resource.ReverseProxyServiceMode.HTTP,
     pass_host_header=True,
     rewrite_redirects=False,
+    auth=resource.ReverseProxyAuthArgs(
+        bearer_auth=resource.ReverseProxyBearerAuthArgs(
+            enabled=True,
+            distribution_groups=[group_devops.id],
+        ),
+    ),
+    access_restrictions=resource.ReverseProxyAccessRestrictionsArgs(
+        allowed_cidrs=["10.10.0.0/16"],
+        crowdsec_mode=resource.ReverseProxyCrowdsecMode.OBSERVE,
+    ),
     targets=[
         resource.ReverseProxyTargetArgs(
             enabled=True,
@@ -275,6 +288,13 @@ resource.ReverseProxyService(
             protocol=resource.ReverseProxyTargetProtocol.HTTP,
             target_type=resource.ReverseProxyTargetType.HOST,
             target_id="",
+            path="/api",
+            options=resource.ReverseProxyTargetOptionsArgs(
+                path_rewrite=resource.ReverseProxyPathRewrite.PRESERVE,
+                request_timeout="30s",
+                skip_tls_verify=False,
+                custom_headers={"X-Forwarded-Proto": "https"},
+            ),
         ),
     ],
 )

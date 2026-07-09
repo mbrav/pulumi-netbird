@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-07-09
+
+### Changed
+
+- Simplified `equalPortRangePtr` (`policy.go`) to use `slices.Equal` for the element comparison instead of a hand-written index loop. Behaviour is unchanged (nil/empty still treated as equal, order still significant); no API surface change. Audited the other comparison helpers and confirmed `reflect.DeepEqual` is not a safe substitute for them — they intentionally treat nil and empty as equal and compare order-insensitively, both of which `DeepEqual` violates.
+
+### Added
+
+- `ReverseProxyService` now covers the full NetBird service API: per-target advanced `options` (custom headers, direct upstream, path rewrite, proxy protocol, request/session timeouts, skip TLS verify), connection-level `accessRestrictions` (allow/block CIDRs & countries, CrowdSec mode), and `auth` configuration (bearer/header/link/password/pin — `password` and `pin` are marked secret). Added the missing `cluster` target type and surfaced the read-only `terminated` and `portAutoAssigned` outputs.
+
 ## [0.5.1] - 2026-07-09
 
 ### Changed

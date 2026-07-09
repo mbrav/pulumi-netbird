@@ -374,6 +374,9 @@ func main() {
 		// ── Reverse Proxy Service ─────────────────────────────────────────────
 		// HTTP (L7) reverse proxy service routing traffic to an internal backend.
 		// PassHostHeader preserves the original Host header at the backend.
+		// Auth gates access behind SSO (bearer) restricted to the DevOps group.
+		// AccessRestrictions allow only a corporate CIDR and observe via CrowdSec.
+		// Target Options tune per-target proxy behaviour (headers, timeouts, path).
 
 		_, err = resource.NewReverseProxyService(ctx, "rp-svc-api", &resource.ReverseProxyServiceArgs{
 			Name:             pulumi.String("api-service"),
@@ -382,6 +385,16 @@ func main() {
 			Mode:             resource.ReverseProxyServiceModeHttp.ToReverseProxyServiceModePtrOutput(),
 			PassHostHeader:   pulumi.BoolPtr(true),
 			RewriteRedirects: pulumi.BoolPtr(false),
+			Auth: resource.ReverseProxyAuthArgs{
+				BearerAuth: resource.ReverseProxyBearerAuthArgs{
+					Enabled:            pulumi.Bool(true),
+					DistributionGroups: pulumi.StringArray{groupDevops.ID()},
+				},
+			},
+			AccessRestrictions: resource.ReverseProxyAccessRestrictionsArgs{
+				AllowedCidrs: pulumi.StringArray{pulumi.String("10.10.0.0/16")},
+				CrowdsecMode: resource.ReverseProxyCrowdsecModeObserve.ToReverseProxyCrowdsecModePtrOutput(),
+			},
 			Targets: resource.ReverseProxyTargetArray{
 				resource.ReverseProxyTargetArgs{
 					Enabled:    pulumi.Bool(true),
@@ -390,6 +403,13 @@ func main() {
 					Protocol:   resource.ReverseProxyTargetProtocolHttp,
 					TargetType: resource.ReverseProxyTargetTypeHost,
 					TargetId:   pulumi.String(""),
+					Path:       pulumi.StringPtr("/api"),
+					Options: resource.ReverseProxyTargetOptionsArgs{
+						PathRewrite:    resource.ReverseProxyPathRewritePreserve.ToReverseProxyPathRewritePtrOutput(),
+						RequestTimeout: pulumi.StringPtr("30s"),
+						SkipTlsVerify:  pulumi.BoolPtr(false),
+						CustomHeaders:  pulumi.StringMap{"X-Forwarded-Proto": pulumi.String("https")},
+					},
 				},
 			},
 		})

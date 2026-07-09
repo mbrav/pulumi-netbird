@@ -851,6 +851,173 @@ func (in *protocolPtr) ToProtocolPtrOutputWithContext(ctx context.Context) Proto
 	return pulumi.ToOutputWithContext(ctx, in).(ProtocolPtrOutput)
 }
 
+type ReverseProxyCrowdsecMode string
+
+const (
+	// Block connections flagged by CrowdSec.
+	ReverseProxyCrowdsecModeEnforce = ReverseProxyCrowdsecMode("enforce")
+	// Only log connections flagged by CrowdSec.
+	ReverseProxyCrowdsecModeObserve = ReverseProxyCrowdsecMode("observe")
+)
+
+func (ReverseProxyCrowdsecMode) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyCrowdsecMode)(nil)).Elem()
+}
+
+func (e ReverseProxyCrowdsecMode) ToReverseProxyCrowdsecModeOutput() ReverseProxyCrowdsecModeOutput {
+	return pulumi.ToOutput(e).(ReverseProxyCrowdsecModeOutput)
+}
+
+func (e ReverseProxyCrowdsecMode) ToReverseProxyCrowdsecModeOutputWithContext(ctx context.Context) ReverseProxyCrowdsecModeOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(ReverseProxyCrowdsecModeOutput)
+}
+
+func (e ReverseProxyCrowdsecMode) ToReverseProxyCrowdsecModePtrOutput() ReverseProxyCrowdsecModePtrOutput {
+	return e.ToReverseProxyCrowdsecModePtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyCrowdsecMode) ToReverseProxyCrowdsecModePtrOutputWithContext(ctx context.Context) ReverseProxyCrowdsecModePtrOutput {
+	return ReverseProxyCrowdsecMode(e).ToReverseProxyCrowdsecModeOutputWithContext(ctx).ToReverseProxyCrowdsecModePtrOutputWithContext(ctx)
+}
+
+func (e ReverseProxyCrowdsecMode) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyCrowdsecMode) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyCrowdsecMode) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyCrowdsecMode) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type ReverseProxyCrowdsecModeOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyCrowdsecModeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyCrowdsecMode)(nil)).Elem()
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToReverseProxyCrowdsecModeOutput() ReverseProxyCrowdsecModeOutput {
+	return o
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToReverseProxyCrowdsecModeOutputWithContext(ctx context.Context) ReverseProxyCrowdsecModeOutput {
+	return o
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToReverseProxyCrowdsecModePtrOutput() ReverseProxyCrowdsecModePtrOutput {
+	return o.ToReverseProxyCrowdsecModePtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToReverseProxyCrowdsecModePtrOutputWithContext(ctx context.Context) ReverseProxyCrowdsecModePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyCrowdsecMode) *ReverseProxyCrowdsecMode {
+		return &v
+	}).(ReverseProxyCrowdsecModePtrOutput)
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyCrowdsecMode) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyCrowdsecModeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyCrowdsecMode) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyCrowdsecModePtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyCrowdsecModePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyCrowdsecMode)(nil)).Elem()
+}
+
+func (o ReverseProxyCrowdsecModePtrOutput) ToReverseProxyCrowdsecModePtrOutput() ReverseProxyCrowdsecModePtrOutput {
+	return o
+}
+
+func (o ReverseProxyCrowdsecModePtrOutput) ToReverseProxyCrowdsecModePtrOutputWithContext(ctx context.Context) ReverseProxyCrowdsecModePtrOutput {
+	return o
+}
+
+func (o ReverseProxyCrowdsecModePtrOutput) Elem() ReverseProxyCrowdsecModeOutput {
+	return o.ApplyT(func(v *ReverseProxyCrowdsecMode) ReverseProxyCrowdsecMode {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyCrowdsecMode
+		return ret
+	}).(ReverseProxyCrowdsecModeOutput)
+}
+
+func (o ReverseProxyCrowdsecModePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyCrowdsecModePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyCrowdsecMode) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// ReverseProxyCrowdsecModeInput is an input type that accepts values of the ReverseProxyCrowdsecMode enum
+// A concrete instance of `ReverseProxyCrowdsecModeInput` can be one of the following:
+//
+//	ReverseProxyCrowdsecModeEnforce
+//	ReverseProxyCrowdsecModeObserve
+type ReverseProxyCrowdsecModeInput interface {
+	pulumi.Input
+
+	ToReverseProxyCrowdsecModeOutput() ReverseProxyCrowdsecModeOutput
+	ToReverseProxyCrowdsecModeOutputWithContext(context.Context) ReverseProxyCrowdsecModeOutput
+}
+
+var reverseProxyCrowdsecModePtrType = reflect.TypeOf((**ReverseProxyCrowdsecMode)(nil)).Elem()
+
+type ReverseProxyCrowdsecModePtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyCrowdsecModePtrOutput() ReverseProxyCrowdsecModePtrOutput
+	ToReverseProxyCrowdsecModePtrOutputWithContext(context.Context) ReverseProxyCrowdsecModePtrOutput
+}
+
+type reverseProxyCrowdsecModePtr string
+
+func ReverseProxyCrowdsecModePtr(v string) ReverseProxyCrowdsecModePtrInput {
+	return (*reverseProxyCrowdsecModePtr)(&v)
+}
+
+func (*reverseProxyCrowdsecModePtr) ElementType() reflect.Type {
+	return reverseProxyCrowdsecModePtrType
+}
+
+func (in *reverseProxyCrowdsecModePtr) ToReverseProxyCrowdsecModePtrOutput() ReverseProxyCrowdsecModePtrOutput {
+	return pulumi.ToOutput(in).(ReverseProxyCrowdsecModePtrOutput)
+}
+
+func (in *reverseProxyCrowdsecModePtr) ToReverseProxyCrowdsecModePtrOutputWithContext(ctx context.Context) ReverseProxyCrowdsecModePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(ReverseProxyCrowdsecModePtrOutput)
+}
+
 type ReverseProxyDomainType string
 
 const (
@@ -941,6 +1108,170 @@ func (o ReverseProxyDomainTypePtrOutput) ToStringPtrOutputWithContext(ctx contex
 		v := string(*e)
 		return &v
 	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyPathRewrite string
+
+const (
+	// Keep the full original request path instead of stripping the matched prefix.
+	ReverseProxyPathRewritePreserve = ReverseProxyPathRewrite("preserve")
+)
+
+func (ReverseProxyPathRewrite) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyPathRewrite)(nil)).Elem()
+}
+
+func (e ReverseProxyPathRewrite) ToReverseProxyPathRewriteOutput() ReverseProxyPathRewriteOutput {
+	return pulumi.ToOutput(e).(ReverseProxyPathRewriteOutput)
+}
+
+func (e ReverseProxyPathRewrite) ToReverseProxyPathRewriteOutputWithContext(ctx context.Context) ReverseProxyPathRewriteOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(ReverseProxyPathRewriteOutput)
+}
+
+func (e ReverseProxyPathRewrite) ToReverseProxyPathRewritePtrOutput() ReverseProxyPathRewritePtrOutput {
+	return e.ToReverseProxyPathRewritePtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyPathRewrite) ToReverseProxyPathRewritePtrOutputWithContext(ctx context.Context) ReverseProxyPathRewritePtrOutput {
+	return ReverseProxyPathRewrite(e).ToReverseProxyPathRewriteOutputWithContext(ctx).ToReverseProxyPathRewritePtrOutputWithContext(ctx)
+}
+
+func (e ReverseProxyPathRewrite) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyPathRewrite) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyPathRewrite) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyPathRewrite) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type ReverseProxyPathRewriteOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyPathRewriteOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyPathRewrite)(nil)).Elem()
+}
+
+func (o ReverseProxyPathRewriteOutput) ToReverseProxyPathRewriteOutput() ReverseProxyPathRewriteOutput {
+	return o
+}
+
+func (o ReverseProxyPathRewriteOutput) ToReverseProxyPathRewriteOutputWithContext(ctx context.Context) ReverseProxyPathRewriteOutput {
+	return o
+}
+
+func (o ReverseProxyPathRewriteOutput) ToReverseProxyPathRewritePtrOutput() ReverseProxyPathRewritePtrOutput {
+	return o.ToReverseProxyPathRewritePtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyPathRewriteOutput) ToReverseProxyPathRewritePtrOutputWithContext(ctx context.Context) ReverseProxyPathRewritePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyPathRewrite) *ReverseProxyPathRewrite {
+		return &v
+	}).(ReverseProxyPathRewritePtrOutput)
+}
+
+func (o ReverseProxyPathRewriteOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyPathRewriteOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyPathRewrite) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyPathRewriteOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyPathRewriteOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyPathRewrite) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyPathRewritePtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyPathRewritePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyPathRewrite)(nil)).Elem()
+}
+
+func (o ReverseProxyPathRewritePtrOutput) ToReverseProxyPathRewritePtrOutput() ReverseProxyPathRewritePtrOutput {
+	return o
+}
+
+func (o ReverseProxyPathRewritePtrOutput) ToReverseProxyPathRewritePtrOutputWithContext(ctx context.Context) ReverseProxyPathRewritePtrOutput {
+	return o
+}
+
+func (o ReverseProxyPathRewritePtrOutput) Elem() ReverseProxyPathRewriteOutput {
+	return o.ApplyT(func(v *ReverseProxyPathRewrite) ReverseProxyPathRewrite {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyPathRewrite
+		return ret
+	}).(ReverseProxyPathRewriteOutput)
+}
+
+func (o ReverseProxyPathRewritePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyPathRewritePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyPathRewrite) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// ReverseProxyPathRewriteInput is an input type that accepts values of the ReverseProxyPathRewrite enum
+// A concrete instance of `ReverseProxyPathRewriteInput` can be one of the following:
+//
+//	ReverseProxyPathRewritePreserve
+type ReverseProxyPathRewriteInput interface {
+	pulumi.Input
+
+	ToReverseProxyPathRewriteOutput() ReverseProxyPathRewriteOutput
+	ToReverseProxyPathRewriteOutputWithContext(context.Context) ReverseProxyPathRewriteOutput
+}
+
+var reverseProxyPathRewritePtrType = reflect.TypeOf((**ReverseProxyPathRewrite)(nil)).Elem()
+
+type ReverseProxyPathRewritePtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyPathRewritePtrOutput() ReverseProxyPathRewritePtrOutput
+	ToReverseProxyPathRewritePtrOutputWithContext(context.Context) ReverseProxyPathRewritePtrOutput
+}
+
+type reverseProxyPathRewritePtr string
+
+func ReverseProxyPathRewritePtr(v string) ReverseProxyPathRewritePtrInput {
+	return (*reverseProxyPathRewritePtr)(&v)
+}
+
+func (*reverseProxyPathRewritePtr) ElementType() reflect.Type {
+	return reverseProxyPathRewritePtrType
+}
+
+func (in *reverseProxyPathRewritePtr) ToReverseProxyPathRewritePtrOutput() ReverseProxyPathRewritePtrOutput {
+	return pulumi.ToOutput(in).(ReverseProxyPathRewritePtrOutput)
+}
+
+func (in *reverseProxyPathRewritePtr) ToReverseProxyPathRewritePtrOutputWithContext(ctx context.Context) ReverseProxyPathRewritePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(ReverseProxyPathRewritePtrOutput)
 }
 
 type ReverseProxyServiceMode string
@@ -1292,6 +1623,8 @@ func (in *reverseProxyTargetProtocolPtr) ToReverseProxyTargetProtocolPtrOutputWi
 type ReverseProxyTargetType string
 
 const (
+	// Proxy-cluster target.
+	ReverseProxyTargetTypeCluster = ReverseProxyTargetType("cluster")
 	// Domain-based target.
 	ReverseProxyTargetTypeDomain = ReverseProxyTargetType("domain")
 	// Host-based target.
@@ -1424,6 +1757,7 @@ func (o ReverseProxyTargetTypePtrOutput) ToStringPtrOutputWithContext(ctx contex
 // ReverseProxyTargetTypeInput is an input type that accepts values of the ReverseProxyTargetType enum
 // A concrete instance of `ReverseProxyTargetTypeInput` can be one of the following:
 //
+//	ReverseProxyTargetTypeCluster
 //	ReverseProxyTargetTypeDomain
 //	ReverseProxyTargetTypeHost
 //	ReverseProxyTargetTypePeer
@@ -1977,12 +2311,16 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*PosturePeerNetworkRangeActionPtrInput)(nil)).Elem(), PosturePeerNetworkRangeAction("allow"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolInput)(nil)).Elem(), Protocol("all"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ProtocolPtrInput)(nil)).Elem(), Protocol("all"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyCrowdsecModeInput)(nil)).Elem(), ReverseProxyCrowdsecMode("enforce"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyCrowdsecModePtrInput)(nil)).Elem(), ReverseProxyCrowdsecMode("enforce"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyPathRewriteInput)(nil)).Elem(), ReverseProxyPathRewrite("preserve"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyPathRewritePtrInput)(nil)).Elem(), ReverseProxyPathRewrite("preserve"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyServiceModeInput)(nil)).Elem(), ReverseProxyServiceMode("http"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyServiceModePtrInput)(nil)).Elem(), ReverseProxyServiceMode("http"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetProtocolInput)(nil)).Elem(), ReverseProxyTargetProtocol("http"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetProtocolPtrInput)(nil)).Elem(), ReverseProxyTargetProtocol("http"))
-	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetTypeInput)(nil)).Elem(), ReverseProxyTargetType("domain"))
-	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetTypePtrInput)(nil)).Elem(), ReverseProxyTargetType("domain"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetTypeInput)(nil)).Elem(), ReverseProxyTargetType("cluster"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetTypePtrInput)(nil)).Elem(), ReverseProxyTargetType("cluster"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionInput)(nil)).Elem(), RuleAction("accept"))
 	pulumi.RegisterInputType(reflect.TypeOf((*RuleActionPtrInput)(nil)).Elem(), RuleAction("accept"))
 	pulumi.RegisterInputType(reflect.TypeOf((*SetupKeyTypeInput)(nil)).Elem(), SetupKeyType("reusable"))
@@ -1999,8 +2337,12 @@ func init() {
 	pulumi.RegisterOutputType(PosturePeerNetworkRangeActionPtrOutput{})
 	pulumi.RegisterOutputType(ProtocolOutput{})
 	pulumi.RegisterOutputType(ProtocolPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyCrowdsecModeOutput{})
+	pulumi.RegisterOutputType(ReverseProxyCrowdsecModePtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyDomainTypeOutput{})
 	pulumi.RegisterOutputType(ReverseProxyDomainTypePtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyPathRewriteOutput{})
+	pulumi.RegisterOutputType(ReverseProxyPathRewritePtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyServiceModeOutput{})
 	pulumi.RegisterOutputType(ReverseProxyServiceModePtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetProtocolOutput{})

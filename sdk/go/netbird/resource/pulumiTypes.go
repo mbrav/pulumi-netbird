@@ -1800,6 +1800,31 @@ func (i *resourcePtrType) ToResourcePtrOutputWithContext(ctx context.Context) Re
 	return pulumi.ToOutputWithContext(ctx, i).(ResourcePtrOutput)
 }
 
+// ResourceArrayInput is an input type that accepts ResourceArray and ResourceArrayOutput values.
+// You can construct a concrete instance of `ResourceArrayInput` via:
+//
+//	ResourceArray{ ResourceArgs{...} }
+type ResourceArrayInput interface {
+	pulumi.Input
+
+	ToResourceArrayOutput() ResourceArrayOutput
+	ToResourceArrayOutputWithContext(context.Context) ResourceArrayOutput
+}
+
+type ResourceArray []ResourceInput
+
+func (ResourceArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]Resource)(nil)).Elem()
+}
+
+func (i ResourceArray) ToResourceArrayOutput() ResourceArrayOutput {
+	return i.ToResourceArrayOutputWithContext(context.Background())
+}
+
+func (i ResourceArray) ToResourceArrayOutputWithContext(ctx context.Context) ResourceArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(ResourceArrayOutput)
+}
+
 type ResourceOutput struct{ *pulumi.OutputState }
 
 func (ResourceOutput) ElementType() reflect.Type {
@@ -2230,6 +2255,7 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*PostureProcessCheckPtrInput)(nil)).Elem(), PostureProcessCheckArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourceInput)(nil)).Elem(), ResourceArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ResourcePtrInput)(nil)).Elem(), ResourceArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*ResourceArrayInput)(nil)).Elem(), ResourceArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetInput)(nil)).Elem(), ReverseProxyTargetArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetArrayInput)(nil)).Elem(), ReverseProxyTargetArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})

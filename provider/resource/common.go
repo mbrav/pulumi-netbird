@@ -51,6 +51,21 @@ func toAPIResource(resource *Resource) *nbapi.Resource {
 	}
 }
 
+// Converts a slice of *Resource to a pointer to a slice of nbapi.Resource.
+// Returns nil if the input is nil.
+func toAPIResourceList(resources *[]Resource) *[]nbapi.Resource {
+	if resources == nil {
+		return nil
+	}
+
+	converted := make([]nbapi.Resource, len(*resources))
+	for i, r := range *resources {
+		converted[i] = *toAPIResource(&r)
+	}
+
+	return &converted
+}
+
 // Converts a single nbapi.Resource to Resource.
 func fromAPIResource(apiResource *nbapi.Resource) *Resource {
 	if apiResource == nil {
@@ -76,6 +91,42 @@ func fromAPIResourceList(apiResources *[]nbapi.Resource) *[]Resource {
 	}
 
 	return &converted
+}
+
+// equalResourcesPtr compares two *[]Resource slices by value, treating nil and empty as equal.
+func equalResourcesPtr(resourcesA, resourcesB *[]Resource) bool {
+	aLen := 0
+	if resourcesA != nil {
+		aLen = len(*resourcesA)
+	}
+
+	bLen := 0
+	if resourcesB != nil {
+		bLen = len(*resourcesB)
+	}
+
+	if aLen == 0 && bLen == 0 {
+		return true
+	}
+
+	if resourcesA == nil || resourcesB == nil {
+		return false
+	}
+
+	if aLen != bLen {
+		return false
+	}
+
+	aSorted := sortedResources(*resourcesA)
+	bSorted := sortedResources(*resourcesB)
+
+	for i := range aSorted {
+		if !equalResourcePtr(&aSorted[i], &bSorted[i]) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func sortedResources(resources []Resource) []Resource {

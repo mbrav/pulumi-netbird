@@ -21,12 +21,16 @@ func (g *Group) Annotate(a infer.Annotator) {
 
 // GroupArgs defines input fields for creating or updating a group.
 type GroupArgs struct {
-	Name string `pulumi:"name"`
+	Name      string      `pulumi:"name"`
+	Peers     *[]string   `pulumi:"peers,optional"`
+	Resources *[]Resource `pulumi:"resources,optional"`
 }
 
 // Annotate provides documentation for GroupArgs fields.
 func (g *GroupArgs) Annotate(a infer.Annotator) {
 	a.Describe(&g.Name, "The name of the NetBird group.")
+	a.Describe(&g.Peers, "An optional list of peer IDs to associate with this group.")
+	a.Describe(&g.Resources, "An optional list of resources to associate with this group.")
 }
 
 // GroupState represents the output state of a group resource.
@@ -45,15 +49,15 @@ func (g *GroupState) Annotate(a infer.Annotator) {
 
 // Create creates a new NetBird group.
 func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (infer.CreateResponse[GroupState], error) {
-	p.GetLogger(ctx).Debugf("Create:Group name=%s", req.Inputs.Name)
+	p.GetLogger(ctx).Debugf("Create:Group name=%s, peers=%v", req.Inputs.Name, req.Inputs.Peers)
 
 	if req.DryRun {
 		return infer.CreateResponse[GroupState]{
 			ID: "preview",
 			Output: GroupState{
 				Name:      req.Inputs.Name,
-				Peers:     nil,
-				Resources: nil,
+				Peers:     req.Inputs.Peers,
+				Resources: req.Inputs.Resources,
 			},
 		}, nil
 	}
@@ -65,8 +69,8 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 
 	group, err := client.Groups.Create(ctx, nbapi.GroupRequest{
 		Name:      req.Inputs.Name,
-		Peers:     nil,
-		Resources: nil,
+		Peers:     req.Inputs.Peers,
+		Resources: toAPIResourceList(req.Inputs.Resources),
 	})
 	if err != nil {
 		return infer.CreateResponse[GroupState]{}, fmt.Errorf("creating group failed: %w", err)
@@ -86,7 +90,7 @@ func (*Group) Create(ctx context.Context, req infer.CreateRequest[GroupArgs]) (i
 		Output: GroupState{
 			Name:      group.Name,
 			Peers:     &peerIDs,
-			Resources: fromAPIResourceList(&group.Resources),
+			Resources: groupStateResources(req.Inputs.Resources, group.Resources),
 		},
 	}, nil
 }
@@ -121,15 +125,19 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 	// Always sort peer IDs before comparison or use
 	slices.Sort(peerIDs)
 
+	stateResources := groupStateResources(req.Inputs.Resources, group.Resources)
+
 	return infer.ReadResponse[GroupArgs, GroupState]{
 		ID: req.ID,
 		Inputs: GroupArgs{
-			Name: group.Name,
+			Name:      group.Name,
+			Peers:     &peerIDs,
+			Resources: req.Inputs.Resources,
 		},
 		State: GroupState{
 			Name:      group.Name,
 			Peers:     &peerIDs,
-			Resources: groupStateResources(group.Resources),
+			Resources: stateResources,
 		},
 	}, nil
 }
@@ -142,8 +150,8 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 		return infer.UpdateResponse[GroupState]{
 			Output: GroupState{
 				Name:      req.Inputs.Name,
-				Peers:     nil,
-				Resources: nil,
+				Peers:     req.Inputs.Peers,
+				Resources: req.Inputs.Resources,
 			},
 		}, nil
 	}
@@ -155,8 +163,8 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 
 	updated, err := client.Groups.Update(ctx, req.ID, nbapi.GroupRequest{
 		Name:      req.Inputs.Name,
-		Peers:     nil,
-		Resources: nil,
+		Peers:     req.Inputs.Peers,
+		Resources: toAPIResourceList(req.Inputs.Resources),
 	})
 	if err != nil {
 		return infer.UpdateResponse[GroupState]{}, fmt.Errorf("updating group failed: %w", err)
@@ -173,7 +181,7 @@ func (*Group) Update(ctx context.Context, req infer.UpdateRequest[GroupArgs, Gro
 		Output: GroupState{
 			Name:      updated.Name,
 			Peers:     &peerIDs,
-			Resources: groupStateResources(updated.Resources),
+			Resources: groupStateResources(req.Inputs.Resources, updated.Resources),
 		},
 	}, nil
 }
@@ -209,6 +217,42 @@ func (*Group) Diff(ctx context.Context, req infer.DiffRequest[GroupArgs, GroupSt
 		}
 	}
 
+	// Peers: treat nil and empty slice as equal
+	{
+		inLen := 0
+		if req.Inputs.Peers != nil {
+			inLen = len(*req.Inputs.Peers)
+		}
+
+		stLen := 0
+		if req.State.Peers != nil {
+			stLen = len(*req.State.Peers)
+		}
+
+		if inLen != 0 || stLen != 0 {
+			if inLen != stLen {
+				diff["peers"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+			} else {
+				inPeers := slices.Clone(*req.Inputs.Peers)
+				stPeers := slices.Clone(*req.State.Peers)
+
+				slices.Sort(inPeers)
+				slices.Sort(stPeers)
+
+				if !slices.Equal(inPeers, stPeers) {
+					diff["peers"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
+				}
+			}
+		}
+	}
+
+	if !equalResourcesPtr(req.Inputs.Resources, req.State.Resources) {
+		diff["resources"] = p.PropertyDiff{
+			InputDiff: false,
+			Kind:      p.Update,
+		}
+	}
+
 	p.GetLogger(ctx).Debugf("Diff:Group[%s] diff=%d", req.ID, len(diff))
 
 	return infer.DiffResponse{
@@ -230,6 +274,28 @@ func (*Group) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckRes
 		})
 	}
 
+	if args.Peers != nil {
+		for i, peerID := range *args.Peers {
+			if isBlank(peerID) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("peers[%d]", i),
+					Reason:   "peer id must not be empty",
+				})
+			}
+		}
+	}
+
+	if args.Resources != nil {
+		for i, resource := range *args.Resources {
+			if isBlank(resource.ID) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("resources[%d].id", i),
+					Reason:   "resource id must not be empty",
+				})
+			}
+		}
+	}
+
 	return infer.CheckResponse[GroupArgs]{
 		Inputs:   args,
 		Failures: failures,
@@ -239,9 +305,19 @@ func (*Group) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckRes
 // WireDependencies explicitly defines input/output relationships.
 func (*Group) WireDependencies(f infer.FieldSelector, args *GroupArgs, state *GroupState) {
 	f.OutputField(&state.Name).DependsOn(f.InputField(&args.Name))
+	f.OutputField(&state.Peers).DependsOn(f.InputField(&args.Peers))
+	f.OutputField(&state.Resources).DependsOn(f.InputField(&args.Resources))
 }
 
-func groupStateResources(apiResources []nbapi.Resource) *[]Resource {
+// Only track resources in state when the user declared them in inputs.
+// Group resources are often populated externally (e.g. by NetworkResource
+// associations); if the user doesn't manage them, keep state nil so Diff
+// never reports a spurious change on every refresh.
+func groupStateResources(inputResources *[]Resource, apiResources []nbapi.Resource) *[]Resource {
+	if inputResources == nil {
+		return nil
+	}
+
 	resources := fromAPIResourceList(&apiResources)
 	if resources == nil {
 		return nil

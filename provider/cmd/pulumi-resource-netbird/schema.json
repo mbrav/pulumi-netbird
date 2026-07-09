@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -1378,6 +1378,20 @@
         "name": {
           "type": "string",
           "description": "The name of the NetBird group."
+        },
+        "peers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An optional list of peer IDs to associate with this group."
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:Resource"
+          },
+          "description": "An optional list of resources to associate with this group."
         }
       },
       "requiredInputs": [

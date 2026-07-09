@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-07-09
+
+### Changed
+
+- Reverted the v0.5.0 breaking change: `Group` again accepts optional `peers` and `resources` inputs, so group membership and resource associations can be managed directly from the `Group` resource.
+- Bumped provider version from `0.5.0` to `0.5.1`.
+
+### Fixed
+
+- `Group` resource and peer lists are now written to state in a stable sorted order (resources by type then ID, peers alphabetically) from `Create`, `Update`, and `Read` alike. Previously only `Read` sorted resources while `Create`/`Update` stored them in raw API order, and `Update` never sorted peers — the nondeterministic NetBird API ordering produced spurious `resources`/`peers` diffs on every `pulumi refresh`/`preview`.
+- Restored the `toAPIResourceList` and `equalResourcesPtr` helpers in `common.go` that back the restored inputs (order-insensitive resource comparison in `Diff`).
+
 ## [0.5.0] - 2026-06-26
 
 ### Changed

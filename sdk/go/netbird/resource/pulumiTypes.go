@@ -13,6 +13,81 @@ import (
 
 var _ = internal.GetEnvOrDefault
 
+type IngressAvailablePorts struct {
+	// Number of available TCP ports left on the ingress peer.
+	Tcp int `pulumi:"tcp"`
+	// Number of available UDP ports left on the ingress peer.
+	Udp int `pulumi:"udp"`
+}
+
+type IngressAvailablePortsOutput struct{ *pulumi.OutputState }
+
+func (IngressAvailablePortsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*IngressAvailablePorts)(nil)).Elem()
+}
+
+func (o IngressAvailablePortsOutput) ToIngressAvailablePortsOutput() IngressAvailablePortsOutput {
+	return o
+}
+
+func (o IngressAvailablePortsOutput) ToIngressAvailablePortsOutputWithContext(ctx context.Context) IngressAvailablePortsOutput {
+	return o
+}
+
+// Number of available TCP ports left on the ingress peer.
+func (o IngressAvailablePortsOutput) Tcp() pulumi.IntOutput {
+	return o.ApplyT(func(v IngressAvailablePorts) int { return v.Tcp }).(pulumi.IntOutput)
+}
+
+// Number of available UDP ports left on the ingress peer.
+func (o IngressAvailablePortsOutput) Udp() pulumi.IntOutput {
+	return o.ApplyT(func(v IngressAvailablePorts) int { return v.Udp }).(pulumi.IntOutput)
+}
+
+type IngressAvailablePortsPtrOutput struct{ *pulumi.OutputState }
+
+func (IngressAvailablePortsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**IngressAvailablePorts)(nil)).Elem()
+}
+
+func (o IngressAvailablePortsPtrOutput) ToIngressAvailablePortsPtrOutput() IngressAvailablePortsPtrOutput {
+	return o
+}
+
+func (o IngressAvailablePortsPtrOutput) ToIngressAvailablePortsPtrOutputWithContext(ctx context.Context) IngressAvailablePortsPtrOutput {
+	return o
+}
+
+func (o IngressAvailablePortsPtrOutput) Elem() IngressAvailablePortsOutput {
+	return o.ApplyT(func(v *IngressAvailablePorts) IngressAvailablePorts {
+		if v != nil {
+			return *v
+		}
+		var ret IngressAvailablePorts
+		return ret
+	}).(IngressAvailablePortsOutput)
+}
+
+// Number of available TCP ports left on the ingress peer.
+func (o IngressAvailablePortsPtrOutput) Tcp() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *IngressAvailablePorts) *int {
+		if v == nil {
+			return nil
+		}
+		return &v.Tcp
+	}).(pulumi.IntPtrOutput)
+}
+
+// Number of available UDP ports left on the ingress peer.
+func (o IngressAvailablePortsPtrOutput) Udp() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *IngressAvailablePorts) *int {
+		if v == nil {
+			return nil
+		}
+		return &v.Udp
+	}).(pulumi.IntPtrOutput)
+}
+
 type Nameserver struct {
 	// IP of Nameserver
 	Ip string `pulumi:"ip"`
@@ -3682,6 +3757,8 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetOptionsPtrInput)(nil)).Elem(), ReverseProxyTargetOptionsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeArrayInput)(nil)).Elem(), RulePortRangeArray{})
+	pulumi.RegisterOutputType(IngressAvailablePortsOutput{})
+	pulumi.RegisterOutputType(IngressAvailablePortsPtrOutput{})
 	pulumi.RegisterOutputType(NameserverOutput{})
 	pulumi.RegisterOutputType(NameserverArrayOutput{})
 	pulumi.RegisterOutputType(PolicyRuleArgsOutput{})

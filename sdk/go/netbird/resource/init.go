@@ -21,6 +21,8 @@ func (m *module) Version() semver.Version {
 
 func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi.Resource, err error) {
 	switch typ {
+	case "netbird:resource:AzureIDP":
+		r = &AzureIDP{}
 	case "netbird:resource:DNS":
 		r = &DNS{}
 	case "netbird:resource:DNSRecord":
@@ -29,14 +31,22 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 		r = &DNSSettings{}
 	case "netbird:resource:DNSZone":
 		r = &DNSZone{}
+	case "netbird:resource:GoogleIDP":
+		r = &GoogleIDP{}
 	case "netbird:resource:Group":
 		r = &Group{}
+	case "netbird:resource:IdentityProvider":
+		r = &IdentityProvider{}
+	case "netbird:resource:IngressPeer":
+		r = &IngressPeer{}
 	case "netbird:resource:Network":
 		r = &Network{}
 	case "netbird:resource:NetworkResource":
 		r = &NetworkResource{}
 	case "netbird:resource:NetworkRouter":
 		r = &NetworkRouter{}
+	case "netbird:resource:OktaScimIDP":
+		r = &OktaScimIDP{}
 	case "netbird:resource:Peer":
 		r = &Peer{}
 	case "netbird:resource:Policy":
@@ -49,8 +59,12 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 		r = &ReverseProxyService{}
 	case "netbird:resource:Route":
 		r = &Route{}
+	case "netbird:resource:ScimIntegration":
+		r = &ScimIntegration{}
 	case "netbird:resource:SetupKey":
 		r = &SetupKey{}
+	case "netbird:resource:Token":
+		r = &Token{}
 	case "netbird:resource:User":
 		r = &User{}
 	default:

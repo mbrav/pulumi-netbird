@@ -40,6 +40,19 @@ variables:
       arguments:
         groupId: ${group-devops.id}
 
+  # List all countries known to NetBird's geo-location database (used by PostureCheck geo rules).
+  countries:
+    fn::invoke:
+      function: netbird:function:getCountries
+      arguments: {}
+
+  # List cities within the US, for the same geo-location use case.
+  usCities:
+    fn::invoke:
+      function: netbird:function:getCountryCities
+      arguments:
+        countryCode: US
+
 outputs:
   networkR1:
     value:
@@ -59,6 +72,12 @@ outputs:
     value: ${allPeers.peers}
   devopsPeerCount:
     value: ${devopsPeers.peers}
+  countryCount:
+    value: ${countries.countries}
+  usCityCount:
+    value: ${usCities.cities}
+  ciBotTokenId:
+    value: ${token-ci-bot.id}
 
 resources:
   # ── Groups ──────────────────────────────────────────────────────────────────
@@ -338,6 +357,17 @@ resources:
       name: ci-bot
       autoGroups:
         - ${group-devops.id}
+
+  # ── Personal Access Token ─────────────────────────────────────────────────────
+  # PAT for the ci-bot service user. The API has no update endpoint, so any
+  # input change replaces the token. Import ID is "userId/tokenId".
+
+  token-ci-bot:
+    type: netbird:resource:Token
+    properties:
+      userId: ${user-ci-bot.id}
+      name: ci-bot-pat
+      expiresIn: 90
 
   # ── Reverse Proxy Service ──────────────────────────────────────────────────────
   # HTTP (L7) reverse proxy routing traffic to an internal backend host.

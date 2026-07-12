@@ -66,7 +66,7 @@ type ReverseProxyServiceState struct {
 	Auth               *ReverseProxyAuth               `pulumi:"auth,optional"`
 	AccessRestrictions *ReverseProxyAccessRestrictions `pulumi:"accessRestrictions,optional"`
 	ProxyCluster       *string                         `pulumi:"proxyCluster,optional"`
-	Status             *string                         `pulumi:"status,optional"`
+	Status             *ReverseProxyServiceStatus      `pulumi:"status,optional"`
 	Terminated         *bool                           `pulumi:"terminated,optional"`
 	PortAutoAssigned   *bool                           `pulumi:"portAutoAssigned,optional"`
 }
@@ -194,6 +194,36 @@ func (ReverseProxyCrowdsecMode) Values() []infer.EnumValue[ReverseProxyCrowdsecM
 	return []infer.EnumValue[ReverseProxyCrowdsecMode]{
 		{Name: "enforce", Value: ReverseProxyCrowdsecModeEnforce, Description: "Block connections flagged by CrowdSec."},
 		{Name: "observe", Value: ReverseProxyCrowdsecModeObserve, Description: "Only log connections flagged by CrowdSec."},
+	}
+}
+
+// ReverseProxyServiceStatus reflects the current lifecycle status of a service (output only).
+type ReverseProxyServiceStatus string
+
+const (
+	// ReverseProxyServiceStatusActive means the service is provisioned and serving.
+	ReverseProxyServiceStatusActive ReverseProxyServiceStatus = ReverseProxyServiceStatus(nbapi.ServiceMetaStatusActive)
+	// ReverseProxyServiceStatusCertificateFailed means TLS certificate issuance failed.
+	ReverseProxyServiceStatusCertificateFailed ReverseProxyServiceStatus = ReverseProxyServiceStatus(nbapi.ServiceMetaStatusCertificateFailed)
+	// ReverseProxyServiceStatusCertificatePending means TLS certificate issuance is in progress.
+	ReverseProxyServiceStatusCertificatePending ReverseProxyServiceStatus = ReverseProxyServiceStatus(nbapi.ServiceMetaStatusCertificatePending)
+	// ReverseProxyServiceStatusError means the service is in an error state.
+	ReverseProxyServiceStatusError ReverseProxyServiceStatus = ReverseProxyServiceStatus(nbapi.ServiceMetaStatusError)
+	// ReverseProxyServiceStatusPending means the service is being provisioned.
+	ReverseProxyServiceStatusPending ReverseProxyServiceStatus = ReverseProxyServiceStatus(nbapi.ServiceMetaStatusPending)
+	// ReverseProxyServiceStatusTunnelNotCreated means the underlying tunnel has not been created yet.
+	ReverseProxyServiceStatusTunnelNotCreated ReverseProxyServiceStatus = ReverseProxyServiceStatus(nbapi.ServiceMetaStatusTunnelNotCreated)
+)
+
+// Values returns the valid enum values for ReverseProxyServiceStatus.
+func (ReverseProxyServiceStatus) Values() []infer.EnumValue[ReverseProxyServiceStatus] {
+	return []infer.EnumValue[ReverseProxyServiceStatus]{
+		{Name: "active", Value: ReverseProxyServiceStatusActive, Description: "Service is provisioned and serving."},
+		{Name: "certificate_failed", Value: ReverseProxyServiceStatusCertificateFailed, Description: "TLS certificate issuance failed."},
+		{Name: "certificate_pending", Value: ReverseProxyServiceStatusCertificatePending, Description: "TLS certificate issuance is in progress."},
+		{Name: "error", Value: ReverseProxyServiceStatusError, Description: "Service is in an error state."},
+		{Name: "pending", Value: ReverseProxyServiceStatusPending, Description: "Service is being provisioned."},
+		{Name: "tunnel_not_created", Value: ReverseProxyServiceStatusTunnelNotCreated, Description: "Underlying tunnel has not been created yet."},
 	}
 }
 
@@ -598,7 +628,7 @@ func serviceStateFromAPI(svc *nbapi.Service) ReverseProxyServiceState {
 		mode = &m
 	}
 
-	statusVal := string(svc.Meta.Status)
+	statusVal := ReverseProxyServiceStatus(svc.Meta.Status)
 
 	return ReverseProxyServiceState{
 		Name:               svc.Name,
@@ -745,7 +775,7 @@ func (*ReverseProxyService) Update(ctx context.Context, req infer.UpdateRequest[
 
 // dryRunState builds a preview state from inputs, carrying over server-derived
 // outputs when they are known (Update) and leaving them nil otherwise (Create).
-func dryRunState(inputs ReverseProxyServiceArgs, proxyCluster *string, status *string) ReverseProxyServiceState {
+func dryRunState(inputs ReverseProxyServiceArgs, proxyCluster *string, status *ReverseProxyServiceStatus) ReverseProxyServiceState {
 	return ReverseProxyServiceState{
 		Name:               inputs.Name,
 		Domain:             inputs.Domain,

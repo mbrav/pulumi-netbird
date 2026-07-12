@@ -43,7 +43,7 @@ type ReverseProxyService struct {
 	// When true, Location headers in backend responses are rewritten to the public-facing domain.
 	RewriteRedirects pulumi.BoolPtrOutput `pulumi:"rewriteRedirects"`
 	// Current status of the service.
-	Status pulumi.StringPtrOutput `pulumi:"status"`
+	Status ReverseProxyServiceStatusPtrOutput `pulumi:"status"`
 	// List of target backends for this service.
 	Targets ReverseProxyTargetArrayOutput `pulumi:"targets"`
 	// Whether the service has been terminated. Terminated services cannot be updated.
@@ -309,8 +309,8 @@ func (o ReverseProxyServiceOutput) RewriteRedirects() pulumi.BoolPtrOutput {
 }
 
 // Current status of the service.
-func (o ReverseProxyServiceOutput) Status() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v *ReverseProxyService) pulumi.StringPtrOutput { return v.Status }).(pulumi.StringPtrOutput)
+func (o ReverseProxyServiceOutput) Status() ReverseProxyServiceStatusPtrOutput {
+	return o.ApplyT(func(v *ReverseProxyService) ReverseProxyServiceStatusPtrOutput { return v.Status }).(ReverseProxyServiceStatusPtrOutput)
 }
 
 // List of target backends for this service.

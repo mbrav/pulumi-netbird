@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -173,6 +173,40 @@
         "groupIDs"
       ]
     },
+    "netbird:function:City": {
+      "properties": {
+        "cityName": {
+          "type": "string",
+          "description": "Commonly used English name of the city."
+        },
+        "geonameId": {
+          "type": "integer",
+          "description": "Integer ID of the record in the GeoNames database."
+        }
+      },
+      "type": "object",
+      "required": [
+        "cityName",
+        "geonameId"
+      ]
+    },
+    "netbird:function:Country": {
+      "properties": {
+        "countryCode": {
+          "type": "string",
+          "description": "2-letter ISO 3166-1 alpha-2 country code."
+        },
+        "countryName": {
+          "type": "string",
+          "description": "Commonly used English name of the country."
+        }
+      },
+      "type": "object",
+      "required": [
+        "countryCode",
+        "countryName"
+      ]
+    },
     "netbird:function:PeerSummary": {
       "properties": {
         "connected": {
@@ -218,6 +252,58 @@
         "groups"
       ]
     },
+    "netbird:function:ProxyClusterSummary": {
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Cluster address used for CNAME targets; the value to pass as a ReverseProxyDomain targetCluster."
+        },
+        "connectedProxies": {
+          "type": "integer",
+          "description": "Number of proxy nodes currently connected."
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the proxy cluster."
+        },
+        "online": {
+          "type": "boolean",
+          "description": "Whether at least one proxy in the cluster has heartbeated within the active window."
+        },
+        "private": {
+          "type": "boolean",
+          "description": "True when at least one connected proxy is embedded in a netbird client and serving over a WireGuard tunnel."
+        },
+        "requireSubdomain": {
+          "type": "boolean",
+          "description": "Whether services on this cluster must include a subdomain label."
+        },
+        "supportsCrowdsec": {
+          "type": "boolean",
+          "description": "Whether all active proxies in the cluster have CrowdSec configured."
+        },
+        "supportsCustomPorts": {
+          "type": "boolean",
+          "description": "Whether the cluster supports binding arbitrary TCP/UDP ports."
+        },
+        "type": {
+          "type": "string",
+          "description": "Source of the cluster: 'account' (BYOP) or 'shared' (operated by NetBird)."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "address",
+        "type",
+        "online",
+        "connectedProxies",
+        "private",
+        "requireSubdomain",
+        "supportsCrowdsec",
+        "supportsCustomPorts"
+      ]
+    },
     "netbird:function:ResourceRef": {
       "properties": {
         "id": {
@@ -233,6 +319,21 @@
       "required": [
         "id",
         "type"
+      ]
+    },
+    "netbird:resource:AzureHost": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "microsoft.com",
+          "description": "Commercial Microsoft Graph host.",
+          "value": "microsoft.com"
+        },
+        {
+          "name": "microsoft.us",
+          "description": "US Government Microsoft Graph host.",
+          "value": "microsoft.us"
+        }
       ]
     },
     "netbird:resource:DNSRecordType": {
@@ -253,6 +354,68 @@
           "description": "Canonical name record.",
           "value": "CNAME"
         }
+      ]
+    },
+    "netbird:resource:IdentityProviderType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "adfs",
+          "description": "Microsoft AD FS.",
+          "value": "adfs"
+        },
+        {
+          "name": "entra",
+          "description": "Microsoft Entra ID.",
+          "value": "entra"
+        },
+        {
+          "name": "google",
+          "description": "Google.",
+          "value": "google"
+        },
+        {
+          "name": "microsoft",
+          "description": "Microsoft.",
+          "value": "microsoft"
+        },
+        {
+          "name": "oidc",
+          "description": "Generic OIDC provider.",
+          "value": "oidc"
+        },
+        {
+          "name": "okta",
+          "description": "Okta.",
+          "value": "okta"
+        },
+        {
+          "name": "pocketid",
+          "description": "PocketID.",
+          "value": "pocketid"
+        },
+        {
+          "name": "zitadel",
+          "description": "Zitadel.",
+          "value": "zitadel"
+        }
+      ]
+    },
+    "netbird:resource:IngressAvailablePorts": {
+      "properties": {
+        "tcp": {
+          "type": "integer",
+          "description": "Number of available TCP ports left on the ingress peer."
+        },
+        "udp": {
+          "type": "integer",
+          "description": "Number of available UDP ports left on the ingress peer."
+        }
+      },
+      "type": "object",
+      "required": [
+        "tcp",
+        "udp"
       ]
     },
     "netbird:resource:Nameserver": {
@@ -912,6 +1075,41 @@
         }
       ]
     },
+    "netbird:resource:ReverseProxyServiceStatus": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "active",
+          "description": "Service is provisioned and serving.",
+          "value": "active"
+        },
+        {
+          "name": "certificate_failed",
+          "description": "TLS certificate issuance failed.",
+          "value": "certificate_failed"
+        },
+        {
+          "name": "certificate_pending",
+          "description": "TLS certificate issuance is in progress.",
+          "value": "certificate_pending"
+        },
+        {
+          "name": "error",
+          "description": "Service is in an error state.",
+          "value": "error"
+        },
+        {
+          "name": "pending",
+          "description": "Service is being provisioned.",
+          "value": "pending"
+        },
+        {
+          "name": "tunnel_not_created",
+          "description": "Underlying tunnel has not been created yet.",
+          "value": "tunnel_not_created"
+        }
+      ]
+    },
     "netbird:resource:ReverseProxyTarget": {
       "properties": {
         "enabled": {
@@ -1130,6 +1328,26 @@
           "value": "subnet"
         }
       ]
+    },
+    "netbird:resource:UserStatus": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "active",
+          "description": "User has accepted the invite and is active.",
+          "value": "active"
+        },
+        {
+          "name": "blocked",
+          "description": "User is blocked from accessing the system.",
+          "value": "blocked"
+        },
+        {
+          "name": "invited",
+          "description": "User has been invited but has not yet joined.",
+          "value": "invited"
+        }
+      ]
     }
   },
   "provider": {
@@ -1308,6 +1526,115 @@
         "subnets"
       ],
       "isComponent": true
+    },
+    "netbird:resource:AzureIDP": {
+      "description": "A NetBird Azure AD (Entra ID) identity-provider sync integration.",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "description": "Azure AD application (client) ID."
+        },
+        "clientSecret": {
+          "type": "string",
+          "description": "Base64-encoded Azure AD client secret. Not returned by the API; preserved from configuration.",
+          "secret": true
+        },
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "host": {
+          "$ref": "#/types/netbird:resource:AzureHost",
+          "description": "Azure host domain for the Graph API."
+        },
+        "lastSyncedAt": {
+          "type": "string",
+          "description": "Timestamp of the last synchronization."
+        },
+        "syncInterval": {
+          "type": "integer",
+          "description": "Sync interval in seconds."
+        },
+        "tenantId": {
+          "type": "string",
+          "description": "Azure AD tenant ID."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "required": [
+        "clientId",
+        "clientSecret",
+        "tenantId",
+        "host"
+      ],
+      "inputProperties": {
+        "clientId": {
+          "type": "string",
+          "description": "Azure AD application (client) ID."
+        },
+        "clientSecret": {
+          "type": "string",
+          "description": "Base64-encoded Azure AD client secret.",
+          "secret": true
+        },
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "host": {
+          "$ref": "#/types/netbird:resource:AzureHost",
+          "description": "Azure host domain for the Graph API. Changing this forces a replacement."
+        },
+        "syncInterval": {
+          "type": "integer",
+          "description": "Sync interval in seconds (minimum 300)."
+        },
+        "tenantId": {
+          "type": "string",
+          "description": "Azure AD tenant ID."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "requiredInputs": [
+        "clientId",
+        "clientSecret",
+        "tenantId",
+        "host"
+      ]
     },
     "netbird:resource:DNS": {
       "description": "A NetBird network.",
@@ -1573,6 +1900,95 @@
         "distributionGroups"
       ]
     },
+    "netbird:resource:GoogleIDP": {
+      "description": "A NetBird Google Workspace identity-provider sync integration.",
+      "properties": {
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "customerId": {
+          "type": "string",
+          "description": "Customer ID from Google Workspace account settings."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "lastSyncedAt": {
+          "type": "string",
+          "description": "Timestamp of the last synchronization."
+        },
+        "serviceAccountKey": {
+          "type": "string",
+          "description": "Base64-encoded Google service account key. Not returned by the API; preserved from configuration.",
+          "secret": true
+        },
+        "syncInterval": {
+          "type": "integer",
+          "description": "Sync interval in seconds."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "required": [
+        "customerId",
+        "serviceAccountKey"
+      ],
+      "inputProperties": {
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "customerId": {
+          "type": "string",
+          "description": "Customer ID from Google Workspace account settings."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "serviceAccountKey": {
+          "type": "string",
+          "description": "Base64-encoded Google service account key.",
+          "secret": true
+        },
+        "syncInterval": {
+          "type": "integer",
+          "description": "Sync interval in seconds (minimum 300)."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "requiredInputs": [
+        "customerId",
+        "serviceAccountKey"
+      ]
+    },
     "netbird:resource:Group": {
       "description": "A NetBird group, which represents a collection of peers.",
       "properties": {
@@ -1620,6 +2036,126 @@
       },
       "requiredInputs": [
         "name"
+      ]
+    },
+    "netbird:resource:IdentityProvider": {
+      "description": "A NetBird identity provider (OIDC) configuration for self-hosted authentication.",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "description": "OAuth2 client ID."
+        },
+        "clientSecret": {
+          "type": "string",
+          "description": "OAuth2 client secret. Not returned by the API; preserved from configuration.",
+          "secret": true
+        },
+        "issuer": {
+          "type": "string",
+          "description": "OIDC issuer URL."
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the identity provider."
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:IdentityProviderType",
+          "description": "Type of identity provider."
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "issuer",
+        "clientId",
+        "clientSecret"
+      ],
+      "inputProperties": {
+        "clientId": {
+          "type": "string",
+          "description": "OAuth2 client ID."
+        },
+        "clientSecret": {
+          "type": "string",
+          "description": "OAuth2 client secret.",
+          "secret": true
+        },
+        "issuer": {
+          "type": "string",
+          "description": "OIDC issuer URL."
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name for the identity provider."
+        },
+        "type": {
+          "$ref": "#/types/netbird:resource:IdentityProviderType",
+          "description": "Type of identity provider."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "type",
+        "issuer",
+        "clientId",
+        "clientSecret"
+      ]
+    },
+    "netbird:resource:IngressPeer": {
+      "description": "A NetBird ingress peer: an existing peer designated to receive forwarded ingress traffic.",
+      "properties": {
+        "availablePorts": {
+          "$ref": "#/types/netbird:resource:IngressAvailablePorts",
+          "description": "Forwarding ports remaining on the ingress peer."
+        },
+        "connected": {
+          "type": "boolean",
+          "description": "Whether the ingress peer is connected to the management server."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the ingress peer is enabled."
+        },
+        "fallback": {
+          "type": "boolean",
+          "description": "Whether this ingress peer may be used as a fallback."
+        },
+        "ingressIp": {
+          "type": "string",
+          "description": "Ingress IP address where forwarded traffic arrives."
+        },
+        "peerId": {
+          "type": "string",
+          "description": "ID of the peer used as an ingress peer."
+        },
+        "region": {
+          "type": "string",
+          "description": "Region of the ingress peer."
+        }
+      },
+      "required": [
+        "peerId",
+        "enabled",
+        "fallback"
+      ],
+      "inputProperties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the ingress peer is enabled."
+        },
+        "fallback": {
+          "type": "boolean",
+          "description": "Whether this ingress peer may be used as a fallback when no ingress peer exists in the forwarded peer's region."
+        },
+        "peerId": {
+          "type": "string",
+          "description": "ID of the peer used as an ingress peer. Changing this forces a replacement."
+        }
+      },
+      "requiredInputs": [
+        "peerId",
+        "enabled",
+        "fallback"
       ]
     },
     "netbird:resource:Network": {
@@ -1797,6 +2333,80 @@
         "enabled",
         "masquerade",
         "metric"
+      ]
+    },
+    "netbird:resource:OktaScimIDP": {
+      "description": "A NetBird Okta SCIM identity-provider sync integration.",
+      "properties": {
+        "authToken": {
+          "type": "string",
+          "description": "SCIM API token. Returned in full only on creation; masked afterwards, so the created value is preserved.",
+          "secret": true
+        },
+        "connectionName": {
+          "type": "string",
+          "description": "The Okta enterprise connection name on Auth0."
+        },
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "lastSyncedAt": {
+          "type": "string",
+          "description": "Timestamp of the last synchronization."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "required": [
+        "connectionName"
+      ],
+      "inputProperties": {
+        "connectionName": {
+          "type": "string",
+          "description": "The Okta enterprise connection name on Auth0. Changing this forces a replacement."
+        },
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "requiredInputs": [
+        "connectionName"
       ]
     },
     "netbird:resource:Peer": {
@@ -2068,7 +2678,7 @@
           "description": "When true, Location headers in backend responses are rewritten to the public-facing domain."
         },
         "status": {
-          "type": "string",
+          "$ref": "#/types/netbird:resource:ReverseProxyServiceStatus",
           "description": "Current status of the service."
         },
         "targets": {
@@ -2309,6 +2919,90 @@
         "groups"
       ]
     },
+    "netbird:resource:ScimIntegration": {
+      "description": "A NetBird generic SCIM identity-provider integration.",
+      "properties": {
+        "authToken": {
+          "type": "string",
+          "description": "SCIM API token. Returned in full only on creation; masked afterwards, so the created value is preserved.",
+          "secret": true
+        },
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "lastSyncedAt": {
+          "type": "string",
+          "description": "Timestamp of the last synchronization."
+        },
+        "prefix": {
+          "type": "string",
+          "description": "The connection prefix used for the SCIM provider."
+        },
+        "provider": {
+          "type": "string",
+          "description": "Name of the SCIM identity provider."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "required": [
+        "prefix",
+        "provider"
+      ],
+      "inputProperties": {
+        "connectorId": {
+          "type": "string",
+          "description": "DEX connector ID for embedded IdP setups."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the integration is enabled."
+        },
+        "groupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups to sync."
+        },
+        "prefix": {
+          "type": "string",
+          "description": "The connection prefix used for the SCIM provider."
+        },
+        "provider": {
+          "type": "string",
+          "description": "Name of the SCIM identity provider. Changing this forces a replacement."
+        },
+        "userGroupPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "start_with patterns for groups whose users to sync."
+        }
+      },
+      "requiredInputs": [
+        "prefix",
+        "provider"
+      ]
+    },
     "netbird:resource:SetupKey": {
       "description": "Manages a NetBird setup key.",
       "properties": {
@@ -2416,6 +3110,68 @@
         "usageLimit"
       ]
     },
+    "netbird:resource:Token": {
+      "description": "A NetBird personal access token (PAT) for a user. The plaintext token is returned only once, on creation, and is exposed as a secret output. The token cannot be modified after creation; any input change forces a replacement.",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp the token was created."
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "User ID of the principal that created the token."
+        },
+        "expirationDate": {
+          "type": "string",
+          "description": "Timestamp the token expires."
+        },
+        "expiresIn": {
+          "type": "integer",
+          "description": "Token lifetime in days."
+        },
+        "lastUsed": {
+          "type": "string",
+          "description": "Timestamp the token was last used, if ever."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the token."
+        },
+        "token": {
+          "type": "string",
+          "description": "Plaintext token value. Only populated on creation; never returned by the API afterwards.",
+          "secret": true
+        },
+        "userId": {
+          "type": "string",
+          "description": "ID of the user the token is issued for."
+        }
+      },
+      "required": [
+        "userId",
+        "name",
+        "expiresIn"
+      ],
+      "inputProperties": {
+        "expiresIn": {
+          "type": "integer",
+          "description": "Token lifetime in days."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the token."
+        },
+        "userId": {
+          "type": "string",
+          "description": "ID of the user the token is issued for."
+        }
+      },
+      "requiredInputs": [
+        "userId",
+        "name",
+        "expiresIn"
+      ]
+    },
     "netbird:resource:User": {
       "description": "A NetBird user that receives an invite and is optionally assigned groups and roles.",
       "properties": {
@@ -2445,6 +3201,10 @@
         "role": {
           "type": "string",
           "description": "NetBird account role assigned to the user."
+        },
+        "status": {
+          "$ref": "#/types/netbird:resource:UserStatus",
+          "description": "Current account status of the user: 'active', 'blocked', or 'invited'."
         }
       },
       "required": [
@@ -2486,6 +3246,57 @@
     }
   },
   "functions": {
+    "netbird:function:getCountries": {
+      "description": "List all countries known to NetBird's geo-location database. Useful for populating PostureCheck geo-location rules.",
+      "inputs": {
+        "type": "object"
+      },
+      "outputs": {
+        "properties": {
+          "countries": {
+            "description": "The list of countries.",
+            "items": {
+              "$ref": "#/types/netbird:function:Country"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "countries"
+        ],
+        "type": "object"
+      }
+    },
+    "netbird:function:getCountryCities": {
+      "description": "List the cities within a country from NetBird's geo-location database. Useful for populating PostureCheck geo-location rules with specific cities.",
+      "inputs": {
+        "properties": {
+          "countryCode": {
+            "type": "string",
+            "description": "2-letter ISO 3166-1 alpha-2 country code to list cities for."
+          }
+        },
+        "type": "object",
+        "required": [
+          "countryCode"
+        ]
+      },
+      "outputs": {
+        "properties": {
+          "cities": {
+            "description": "The list of cities in the country.",
+            "items": {
+              "$ref": "#/types/netbird:function:City"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "cities"
+        ],
+        "type": "object"
+      }
+    },
     "netbird:function:getPeers": {
       "description": "List all NetBird peers, optionally filtered to those belonging to a specific group ID.",
       "inputs": {
@@ -2509,6 +3320,33 @@
         },
         "required": [
           "peers"
+        ],
+        "type": "object"
+      }
+    },
+    "netbird:function:getReverseProxyClusters": {
+      "description": "List all NetBird reverse proxy clusters. Clusters are auto-provisioned server-side (there is no create endpoint); use this to discover a cluster address to pin a ReverseProxyDomain against via its targetCluster input.",
+      "inputs": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Optional cluster type filter: 'account' (owned/operated by the account, BYOP) or 'shared' (operated by NetBird and shared across accounts). When set, only clusters of this type are returned."
+          }
+        },
+        "type": "object"
+      },
+      "outputs": {
+        "properties": {
+          "clusters": {
+            "description": "The list of reverse proxy clusters matching the filter criteria.",
+            "items": {
+              "$ref": "#/types/netbird:function:ProxyClusterSummary"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "clusters"
         ],
         "type": "object"
       }

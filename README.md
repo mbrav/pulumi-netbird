@@ -14,8 +14,8 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## ✨ Features
 
-- Manage 16 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
-- 6 read-only **invoke functions** (data sources) for referencing existing NetBird objects by name, email, or CIDR
+- Manage 23 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
+- 9 read-only **invoke functions** (data sources) for referencing existing NetBird objects by name, email, CIDR, or country
 - Built natively with Pulumi's Go SDK
 - Works with NetBird Cloud (`https://api.netbird.io`) and self-hosted management servers
 
@@ -24,7 +24,7 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 To install the Pulumi NetBird resource plugin, replace the version number with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.5.1 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.5.3 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -38,7 +38,7 @@ make help                 # View available build/test commands
 All runnable examples live in [`examples/`](./examples/README.md). The table below summarises what is available:
 
 | Example | Runtime | Description |
-|---------|---------|-------------|
+| --------- | --------- | ------------- |
 | [`yaml`](./examples/yaml/) | Pulumi YAML | All resources in a single `Pulumi.yaml` |
 | [`yaml-yq`](./examples/yaml-yq/) | Pulumi YAML + `yq` | Resources split across `src/*.yaml`, assembled by `make build` |
 | [`go`](./examples/go/) | Pulumi Go | Provider usage via the generated Go SDK |
@@ -55,7 +55,7 @@ You can use this provider with **Pulumi YAML** to manage NetBird infrastructure 
 Install the plugin (required before first `pulumi up`):
 
 ```bash
-pulumi plugin install resource netbird 0.5.1 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.5.3 --server github://api.github.com/mbrav/pulumi-netbird
 ```
 
 > **Note:** `--server` is a CLI-only flag. Do **not** add it to `Pulumi.yaml` — the `plugins.providers` block only accepts `name`, `path` (local binary), and `version`. For GitHub-hosted plugins, the CLI install above is sufficient.
@@ -329,7 +329,7 @@ go list -m -versions github.com/mbrav/pulumi-netbird/sdk
 Output:
 
 ```bash
-github.com/mbrav/pulumi-netbird/sdk v0.3.6 v0.3.7 v0.3.8 v0.4.1 v0.5.0 v0.5.1 # ... and so on
+github.com/mbrav/pulumi-netbird/sdk v0.3.6 v0.3.7 v0.3.8 v0.4.1 v0.5.0 v0.5.1 v0.5.2 v0.5.3 # ... and so on
 ```
 
 ### 1. Setup
@@ -370,7 +370,7 @@ make sdk_python
 Then install the wheel:
 
 ```bash
-pip install sdk/python/bin/dist/pulumi_netbird-0.5.1.tar.gz
+pip install sdk/python/bin/dist/pulumi_netbird-0.5.3.tar.gz
 ```
 
 Navigate to the Python example directory:
@@ -397,20 +397,27 @@ pulumi up
 
 | Resource | Pulumi type |
 | -------- | ----------- |
+| Azure AD (Entra ID) IdP sync | `netbird:resource:AzureIDP` |
 | DNS nameserver group | `netbird:resource:DNS` |
 | DNS record | `netbird:resource:DNSRecord` |
 | DNS settings | `netbird:resource:DNSSettings` |
 | DNS zone | `netbird:resource:DNSZone` |
+| Google Workspace IdP sync | `netbird:resource:GoogleIDP` |
 | Group | `netbird:resource:Group` |
+| Identity provider (OIDC) | `netbird:resource:IdentityProvider` |
+| Ingress peer | `netbird:resource:IngressPeer` |
 | Network | `netbird:resource:Network` |
 | Network resource | `netbird:resource:NetworkResource` |
 | Network router | `netbird:resource:NetworkRouter` |
+| Okta SCIM sync | `netbird:resource:OktaScimIDP` |
 | Peer | `netbird:resource:Peer` |
+| Personal access token | `netbird:resource:Token` |
 | Policy | `netbird:resource:Policy` |
 | Posture check | `netbird:resource:PostureCheck` |
 | Reverse proxy domain | `netbird:resource:ReverseProxyDomain` |
 | Reverse proxy service | `netbird:resource:ReverseProxyService` |
 | Route | `netbird:resource:Route` |
+| SCIM integration | `netbird:resource:ScimIntegration` |
 | Setup key | `netbird:resource:SetupKey` |
 | User | `netbird:resource:User` |
 
@@ -420,7 +427,10 @@ Invoke functions are **read-only** — they query live NetBird state and return 
 
 | Function | Pulumi type | Looks up by | Key output fields |
 | -------- | ----------- | ----------- | ----------------- |
+| Get countries | `netbird:function:getCountries` | none | `countries[]` (code, name) |
+| Get country cities | `netbird:function:getCountryCities` | country code | `cities[]` (name, geonameId) |
 | Get peers | `netbird:function:getPeers` | optional group ID filter | `peers[]` (id, name, ip, connected, groups) |
+| Get reverse proxy clusters | `netbird:function:getReverseProxyClusters` | optional type filter | `clusters[]` (id, address, type, online) |
 | Lookup group | `netbird:function:lookupGroup` | group name | `groupId`, `peers[]`, `resources[]` |
 | Lookup peer | `netbird:function:lookupPeer` | peer name | `peerId`, `ip`, `dnsLabel`, `connected`, `groups[]` |
 | Lookup route | `netbird:function:lookupRoute` | network CIDR | `routeId`, `peerGroups[]`, `groups[]` |

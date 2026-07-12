@@ -28,6 +28,8 @@ type User struct {
 	Name pulumi.StringPtrOutput `pulumi:"name"`
 	// NetBird account role assigned to the user.
 	Role pulumi.StringOutput `pulumi:"role"`
+	// Current account status of the user: 'active', 'blocked', or 'invited'.
+	Status UserStatusPtrOutput `pulumi:"status"`
 }
 
 // NewUser registers a new resource with the given unique name, arguments, and options.
@@ -218,6 +220,11 @@ func (o UserOutput) Name() pulumi.StringPtrOutput {
 // NetBird account role assigned to the user.
 func (o UserOutput) Role() pulumi.StringOutput {
 	return o.ApplyT(func(v *User) pulumi.StringOutput { return v.Role }).(pulumi.StringOutput)
+}
+
+// Current account status of the user: 'active', 'blocked', or 'invited'.
+func (o UserOutput) Status() UserStatusPtrOutput {
+	return o.ApplyT(func(v *User) UserStatusPtrOutput { return v.Status }).(UserStatusPtrOutput)
 }
 
 type UserArrayOutput struct{ *pulumi.OutputState }

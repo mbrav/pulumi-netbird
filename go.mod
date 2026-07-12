@@ -3,7 +3,7 @@ module github.com/mbrav/pulumi-netbird
 go 1.25.11
 
 require (
-	github.com/netbirdio/netbird v0.74.3
+	github.com/netbirdio/netbird v0.74.4
 	github.com/pulumi/pulumi-go-provider v1.4.0
 	github.com/pulumi/pulumi/sdk/v3 v3.251.0
 )
@@ -112,7 +112,7 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.54.0 // indirect
-	golang.org/x/exp v0.0.0-20260611194520-c48552f49976 // indirect
+	golang.org/x/exp v0.0.0-20260709172345-9ea1abe57597 // indirect
 	golang.org/x/mod v0.38.0 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect

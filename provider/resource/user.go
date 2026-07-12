@@ -46,14 +46,36 @@ func (user *UserArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&user.IsBlocked, "Indicates whether the user is blocked from accessing the system. Used only on update, not create.")
 }
 
+// UserStatus reflects a user's current account status (output only).
+type UserStatus string
+
+const (
+	// UserStatusActive means the user has accepted the invite and is active.
+	UserStatusActive UserStatus = UserStatus(nbapi.UserStatusActive)
+	// UserStatusBlocked means the user is blocked from accessing the system.
+	UserStatusBlocked UserStatus = UserStatus(nbapi.UserStatusBlocked)
+	// UserStatusInvited means the user has been invited but has not yet joined.
+	UserStatusInvited UserStatus = UserStatus(nbapi.UserStatusInvited)
+)
+
+// Values returns the valid enum values for UserStatus.
+func (UserStatus) Values() []infer.EnumValue[UserStatus] {
+	return []infer.EnumValue[UserStatus]{
+		{Name: "active", Value: UserStatusActive, Description: "User has accepted the invite and is active."},
+		{Name: "blocked", Value: UserStatusBlocked, Description: "User is blocked from accessing the system."},
+		{Name: "invited", Value: UserStatusInvited, Description: "User has been invited but has not yet joined."},
+	}
+}
+
 // UserState represents the stored state of a NetBird user in Pulumi.
 type UserState struct {
-	Email         *string  `pulumi:"email,optional"`
-	Name          *string  `pulumi:"name,optional"`
-	Role          string   `pulumi:"role"`
-	IsServiceUser bool     `pulumi:"isServiceUser"`
-	AutoGroups    []string `pulumi:"autoGroups,optional"`
-	IsBlocked     *bool    `pulumi:"blocked,optional"`
+	Email         *string     `pulumi:"email,optional"`
+	Name          *string     `pulumi:"name,optional"`
+	Role          string      `pulumi:"role"`
+	IsServiceUser bool        `pulumi:"isServiceUser"`
+	AutoGroups    []string    `pulumi:"autoGroups,optional"`
+	IsBlocked     *bool       `pulumi:"blocked,optional"`
+	Status        *UserStatus `pulumi:"status,optional"`
 }
 
 // Annotate documents the stored state for the Pulumi schema.
@@ -64,6 +86,7 @@ func (user *UserState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&user.IsServiceUser, "Whether this user is a service identity.")
 	annotator.Describe(&user.AutoGroups, "Groups this user’s peers are automatically assigned to.")
 	annotator.Describe(&user.IsBlocked, "Indicates whether the user is blocked from accessing the system")
+	annotator.Describe(&user.Status, "Current account status of the user: 'active', 'blocked', or 'invited'.")
 }
 
 // Create creates a new NetBird user.
@@ -80,6 +103,7 @@ func (*User) Create(ctx context.Context, req infer.CreateRequest[UserArgs]) (inf
 				IsServiceUser: req.Inputs.IsServiceUser,
 				AutoGroups:    req.Inputs.AutoGroups,
 				IsBlocked:     nil,
+				Status:        nil,
 			},
 		}, nil
 	}
@@ -102,6 +126,8 @@ func (*User) Create(ctx context.Context, req infer.CreateRequest[UserArgs]) (inf
 
 	p.GetLogger(ctx).Debugf("Create:UserAPI name=%s, id=%s", user.Name, user.Id)
 
+	status := UserStatus(user.Status)
+
 	return infer.CreateResponse[UserState]{
 		ID: user.Id,
 		Output: UserState{
@@ -111,6 +137,7 @@ func (*User) Create(ctx context.Context, req infer.CreateRequest[UserArgs]) (inf
 			IsServiceUser: req.Inputs.IsServiceUser,
 			AutoGroups:    req.Inputs.AutoGroups,
 			IsBlocked:     nil, // IsBlocked is not set on create, only on update
+			Status:        &status,
 		},
 	}, nil
 }
@@ -149,6 +176,8 @@ func (*User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState
 	autoGroups := slices.Clone(foundUser.AutoGroups)
 	slices.Sort(autoGroups)
 
+	status := UserStatus(foundUser.Status)
+
 	return infer.ReadResponse[UserArgs, UserState]{
 		ID: req.ID,
 		Inputs: UserArgs{
@@ -166,6 +195,7 @@ func (*User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState
 			IsServiceUser: foundUser.IsServiceUser != nil && *foundUser.IsServiceUser,
 			AutoGroups:    autoGroups,
 			IsBlocked:     &foundUser.IsBlocked,
+			Status:        &status,
 		},
 	}, nil
 }
@@ -192,6 +222,7 @@ func (*User) Update(ctx context.Context, req infer.UpdateRequest[UserArgs, UserS
 				IsServiceUser: req.Inputs.IsServiceUser,
 				AutoGroups:    req.Inputs.AutoGroups,
 				IsBlocked:     isBlocked,
+				Status:        req.State.Status,
 			},
 		}, nil
 	}
@@ -201,7 +232,7 @@ func (*User) Update(ctx context.Context, req infer.UpdateRequest[UserArgs, UserS
 		return infer.UpdateResponse[UserState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
-	_, err = client.Users.Update(ctx, req.ID, nbapi.UserRequest{
+	updated, err := client.Users.Update(ctx, req.ID, nbapi.UserRequest{
 		Role:       req.Inputs.Role,
 		AutoGroups: req.Inputs.AutoGroups,
 		IsBlocked:  *isBlocked,
@@ -209,6 +240,8 @@ func (*User) Update(ctx context.Context, req infer.UpdateRequest[UserArgs, UserS
 	if err != nil {
 		return infer.UpdateResponse[UserState]{}, fmt.Errorf("updating peer failed: %w", err)
 	}
+
+	status := UserStatus(updated.Status)
 
 	return infer.UpdateResponse[UserState]{
 		Output: UserState{
@@ -218,6 +251,7 @@ func (*User) Update(ctx context.Context, req infer.UpdateRequest[UserArgs, UserS
 			IsServiceUser: req.Inputs.IsServiceUser,
 			AutoGroups:    req.Inputs.AutoGroups,
 			IsBlocked:     isBlocked,
+			Status:        &status,
 		},
 	}, nil
 }

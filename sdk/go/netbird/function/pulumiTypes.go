@@ -13,6 +13,108 @@ import (
 
 var _ = internal.GetEnvOrDefault
 
+type City struct {
+	// Commonly used English name of the city.
+	CityName string `pulumi:"cityName"`
+	// Integer ID of the record in the GeoNames database.
+	GeonameId int `pulumi:"geonameId"`
+}
+
+type CityOutput struct{ *pulumi.OutputState }
+
+func (CityOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*City)(nil)).Elem()
+}
+
+func (o CityOutput) ToCityOutput() CityOutput {
+	return o
+}
+
+func (o CityOutput) ToCityOutputWithContext(ctx context.Context) CityOutput {
+	return o
+}
+
+// Commonly used English name of the city.
+func (o CityOutput) CityName() pulumi.StringOutput {
+	return o.ApplyT(func(v City) string { return v.CityName }).(pulumi.StringOutput)
+}
+
+// Integer ID of the record in the GeoNames database.
+func (o CityOutput) GeonameId() pulumi.IntOutput {
+	return o.ApplyT(func(v City) int { return v.GeonameId }).(pulumi.IntOutput)
+}
+
+type CityArrayOutput struct{ *pulumi.OutputState }
+
+func (CityArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]City)(nil)).Elem()
+}
+
+func (o CityArrayOutput) ToCityArrayOutput() CityArrayOutput {
+	return o
+}
+
+func (o CityArrayOutput) ToCityArrayOutputWithContext(ctx context.Context) CityArrayOutput {
+	return o
+}
+
+func (o CityArrayOutput) Index(i pulumi.IntInput) CityOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) City {
+		return vs[0].([]City)[vs[1].(int)]
+	}).(CityOutput)
+}
+
+type Country struct {
+	// 2-letter ISO 3166-1 alpha-2 country code.
+	CountryCode string `pulumi:"countryCode"`
+	// Commonly used English name of the country.
+	CountryName string `pulumi:"countryName"`
+}
+
+type CountryOutput struct{ *pulumi.OutputState }
+
+func (CountryOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*Country)(nil)).Elem()
+}
+
+func (o CountryOutput) ToCountryOutput() CountryOutput {
+	return o
+}
+
+func (o CountryOutput) ToCountryOutputWithContext(ctx context.Context) CountryOutput {
+	return o
+}
+
+// 2-letter ISO 3166-1 alpha-2 country code.
+func (o CountryOutput) CountryCode() pulumi.StringOutput {
+	return o.ApplyT(func(v Country) string { return v.CountryCode }).(pulumi.StringOutput)
+}
+
+// Commonly used English name of the country.
+func (o CountryOutput) CountryName() pulumi.StringOutput {
+	return o.ApplyT(func(v Country) string { return v.CountryName }).(pulumi.StringOutput)
+}
+
+type CountryArrayOutput struct{ *pulumi.OutputState }
+
+func (CountryArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]Country)(nil)).Elem()
+}
+
+func (o CountryArrayOutput) ToCountryArrayOutput() CountryArrayOutput {
+	return o
+}
+
+func (o CountryArrayOutput) ToCountryArrayOutputWithContext(ctx context.Context) CountryArrayOutput {
+	return o
+}
+
+func (o CountryArrayOutput) Index(i pulumi.IntInput) CountryOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) Country {
+		return vs[0].([]Country)[vs[1].(int)]
+	}).(CountryOutput)
+}
+
 type PeerSummary struct {
 	// Whether the peer is currently connected to the management server.
 	Connected bool `pulumi:"connected"`
@@ -99,6 +201,106 @@ func (o PeerSummaryArrayOutput) Index(i pulumi.IntInput) PeerSummaryOutput {
 	}).(PeerSummaryOutput)
 }
 
+type ProxyClusterSummary struct {
+	// Cluster address used for CNAME targets; the value to pass as a ReverseProxyDomain targetCluster.
+	Address string `pulumi:"address"`
+	// Number of proxy nodes currently connected.
+	ConnectedProxies int `pulumi:"connectedProxies"`
+	// Unique identifier of the proxy cluster.
+	Id string `pulumi:"id"`
+	// Whether at least one proxy in the cluster has heartbeated within the active window.
+	Online bool `pulumi:"online"`
+	// True when at least one connected proxy is embedded in a netbird client and serving over a WireGuard tunnel.
+	Private bool `pulumi:"private"`
+	// Whether services on this cluster must include a subdomain label.
+	RequireSubdomain bool `pulumi:"requireSubdomain"`
+	// Whether all active proxies in the cluster have CrowdSec configured.
+	SupportsCrowdsec bool `pulumi:"supportsCrowdsec"`
+	// Whether the cluster supports binding arbitrary TCP/UDP ports.
+	SupportsCustomPorts bool `pulumi:"supportsCustomPorts"`
+	// Source of the cluster: 'account' (BYOP) or 'shared' (operated by NetBird).
+	Type string `pulumi:"type"`
+}
+
+type ProxyClusterSummaryOutput struct{ *pulumi.OutputState }
+
+func (ProxyClusterSummaryOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ProxyClusterSummary)(nil)).Elem()
+}
+
+func (o ProxyClusterSummaryOutput) ToProxyClusterSummaryOutput() ProxyClusterSummaryOutput {
+	return o
+}
+
+func (o ProxyClusterSummaryOutput) ToProxyClusterSummaryOutputWithContext(ctx context.Context) ProxyClusterSummaryOutput {
+	return o
+}
+
+// Cluster address used for CNAME targets; the value to pass as a ReverseProxyDomain targetCluster.
+func (o ProxyClusterSummaryOutput) Address() pulumi.StringOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) string { return v.Address }).(pulumi.StringOutput)
+}
+
+// Number of proxy nodes currently connected.
+func (o ProxyClusterSummaryOutput) ConnectedProxies() pulumi.IntOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) int { return v.ConnectedProxies }).(pulumi.IntOutput)
+}
+
+// Unique identifier of the proxy cluster.
+func (o ProxyClusterSummaryOutput) Id() pulumi.StringOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) string { return v.Id }).(pulumi.StringOutput)
+}
+
+// Whether at least one proxy in the cluster has heartbeated within the active window.
+func (o ProxyClusterSummaryOutput) Online() pulumi.BoolOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) bool { return v.Online }).(pulumi.BoolOutput)
+}
+
+// True when at least one connected proxy is embedded in a netbird client and serving over a WireGuard tunnel.
+func (o ProxyClusterSummaryOutput) Private() pulumi.BoolOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) bool { return v.Private }).(pulumi.BoolOutput)
+}
+
+// Whether services on this cluster must include a subdomain label.
+func (o ProxyClusterSummaryOutput) RequireSubdomain() pulumi.BoolOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) bool { return v.RequireSubdomain }).(pulumi.BoolOutput)
+}
+
+// Whether all active proxies in the cluster have CrowdSec configured.
+func (o ProxyClusterSummaryOutput) SupportsCrowdsec() pulumi.BoolOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) bool { return v.SupportsCrowdsec }).(pulumi.BoolOutput)
+}
+
+// Whether the cluster supports binding arbitrary TCP/UDP ports.
+func (o ProxyClusterSummaryOutput) SupportsCustomPorts() pulumi.BoolOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) bool { return v.SupportsCustomPorts }).(pulumi.BoolOutput)
+}
+
+// Source of the cluster: 'account' (BYOP) or 'shared' (operated by NetBird).
+func (o ProxyClusterSummaryOutput) Type() pulumi.StringOutput {
+	return o.ApplyT(func(v ProxyClusterSummary) string { return v.Type }).(pulumi.StringOutput)
+}
+
+type ProxyClusterSummaryArrayOutput struct{ *pulumi.OutputState }
+
+func (ProxyClusterSummaryArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]ProxyClusterSummary)(nil)).Elem()
+}
+
+func (o ProxyClusterSummaryArrayOutput) ToProxyClusterSummaryArrayOutput() ProxyClusterSummaryArrayOutput {
+	return o
+}
+
+func (o ProxyClusterSummaryArrayOutput) ToProxyClusterSummaryArrayOutputWithContext(ctx context.Context) ProxyClusterSummaryArrayOutput {
+	return o
+}
+
+func (o ProxyClusterSummaryArrayOutput) Index(i pulumi.IntInput) ProxyClusterSummaryOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) ProxyClusterSummary {
+		return vs[0].([]ProxyClusterSummary)[vs[1].(int)]
+	}).(ProxyClusterSummaryOutput)
+}
+
 type ResourceRef struct {
 	// The unique identifier of the resource.
 	Id string `pulumi:"id"`
@@ -151,8 +353,14 @@ func (o ResourceRefArrayOutput) Index(i pulumi.IntInput) ResourceRefOutput {
 }
 
 func init() {
+	pulumi.RegisterOutputType(CityOutput{})
+	pulumi.RegisterOutputType(CityArrayOutput{})
+	pulumi.RegisterOutputType(CountryOutput{})
+	pulumi.RegisterOutputType(CountryArrayOutput{})
 	pulumi.RegisterOutputType(PeerSummaryOutput{})
 	pulumi.RegisterOutputType(PeerSummaryArrayOutput{})
+	pulumi.RegisterOutputType(ProxyClusterSummaryOutput{})
+	pulumi.RegisterOutputType(ProxyClusterSummaryArrayOutput{})
 	pulumi.RegisterOutputType(ResourceRefOutput{})
 	pulumi.RegisterOutputType(ResourceRefArrayOutput{})
 }

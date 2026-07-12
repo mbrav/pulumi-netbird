@@ -10,6 +10,173 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+type AzureHost string
+
+const (
+	// Commercial Microsoft Graph host.
+	AzureHost_Microsoft_com = AzureHost("microsoft.com")
+	// US Government Microsoft Graph host.
+	AzureHost_Microsoft_us = AzureHost("microsoft.us")
+)
+
+func (AzureHost) ElementType() reflect.Type {
+	return reflect.TypeOf((*AzureHost)(nil)).Elem()
+}
+
+func (e AzureHost) ToAzureHostOutput() AzureHostOutput {
+	return pulumi.ToOutput(e).(AzureHostOutput)
+}
+
+func (e AzureHost) ToAzureHostOutputWithContext(ctx context.Context) AzureHostOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(AzureHostOutput)
+}
+
+func (e AzureHost) ToAzureHostPtrOutput() AzureHostPtrOutput {
+	return e.ToAzureHostPtrOutputWithContext(context.Background())
+}
+
+func (e AzureHost) ToAzureHostPtrOutputWithContext(ctx context.Context) AzureHostPtrOutput {
+	return AzureHost(e).ToAzureHostOutputWithContext(ctx).ToAzureHostPtrOutputWithContext(ctx)
+}
+
+func (e AzureHost) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e AzureHost) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e AzureHost) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e AzureHost) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type AzureHostOutput struct{ *pulumi.OutputState }
+
+func (AzureHostOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AzureHost)(nil)).Elem()
+}
+
+func (o AzureHostOutput) ToAzureHostOutput() AzureHostOutput {
+	return o
+}
+
+func (o AzureHostOutput) ToAzureHostOutputWithContext(ctx context.Context) AzureHostOutput {
+	return o
+}
+
+func (o AzureHostOutput) ToAzureHostPtrOutput() AzureHostPtrOutput {
+	return o.ToAzureHostPtrOutputWithContext(context.Background())
+}
+
+func (o AzureHostOutput) ToAzureHostPtrOutputWithContext(ctx context.Context) AzureHostPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v AzureHost) *AzureHost {
+		return &v
+	}).(AzureHostPtrOutput)
+}
+
+func (o AzureHostOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o AzureHostOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e AzureHost) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o AzureHostOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o AzureHostOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e AzureHost) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type AzureHostPtrOutput struct{ *pulumi.OutputState }
+
+func (AzureHostPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**AzureHost)(nil)).Elem()
+}
+
+func (o AzureHostPtrOutput) ToAzureHostPtrOutput() AzureHostPtrOutput {
+	return o
+}
+
+func (o AzureHostPtrOutput) ToAzureHostPtrOutputWithContext(ctx context.Context) AzureHostPtrOutput {
+	return o
+}
+
+func (o AzureHostPtrOutput) Elem() AzureHostOutput {
+	return o.ApplyT(func(v *AzureHost) AzureHost {
+		if v != nil {
+			return *v
+		}
+		var ret AzureHost
+		return ret
+	}).(AzureHostOutput)
+}
+
+func (o AzureHostPtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o AzureHostPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *AzureHost) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// AzureHostInput is an input type that accepts values of the AzureHost enum
+// A concrete instance of `AzureHostInput` can be one of the following:
+//
+//	AzureHost_Microsoft_com
+//	AzureHost_Microsoft_us
+type AzureHostInput interface {
+	pulumi.Input
+
+	ToAzureHostOutput() AzureHostOutput
+	ToAzureHostOutputWithContext(context.Context) AzureHostOutput
+}
+
+var azureHostPtrType = reflect.TypeOf((**AzureHost)(nil)).Elem()
+
+type AzureHostPtrInput interface {
+	pulumi.Input
+
+	ToAzureHostPtrOutput() AzureHostPtrOutput
+	ToAzureHostPtrOutputWithContext(context.Context) AzureHostPtrOutput
+}
+
+type azureHostPtr string
+
+func AzureHostPtr(v string) AzureHostPtrInput {
+	return (*azureHostPtr)(&v)
+}
+
+func (*azureHostPtr) ElementType() reflect.Type {
+	return azureHostPtrType
+}
+
+func (in *azureHostPtr) ToAzureHostPtrOutput() AzureHostPtrOutput {
+	return pulumi.ToOutput(in).(AzureHostPtrOutput)
+}
+
+func (in *azureHostPtr) ToAzureHostPtrOutputWithContext(ctx context.Context) AzureHostPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(AzureHostPtrOutput)
+}
+
 type DNSRecordType string
 
 const (
@@ -178,6 +345,191 @@ func (in *dnsrecordTypePtr) ToDNSRecordTypePtrOutput() DNSRecordTypePtrOutput {
 
 func (in *dnsrecordTypePtr) ToDNSRecordTypePtrOutputWithContext(ctx context.Context) DNSRecordTypePtrOutput {
 	return pulumi.ToOutputWithContext(ctx, in).(DNSRecordTypePtrOutput)
+}
+
+type IdentityProviderType string
+
+const (
+	// Microsoft AD FS.
+	IdentityProviderTypeAdfs = IdentityProviderType("adfs")
+	// Microsoft Entra ID.
+	IdentityProviderTypeEntra = IdentityProviderType("entra")
+	// Google.
+	IdentityProviderTypeGoogle = IdentityProviderType("google")
+	// Microsoft.
+	IdentityProviderTypeMicrosoft = IdentityProviderType("microsoft")
+	// Generic OIDC provider.
+	IdentityProviderTypeOidc = IdentityProviderType("oidc")
+	// Okta.
+	IdentityProviderTypeOkta = IdentityProviderType("okta")
+	// PocketID.
+	IdentityProviderTypePocketid = IdentityProviderType("pocketid")
+	// Zitadel.
+	IdentityProviderTypeZitadel = IdentityProviderType("zitadel")
+)
+
+func (IdentityProviderType) ElementType() reflect.Type {
+	return reflect.TypeOf((*IdentityProviderType)(nil)).Elem()
+}
+
+func (e IdentityProviderType) ToIdentityProviderTypeOutput() IdentityProviderTypeOutput {
+	return pulumi.ToOutput(e).(IdentityProviderTypeOutput)
+}
+
+func (e IdentityProviderType) ToIdentityProviderTypeOutputWithContext(ctx context.Context) IdentityProviderTypeOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(IdentityProviderTypeOutput)
+}
+
+func (e IdentityProviderType) ToIdentityProviderTypePtrOutput() IdentityProviderTypePtrOutput {
+	return e.ToIdentityProviderTypePtrOutputWithContext(context.Background())
+}
+
+func (e IdentityProviderType) ToIdentityProviderTypePtrOutputWithContext(ctx context.Context) IdentityProviderTypePtrOutput {
+	return IdentityProviderType(e).ToIdentityProviderTypeOutputWithContext(ctx).ToIdentityProviderTypePtrOutputWithContext(ctx)
+}
+
+func (e IdentityProviderType) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e IdentityProviderType) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e IdentityProviderType) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e IdentityProviderType) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type IdentityProviderTypeOutput struct{ *pulumi.OutputState }
+
+func (IdentityProviderTypeOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*IdentityProviderType)(nil)).Elem()
+}
+
+func (o IdentityProviderTypeOutput) ToIdentityProviderTypeOutput() IdentityProviderTypeOutput {
+	return o
+}
+
+func (o IdentityProviderTypeOutput) ToIdentityProviderTypeOutputWithContext(ctx context.Context) IdentityProviderTypeOutput {
+	return o
+}
+
+func (o IdentityProviderTypeOutput) ToIdentityProviderTypePtrOutput() IdentityProviderTypePtrOutput {
+	return o.ToIdentityProviderTypePtrOutputWithContext(context.Background())
+}
+
+func (o IdentityProviderTypeOutput) ToIdentityProviderTypePtrOutputWithContext(ctx context.Context) IdentityProviderTypePtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v IdentityProviderType) *IdentityProviderType {
+		return &v
+	}).(IdentityProviderTypePtrOutput)
+}
+
+func (o IdentityProviderTypeOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o IdentityProviderTypeOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e IdentityProviderType) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o IdentityProviderTypeOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o IdentityProviderTypeOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e IdentityProviderType) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type IdentityProviderTypePtrOutput struct{ *pulumi.OutputState }
+
+func (IdentityProviderTypePtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**IdentityProviderType)(nil)).Elem()
+}
+
+func (o IdentityProviderTypePtrOutput) ToIdentityProviderTypePtrOutput() IdentityProviderTypePtrOutput {
+	return o
+}
+
+func (o IdentityProviderTypePtrOutput) ToIdentityProviderTypePtrOutputWithContext(ctx context.Context) IdentityProviderTypePtrOutput {
+	return o
+}
+
+func (o IdentityProviderTypePtrOutput) Elem() IdentityProviderTypeOutput {
+	return o.ApplyT(func(v *IdentityProviderType) IdentityProviderType {
+		if v != nil {
+			return *v
+		}
+		var ret IdentityProviderType
+		return ret
+	}).(IdentityProviderTypeOutput)
+}
+
+func (o IdentityProviderTypePtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o IdentityProviderTypePtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *IdentityProviderType) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// IdentityProviderTypeInput is an input type that accepts values of the IdentityProviderType enum
+// A concrete instance of `IdentityProviderTypeInput` can be one of the following:
+//
+//	IdentityProviderTypeAdfs
+//	IdentityProviderTypeEntra
+//	IdentityProviderTypeGoogle
+//	IdentityProviderTypeMicrosoft
+//	IdentityProviderTypeOidc
+//	IdentityProviderTypeOkta
+//	IdentityProviderTypePocketid
+//	IdentityProviderTypeZitadel
+type IdentityProviderTypeInput interface {
+	pulumi.Input
+
+	ToIdentityProviderTypeOutput() IdentityProviderTypeOutput
+	ToIdentityProviderTypeOutputWithContext(context.Context) IdentityProviderTypeOutput
+}
+
+var identityProviderTypePtrType = reflect.TypeOf((**IdentityProviderType)(nil)).Elem()
+
+type IdentityProviderTypePtrInput interface {
+	pulumi.Input
+
+	ToIdentityProviderTypePtrOutput() IdentityProviderTypePtrOutput
+	ToIdentityProviderTypePtrOutputWithContext(context.Context) IdentityProviderTypePtrOutput
+}
+
+type identityProviderTypePtr string
+
+func IdentityProviderTypePtr(v string) IdentityProviderTypePtrInput {
+	return (*identityProviderTypePtr)(&v)
+}
+
+func (*identityProviderTypePtr) ElementType() reflect.Type {
+	return identityProviderTypePtrType
+}
+
+func (in *identityProviderTypePtr) ToIdentityProviderTypePtrOutput() IdentityProviderTypePtrOutput {
+	return pulumi.ToOutput(in).(IdentityProviderTypePtrOutput)
+}
+
+func (in *identityProviderTypePtr) ToIdentityProviderTypePtrOutputWithContext(ctx context.Context) IdentityProviderTypePtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(IdentityProviderTypePtrOutput)
 }
 
 type NameserverNsType string
@@ -1447,6 +1799,106 @@ func (in *reverseProxyServiceModePtr) ToReverseProxyServiceModePtrOutputWithCont
 	return pulumi.ToOutputWithContext(ctx, in).(ReverseProxyServiceModePtrOutput)
 }
 
+type ReverseProxyServiceStatus string
+
+const (
+	// Service is provisioned and serving.
+	ReverseProxyServiceStatusActive = ReverseProxyServiceStatus("active")
+	// TLS certificate issuance failed.
+	ReverseProxyServiceStatus_Certificate_failed = ReverseProxyServiceStatus("certificate_failed")
+	// TLS certificate issuance is in progress.
+	ReverseProxyServiceStatus_Certificate_pending = ReverseProxyServiceStatus("certificate_pending")
+	// Service is in an error state.
+	ReverseProxyServiceStatusError = ReverseProxyServiceStatus("error")
+	// Service is being provisioned.
+	ReverseProxyServiceStatusPending = ReverseProxyServiceStatus("pending")
+	// Underlying tunnel has not been created yet.
+	ReverseProxyServiceStatus_Tunnel_not_created = ReverseProxyServiceStatus("tunnel_not_created")
+)
+
+type ReverseProxyServiceStatusOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyServiceStatusOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyServiceStatus)(nil)).Elem()
+}
+
+func (o ReverseProxyServiceStatusOutput) ToReverseProxyServiceStatusOutput() ReverseProxyServiceStatusOutput {
+	return o
+}
+
+func (o ReverseProxyServiceStatusOutput) ToReverseProxyServiceStatusOutputWithContext(ctx context.Context) ReverseProxyServiceStatusOutput {
+	return o
+}
+
+func (o ReverseProxyServiceStatusOutput) ToReverseProxyServiceStatusPtrOutput() ReverseProxyServiceStatusPtrOutput {
+	return o.ToReverseProxyServiceStatusPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceStatusOutput) ToReverseProxyServiceStatusPtrOutputWithContext(ctx context.Context) ReverseProxyServiceStatusPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyServiceStatus) *ReverseProxyServiceStatus {
+		return &v
+	}).(ReverseProxyServiceStatusPtrOutput)
+}
+
+func (o ReverseProxyServiceStatusOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceStatusOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyServiceStatus) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyServiceStatusOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceStatusOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyServiceStatus) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyServiceStatusPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyServiceStatusPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyServiceStatus)(nil)).Elem()
+}
+
+func (o ReverseProxyServiceStatusPtrOutput) ToReverseProxyServiceStatusPtrOutput() ReverseProxyServiceStatusPtrOutput {
+	return o
+}
+
+func (o ReverseProxyServiceStatusPtrOutput) ToReverseProxyServiceStatusPtrOutputWithContext(ctx context.Context) ReverseProxyServiceStatusPtrOutput {
+	return o
+}
+
+func (o ReverseProxyServiceStatusPtrOutput) Elem() ReverseProxyServiceStatusOutput {
+	return o.ApplyT(func(v *ReverseProxyServiceStatus) ReverseProxyServiceStatus {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyServiceStatus
+		return ret
+	}).(ReverseProxyServiceStatusOutput)
+}
+
+func (o ReverseProxyServiceStatusPtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyServiceStatusPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyServiceStatus) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
 type ReverseProxyTargetProtocol string
 
 const (
@@ -2300,9 +2752,107 @@ func (in *typePtr) ToTypePtrOutputWithContext(ctx context.Context) TypePtrOutput
 	return pulumi.ToOutputWithContext(ctx, in).(TypePtrOutput)
 }
 
+type UserStatus string
+
+const (
+	// User has accepted the invite and is active.
+	UserStatusActive = UserStatus("active")
+	// User is blocked from accessing the system.
+	UserStatusBlocked = UserStatus("blocked")
+	// User has been invited but has not yet joined.
+	UserStatusInvited = UserStatus("invited")
+)
+
+type UserStatusOutput struct{ *pulumi.OutputState }
+
+func (UserStatusOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*UserStatus)(nil)).Elem()
+}
+
+func (o UserStatusOutput) ToUserStatusOutput() UserStatusOutput {
+	return o
+}
+
+func (o UserStatusOutput) ToUserStatusOutputWithContext(ctx context.Context) UserStatusOutput {
+	return o
+}
+
+func (o UserStatusOutput) ToUserStatusPtrOutput() UserStatusPtrOutput {
+	return o.ToUserStatusPtrOutputWithContext(context.Background())
+}
+
+func (o UserStatusOutput) ToUserStatusPtrOutputWithContext(ctx context.Context) UserStatusPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v UserStatus) *UserStatus {
+		return &v
+	}).(UserStatusPtrOutput)
+}
+
+func (o UserStatusOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o UserStatusOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e UserStatus) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o UserStatusOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o UserStatusOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e UserStatus) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type UserStatusPtrOutput struct{ *pulumi.OutputState }
+
+func (UserStatusPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**UserStatus)(nil)).Elem()
+}
+
+func (o UserStatusPtrOutput) ToUserStatusPtrOutput() UserStatusPtrOutput {
+	return o
+}
+
+func (o UserStatusPtrOutput) ToUserStatusPtrOutputWithContext(ctx context.Context) UserStatusPtrOutput {
+	return o
+}
+
+func (o UserStatusPtrOutput) Elem() UserStatusOutput {
+	return o.ApplyT(func(v *UserStatus) UserStatus {
+		if v != nil {
+			return *v
+		}
+		var ret UserStatus
+		return ret
+	}).(UserStatusOutput)
+}
+
+func (o UserStatusPtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o UserStatusPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *UserStatus) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
 func init() {
+	pulumi.RegisterInputType(reflect.TypeOf((*AzureHostInput)(nil)).Elem(), AzureHost("microsoft.com"))
+	pulumi.RegisterInputType(reflect.TypeOf((*AzureHostPtrInput)(nil)).Elem(), AzureHost("microsoft.com"))
 	pulumi.RegisterInputType(reflect.TypeOf((*DNSRecordTypeInput)(nil)).Elem(), DNSRecordType("A"))
 	pulumi.RegisterInputType(reflect.TypeOf((*DNSRecordTypePtrInput)(nil)).Elem(), DNSRecordType("A"))
+	pulumi.RegisterInputType(reflect.TypeOf((*IdentityProviderTypeInput)(nil)).Elem(), IdentityProviderType("adfs"))
+	pulumi.RegisterInputType(reflect.TypeOf((*IdentityProviderTypePtrInput)(nil)).Elem(), IdentityProviderType("adfs"))
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypeInput)(nil)).Elem(), NameserverNsType("udp"))
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverNsTypePtrInput)(nil)).Elem(), NameserverNsType("udp"))
 	pulumi.RegisterInputType(reflect.TypeOf((*PostureGeoLocationActionInput)(nil)).Elem(), PostureGeoLocationAction("allow"))
@@ -2327,8 +2877,12 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*SetupKeyTypePtrInput)(nil)).Elem(), SetupKeyType("reusable"))
 	pulumi.RegisterInputType(reflect.TypeOf((*TypeInput)(nil)).Elem(), Type("domain"))
 	pulumi.RegisterInputType(reflect.TypeOf((*TypePtrInput)(nil)).Elem(), Type("domain"))
+	pulumi.RegisterOutputType(AzureHostOutput{})
+	pulumi.RegisterOutputType(AzureHostPtrOutput{})
 	pulumi.RegisterOutputType(DNSRecordTypeOutput{})
 	pulumi.RegisterOutputType(DNSRecordTypePtrOutput{})
+	pulumi.RegisterOutputType(IdentityProviderTypeOutput{})
+	pulumi.RegisterOutputType(IdentityProviderTypePtrOutput{})
 	pulumi.RegisterOutputType(NameserverNsTypeOutput{})
 	pulumi.RegisterOutputType(NameserverNsTypePtrOutput{})
 	pulumi.RegisterOutputType(PostureGeoLocationActionOutput{})
@@ -2345,6 +2899,8 @@ func init() {
 	pulumi.RegisterOutputType(ReverseProxyPathRewritePtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyServiceModeOutput{})
 	pulumi.RegisterOutputType(ReverseProxyServiceModePtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyServiceStatusOutput{})
+	pulumi.RegisterOutputType(ReverseProxyServiceStatusPtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetProtocolOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetProtocolPtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetTypeOutput{})
@@ -2355,4 +2911,6 @@ func init() {
 	pulumi.RegisterOutputType(SetupKeyTypePtrOutput{})
 	pulumi.RegisterOutputType(TypeOutput{})
 	pulumi.RegisterOutputType(TypePtrOutput{})
+	pulumi.RegisterOutputType(UserStatusOutput{})
+	pulumi.RegisterOutputType(UserStatusPtrOutput{})
 }

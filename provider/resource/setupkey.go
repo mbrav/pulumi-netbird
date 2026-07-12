@@ -68,10 +68,10 @@ type SetupKeyState struct {
 }
 
 // Values describes the setup key type enum for schema generation.
-func (SetupKeyType) Values() []infer.EnumValue[Type] {
-	return []infer.EnumValue[Type]{
-		{Name: "reusable", Value: Type(SetupKeyTypeReusable), Description: "Reusable setup key that supports multiple peers."},
-		{Name: "one-off", Value: Type(SetupKeyTypeOneOff), Description: "One-off setup key that can be used only once."},
+func (SetupKeyType) Values() []infer.EnumValue[SetupKeyType] {
+	return []infer.EnumValue[SetupKeyType]{
+		{Name: "reusable", Value: SetupKeyTypeReusable, Description: "Reusable setup key that supports multiple peers."},
+		{Name: "one-off", Value: SetupKeyTypeOneOff, Description: "One-off setup key that can be used only once."},
 	}
 }
 

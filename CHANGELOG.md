@@ -4,6 +4,26 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-07-12
+
+### Added
+
+- `Token` — personal access token (PAT) management, compound `userId/tokenId` import ID, plaintext token exposed as a create-only secret.
+- `IngressPeer` — full CRUD for ingress peers, including read-only `ingressIp`, `region`, `connected`, and `availablePorts` outputs.
+- `IdentityProvider` — self-hosted OIDC identity provider configuration (`clientSecret` marked secret), new `IdentityProviderType` enum (adfs, entra, google, microsoft, oidc, okta, pocketid, zitadel).
+- `GoogleIDP`, `AzureIDP`, `OktaScimIDP`, `ScimIntegration` — IdP-sync and SCIM integrations (int64 API IDs). Secrets (`serviceAccountKey`, `clientSecret`, `authToken`) are masked by the API after creation, so `Read` preserves the previously known value instead of clearing it. New `AzureHost` enum (`microsoft.com`, `microsoft.us`).
+- `getCountries` / `getCountryCities` invoke functions — list NetBird's built-in geo-location data, useful for `PostureCheck` geo rules.
+- `getReverseProxyClusters` invoke function — lists reverse proxy clusters (list/delete-only in the API, so not modeled as a managed resource).
+- `ReverseProxyService.status` retyped from a free string to a new `ReverseProxyServiceStatus` enum (active, certificate_failed, certificate_pending, error, pending, tunnel_not_created).
+- `User.status` output (new `UserStatus` enum: active, blocked, invited).
+
+### Fixed
+
+- `GoogleIDP`/`AzureIDP`/`OktaScimIDP`/`ScimIntegration`: `enabled` now defaults to `true` in `Check` when left unset, matching the API's create-time default. Previously an unset `enabled` compared as `false` against the server's `true`, forcing a spurious `Update` on every `pulumi up` indefinitely.
+- `IdentityProvider.Create` now returns an error instead of silently registering a resource with an empty ID if the API omits it in the response.
+- `User.Update` now reads `status` from the API's update response instead of echoing the pre-update value, so blocking/unblocking a user reflects immediately instead of only after the next refresh.
+- `SetupKeyType.Values()` generic parameter corrected from `[]infer.EnumValue[Type]` to `[]infer.EnumValue[SetupKeyType]` (schema output was already correct; this was a type-confusing internal mismatch).
+
 ## [0.5.2] - 2026-07-09
 
 ### Changed

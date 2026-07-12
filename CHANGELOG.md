@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-07-12
+
+### Fixed
+
+- `ReverseProxyService`: `targets[].options` and `auth` no longer trigger a perpetual `Update` diff on every `pulumi up`/`refresh`. The API always echoes back a full struct for these optional fields (all sub-fields nil/zero) even when nothing was configured, while a Pulumi program that never sets them leaves the field `nil` — a raw `reflect.DeepEqual` treated `nil` and an all-zero-fields struct as different forever. Added `equalOptionalDeep[T]`, which normalizes both sides to the zero value before comparing.
+
 ## [0.5.3] - 2026-07-12
 
 ### Added

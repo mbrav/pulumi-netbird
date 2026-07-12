@@ -859,7 +859,7 @@ func (*ReverseProxyService) Diff(ctx context.Context, req infer.DiffRequest[Reve
 		diff["targets"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
-	if !reflect.DeepEqual(req.Inputs.Auth, req.State.Auth) {
+	if !equalOptionalDeep(req.Inputs.Auth, req.State.Auth) {
 		diff["auth"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
@@ -985,10 +985,33 @@ func equalReverseProxyTargets(targetsA, targetsB []ReverseProxyTarget) bool {
 			targetsA[idx].TargetType != targetsB[idx].TargetType ||
 			!equalPtr(targetsA[idx].Host, targetsB[idx].Host) ||
 			!equalPtr(targetsA[idx].Path, targetsB[idx].Path) ||
-			!reflect.DeepEqual(targetsA[idx].Options, targetsB[idx].Options) {
+			!equalOptionalDeep(targetsA[idx].Options, targetsB[idx].Options) {
 			return false
 		}
 	}
 
 	return true
+}
+
+// equalOptionalDeep compares two pointers by the values they point to,
+// treating a nil pointer as equivalent to a pointer to the zero value. The
+// NetBird API always echoes back a full struct for these optional fields
+// (e.g. target options, auth config) even when nothing was configured,
+// while a Pulumi program that never sets the field leaves it nil; without
+// this normalization a raw reflect.DeepEqual would treat nil and an
+// all-zero-fields struct as different forever.
+func equalOptionalDeep[T any](valueA, valueB *T) bool {
+	var zero T
+
+	dereferencedA := zero
+	if valueA != nil {
+		dereferencedA = *valueA
+	}
+
+	dereferencedB := zero
+	if valueB != nil {
+		dereferencedB = *valueB
+	}
+
+	return reflect.DeepEqual(dereferencedA, dereferencedB)
 }

@@ -49,6 +49,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 			return
 		}
+
+		if len(parts) == 2 {
+			s.list(w, parts[1])
+
+			return
+		}
 	case http.MethodPut:
 		if len(parts) == 3 {
 			s.update(w, parts[1], parts[2], r)
@@ -98,6 +104,20 @@ func (s *Server) get(w http.ResponseWriter, resource, id string) {
 	writeJSON(w, http.StatusOK, item)
 }
 
+func (s *Server) list(w http.ResponseWriter, resource string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	items := s.store(resource)
+	out := make([]map[string]any, 0, len(items))
+
+	for _, item := range items {
+		out = append(out, item)
+	}
+
+	writeJSON(w, http.StatusOK, out)
+}
+
 func (s *Server) update(w http.ResponseWriter, resource, id string, r *http.Request) {
 	data, ok := readJSON(w, r)
 	if !ok {
@@ -138,7 +158,7 @@ func (s *Server) store(resource string) map[string]map[string]any {
 func apiShape(resource string, data map[string]any, seq int) map[string]any {
 	switch resource {
 	case "groups":
-		defaultValue(data, "peers", []any{})
+		data["peers"] = groupMinimums(data["peers"])
 		defaultValue(data, "resources", []any{})
 		defaultValue(data, "peers_count", 0)
 		defaultValue(data, "resources_count", 0)
@@ -158,6 +178,17 @@ func apiShape(resource string, data map[string]any, seq int) map[string]any {
 		defaultValue(data, "groups", []any{})
 		defaultValue(data, "peer_groups", []any{})
 		defaultValue(data, "network_type", "range")
+	case "users":
+		defaultValue(data, "is_blocked", false)
+		defaultValue(data, "auto_groups", []any{})
+		defaultValue(data, "pending_approval", false)
+
+		// Mirrors real API behavior: blocking a user flips their status too.
+		if blocked, _ := data["is_blocked"].(bool); blocked {
+			data["status"] = "blocked"
+		} else {
+			defaultValue(data, "status", "active")
+		}
 	case "setup-keys":
 		defaultValue(data, "key", fmt.Sprintf("mock-%s", data["id"]))
 		defaultValue(data, "state", "valid")

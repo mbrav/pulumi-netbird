@@ -58,6 +58,7 @@ linters:
   default: all
   enable:
     - gomodguard_v2
+    - wsl_v5
   disable:
     # TODO: Fix imports from Main
     - depguard

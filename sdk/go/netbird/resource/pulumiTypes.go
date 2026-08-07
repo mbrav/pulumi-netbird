@@ -13,6 +13,875 @@ import (
 
 var _ = internal.GetEnvOrDefault
 
+type AgentNetworkBudgetLimit struct {
+	// Whether the budget limit is enforced.
+	Enabled bool `pulumi:"enabled"`
+	// USD allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+	GroupCapUsd float64 `pulumi:"groupCapUsd"`
+	// USD allowed per individual user within the window. 0 means uncapped.
+	UserCapUsd float64 `pulumi:"userCapUsd"`
+	// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+	WindowSeconds int `pulumi:"windowSeconds"`
+}
+
+// AgentNetworkBudgetLimitInput is an input type that accepts AgentNetworkBudgetLimitArgs and AgentNetworkBudgetLimitOutput values.
+// You can construct a concrete instance of `AgentNetworkBudgetLimitInput` via:
+//
+//	AgentNetworkBudgetLimitArgs{...}
+type AgentNetworkBudgetLimitInput interface {
+	pulumi.Input
+
+	ToAgentNetworkBudgetLimitOutput() AgentNetworkBudgetLimitOutput
+	ToAgentNetworkBudgetLimitOutputWithContext(context.Context) AgentNetworkBudgetLimitOutput
+}
+
+type AgentNetworkBudgetLimitArgs struct {
+	// Whether the budget limit is enforced.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// USD allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+	GroupCapUsd pulumi.Float64Input `pulumi:"groupCapUsd"`
+	// USD allowed per individual user within the window. 0 means uncapped.
+	UserCapUsd pulumi.Float64Input `pulumi:"userCapUsd"`
+	// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+	WindowSeconds pulumi.IntInput `pulumi:"windowSeconds"`
+}
+
+func (AgentNetworkBudgetLimitArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkBudgetLimit)(nil)).Elem()
+}
+
+func (i AgentNetworkBudgetLimitArgs) ToAgentNetworkBudgetLimitOutput() AgentNetworkBudgetLimitOutput {
+	return i.ToAgentNetworkBudgetLimitOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkBudgetLimitArgs) ToAgentNetworkBudgetLimitOutputWithContext(ctx context.Context) AgentNetworkBudgetLimitOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkBudgetLimitOutput)
+}
+
+func (i AgentNetworkBudgetLimitArgs) ToAgentNetworkBudgetLimitPtrOutput() AgentNetworkBudgetLimitPtrOutput {
+	return i.ToAgentNetworkBudgetLimitPtrOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkBudgetLimitArgs) ToAgentNetworkBudgetLimitPtrOutputWithContext(ctx context.Context) AgentNetworkBudgetLimitPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkBudgetLimitOutput).ToAgentNetworkBudgetLimitPtrOutputWithContext(ctx)
+}
+
+// AgentNetworkBudgetLimitPtrInput is an input type that accepts AgentNetworkBudgetLimitArgs, AgentNetworkBudgetLimitPtr and AgentNetworkBudgetLimitPtrOutput values.
+// You can construct a concrete instance of `AgentNetworkBudgetLimitPtrInput` via:
+//
+//	        AgentNetworkBudgetLimitArgs{...}
+//
+//	or:
+//
+//	        nil
+type AgentNetworkBudgetLimitPtrInput interface {
+	pulumi.Input
+
+	ToAgentNetworkBudgetLimitPtrOutput() AgentNetworkBudgetLimitPtrOutput
+	ToAgentNetworkBudgetLimitPtrOutputWithContext(context.Context) AgentNetworkBudgetLimitPtrOutput
+}
+
+type agentNetworkBudgetLimitPtrType AgentNetworkBudgetLimitArgs
+
+func AgentNetworkBudgetLimitPtr(v *AgentNetworkBudgetLimitArgs) AgentNetworkBudgetLimitPtrInput {
+	return (*agentNetworkBudgetLimitPtrType)(v)
+}
+
+func (*agentNetworkBudgetLimitPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**AgentNetworkBudgetLimit)(nil)).Elem()
+}
+
+func (i *agentNetworkBudgetLimitPtrType) ToAgentNetworkBudgetLimitPtrOutput() AgentNetworkBudgetLimitPtrOutput {
+	return i.ToAgentNetworkBudgetLimitPtrOutputWithContext(context.Background())
+}
+
+func (i *agentNetworkBudgetLimitPtrType) ToAgentNetworkBudgetLimitPtrOutputWithContext(ctx context.Context) AgentNetworkBudgetLimitPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkBudgetLimitPtrOutput)
+}
+
+type AgentNetworkBudgetLimitOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkBudgetLimitOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkBudgetLimit)(nil)).Elem()
+}
+
+func (o AgentNetworkBudgetLimitOutput) ToAgentNetworkBudgetLimitOutput() AgentNetworkBudgetLimitOutput {
+	return o
+}
+
+func (o AgentNetworkBudgetLimitOutput) ToAgentNetworkBudgetLimitOutputWithContext(ctx context.Context) AgentNetworkBudgetLimitOutput {
+	return o
+}
+
+func (o AgentNetworkBudgetLimitOutput) ToAgentNetworkBudgetLimitPtrOutput() AgentNetworkBudgetLimitPtrOutput {
+	return o.ToAgentNetworkBudgetLimitPtrOutputWithContext(context.Background())
+}
+
+func (o AgentNetworkBudgetLimitOutput) ToAgentNetworkBudgetLimitPtrOutputWithContext(ctx context.Context) AgentNetworkBudgetLimitPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v AgentNetworkBudgetLimit) *AgentNetworkBudgetLimit {
+		return &v
+	}).(AgentNetworkBudgetLimitPtrOutput)
+}
+
+// Whether the budget limit is enforced.
+func (o AgentNetworkBudgetLimitOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v AgentNetworkBudgetLimit) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// USD allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+func (o AgentNetworkBudgetLimitOutput) GroupCapUsd() pulumi.Float64Output {
+	return o.ApplyT(func(v AgentNetworkBudgetLimit) float64 { return v.GroupCapUsd }).(pulumi.Float64Output)
+}
+
+// USD allowed per individual user within the window. 0 means uncapped.
+func (o AgentNetworkBudgetLimitOutput) UserCapUsd() pulumi.Float64Output {
+	return o.ApplyT(func(v AgentNetworkBudgetLimit) float64 { return v.UserCapUsd }).(pulumi.Float64Output)
+}
+
+// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+func (o AgentNetworkBudgetLimitOutput) WindowSeconds() pulumi.IntOutput {
+	return o.ApplyT(func(v AgentNetworkBudgetLimit) int { return v.WindowSeconds }).(pulumi.IntOutput)
+}
+
+type AgentNetworkBudgetLimitPtrOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkBudgetLimitPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**AgentNetworkBudgetLimit)(nil)).Elem()
+}
+
+func (o AgentNetworkBudgetLimitPtrOutput) ToAgentNetworkBudgetLimitPtrOutput() AgentNetworkBudgetLimitPtrOutput {
+	return o
+}
+
+func (o AgentNetworkBudgetLimitPtrOutput) ToAgentNetworkBudgetLimitPtrOutputWithContext(ctx context.Context) AgentNetworkBudgetLimitPtrOutput {
+	return o
+}
+
+func (o AgentNetworkBudgetLimitPtrOutput) Elem() AgentNetworkBudgetLimitOutput {
+	return o.ApplyT(func(v *AgentNetworkBudgetLimit) AgentNetworkBudgetLimit {
+		if v != nil {
+			return *v
+		}
+		var ret AgentNetworkBudgetLimit
+		return ret
+	}).(AgentNetworkBudgetLimitOutput)
+}
+
+// Whether the budget limit is enforced.
+func (o AgentNetworkBudgetLimitPtrOutput) Enabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkBudgetLimit) *bool {
+		if v == nil {
+			return nil
+		}
+		return &v.Enabled
+	}).(pulumi.BoolPtrOutput)
+}
+
+// USD allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+func (o AgentNetworkBudgetLimitPtrOutput) GroupCapUsd() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *AgentNetworkBudgetLimit) *float64 {
+		if v == nil {
+			return nil
+		}
+		return &v.GroupCapUsd
+	}).(pulumi.Float64PtrOutput)
+}
+
+// USD allowed per individual user within the window. 0 means uncapped.
+func (o AgentNetworkBudgetLimitPtrOutput) UserCapUsd() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v *AgentNetworkBudgetLimit) *float64 {
+		if v == nil {
+			return nil
+		}
+		return &v.UserCapUsd
+	}).(pulumi.Float64PtrOutput)
+}
+
+// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+func (o AgentNetworkBudgetLimitPtrOutput) WindowSeconds() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkBudgetLimit) *int {
+		if v == nil {
+			return nil
+		}
+		return &v.WindowSeconds
+	}).(pulumi.IntPtrOutput)
+}
+
+type AgentNetworkGuardrailChecks struct {
+	// Restricts requests to an explicit set of catalog model IDs.
+	ModelAllowlist AgentNetworkGuardrailModelAllowlist `pulumi:"modelAllowlist"`
+	// Controls request/response prompt capture.
+	PromptCapture AgentNetworkGuardrailPromptCapture `pulumi:"promptCapture"`
+}
+
+// AgentNetworkGuardrailChecksInput is an input type that accepts AgentNetworkGuardrailChecksArgs and AgentNetworkGuardrailChecksOutput values.
+// You can construct a concrete instance of `AgentNetworkGuardrailChecksInput` via:
+//
+//	AgentNetworkGuardrailChecksArgs{...}
+type AgentNetworkGuardrailChecksInput interface {
+	pulumi.Input
+
+	ToAgentNetworkGuardrailChecksOutput() AgentNetworkGuardrailChecksOutput
+	ToAgentNetworkGuardrailChecksOutputWithContext(context.Context) AgentNetworkGuardrailChecksOutput
+}
+
+type AgentNetworkGuardrailChecksArgs struct {
+	// Restricts requests to an explicit set of catalog model IDs.
+	ModelAllowlist AgentNetworkGuardrailModelAllowlistInput `pulumi:"modelAllowlist"`
+	// Controls request/response prompt capture.
+	PromptCapture AgentNetworkGuardrailPromptCaptureInput `pulumi:"promptCapture"`
+}
+
+func (AgentNetworkGuardrailChecksArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkGuardrailChecks)(nil)).Elem()
+}
+
+func (i AgentNetworkGuardrailChecksArgs) ToAgentNetworkGuardrailChecksOutput() AgentNetworkGuardrailChecksOutput {
+	return i.ToAgentNetworkGuardrailChecksOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkGuardrailChecksArgs) ToAgentNetworkGuardrailChecksOutputWithContext(ctx context.Context) AgentNetworkGuardrailChecksOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkGuardrailChecksOutput)
+}
+
+type AgentNetworkGuardrailChecksOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkGuardrailChecksOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkGuardrailChecks)(nil)).Elem()
+}
+
+func (o AgentNetworkGuardrailChecksOutput) ToAgentNetworkGuardrailChecksOutput() AgentNetworkGuardrailChecksOutput {
+	return o
+}
+
+func (o AgentNetworkGuardrailChecksOutput) ToAgentNetworkGuardrailChecksOutputWithContext(ctx context.Context) AgentNetworkGuardrailChecksOutput {
+	return o
+}
+
+// Restricts requests to an explicit set of catalog model IDs.
+func (o AgentNetworkGuardrailChecksOutput) ModelAllowlist() AgentNetworkGuardrailModelAllowlistOutput {
+	return o.ApplyT(func(v AgentNetworkGuardrailChecks) AgentNetworkGuardrailModelAllowlist { return v.ModelAllowlist }).(AgentNetworkGuardrailModelAllowlistOutput)
+}
+
+// Controls request/response prompt capture.
+func (o AgentNetworkGuardrailChecksOutput) PromptCapture() AgentNetworkGuardrailPromptCaptureOutput {
+	return o.ApplyT(func(v AgentNetworkGuardrailChecks) AgentNetworkGuardrailPromptCapture { return v.PromptCapture }).(AgentNetworkGuardrailPromptCaptureOutput)
+}
+
+type AgentNetworkGuardrailModelAllowlist struct {
+	// Whether the model allowlist check is enforced.
+	Enabled bool `pulumi:"enabled"`
+	// Allowed catalog model IDs. Requests for any other model are denied.
+	Models []string `pulumi:"models"`
+}
+
+// AgentNetworkGuardrailModelAllowlistInput is an input type that accepts AgentNetworkGuardrailModelAllowlistArgs and AgentNetworkGuardrailModelAllowlistOutput values.
+// You can construct a concrete instance of `AgentNetworkGuardrailModelAllowlistInput` via:
+//
+//	AgentNetworkGuardrailModelAllowlistArgs{...}
+type AgentNetworkGuardrailModelAllowlistInput interface {
+	pulumi.Input
+
+	ToAgentNetworkGuardrailModelAllowlistOutput() AgentNetworkGuardrailModelAllowlistOutput
+	ToAgentNetworkGuardrailModelAllowlistOutputWithContext(context.Context) AgentNetworkGuardrailModelAllowlistOutput
+}
+
+type AgentNetworkGuardrailModelAllowlistArgs struct {
+	// Whether the model allowlist check is enforced.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// Allowed catalog model IDs. Requests for any other model are denied.
+	Models pulumi.StringArrayInput `pulumi:"models"`
+}
+
+func (AgentNetworkGuardrailModelAllowlistArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkGuardrailModelAllowlist)(nil)).Elem()
+}
+
+func (i AgentNetworkGuardrailModelAllowlistArgs) ToAgentNetworkGuardrailModelAllowlistOutput() AgentNetworkGuardrailModelAllowlistOutput {
+	return i.ToAgentNetworkGuardrailModelAllowlistOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkGuardrailModelAllowlistArgs) ToAgentNetworkGuardrailModelAllowlistOutputWithContext(ctx context.Context) AgentNetworkGuardrailModelAllowlistOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkGuardrailModelAllowlistOutput)
+}
+
+type AgentNetworkGuardrailModelAllowlistOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkGuardrailModelAllowlistOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkGuardrailModelAllowlist)(nil)).Elem()
+}
+
+func (o AgentNetworkGuardrailModelAllowlistOutput) ToAgentNetworkGuardrailModelAllowlistOutput() AgentNetworkGuardrailModelAllowlistOutput {
+	return o
+}
+
+func (o AgentNetworkGuardrailModelAllowlistOutput) ToAgentNetworkGuardrailModelAllowlistOutputWithContext(ctx context.Context) AgentNetworkGuardrailModelAllowlistOutput {
+	return o
+}
+
+// Whether the model allowlist check is enforced.
+func (o AgentNetworkGuardrailModelAllowlistOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v AgentNetworkGuardrailModelAllowlist) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// Allowed catalog model IDs. Requests for any other model are denied.
+func (o AgentNetworkGuardrailModelAllowlistOutput) Models() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v AgentNetworkGuardrailModelAllowlist) []string { return v.Models }).(pulumi.StringArrayOutput)
+}
+
+type AgentNetworkGuardrailPromptCapture struct {
+	// Whether prompt/response capture is enforced for requests passing through this guardrail.
+	Enabled bool `pulumi:"enabled"`
+	// Whether captured prompts have PII redacted.
+	RedactPii bool `pulumi:"redactPii"`
+}
+
+// AgentNetworkGuardrailPromptCaptureInput is an input type that accepts AgentNetworkGuardrailPromptCaptureArgs and AgentNetworkGuardrailPromptCaptureOutput values.
+// You can construct a concrete instance of `AgentNetworkGuardrailPromptCaptureInput` via:
+//
+//	AgentNetworkGuardrailPromptCaptureArgs{...}
+type AgentNetworkGuardrailPromptCaptureInput interface {
+	pulumi.Input
+
+	ToAgentNetworkGuardrailPromptCaptureOutput() AgentNetworkGuardrailPromptCaptureOutput
+	ToAgentNetworkGuardrailPromptCaptureOutputWithContext(context.Context) AgentNetworkGuardrailPromptCaptureOutput
+}
+
+type AgentNetworkGuardrailPromptCaptureArgs struct {
+	// Whether prompt/response capture is enforced for requests passing through this guardrail.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// Whether captured prompts have PII redacted.
+	RedactPii pulumi.BoolInput `pulumi:"redactPii"`
+}
+
+func (AgentNetworkGuardrailPromptCaptureArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkGuardrailPromptCapture)(nil)).Elem()
+}
+
+func (i AgentNetworkGuardrailPromptCaptureArgs) ToAgentNetworkGuardrailPromptCaptureOutput() AgentNetworkGuardrailPromptCaptureOutput {
+	return i.ToAgentNetworkGuardrailPromptCaptureOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkGuardrailPromptCaptureArgs) ToAgentNetworkGuardrailPromptCaptureOutputWithContext(ctx context.Context) AgentNetworkGuardrailPromptCaptureOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkGuardrailPromptCaptureOutput)
+}
+
+type AgentNetworkGuardrailPromptCaptureOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkGuardrailPromptCaptureOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkGuardrailPromptCapture)(nil)).Elem()
+}
+
+func (o AgentNetworkGuardrailPromptCaptureOutput) ToAgentNetworkGuardrailPromptCaptureOutput() AgentNetworkGuardrailPromptCaptureOutput {
+	return o
+}
+
+func (o AgentNetworkGuardrailPromptCaptureOutput) ToAgentNetworkGuardrailPromptCaptureOutputWithContext(ctx context.Context) AgentNetworkGuardrailPromptCaptureOutput {
+	return o
+}
+
+// Whether prompt/response capture is enforced for requests passing through this guardrail.
+func (o AgentNetworkGuardrailPromptCaptureOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v AgentNetworkGuardrailPromptCapture) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// Whether captured prompts have PII redacted.
+func (o AgentNetworkGuardrailPromptCaptureOutput) RedactPii() pulumi.BoolOutput {
+	return o.ApplyT(func(v AgentNetworkGuardrailPromptCapture) bool { return v.RedactPii }).(pulumi.BoolOutput)
+}
+
+type AgentNetworkLimits struct {
+	// USD budget cap composed with any guardrail-level checks.
+	BudgetLimit AgentNetworkBudgetLimit `pulumi:"budgetLimit"`
+	// Token cap composed with any guardrail-level checks.
+	TokenLimit AgentNetworkTokenLimit `pulumi:"tokenLimit"`
+}
+
+// AgentNetworkLimitsInput is an input type that accepts AgentNetworkLimitsArgs and AgentNetworkLimitsOutput values.
+// You can construct a concrete instance of `AgentNetworkLimitsInput` via:
+//
+//	AgentNetworkLimitsArgs{...}
+type AgentNetworkLimitsInput interface {
+	pulumi.Input
+
+	ToAgentNetworkLimitsOutput() AgentNetworkLimitsOutput
+	ToAgentNetworkLimitsOutputWithContext(context.Context) AgentNetworkLimitsOutput
+}
+
+type AgentNetworkLimitsArgs struct {
+	// USD budget cap composed with any guardrail-level checks.
+	BudgetLimit AgentNetworkBudgetLimitInput `pulumi:"budgetLimit"`
+	// Token cap composed with any guardrail-level checks.
+	TokenLimit AgentNetworkTokenLimitInput `pulumi:"tokenLimit"`
+}
+
+func (AgentNetworkLimitsArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkLimits)(nil)).Elem()
+}
+
+func (i AgentNetworkLimitsArgs) ToAgentNetworkLimitsOutput() AgentNetworkLimitsOutput {
+	return i.ToAgentNetworkLimitsOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkLimitsArgs) ToAgentNetworkLimitsOutputWithContext(ctx context.Context) AgentNetworkLimitsOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkLimitsOutput)
+}
+
+func (i AgentNetworkLimitsArgs) ToAgentNetworkLimitsPtrOutput() AgentNetworkLimitsPtrOutput {
+	return i.ToAgentNetworkLimitsPtrOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkLimitsArgs) ToAgentNetworkLimitsPtrOutputWithContext(ctx context.Context) AgentNetworkLimitsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkLimitsOutput).ToAgentNetworkLimitsPtrOutputWithContext(ctx)
+}
+
+// AgentNetworkLimitsPtrInput is an input type that accepts AgentNetworkLimitsArgs, AgentNetworkLimitsPtr and AgentNetworkLimitsPtrOutput values.
+// You can construct a concrete instance of `AgentNetworkLimitsPtrInput` via:
+//
+//	        AgentNetworkLimitsArgs{...}
+//
+//	or:
+//
+//	        nil
+type AgentNetworkLimitsPtrInput interface {
+	pulumi.Input
+
+	ToAgentNetworkLimitsPtrOutput() AgentNetworkLimitsPtrOutput
+	ToAgentNetworkLimitsPtrOutputWithContext(context.Context) AgentNetworkLimitsPtrOutput
+}
+
+type agentNetworkLimitsPtrType AgentNetworkLimitsArgs
+
+func AgentNetworkLimitsPtr(v *AgentNetworkLimitsArgs) AgentNetworkLimitsPtrInput {
+	return (*agentNetworkLimitsPtrType)(v)
+}
+
+func (*agentNetworkLimitsPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**AgentNetworkLimits)(nil)).Elem()
+}
+
+func (i *agentNetworkLimitsPtrType) ToAgentNetworkLimitsPtrOutput() AgentNetworkLimitsPtrOutput {
+	return i.ToAgentNetworkLimitsPtrOutputWithContext(context.Background())
+}
+
+func (i *agentNetworkLimitsPtrType) ToAgentNetworkLimitsPtrOutputWithContext(ctx context.Context) AgentNetworkLimitsPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkLimitsPtrOutput)
+}
+
+type AgentNetworkLimitsOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkLimitsOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkLimits)(nil)).Elem()
+}
+
+func (o AgentNetworkLimitsOutput) ToAgentNetworkLimitsOutput() AgentNetworkLimitsOutput {
+	return o
+}
+
+func (o AgentNetworkLimitsOutput) ToAgentNetworkLimitsOutputWithContext(ctx context.Context) AgentNetworkLimitsOutput {
+	return o
+}
+
+func (o AgentNetworkLimitsOutput) ToAgentNetworkLimitsPtrOutput() AgentNetworkLimitsPtrOutput {
+	return o.ToAgentNetworkLimitsPtrOutputWithContext(context.Background())
+}
+
+func (o AgentNetworkLimitsOutput) ToAgentNetworkLimitsPtrOutputWithContext(ctx context.Context) AgentNetworkLimitsPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v AgentNetworkLimits) *AgentNetworkLimits {
+		return &v
+	}).(AgentNetworkLimitsPtrOutput)
+}
+
+// USD budget cap composed with any guardrail-level checks.
+func (o AgentNetworkLimitsOutput) BudgetLimit() AgentNetworkBudgetLimitOutput {
+	return o.ApplyT(func(v AgentNetworkLimits) AgentNetworkBudgetLimit { return v.BudgetLimit }).(AgentNetworkBudgetLimitOutput)
+}
+
+// Token cap composed with any guardrail-level checks.
+func (o AgentNetworkLimitsOutput) TokenLimit() AgentNetworkTokenLimitOutput {
+	return o.ApplyT(func(v AgentNetworkLimits) AgentNetworkTokenLimit { return v.TokenLimit }).(AgentNetworkTokenLimitOutput)
+}
+
+type AgentNetworkLimitsPtrOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkLimitsPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**AgentNetworkLimits)(nil)).Elem()
+}
+
+func (o AgentNetworkLimitsPtrOutput) ToAgentNetworkLimitsPtrOutput() AgentNetworkLimitsPtrOutput {
+	return o
+}
+
+func (o AgentNetworkLimitsPtrOutput) ToAgentNetworkLimitsPtrOutputWithContext(ctx context.Context) AgentNetworkLimitsPtrOutput {
+	return o
+}
+
+func (o AgentNetworkLimitsPtrOutput) Elem() AgentNetworkLimitsOutput {
+	return o.ApplyT(func(v *AgentNetworkLimits) AgentNetworkLimits {
+		if v != nil {
+			return *v
+		}
+		var ret AgentNetworkLimits
+		return ret
+	}).(AgentNetworkLimitsOutput)
+}
+
+// USD budget cap composed with any guardrail-level checks.
+func (o AgentNetworkLimitsPtrOutput) BudgetLimit() AgentNetworkBudgetLimitPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkLimits) *AgentNetworkBudgetLimit {
+		if v == nil {
+			return nil
+		}
+		return &v.BudgetLimit
+	}).(AgentNetworkBudgetLimitPtrOutput)
+}
+
+// Token cap composed with any guardrail-level checks.
+func (o AgentNetworkLimitsPtrOutput) TokenLimit() AgentNetworkTokenLimitPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkLimits) *AgentNetworkTokenLimit {
+		if v == nil {
+			return nil
+		}
+		return &v.TokenLimit
+	}).(AgentNetworkTokenLimitPtrOutput)
+}
+
+type AgentNetworkProviderModelPricing struct {
+	// Anthropic-shape cache rate: cost per 1k cache-creation tokens, in USD.
+	CacheCreationPer1k *float64 `pulumi:"cacheCreationPer1k"`
+	// Anthropic-shape cache rate: cost per 1k cache-read tokens, in USD.
+	CacheReadPer1k *float64 `pulumi:"cacheReadPer1k"`
+	// OpenAI-shape cache rate: cost per 1k cached prompt tokens, in USD.
+	CachedInputPer1k *float64 `pulumi:"cachedInputPer1k"`
+	// Catalog model identifier (e.g. "gpt-4o-mini").
+	Id string `pulumi:"id"`
+	// Cost per 1k input tokens, in USD.
+	InputPer1k float64 `pulumi:"inputPer1k"`
+	// Cost per 1k output tokens, in USD.
+	OutputPer1k float64 `pulumi:"outputPer1k"`
+}
+
+// AgentNetworkProviderModelPricingInput is an input type that accepts AgentNetworkProviderModelPricingArgs and AgentNetworkProviderModelPricingOutput values.
+// You can construct a concrete instance of `AgentNetworkProviderModelPricingInput` via:
+//
+//	AgentNetworkProviderModelPricingArgs{...}
+type AgentNetworkProviderModelPricingInput interface {
+	pulumi.Input
+
+	ToAgentNetworkProviderModelPricingOutput() AgentNetworkProviderModelPricingOutput
+	ToAgentNetworkProviderModelPricingOutputWithContext(context.Context) AgentNetworkProviderModelPricingOutput
+}
+
+type AgentNetworkProviderModelPricingArgs struct {
+	// Anthropic-shape cache rate: cost per 1k cache-creation tokens, in USD.
+	CacheCreationPer1k pulumi.Float64PtrInput `pulumi:"cacheCreationPer1k"`
+	// Anthropic-shape cache rate: cost per 1k cache-read tokens, in USD.
+	CacheReadPer1k pulumi.Float64PtrInput `pulumi:"cacheReadPer1k"`
+	// OpenAI-shape cache rate: cost per 1k cached prompt tokens, in USD.
+	CachedInputPer1k pulumi.Float64PtrInput `pulumi:"cachedInputPer1k"`
+	// Catalog model identifier (e.g. "gpt-4o-mini").
+	Id pulumi.StringInput `pulumi:"id"`
+	// Cost per 1k input tokens, in USD.
+	InputPer1k pulumi.Float64Input `pulumi:"inputPer1k"`
+	// Cost per 1k output tokens, in USD.
+	OutputPer1k pulumi.Float64Input `pulumi:"outputPer1k"`
+}
+
+func (AgentNetworkProviderModelPricingArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkProviderModelPricing)(nil)).Elem()
+}
+
+func (i AgentNetworkProviderModelPricingArgs) ToAgentNetworkProviderModelPricingOutput() AgentNetworkProviderModelPricingOutput {
+	return i.ToAgentNetworkProviderModelPricingOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkProviderModelPricingArgs) ToAgentNetworkProviderModelPricingOutputWithContext(ctx context.Context) AgentNetworkProviderModelPricingOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkProviderModelPricingOutput)
+}
+
+// AgentNetworkProviderModelPricingArrayInput is an input type that accepts AgentNetworkProviderModelPricingArray and AgentNetworkProviderModelPricingArrayOutput values.
+// You can construct a concrete instance of `AgentNetworkProviderModelPricingArrayInput` via:
+//
+//	AgentNetworkProviderModelPricingArray{ AgentNetworkProviderModelPricingArgs{...} }
+type AgentNetworkProviderModelPricingArrayInput interface {
+	pulumi.Input
+
+	ToAgentNetworkProviderModelPricingArrayOutput() AgentNetworkProviderModelPricingArrayOutput
+	ToAgentNetworkProviderModelPricingArrayOutputWithContext(context.Context) AgentNetworkProviderModelPricingArrayOutput
+}
+
+type AgentNetworkProviderModelPricingArray []AgentNetworkProviderModelPricingInput
+
+func (AgentNetworkProviderModelPricingArray) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]AgentNetworkProviderModelPricing)(nil)).Elem()
+}
+
+func (i AgentNetworkProviderModelPricingArray) ToAgentNetworkProviderModelPricingArrayOutput() AgentNetworkProviderModelPricingArrayOutput {
+	return i.ToAgentNetworkProviderModelPricingArrayOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkProviderModelPricingArray) ToAgentNetworkProviderModelPricingArrayOutputWithContext(ctx context.Context) AgentNetworkProviderModelPricingArrayOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkProviderModelPricingArrayOutput)
+}
+
+type AgentNetworkProviderModelPricingOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkProviderModelPricingOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkProviderModelPricing)(nil)).Elem()
+}
+
+func (o AgentNetworkProviderModelPricingOutput) ToAgentNetworkProviderModelPricingOutput() AgentNetworkProviderModelPricingOutput {
+	return o
+}
+
+func (o AgentNetworkProviderModelPricingOutput) ToAgentNetworkProviderModelPricingOutputWithContext(ctx context.Context) AgentNetworkProviderModelPricingOutput {
+	return o
+}
+
+// Anthropic-shape cache rate: cost per 1k cache-creation tokens, in USD.
+func (o AgentNetworkProviderModelPricingOutput) CacheCreationPer1k() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v AgentNetworkProviderModelPricing) *float64 { return v.CacheCreationPer1k }).(pulumi.Float64PtrOutput)
+}
+
+// Anthropic-shape cache rate: cost per 1k cache-read tokens, in USD.
+func (o AgentNetworkProviderModelPricingOutput) CacheReadPer1k() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v AgentNetworkProviderModelPricing) *float64 { return v.CacheReadPer1k }).(pulumi.Float64PtrOutput)
+}
+
+// OpenAI-shape cache rate: cost per 1k cached prompt tokens, in USD.
+func (o AgentNetworkProviderModelPricingOutput) CachedInputPer1k() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v AgentNetworkProviderModelPricing) *float64 { return v.CachedInputPer1k }).(pulumi.Float64PtrOutput)
+}
+
+// Catalog model identifier (e.g. "gpt-4o-mini").
+func (o AgentNetworkProviderModelPricingOutput) Id() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkProviderModelPricing) string { return v.Id }).(pulumi.StringOutput)
+}
+
+// Cost per 1k input tokens, in USD.
+func (o AgentNetworkProviderModelPricingOutput) InputPer1k() pulumi.Float64Output {
+	return o.ApplyT(func(v AgentNetworkProviderModelPricing) float64 { return v.InputPer1k }).(pulumi.Float64Output)
+}
+
+// Cost per 1k output tokens, in USD.
+func (o AgentNetworkProviderModelPricingOutput) OutputPer1k() pulumi.Float64Output {
+	return o.ApplyT(func(v AgentNetworkProviderModelPricing) float64 { return v.OutputPer1k }).(pulumi.Float64Output)
+}
+
+type AgentNetworkProviderModelPricingArrayOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkProviderModelPricingArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]AgentNetworkProviderModelPricing)(nil)).Elem()
+}
+
+func (o AgentNetworkProviderModelPricingArrayOutput) ToAgentNetworkProviderModelPricingArrayOutput() AgentNetworkProviderModelPricingArrayOutput {
+	return o
+}
+
+func (o AgentNetworkProviderModelPricingArrayOutput) ToAgentNetworkProviderModelPricingArrayOutputWithContext(ctx context.Context) AgentNetworkProviderModelPricingArrayOutput {
+	return o
+}
+
+func (o AgentNetworkProviderModelPricingArrayOutput) Index(i pulumi.IntInput) AgentNetworkProviderModelPricingOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) AgentNetworkProviderModelPricing {
+		return vs[0].([]AgentNetworkProviderModelPricing)[vs[1].(int)]
+	}).(AgentNetworkProviderModelPricingOutput)
+}
+
+type AgentNetworkTokenLimit struct {
+	// Whether the token limit is enforced.
+	Enabled bool `pulumi:"enabled"`
+	// Tokens allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+	GroupCap int `pulumi:"groupCap"`
+	// Tokens allowed per individual user within the window. 0 means uncapped.
+	UserCap int `pulumi:"userCap"`
+	// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+	WindowSeconds int `pulumi:"windowSeconds"`
+}
+
+// AgentNetworkTokenLimitInput is an input type that accepts AgentNetworkTokenLimitArgs and AgentNetworkTokenLimitOutput values.
+// You can construct a concrete instance of `AgentNetworkTokenLimitInput` via:
+//
+//	AgentNetworkTokenLimitArgs{...}
+type AgentNetworkTokenLimitInput interface {
+	pulumi.Input
+
+	ToAgentNetworkTokenLimitOutput() AgentNetworkTokenLimitOutput
+	ToAgentNetworkTokenLimitOutputWithContext(context.Context) AgentNetworkTokenLimitOutput
+}
+
+type AgentNetworkTokenLimitArgs struct {
+	// Whether the token limit is enforced.
+	Enabled pulumi.BoolInput `pulumi:"enabled"`
+	// Tokens allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+	GroupCap pulumi.IntInput `pulumi:"groupCap"`
+	// Tokens allowed per individual user within the window. 0 means uncapped.
+	UserCap pulumi.IntInput `pulumi:"userCap"`
+	// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+	WindowSeconds pulumi.IntInput `pulumi:"windowSeconds"`
+}
+
+func (AgentNetworkTokenLimitArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkTokenLimit)(nil)).Elem()
+}
+
+func (i AgentNetworkTokenLimitArgs) ToAgentNetworkTokenLimitOutput() AgentNetworkTokenLimitOutput {
+	return i.ToAgentNetworkTokenLimitOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkTokenLimitArgs) ToAgentNetworkTokenLimitOutputWithContext(ctx context.Context) AgentNetworkTokenLimitOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkTokenLimitOutput)
+}
+
+func (i AgentNetworkTokenLimitArgs) ToAgentNetworkTokenLimitPtrOutput() AgentNetworkTokenLimitPtrOutput {
+	return i.ToAgentNetworkTokenLimitPtrOutputWithContext(context.Background())
+}
+
+func (i AgentNetworkTokenLimitArgs) ToAgentNetworkTokenLimitPtrOutputWithContext(ctx context.Context) AgentNetworkTokenLimitPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkTokenLimitOutput).ToAgentNetworkTokenLimitPtrOutputWithContext(ctx)
+}
+
+// AgentNetworkTokenLimitPtrInput is an input type that accepts AgentNetworkTokenLimitArgs, AgentNetworkTokenLimitPtr and AgentNetworkTokenLimitPtrOutput values.
+// You can construct a concrete instance of `AgentNetworkTokenLimitPtrInput` via:
+//
+//	        AgentNetworkTokenLimitArgs{...}
+//
+//	or:
+//
+//	        nil
+type AgentNetworkTokenLimitPtrInput interface {
+	pulumi.Input
+
+	ToAgentNetworkTokenLimitPtrOutput() AgentNetworkTokenLimitPtrOutput
+	ToAgentNetworkTokenLimitPtrOutputWithContext(context.Context) AgentNetworkTokenLimitPtrOutput
+}
+
+type agentNetworkTokenLimitPtrType AgentNetworkTokenLimitArgs
+
+func AgentNetworkTokenLimitPtr(v *AgentNetworkTokenLimitArgs) AgentNetworkTokenLimitPtrInput {
+	return (*agentNetworkTokenLimitPtrType)(v)
+}
+
+func (*agentNetworkTokenLimitPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**AgentNetworkTokenLimit)(nil)).Elem()
+}
+
+func (i *agentNetworkTokenLimitPtrType) ToAgentNetworkTokenLimitPtrOutput() AgentNetworkTokenLimitPtrOutput {
+	return i.ToAgentNetworkTokenLimitPtrOutputWithContext(context.Background())
+}
+
+func (i *agentNetworkTokenLimitPtrType) ToAgentNetworkTokenLimitPtrOutputWithContext(ctx context.Context) AgentNetworkTokenLimitPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(AgentNetworkTokenLimitPtrOutput)
+}
+
+type AgentNetworkTokenLimitOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkTokenLimitOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkTokenLimit)(nil)).Elem()
+}
+
+func (o AgentNetworkTokenLimitOutput) ToAgentNetworkTokenLimitOutput() AgentNetworkTokenLimitOutput {
+	return o
+}
+
+func (o AgentNetworkTokenLimitOutput) ToAgentNetworkTokenLimitOutputWithContext(ctx context.Context) AgentNetworkTokenLimitOutput {
+	return o
+}
+
+func (o AgentNetworkTokenLimitOutput) ToAgentNetworkTokenLimitPtrOutput() AgentNetworkTokenLimitPtrOutput {
+	return o.ToAgentNetworkTokenLimitPtrOutputWithContext(context.Background())
+}
+
+func (o AgentNetworkTokenLimitOutput) ToAgentNetworkTokenLimitPtrOutputWithContext(ctx context.Context) AgentNetworkTokenLimitPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v AgentNetworkTokenLimit) *AgentNetworkTokenLimit {
+		return &v
+	}).(AgentNetworkTokenLimitPtrOutput)
+}
+
+// Whether the token limit is enforced.
+func (o AgentNetworkTokenLimitOutput) Enabled() pulumi.BoolOutput {
+	return o.ApplyT(func(v AgentNetworkTokenLimit) bool { return v.Enabled }).(pulumi.BoolOutput)
+}
+
+// Tokens allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+func (o AgentNetworkTokenLimitOutput) GroupCap() pulumi.IntOutput {
+	return o.ApplyT(func(v AgentNetworkTokenLimit) int { return v.GroupCap }).(pulumi.IntOutput)
+}
+
+// Tokens allowed per individual user within the window. 0 means uncapped.
+func (o AgentNetworkTokenLimitOutput) UserCap() pulumi.IntOutput {
+	return o.ApplyT(func(v AgentNetworkTokenLimit) int { return v.UserCap }).(pulumi.IntOutput)
+}
+
+// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+func (o AgentNetworkTokenLimitOutput) WindowSeconds() pulumi.IntOutput {
+	return o.ApplyT(func(v AgentNetworkTokenLimit) int { return v.WindowSeconds }).(pulumi.IntOutput)
+}
+
+type AgentNetworkTokenLimitPtrOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkTokenLimitPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**AgentNetworkTokenLimit)(nil)).Elem()
+}
+
+func (o AgentNetworkTokenLimitPtrOutput) ToAgentNetworkTokenLimitPtrOutput() AgentNetworkTokenLimitPtrOutput {
+	return o
+}
+
+func (o AgentNetworkTokenLimitPtrOutput) ToAgentNetworkTokenLimitPtrOutputWithContext(ctx context.Context) AgentNetworkTokenLimitPtrOutput {
+	return o
+}
+
+func (o AgentNetworkTokenLimitPtrOutput) Elem() AgentNetworkTokenLimitOutput {
+	return o.ApplyT(func(v *AgentNetworkTokenLimit) AgentNetworkTokenLimit {
+		if v != nil {
+			return *v
+		}
+		var ret AgentNetworkTokenLimit
+		return ret
+	}).(AgentNetworkTokenLimitOutput)
+}
+
+// Whether the token limit is enforced.
+func (o AgentNetworkTokenLimitPtrOutput) Enabled() pulumi.BoolPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkTokenLimit) *bool {
+		if v == nil {
+			return nil
+		}
+		return &v.Enabled
+	}).(pulumi.BoolPtrOutput)
+}
+
+// Tokens allowed per source group within the window (each group has its own bucket). 0 means uncapped.
+func (o AgentNetworkTokenLimitPtrOutput) GroupCap() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkTokenLimit) *int {
+		if v == nil {
+			return nil
+		}
+		return &v.GroupCap
+	}).(pulumi.IntPtrOutput)
+}
+
+// Tokens allowed per individual user within the window. 0 means uncapped.
+func (o AgentNetworkTokenLimitPtrOutput) UserCap() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkTokenLimit) *int {
+		if v == nil {
+			return nil
+		}
+		return &v.UserCap
+	}).(pulumi.IntPtrOutput)
+}
+
+// Reset frequency in seconds. Minimum 60 when the limit is enabled.
+func (o AgentNetworkTokenLimitPtrOutput) WindowSeconds() pulumi.IntPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkTokenLimit) *int {
+		if v == nil {
+			return nil
+		}
+		return &v.WindowSeconds
+	}).(pulumi.IntPtrOutput)
+}
+
 type IngressAvailablePorts struct {
 	// Number of available TCP ports left on the ingress peer.
 	Tcp int `pulumi:"tcp"`
@@ -3713,6 +4582,17 @@ func (o RulePortRangeArrayOutput) Index(i pulumi.IntInput) RulePortRangeOutput {
 }
 
 func init() {
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkBudgetLimitInput)(nil)).Elem(), AgentNetworkBudgetLimitArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkBudgetLimitPtrInput)(nil)).Elem(), AgentNetworkBudgetLimitArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkGuardrailChecksInput)(nil)).Elem(), AgentNetworkGuardrailChecksArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkGuardrailModelAllowlistInput)(nil)).Elem(), AgentNetworkGuardrailModelAllowlistArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkGuardrailPromptCaptureInput)(nil)).Elem(), AgentNetworkGuardrailPromptCaptureArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkLimitsInput)(nil)).Elem(), AgentNetworkLimitsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkLimitsPtrInput)(nil)).Elem(), AgentNetworkLimitsArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkProviderModelPricingInput)(nil)).Elem(), AgentNetworkProviderModelPricingArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkProviderModelPricingArrayInput)(nil)).Elem(), AgentNetworkProviderModelPricingArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkTokenLimitInput)(nil)).Elem(), AgentNetworkTokenLimitArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*AgentNetworkTokenLimitPtrInput)(nil)).Elem(), AgentNetworkTokenLimitArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverInput)(nil)).Elem(), NameserverArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverArrayInput)(nil)).Elem(), NameserverArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsInput)(nil)).Elem(), PolicyRuleArgsArgs{})
@@ -3757,6 +4637,17 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetOptionsPtrInput)(nil)).Elem(), ReverseProxyTargetOptionsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeInput)(nil)).Elem(), RulePortRangeArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*RulePortRangeArrayInput)(nil)).Elem(), RulePortRangeArray{})
+	pulumi.RegisterOutputType(AgentNetworkBudgetLimitOutput{})
+	pulumi.RegisterOutputType(AgentNetworkBudgetLimitPtrOutput{})
+	pulumi.RegisterOutputType(AgentNetworkGuardrailChecksOutput{})
+	pulumi.RegisterOutputType(AgentNetworkGuardrailModelAllowlistOutput{})
+	pulumi.RegisterOutputType(AgentNetworkGuardrailPromptCaptureOutput{})
+	pulumi.RegisterOutputType(AgentNetworkLimitsOutput{})
+	pulumi.RegisterOutputType(AgentNetworkLimitsPtrOutput{})
+	pulumi.RegisterOutputType(AgentNetworkProviderModelPricingOutput{})
+	pulumi.RegisterOutputType(AgentNetworkProviderModelPricingArrayOutput{})
+	pulumi.RegisterOutputType(AgentNetworkTokenLimitOutput{})
+	pulumi.RegisterOutputType(AgentNetworkTokenLimitPtrOutput{})
 	pulumi.RegisterOutputType(IngressAvailablePortsOutput{})
 	pulumi.RegisterOutputType(IngressAvailablePortsPtrOutput{})
 	pulumi.RegisterOutputType(NameserverOutput{})

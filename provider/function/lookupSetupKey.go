@@ -29,16 +29,16 @@ func (a *LookupSetupKeyArgs) Annotate(ann infer.Annotator) {
 
 // LookupSetupKeyResult is the output of LookupSetupKey.
 type LookupSetupKeyResult struct {
-	ID           string   `pulumi:"setupKeyId"`
-	Name         string   `pulumi:"name"`
-	Type         string   `pulumi:"type"`
-	State        string   `pulumi:"state"`
-	Revoked      bool     `pulumi:"revoked"`
-	Ephemeral    bool     `pulumi:"ephemeral"`
-	UsageLimit   int      `pulumi:"usageLimit"`
-	AutoGroups   []string `pulumi:"autoGroups"`
-	Expires      string   `pulumi:"expires"`
-	LastUsed     string   `pulumi:"lastUsed"`
+	ID         string   `pulumi:"setupKeyId"`
+	Name       string   `pulumi:"name"`
+	Type       string   `pulumi:"type"`
+	State      string   `pulumi:"state"`
+	Revoked    bool     `pulumi:"revoked"`
+	Ephemeral  bool     `pulumi:"ephemeral"`
+	UsageLimit int      `pulumi:"usageLimit"`
+	AutoGroups []string `pulumi:"autoGroups"`
+	Expires    string   `pulumi:"expires"`
+	LastUsed   string   `pulumi:"lastUsed"`
 }
 
 // Annotate provides field descriptions for LookupSetupKeyResult.

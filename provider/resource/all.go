@@ -6,6 +6,11 @@ import "github.com/pulumi/pulumi-go-provider/infer"
 // All returns all registered provider resources.
 func All() []infer.InferredResource {
 	return []infer.InferredResource{
+		infer.Resource(&AgentNetworkBudgetRule{}),
+		infer.Resource(&AgentNetworkGuardrail{}),
+		infer.Resource(&AgentNetworkPolicy{}),
+		infer.Resource(&AgentNetworkProvider{}),
+		infer.Resource(&AgentNetworkSettings{}),
 		infer.Resource(&AzureIDP{}),
 		infer.Resource(&DNS{}),
 		infer.Resource(&DNSRecord{}),

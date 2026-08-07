@@ -2,7 +2,28 @@
 
 All notable changes to this project are documented in this file.
 
-## [Unreleased]
+## [0.5.6] - 2026-08-07
+
+### Added
+
+- Agent Network (AI/LLM gateway) support, following netbird v0.76.2's new `/api/agent-network/*` API surface:
+  - `AgentNetworkProvider` — upstream AI/LLM provider or gateway (OpenAI, Anthropic, Bedrock, LiteLLM, custom OpenAI-compatible, ...), with `apiKey` masked as a create-only-required secret (never returned by the API, preserved from configuration like `IdentityProvider.clientSecret`), optional per-model price overrides, and an optional `bootstrapCluster` for first-provider account bootstrap.
+  - `AgentNetworkPolicy` — authorizes source groups to reach a set of providers, with optional attached guardrails and token/budget limits.
+  - `AgentNetworkGuardrail` — reusable model-allowlist and prompt-capture checks attachable to policies.
+  - `AgentNetworkBudgetRule` — account-level, limit-only budget rule bound to groups and/or users, applied as a min-wins ceiling across all policies.
+  - `AgentNetworkSettings` — singleton per-account gateway settings (cluster bootstrap, log/prompt collection toggles, PII redaction, access-log retention), following the `DNSSettings` singleton pattern.
+  - `getAgentNetworkCatalogProviders` invoke function — lists the catalog of supported upstream providers with their default models and pricing, for prefilling `AgentNetworkProvider.providerId`/`models`.
+
+## [0.5.5] - 2026-07-12
+
+### Added
+
+- Regression tests for the `Group` peer-ordering fix (0.5.1), `User.Update` stale-status fix (0.5.3), and `ReverseProxyService` `targets[].options`/`auth` nil-vs-zero diff fix (0.5.4): `tests/user_test.go`, `tests/group_test.go` additions, and white-box `provider/resource/reverseProxyService_test.go` (`equalOptionalDeep`, `equalReverseProxyTargets`).
+- Extended the mock NetBird API test server (`tests/mock`) with GET-list support, `users` default shaping (status flips to `blocked` when `isBlocked` is set), and `Group.Peers` conversion to the minimal-object shape the real API returns.
+
+### Changed
+
+- Bumped `pulumi-go-provider` to `v1.4.1` and `pulumi/sdk/v3`/`pulumi/pkg/v3` to `v3.256.0` across all modules.
 
 ## [0.5.4] - 2026-07-12
 

@@ -28,16 +28,16 @@ func (a *LookupRouteArgs) Annotate(ann infer.Annotator) {
 
 // LookupRouteResult is the output of LookupRoute.
 type LookupRouteResult struct {
-	ID          string    `pulumi:"routeId"`
-	Description string    `pulumi:"description"`
-	Network     string    `pulumi:"network"`
-	Domains     []string  `pulumi:"domains"`
-	Enabled     bool      `pulumi:"enabled"`
-	Masquerade  bool      `pulumi:"masquerade"`
-	Metric      int       `pulumi:"metric"`
-	Peer        *string   `pulumi:"peer,optional"`
-	PeerGroups  []string  `pulumi:"peerGroups"`
-	Groups      []string  `pulumi:"groups"`
+	ID          string   `pulumi:"routeId"`
+	Description string   `pulumi:"description"`
+	Network     string   `pulumi:"network"`
+	Domains     []string `pulumi:"domains"`
+	Enabled     bool     `pulumi:"enabled"`
+	Masquerade  bool     `pulumi:"masquerade"`
+	Metric      int      `pulumi:"metric"`
+	Peer        *string  `pulumi:"peer,optional"`
+	PeerGroups  []string `pulumi:"peerGroups"`
+	Groups      []string `pulumi:"groups"`
 }
 
 // Annotate provides field descriptions for LookupRouteResult.

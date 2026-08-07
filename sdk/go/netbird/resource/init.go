@@ -21,6 +21,16 @@ func (m *module) Version() semver.Version {
 
 func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi.Resource, err error) {
 	switch typ {
+	case "netbird:resource:AgentNetworkBudgetRule":
+		r = &AgentNetworkBudgetRule{}
+	case "netbird:resource:AgentNetworkGuardrail":
+		r = &AgentNetworkGuardrail{}
+	case "netbird:resource:AgentNetworkPolicy":
+		r = &AgentNetworkPolicy{}
+	case "netbird:resource:AgentNetworkProvider":
+		r = &AgentNetworkProvider{}
+	case "netbird:resource:AgentNetworkSettings":
+		r = &AgentNetworkSettings{}
 	case "netbird:resource:AzureIDP":
 		r = &AzureIDP{}
 	case "netbird:resource:DNS":

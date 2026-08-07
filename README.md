@@ -14,8 +14,8 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## ✨ Features
 
-- Manage 23 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
-- 9 read-only **invoke functions** (data sources) for referencing existing NetBird objects by name, email, CIDR, or country
+- Manage 27 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
+- 10 read-only **invoke functions** (data sources) for referencing existing NetBird objects by name, email, CIDR, or country
 - Built natively with Pulumi's Go SDK
 - Works with NetBird Cloud (`https://api.netbird.io`) and self-hosted management servers
 
@@ -24,7 +24,7 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 To install the Pulumi NetBird resource plugin, replace the version number with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.5.4 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.5.6 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -55,7 +55,7 @@ You can use this provider with **Pulumi YAML** to manage NetBird infrastructure 
 Install the plugin (required before first `pulumi up`):
 
 ```bash
-pulumi plugin install resource netbird 0.5.4 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.5.6 --server github://api.github.com/mbrav/pulumi-netbird
 ```
 
 > **Note:** `--server` is a CLI-only flag. Do **not** add it to `Pulumi.yaml` — the `plugins.providers` block only accepts `name`, `path` (local binary), and `version`. For GitHub-hosted plugins, the CLI install above is sufficient.
@@ -329,7 +329,7 @@ go list -m -versions github.com/mbrav/pulumi-netbird/sdk
 Output:
 
 ```bash
-github.com/mbrav/pulumi-netbird/sdk v0.3.6 v0.3.7 v0.3.8 v0.4.1 v0.5.0 v0.5.1 v0.5.2 v0.5.3 v0.5.4 # ... and so on
+github.com/mbrav/pulumi-netbird/sdk v0.3.6 v0.3.7 v0.3.8 v0.4.1 v0.5.0 v0.5.1 v0.5.2 v0.5.3 v0.5.4 v0.5.5 v0.5.6 # ... and so on
 ```
 
 ### 1. Setup
@@ -370,7 +370,7 @@ make sdk_python
 Then install the wheel:
 
 ```bash
-pip install sdk/python/bin/dist/pulumi_netbird-0.5.4.tar.gz
+pip install sdk/python/bin/dist/pulumi_netbird-0.5.6.tar.gz
 ```
 
 Navigate to the Python example directory:
@@ -397,6 +397,11 @@ pulumi up
 
 | Resource | Pulumi type |
 | -------- | ----------- |
+| Agent Network budget rule | `netbird:resource:AgentNetworkBudgetRule` |
+| Agent Network guardrail | `netbird:resource:AgentNetworkGuardrail` |
+| Agent Network policy | `netbird:resource:AgentNetworkPolicy` |
+| Agent Network provider | `netbird:resource:AgentNetworkProvider` |
+| Agent Network settings | `netbird:resource:AgentNetworkSettings` |
 | Azure AD (Entra ID) IdP sync | `netbird:resource:AzureIDP` |
 | DNS nameserver group | `netbird:resource:DNS` |
 | DNS record | `netbird:resource:DNSRecord` |
@@ -427,6 +432,7 @@ Invoke functions are **read-only** — they query live NetBird state and return 
 
 | Function | Pulumi type | Looks up by | Key output fields |
 | -------- | ----------- | ----------- | ----------------- |
+| Get Agent Network catalog providers | `netbird:function:getAgentNetworkCatalogProviders` | none | `providers[]` (id, name, kind, models[]) |
 | Get countries | `netbird:function:getCountries` | none | `countries[]` (code, name) |
 | Get country cities | `netbird:function:getCountryCities` | country code | `cities[]` (name, geonameId) |
 | Get peers | `netbird:function:getPeers` | optional group ID filter | `peers[]` (id, name, ip, connected, groups) |

@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -173,6 +173,112 @@
         "groupIDs"
       ]
     },
+    "netbird:function:AgentNetworkCatalogModel": {
+      "properties": {
+        "cacheCreationPer1k": {
+          "type": "number",
+          "description": "Anthropic-shape cache rate: default cost per 1k cache-creation tokens, in USD."
+        },
+        "cacheReadPer1k": {
+          "type": "number",
+          "description": "Anthropic-shape cache rate: default cost per 1k cache-read tokens, in USD."
+        },
+        "cachedInputPer1k": {
+          "type": "number",
+          "description": "OpenAI-shape cache rate: default cost per 1k cached prompt tokens, in USD."
+        },
+        "contextWindow": {
+          "type": "integer",
+          "description": "Maximum context window in tokens."
+        },
+        "id": {
+          "type": "string",
+          "description": "Catalog model identifier as exposed by the upstream provider."
+        },
+        "inputPer1k": {
+          "type": "number",
+          "description": "Default input token price per 1k tokens, in USD."
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-friendly model name."
+        },
+        "outputPer1k": {
+          "type": "number",
+          "description": "Default output token price per 1k tokens, in USD."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "contextWindow",
+        "inputPer1k",
+        "outputPer1k"
+      ]
+    },
+    "netbird:function:AgentNetworkCatalogProviderEntry": {
+      "properties": {
+        "authHeaderTemplate": {
+          "type": "string",
+          "description": "Template the proxy uses to inject the API key."
+        },
+        "brandColor": {
+          "type": "string",
+          "description": "Hex brand color used to render the provider badge in the dashboard."
+        },
+        "defaultContentType": {
+          "type": "string",
+          "description": "Default Content-Type for upstream requests."
+        },
+        "defaultHost": {
+          "type": "string",
+          "description": "Default upstream host suggested when adding a provider of this type."
+        },
+        "description": {
+          "type": "string",
+          "description": "Short description shown in the provider picker."
+        },
+        "id": {
+          "type": "string",
+          "description": "Catalog provider identifier, used as AgentNetworkProvider.providerId."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Presentation grouping: \"provider\" (first-party vendor API), \"gateway\" (routing/aggregation layer), or \"custom\" (generic OpenAI-compatible endpoint)."
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:function:AgentNetworkCatalogModel"
+          },
+          "description": "Catalog models available for this provider, with default pricing."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the provider."
+        },
+        "pricingSurfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Cost-meter pricing surfaces this provider's traffic is metered under (\"openai\", \"anthropic\", \"bedrock\")."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "description",
+        "defaultHost",
+        "defaultContentType",
+        "authHeaderTemplate",
+        "brandColor",
+        "models"
+      ]
+    },
     "netbird:function:City": {
       "properties": {
         "cityName": {
@@ -319,6 +425,165 @@
       "required": [
         "id",
         "type"
+      ]
+    },
+    "netbird:resource:AgentNetworkBudgetLimit": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the budget limit is enforced."
+        },
+        "groupCapUsd": {
+          "type": "number",
+          "description": "USD allowed per source group within the window (each group has its own bucket). 0 means uncapped."
+        },
+        "userCapUsd": {
+          "type": "number",
+          "description": "USD allowed per individual user within the window. 0 means uncapped."
+        },
+        "windowSeconds": {
+          "type": "integer",
+          "description": "Reset frequency in seconds. Minimum 60 when the limit is enabled."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "groupCapUsd",
+        "userCapUsd",
+        "windowSeconds"
+      ]
+    },
+    "netbird:resource:AgentNetworkGuardrailChecks": {
+      "properties": {
+        "modelAllowlist": {
+          "$ref": "#/types/netbird:resource:AgentNetworkGuardrailModelAllowlist",
+          "description": "Restricts requests to an explicit set of catalog model IDs."
+        },
+        "promptCapture": {
+          "$ref": "#/types/netbird:resource:AgentNetworkGuardrailPromptCapture",
+          "description": "Controls request/response prompt capture."
+        }
+      },
+      "type": "object",
+      "required": [
+        "modelAllowlist",
+        "promptCapture"
+      ]
+    },
+    "netbird:resource:AgentNetworkGuardrailModelAllowlist": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the model allowlist check is enforced."
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Allowed catalog model IDs. Requests for any other model are denied."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "models"
+      ]
+    },
+    "netbird:resource:AgentNetworkGuardrailPromptCapture": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether prompt/response capture is enforced for requests passing through this guardrail."
+        },
+        "redactPii": {
+          "type": "boolean",
+          "description": "Whether captured prompts have PII redacted."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "redactPii"
+      ]
+    },
+    "netbird:resource:AgentNetworkLimits": {
+      "properties": {
+        "budgetLimit": {
+          "$ref": "#/types/netbird:resource:AgentNetworkBudgetLimit",
+          "description": "USD budget cap composed with any guardrail-level checks."
+        },
+        "tokenLimit": {
+          "$ref": "#/types/netbird:resource:AgentNetworkTokenLimit",
+          "description": "Token cap composed with any guardrail-level checks."
+        }
+      },
+      "type": "object",
+      "required": [
+        "tokenLimit",
+        "budgetLimit"
+      ]
+    },
+    "netbird:resource:AgentNetworkProviderModelPricing": {
+      "properties": {
+        "cacheCreationPer1k": {
+          "type": "number",
+          "description": "Anthropic-shape cache rate: cost per 1k cache-creation tokens, in USD."
+        },
+        "cacheReadPer1k": {
+          "type": "number",
+          "description": "Anthropic-shape cache rate: cost per 1k cache-read tokens, in USD."
+        },
+        "cachedInputPer1k": {
+          "type": "number",
+          "description": "OpenAI-shape cache rate: cost per 1k cached prompt tokens, in USD."
+        },
+        "id": {
+          "type": "string",
+          "description": "Catalog model identifier (e.g. \"gpt-4o-mini\")."
+        },
+        "inputPer1k": {
+          "type": "number",
+          "description": "Cost per 1k input tokens, in USD."
+        },
+        "outputPer1k": {
+          "type": "number",
+          "description": "Cost per 1k output tokens, in USD."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "inputPer1k",
+        "outputPer1k"
+      ]
+    },
+    "netbird:resource:AgentNetworkTokenLimit": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the token limit is enforced."
+        },
+        "groupCap": {
+          "type": "integer",
+          "description": "Tokens allowed per source group within the window (each group has its own bucket). 0 means uncapped."
+        },
+        "userCap": {
+          "type": "integer",
+          "description": "Tokens allowed per individual user within the window. 0 means uncapped."
+        },
+        "windowSeconds": {
+          "type": "integer",
+          "description": "Reset frequency in seconds. Minimum 60 when the limit is enabled."
+        }
+      },
+      "type": "object",
+      "required": [
+        "enabled",
+        "groupCap",
+        "userCap",
+        "windowSeconds"
       ]
     },
     "netbird:resource:AzureHost": {
@@ -1526,6 +1791,433 @@
         "subnets"
       ],
       "isComponent": true
+    },
+    "netbird:resource:AgentNetworkBudgetRule": {
+      "description": "A NetBird Agent Network account-level budget rule: a limit-only rule bound to groups and/or users that applies across all policies as a min-wins ceiling. Empty targets means it applies to every caller.",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the budget rule was created."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the rule is enforced."
+        },
+        "limits": {
+          "$ref": "#/types/netbird:resource:AgentNetworkLimits",
+          "description": "Token and budget caps attached directly to the rule."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the budget rule."
+        },
+        "targetGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird group IDs the rule binds."
+        },
+        "targetUsers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird user IDs the rule binds directly."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the budget rule was last updated."
+        }
+      },
+      "required": [
+        "name",
+        "limits"
+      ],
+      "inputProperties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the rule is enforced."
+        },
+        "limits": {
+          "$ref": "#/types/netbird:resource:AgentNetworkLimits",
+          "description": "Token and budget caps attached directly to the rule."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the budget rule."
+        },
+        "targetGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird group IDs the rule binds. Empty plus empty targetUsers means account-wide."
+        },
+        "targetUsers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird user IDs the rule binds directly."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "limits"
+      ]
+    },
+    "netbird:resource:AgentNetworkGuardrail": {
+      "description": "A NetBird Agent Network guardrail: a reusable set of checks (model allowlist, prompt capture) attachable to one or more AgentNetworkPolicy resources.",
+      "properties": {
+        "checks": {
+          "$ref": "#/types/netbird:resource:AgentNetworkGuardrailChecks",
+          "description": "Guardrail check parameters."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the guardrail was created."
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional human-readable description."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the guardrail."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the guardrail was last updated."
+        }
+      },
+      "required": [
+        "name",
+        "checks"
+      ],
+      "inputProperties": {
+        "checks": {
+          "$ref": "#/types/netbird:resource:AgentNetworkGuardrailChecks",
+          "description": "Guardrail check parameters. Each entry has an enabled flag plus per-check configuration; disabled entries are inert."
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional human-readable description."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the guardrail."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "checks"
+      ]
+    },
+    "netbird:resource:AgentNetworkPolicy": {
+      "description": "A NetBird Agent Network policy: authorizes source groups to reach a set of Agent Network providers, subject to attached guardrails and token/budget limits.",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the policy was created."
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional human-readable description."
+        },
+        "destinationProviderIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "AgentNetworkProvider IDs the source groups can reach."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the policy is enabled."
+        },
+        "guardrailIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "AgentNetworkGuardrail IDs attached to this policy."
+        },
+        "limits": {
+          "$ref": "#/types/netbird:resource:AgentNetworkLimits",
+          "description": "Token and budget caps attached directly to the policy."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the policy."
+        },
+        "sourceGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird group IDs whose members are allowed to call the destination providers."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the policy was last updated."
+        }
+      },
+      "required": [
+        "name",
+        "sourceGroups",
+        "destinationProviderIds"
+      ],
+      "inputProperties": {
+        "description": {
+          "type": "string",
+          "description": "Optional human-readable description."
+        },
+        "destinationProviderIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "AgentNetworkProvider IDs the source groups can reach."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the policy is enabled."
+        },
+        "guardrailIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "AgentNetworkGuardrail IDs to attach to this policy."
+        },
+        "limits": {
+          "$ref": "#/types/netbird:resource:AgentNetworkLimits",
+          "description": "Token and budget caps attached directly to the policy. These compose with any guardrail-level checks."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the policy."
+        },
+        "sourceGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "NetBird group IDs whose members are allowed to call the destination providers."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "sourceGroups",
+        "destinationProviderIds"
+      ]
+    },
+    "netbird:resource:AgentNetworkProvider": {
+      "description": "A NetBird Agent Network provider: an upstream AI/LLM API or gateway (OpenAI, Anthropic, Bedrock, LiteLLM, a custom OpenAI-compatible endpoint, ...) that policies can route traffic to.",
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Upstream provider API key. Not returned by the API; preserved from configuration.",
+          "secret": true
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the provider was created."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the provider is enabled."
+        },
+        "extraValues": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Operator-typed values for catalog-declared extra headers."
+        },
+        "identityHeaderGroups": {
+          "type": "string",
+          "description": "Wire header name for the caller's NetBird groups."
+        },
+        "identityHeaderUserId": {
+          "type": "string",
+          "description": "Wire header name for the caller's display identity."
+        },
+        "metadataDisabled": {
+          "type": "boolean",
+          "description": "Whether identity metadata injection is disabled for this provider."
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:AgentNetworkProviderModelPricing"
+          },
+          "description": "Models exposed through this endpoint, with operator per-1k price overrides."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name shown in the dashboard."
+        },
+        "providerId": {
+          "type": "string",
+          "description": "Catalog identifier for the upstream AI provider."
+        },
+        "skipTlsVerification": {
+          "type": "boolean",
+          "description": "Whether upstream TLS certificate verification is skipped."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the provider was last updated."
+        },
+        "upstreamUrl": {
+          "type": "string",
+          "description": "Full upstream URL (with scheme) that NetBird forwards traffic to."
+        }
+      },
+      "required": [
+        "name",
+        "providerId",
+        "upstreamUrl",
+        "apiKey"
+      ],
+      "inputProperties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Upstream provider API key. Sealed at rest on the management server and never returned in responses.",
+          "secret": true
+        },
+        "bootstrapCluster": {
+          "type": "string",
+          "description": "Proxy cluster used to bootstrap the per-account agent-network endpoint when this is the account's first provider. Ignored on subsequent creates and on updates."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the provider is enabled."
+        },
+        "extraValues": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Operator-typed values for catalog-declared extra headers (see getAgentNetworkCatalogProviders)."
+        },
+        "identityHeaderGroups": {
+          "type": "string",
+          "description": "Wire header name the proxy stamps with the caller's NetBird groups (comma-separated), when the catalog entry supports customizable identity headers."
+        },
+        "identityHeaderUserId": {
+          "type": "string",
+          "description": "Wire header name the proxy stamps with the caller's display identity, when the catalog entry supports customizable identity headers."
+        },
+        "metadataDisabled": {
+          "type": "boolean",
+          "description": "Disable identity metadata injection (caller's user + authorizing group) for this provider."
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:AgentNetworkProviderModelPricing"
+          },
+          "description": "Models exposed through this endpoint, with operator per-1k price overrides. Empty means all catalog models are allowed at catalog prices."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name shown in the dashboard."
+        },
+        "providerId": {
+          "type": "string",
+          "description": "Catalog identifier for the upstream AI provider (e.g. openai_api, anthropic_api, azure_openai_api, bedrock_api, vertex_ai_api, mistral_api, custom). See getAgentNetworkCatalogProviders. Changing this forces a replacement."
+        },
+        "skipTlsVerification": {
+          "type": "boolean",
+          "description": "Skip upstream TLS certificate verification. For self-hosted / internal gateways with a private or self-signed certificate."
+        },
+        "upstreamUrl": {
+          "type": "string",
+          "description": "Full upstream URL (with scheme) that NetBird forwards traffic to."
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "providerId",
+        "upstreamUrl",
+        "apiKey"
+      ]
+    },
+    "netbird:resource:AgentNetworkSettings": {
+      "description": "Per-account NetBird Agent Network gateway settings. This is a singleton resource — only one instance exists per account. Setting cluster bootstraps the account's agent-network endpoint; the cluster is immutable thereafter.",
+      "properties": {
+        "accessLogRetentionDays": {
+          "type": "integer",
+          "description": "Days to retain full access-log rows."
+        },
+        "cluster": {
+          "type": "string",
+          "description": "Proxy cluster fronting this account's agent-network endpoint."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the settings row was created. Absent until bootstrapped."
+        },
+        "enableLogCollection": {
+          "type": "boolean",
+          "description": "Whether per-request access-log entries are collected."
+        },
+        "enablePromptCollection": {
+          "type": "boolean",
+          "description": "Master switch for request/response prompt capture."
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "Bare hostname agents call for this account. Empty until bootstrapped."
+        },
+        "redactPii": {
+          "type": "boolean",
+          "description": "Whether captured prompts have PII redacted."
+        },
+        "subdomain": {
+          "type": "string",
+          "description": "Auto-generated DNS-safe label that prefixes the cluster to form the agent-network endpoint. Empty until bootstrapped."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the settings row was last updated. Absent until bootstrapped."
+        }
+      },
+      "required": [
+        "enableLogCollection",
+        "enablePromptCollection",
+        "redactPii"
+      ],
+      "inputProperties": {
+        "accessLogRetentionDays": {
+          "type": "integer",
+          "description": "Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely."
+        },
+        "cluster": {
+          "type": "string",
+          "description": "Proxy cluster fronting this account's agent-network endpoint. Bootstraps the account's settings row when set for the first time; immutable thereafter — later changes must omit it or send the assigned value."
+        },
+        "enableLogCollection": {
+          "type": "boolean",
+          "description": "Whether per-request access-log entries are collected for this account's agent-network traffic."
+        },
+        "enablePromptCollection": {
+          "type": "boolean",
+          "description": "Master switch for request/response prompt capture. Capture runs only when this is on AND a policy guardrail also enables it."
+        },
+        "redactPii": {
+          "type": "boolean",
+          "description": "Whether captured prompts have PII redacted."
+        }
+      },
+      "requiredInputs": [
+        "enableLogCollection",
+        "enablePromptCollection",
+        "redactPii"
+      ]
     },
     "netbird:resource:AzureIDP": {
       "description": "A NetBird Azure AD (Entra ID) identity-provider sync integration.",
@@ -3246,6 +3938,27 @@
     }
   },
   "functions": {
+    "netbird:function:getAgentNetworkCatalogProviders": {
+      "description": "List the catalog of upstream AI providers supported by NetBird Agent Network, with their default models and pricing. Useful for looking up a providerId and model ids for AgentNetworkProvider.",
+      "inputs": {
+        "type": "object"
+      },
+      "outputs": {
+        "properties": {
+          "providers": {
+            "description": "The list of catalog providers.",
+            "items": {
+              "$ref": "#/types/netbird:function:AgentNetworkCatalogProviderEntry"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "providers"
+        ],
+        "type": "object"
+      }
+    },
     "netbird:function:getCountries": {
       "description": "List all countries known to NetBird's geo-location database. Useful for populating PostureCheck geo-location rules.",
       "inputs": {

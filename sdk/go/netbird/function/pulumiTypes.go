@@ -13,6 +13,206 @@ import (
 
 var _ = internal.GetEnvOrDefault
 
+type AgentNetworkCatalogModel struct {
+	// Anthropic-shape cache rate: default cost per 1k cache-creation tokens, in USD.
+	CacheCreationPer1k *float64 `pulumi:"cacheCreationPer1k"`
+	// Anthropic-shape cache rate: default cost per 1k cache-read tokens, in USD.
+	CacheReadPer1k *float64 `pulumi:"cacheReadPer1k"`
+	// OpenAI-shape cache rate: default cost per 1k cached prompt tokens, in USD.
+	CachedInputPer1k *float64 `pulumi:"cachedInputPer1k"`
+	// Maximum context window in tokens.
+	ContextWindow int `pulumi:"contextWindow"`
+	// Catalog model identifier as exposed by the upstream provider.
+	Id string `pulumi:"id"`
+	// Default input token price per 1k tokens, in USD.
+	InputPer1k float64 `pulumi:"inputPer1k"`
+	// Human-friendly model name.
+	Label string `pulumi:"label"`
+	// Default output token price per 1k tokens, in USD.
+	OutputPer1k float64 `pulumi:"outputPer1k"`
+}
+
+type AgentNetworkCatalogModelOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkCatalogModelOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkCatalogModel)(nil)).Elem()
+}
+
+func (o AgentNetworkCatalogModelOutput) ToAgentNetworkCatalogModelOutput() AgentNetworkCatalogModelOutput {
+	return o
+}
+
+func (o AgentNetworkCatalogModelOutput) ToAgentNetworkCatalogModelOutputWithContext(ctx context.Context) AgentNetworkCatalogModelOutput {
+	return o
+}
+
+// Anthropic-shape cache rate: default cost per 1k cache-creation tokens, in USD.
+func (o AgentNetworkCatalogModelOutput) CacheCreationPer1k() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) *float64 { return v.CacheCreationPer1k }).(pulumi.Float64PtrOutput)
+}
+
+// Anthropic-shape cache rate: default cost per 1k cache-read tokens, in USD.
+func (o AgentNetworkCatalogModelOutput) CacheReadPer1k() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) *float64 { return v.CacheReadPer1k }).(pulumi.Float64PtrOutput)
+}
+
+// OpenAI-shape cache rate: default cost per 1k cached prompt tokens, in USD.
+func (o AgentNetworkCatalogModelOutput) CachedInputPer1k() pulumi.Float64PtrOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) *float64 { return v.CachedInputPer1k }).(pulumi.Float64PtrOutput)
+}
+
+// Maximum context window in tokens.
+func (o AgentNetworkCatalogModelOutput) ContextWindow() pulumi.IntOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) int { return v.ContextWindow }).(pulumi.IntOutput)
+}
+
+// Catalog model identifier as exposed by the upstream provider.
+func (o AgentNetworkCatalogModelOutput) Id() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) string { return v.Id }).(pulumi.StringOutput)
+}
+
+// Default input token price per 1k tokens, in USD.
+func (o AgentNetworkCatalogModelOutput) InputPer1k() pulumi.Float64Output {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) float64 { return v.InputPer1k }).(pulumi.Float64Output)
+}
+
+// Human-friendly model name.
+func (o AgentNetworkCatalogModelOutput) Label() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) string { return v.Label }).(pulumi.StringOutput)
+}
+
+// Default output token price per 1k tokens, in USD.
+func (o AgentNetworkCatalogModelOutput) OutputPer1k() pulumi.Float64Output {
+	return o.ApplyT(func(v AgentNetworkCatalogModel) float64 { return v.OutputPer1k }).(pulumi.Float64Output)
+}
+
+type AgentNetworkCatalogModelArrayOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkCatalogModelArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]AgentNetworkCatalogModel)(nil)).Elem()
+}
+
+func (o AgentNetworkCatalogModelArrayOutput) ToAgentNetworkCatalogModelArrayOutput() AgentNetworkCatalogModelArrayOutput {
+	return o
+}
+
+func (o AgentNetworkCatalogModelArrayOutput) ToAgentNetworkCatalogModelArrayOutputWithContext(ctx context.Context) AgentNetworkCatalogModelArrayOutput {
+	return o
+}
+
+func (o AgentNetworkCatalogModelArrayOutput) Index(i pulumi.IntInput) AgentNetworkCatalogModelOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) AgentNetworkCatalogModel {
+		return vs[0].([]AgentNetworkCatalogModel)[vs[1].(int)]
+	}).(AgentNetworkCatalogModelOutput)
+}
+
+type AgentNetworkCatalogProviderEntry struct {
+	// Template the proxy uses to inject the API key.
+	AuthHeaderTemplate string `pulumi:"authHeaderTemplate"`
+	// Hex brand color used to render the provider badge in the dashboard.
+	BrandColor string `pulumi:"brandColor"`
+	// Default Content-Type for upstream requests.
+	DefaultContentType string `pulumi:"defaultContentType"`
+	// Default upstream host suggested when adding a provider of this type.
+	DefaultHost string `pulumi:"defaultHost"`
+	// Short description shown in the provider picker.
+	Description string `pulumi:"description"`
+	// Catalog provider identifier, used as AgentNetworkProvider.providerId.
+	Id string `pulumi:"id"`
+	// Presentation grouping: "provider" (first-party vendor API), "gateway" (routing/aggregation layer), or "custom" (generic OpenAI-compatible endpoint).
+	Kind string `pulumi:"kind"`
+	// Catalog models available for this provider, with default pricing.
+	Models []AgentNetworkCatalogModel `pulumi:"models"`
+	// Display name for the provider.
+	Name string `pulumi:"name"`
+	// Cost-meter pricing surfaces this provider's traffic is metered under ("openai", "anthropic", "bedrock").
+	PricingSurfaces []string `pulumi:"pricingSurfaces"`
+}
+
+type AgentNetworkCatalogProviderEntryOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkCatalogProviderEntryOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*AgentNetworkCatalogProviderEntry)(nil)).Elem()
+}
+
+func (o AgentNetworkCatalogProviderEntryOutput) ToAgentNetworkCatalogProviderEntryOutput() AgentNetworkCatalogProviderEntryOutput {
+	return o
+}
+
+func (o AgentNetworkCatalogProviderEntryOutput) ToAgentNetworkCatalogProviderEntryOutputWithContext(ctx context.Context) AgentNetworkCatalogProviderEntryOutput {
+	return o
+}
+
+// Template the proxy uses to inject the API key.
+func (o AgentNetworkCatalogProviderEntryOutput) AuthHeaderTemplate() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.AuthHeaderTemplate }).(pulumi.StringOutput)
+}
+
+// Hex brand color used to render the provider badge in the dashboard.
+func (o AgentNetworkCatalogProviderEntryOutput) BrandColor() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.BrandColor }).(pulumi.StringOutput)
+}
+
+// Default Content-Type for upstream requests.
+func (o AgentNetworkCatalogProviderEntryOutput) DefaultContentType() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.DefaultContentType }).(pulumi.StringOutput)
+}
+
+// Default upstream host suggested when adding a provider of this type.
+func (o AgentNetworkCatalogProviderEntryOutput) DefaultHost() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.DefaultHost }).(pulumi.StringOutput)
+}
+
+// Short description shown in the provider picker.
+func (o AgentNetworkCatalogProviderEntryOutput) Description() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.Description }).(pulumi.StringOutput)
+}
+
+// Catalog provider identifier, used as AgentNetworkProvider.providerId.
+func (o AgentNetworkCatalogProviderEntryOutput) Id() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.Id }).(pulumi.StringOutput)
+}
+
+// Presentation grouping: "provider" (first-party vendor API), "gateway" (routing/aggregation layer), or "custom" (generic OpenAI-compatible endpoint).
+func (o AgentNetworkCatalogProviderEntryOutput) Kind() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.Kind }).(pulumi.StringOutput)
+}
+
+// Catalog models available for this provider, with default pricing.
+func (o AgentNetworkCatalogProviderEntryOutput) Models() AgentNetworkCatalogModelArrayOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) []AgentNetworkCatalogModel { return v.Models }).(AgentNetworkCatalogModelArrayOutput)
+}
+
+// Display name for the provider.
+func (o AgentNetworkCatalogProviderEntryOutput) Name() pulumi.StringOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) string { return v.Name }).(pulumi.StringOutput)
+}
+
+// Cost-meter pricing surfaces this provider's traffic is metered under ("openai", "anthropic", "bedrock").
+func (o AgentNetworkCatalogProviderEntryOutput) PricingSurfaces() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v AgentNetworkCatalogProviderEntry) []string { return v.PricingSurfaces }).(pulumi.StringArrayOutput)
+}
+
+type AgentNetworkCatalogProviderEntryArrayOutput struct{ *pulumi.OutputState }
+
+func (AgentNetworkCatalogProviderEntryArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]AgentNetworkCatalogProviderEntry)(nil)).Elem()
+}
+
+func (o AgentNetworkCatalogProviderEntryArrayOutput) ToAgentNetworkCatalogProviderEntryArrayOutput() AgentNetworkCatalogProviderEntryArrayOutput {
+	return o
+}
+
+func (o AgentNetworkCatalogProviderEntryArrayOutput) ToAgentNetworkCatalogProviderEntryArrayOutputWithContext(ctx context.Context) AgentNetworkCatalogProviderEntryArrayOutput {
+	return o
+}
+
+func (o AgentNetworkCatalogProviderEntryArrayOutput) Index(i pulumi.IntInput) AgentNetworkCatalogProviderEntryOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) AgentNetworkCatalogProviderEntry {
+		return vs[0].([]AgentNetworkCatalogProviderEntry)[vs[1].(int)]
+	}).(AgentNetworkCatalogProviderEntryOutput)
+}
+
 type City struct {
 	// Commonly used English name of the city.
 	CityName string `pulumi:"cityName"`
@@ -353,6 +553,10 @@ func (o ResourceRefArrayOutput) Index(i pulumi.IntInput) ResourceRefOutput {
 }
 
 func init() {
+	pulumi.RegisterOutputType(AgentNetworkCatalogModelOutput{})
+	pulumi.RegisterOutputType(AgentNetworkCatalogModelArrayOutput{})
+	pulumi.RegisterOutputType(AgentNetworkCatalogProviderEntryOutput{})
+	pulumi.RegisterOutputType(AgentNetworkCatalogProviderEntryArrayOutput{})
 	pulumi.RegisterOutputType(CityOutput{})
 	pulumi.RegisterOutputType(CityArrayOutput{})
 	pulumi.RegisterOutputType(CountryOutput{})

@@ -36,6 +36,21 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// The agent-network endpoints nest one level deeper
+	// (/api/agent-network/<kind>[/<id>]), so the prefix is collapsed into a
+	// single resource key and the generic CRUD routing below still applies.
+	if len(parts) >= 3 && parts[1] == "agent-network" {
+		parts = append([]string{parts[0], parts[1] + "/" + parts[2]}, parts[3:]...)
+	}
+
+	// Settings are a per-account singleton with a bootstrap POST, an
+	// echo-checked PUT and a guarded DELETE, so they bypass generic routing.
+	if len(parts) == 2 && parts[1] == agentNetworkSettingsKey {
+		s.serveAgentNetworkSettings(w, r)
+
+		return
+	}
+
 	switch r.Method {
 	case http.MethodPost:
 		if len(parts) == 2 {
@@ -82,7 +97,9 @@ func (s *Server) create(w http.ResponseWriter, resource string, r *http.Request)
 	defer s.mu.Unlock()
 
 	s.nextID++
-	id := fmt.Sprintf("%s-%d", resource, s.nextID)
+	// Nested resource keys carry a slash ("agent-network/providers"), which must
+	// not leak into a generated ID or the follow-up request path stops routing.
+	id := fmt.Sprintf("%s-%d", strings.ReplaceAll(resource, "/", "-"), s.nextID)
 	data["id"] = id
 	data = apiShape(resource, data, s.nextID)
 
@@ -189,6 +206,25 @@ func apiShape(resource string, data map[string]any, seq int) map[string]any {
 		} else {
 			defaultValue(data, "status", "active")
 		}
+	case "agent-network/providers":
+		// The API seals the key and never returns it, and always reports both
+		// identity headers on the wire — empty when unset.
+		delete(data, "api_key")
+		delete(data, "bootstrap_cluster")
+		defaultValue(data, "identity_header_user_id", "")
+		defaultValue(data, "identity_header_groups", "")
+		defaultValue(data, "enabled", true)
+		defaultValue(data, "skip_tls_verification", false)
+		defaultValue(data, "metadata_disabled", false)
+		defaultValue(data, "models", []any{})
+		defaultValue(data, "created_at", mockTimestamp)
+		defaultValue(data, "updated_at", mockTimestamp)
+	case "agent-network/policies", "agent-network/guardrails":
+		// description is always on the wire, empty when unset.
+		defaultValue(data, "description", "")
+		defaultValue(data, "enabled", true)
+		defaultValue(data, "created_at", mockTimestamp)
+		defaultValue(data, "updated_at", mockTimestamp)
 	case "setup-keys":
 		defaultValue(data, "key", fmt.Sprintf("mock-%s", data["id"]))
 		defaultValue(data, "state", "valid")
@@ -257,4 +293,139 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 
 func writeError(w http.ResponseWriter, status int, msg string) {
 	writeJSON(w, status, map[string]any{"message": msg, "code": status})
+}
+
+const (
+	agentNetworkSettingsKey = "agent-network/settings"
+	agentNetworkSettingsRow = "singleton"
+	mockTimestamp           = "2024-01-01T00:00:00Z"
+)
+
+// serveAgentNetworkSettings implements the per-account Agent Network settings
+// singleton: POST bootstraps and assigns the immutable endpoint, PUT replaces
+// the mutable fields while requiring the identity fields to be echoed back
+// unchanged, and DELETE is refused while providers still exist.
+func (s *Server) serveAgentNetworkSettings(w http.ResponseWriter, r *http.Request) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	row, bootstrapped := s.store(agentNetworkSettingsKey)[agentNetworkSettingsRow]
+
+	switch r.Method {
+	case http.MethodGet:
+		if !bootstrapped {
+			writeError(w, http.StatusNotFound, "agent network settings have not been bootstrapped yet")
+
+			return
+		}
+
+		writeJSON(w, http.StatusOK, row)
+	case http.MethodPost:
+		if bootstrapped {
+			writeError(w, http.StatusConflict, "agent network settings already bootstrapped for account")
+
+			return
+		}
+
+		s.bootstrapAgentNetworkSettings(w, r)
+	case http.MethodPut:
+		if !bootstrapped {
+			writeError(w, http.StatusNotFound, "agent network settings have not been bootstrapped yet")
+
+			return
+		}
+
+		s.updateAgentNetworkSettings(w, r, row)
+	case http.MethodDelete:
+		if len(s.store("agent-network/providers")) > 0 {
+			writeError(w, http.StatusPreconditionFailed, "agent network settings cannot be deleted while providers exist")
+
+			return
+		}
+
+		delete(s.store(agentNetworkSettingsKey), agentNetworkSettingsRow)
+		writeJSON(w, http.StatusOK, map[string]any{})
+	default:
+		writeError(w, http.StatusNotFound, "not found")
+	}
+}
+
+func (s *Server) bootstrapAgentNetworkSettings(w http.ResponseWriter, r *http.Request) {
+	data, ok := readJSON(w, r)
+	if !ok {
+		return
+	}
+
+	proxyAddress, hasProxyAddress := data["proxy_address"].(string)
+	endpoint, hasEndpoint := data["endpoint"].(string)
+
+	if hasProxyAddress == hasEndpoint {
+		writeError(w, http.StatusUnprocessableEntity, "exactly one of proxy_address and endpoint is required")
+
+		return
+	}
+
+	if hasProxyAddress {
+		// A labeled bootstrap: the server allocates the label and the endpoint
+		// hangs one label beneath the requested cluster address.
+		endpoint = "brave-otter." + proxyAddress
+	} else {
+		// A self-addressed bootstrap: the endpoint is claimed verbatim and the
+		// proxy serving it declares exactly that address.
+		proxyAddress = endpoint
+	}
+
+	row := map[string]any{
+		"endpoint":                  endpoint,
+		"proxy_address":             proxyAddress,
+		"dedicated":                 endpoint == proxyAddress,
+		"enable_log_collection":     boolOrDefault(data["enable_log_collection"], true),
+		"enable_prompt_collection":  boolOrDefault(data["enable_prompt_collection"], false),
+		"redact_pii":                boolOrDefault(data["redact_pii"], false),
+		"access_log_retention_days": intOrDefault(data["access_log_retention_days"], 30),
+		"created_at":                mockTimestamp,
+		"updated_at":                mockTimestamp,
+	}
+
+	s.store(agentNetworkSettingsKey)[agentNetworkSettingsRow] = row
+	writeJSON(w, http.StatusOK, row)
+}
+
+func (s *Server) updateAgentNetworkSettings(w http.ResponseWriter, r *http.Request, row map[string]any) {
+	data, ok := readJSON(w, r)
+	if !ok {
+		return
+	}
+
+	for _, field := range []string{"endpoint", "proxy_address"} {
+		if sent, _ := data[field].(string); sent != row[field] {
+			writeError(w, http.StatusUnprocessableEntity, field+" is immutable once assigned")
+
+			return
+		}
+	}
+
+	row["enable_log_collection"] = boolOrDefault(data["enable_log_collection"], false)
+	row["enable_prompt_collection"] = boolOrDefault(data["enable_prompt_collection"], false)
+	row["redact_pii"] = boolOrDefault(data["redact_pii"], false)
+	row["access_log_retention_days"] = intOrDefault(data["access_log_retention_days"], 30)
+
+	s.store(agentNetworkSettingsKey)[agentNetworkSettingsRow] = row
+	writeJSON(w, http.StatusOK, row)
+}
+
+func boolOrDefault(v any, fallback bool) bool {
+	if v, ok := v.(bool); ok {
+		return v
+	}
+
+	return fallback
+}
+
+func intOrDefault(v any, fallback int) int {
+	if v, ok := v.(float64); ok {
+		return int(v)
+	}
+
+	return fallback
 }

@@ -86,9 +86,14 @@ func (*AgentNetworkPolicy) Create(
 		return infer.CreateResponse[AgentNetworkPolicyState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
+	// The API always echoes description on the wire and treats "" as unset, so an
+	// omitted input travels as "" rather than being left out: that keeps inputs and
+	// state in agreement and makes removing the field clear it server-side.
+	description := strPtr(req.Inputs.Description)
+
 	created, err := client.AgentNetwork.CreatePolicy(ctx, nbapi.AgentNetworkPolicyRequest{
 		Name:                   req.Inputs.Name,
-		Description:            req.Inputs.Description,
+		Description:            &description,
 		Enabled:                req.Inputs.Enabled,
 		SourceGroups:           req.Inputs.SourceGroups,
 		DestinationProviderIds: req.Inputs.DestinationProviderIDs,
@@ -163,9 +168,14 @@ func (*AgentNetworkPolicy) Update(
 		return infer.UpdateResponse[AgentNetworkPolicyState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
+	// The API always echoes description on the wire and treats "" as unset, so an
+	// omitted input travels as "" rather than being left out: that keeps inputs and
+	// state in agreement and makes removing the field clear it server-side.
+	description := strPtr(req.Inputs.Description)
+
 	updated, err := client.AgentNetwork.UpdatePolicy(ctx, req.ID, nbapi.AgentNetworkPolicyRequest{
 		Name:                   req.Inputs.Name,
-		Description:            req.Inputs.Description,
+		Description:            &description,
 		Enabled:                req.Inputs.Enabled,
 		SourceGroups:           req.Inputs.SourceGroups,
 		DestinationProviderIds: req.Inputs.DestinationProviderIDs,
@@ -210,7 +220,7 @@ func (*AgentNetworkPolicy) Diff(
 		diff["name"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if !equalOptionalStr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 

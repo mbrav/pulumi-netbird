@@ -2090,7 +2090,8 @@
         },
         "bootstrapCluster": {
           "type": "string",
-          "description": "Proxy cluster used to bootstrap the per-account agent-network endpoint when this is the account's first provider. Ignored on subsequent creates and on updates."
+          "description": "Deprecated and ignored. NetBird removed bootstrap_cluster from the provider API; bootstrap the account's gateway endpoint with netbird:resource:AgentNetworkSettings (proxyAddress or endpoint) instead.",
+          "deprecationMessage": "bootstrapCluster is ignored. Bootstrap the account gateway with AgentNetworkSettings (proxyAddress or endpoint)."
         },
         "enabled": {
           "type": "boolean",
@@ -2147,19 +2148,19 @@
       ]
     },
     "netbird:resource:AgentNetworkSettings": {
-      "description": "Per-account NetBird Agent Network gateway settings. This is a singleton resource — only one instance exists per account. Setting cluster bootstraps the account's agent-network endpoint; the cluster is immutable thereafter.",
+      "description": "Per-account NetBird Agent Network gateway settings. This is a singleton resource — only one instance exists per account. Creating it bootstraps the account's gateway endpoint from exactly one of proxyAddress (the server allocates a label beneath that cluster) or endpoint (the hostname is claimed verbatim as a dedicated endpoint). The assigned endpoint is immutable; changing either field replaces the resource, which releases the endpoint and allocates a new one.",
       "properties": {
         "accessLogRetentionDays": {
           "type": "integer",
           "description": "Days to retain full access-log rows."
         },
-        "cluster": {
-          "type": "string",
-          "description": "Proxy cluster fronting this account's agent-network endpoint."
-        },
         "createdAt": {
           "type": "string",
           "description": "Timestamp when the settings row was created. Absent until bootstrapped."
+        },
+        "dedicated": {
+          "type": "boolean",
+          "description": "Whether the account's gateway is served by a proxy dedicated to it (endpoint equals proxyAddress)."
         },
         "enableLogCollection": {
           "type": "boolean",
@@ -2173,13 +2174,13 @@
           "type": "string",
           "description": "Bare hostname agents call for this account. Empty until bootstrapped."
         },
+        "proxyAddress": {
+          "type": "string",
+          "description": "Declared cluster address of the proxy serving this account's gateway. Equal to endpoint when a dedicated proxy serves the account; otherwise the endpoint's immediate parent."
+        },
         "redactPii": {
           "type": "boolean",
           "description": "Whether captured prompts have PII redacted."
-        },
-        "subdomain": {
-          "type": "string",
-          "description": "Auto-generated DNS-safe label that prefixes the cluster to form the agent-network endpoint. Empty until bootstrapped."
         },
         "updatedAt": {
           "type": "string",
@@ -2187,6 +2188,7 @@
         }
       },
       "required": [
+        "dedicated",
         "enableLogCollection",
         "enablePromptCollection",
         "redactPii"
@@ -2194,11 +2196,7 @@
       "inputProperties": {
         "accessLogRetentionDays": {
           "type": "integer",
-          "description": "Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely."
-        },
-        "cluster": {
-          "type": "string",
-          "description": "Proxy cluster fronting this account's agent-network endpoint. Bootstraps the account's settings row when set for the first time; immutable thereafter — later changes must omit it or send the assigned value."
+          "description": "Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely. Defaults to 30 when omitted."
         },
         "enableLogCollection": {
           "type": "boolean",
@@ -2207,6 +2205,14 @@
         "enablePromptCollection": {
           "type": "boolean",
           "description": "Master switch for request/response prompt capture. Capture runs only when this is on AND a policy guardrail also enables it."
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "Hostname to claim as the account's self-addressed (dedicated) endpoint, served only by a proxy declaring exactly that address. Mutually exclusive with proxyAddress; exactly one of the two is required. Immutable — changing it replaces the resource."
+        },
+        "proxyAddress": {
+          "type": "string",
+          "description": "Cluster address to allocate a labeled endpoint beneath: the server assigns a label and the endpoint becomes `\u003clabel\u003e.\u003cproxyAddress\u003e`. Mutually exclusive with endpoint; exactly one of the two is required. Immutable — changing it replaces the resource."
         },
         "redactPii": {
           "type": "boolean",

@@ -12,26 +12,26 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Per-account NetBird Agent Network gateway settings. This is a singleton resource — only one instance exists per account. Setting cluster bootstraps the account's agent-network endpoint; the cluster is immutable thereafter.
+// Per-account NetBird Agent Network gateway settings. This is a singleton resource — only one instance exists per account. Creating it bootstraps the account's gateway endpoint from exactly one of proxyAddress (the server allocates a label beneath that cluster) or endpoint (the hostname is claimed verbatim as a dedicated endpoint). The assigned endpoint is immutable; changing either field replaces the resource, which releases the endpoint and allocates a new one.
 type AgentNetworkSettings struct {
 	pulumi.CustomResourceState
 
 	// Days to retain full access-log rows.
 	AccessLogRetentionDays pulumi.IntPtrOutput `pulumi:"accessLogRetentionDays"`
-	// Proxy cluster fronting this account's agent-network endpoint.
-	Cluster pulumi.StringPtrOutput `pulumi:"cluster"`
 	// Timestamp when the settings row was created. Absent until bootstrapped.
 	CreatedAt pulumi.StringPtrOutput `pulumi:"createdAt"`
+	// Whether the account's gateway is served by a proxy dedicated to it (endpoint equals proxyAddress).
+	Dedicated pulumi.BoolOutput `pulumi:"dedicated"`
 	// Whether per-request access-log entries are collected.
 	EnableLogCollection pulumi.BoolOutput `pulumi:"enableLogCollection"`
 	// Master switch for request/response prompt capture.
 	EnablePromptCollection pulumi.BoolOutput `pulumi:"enablePromptCollection"`
 	// Bare hostname agents call for this account. Empty until bootstrapped.
 	Endpoint pulumi.StringPtrOutput `pulumi:"endpoint"`
+	// Declared cluster address of the proxy serving this account's gateway. Equal to endpoint when a dedicated proxy serves the account; otherwise the endpoint's immediate parent.
+	ProxyAddress pulumi.StringPtrOutput `pulumi:"proxyAddress"`
 	// Whether captured prompts have PII redacted.
 	RedactPii pulumi.BoolOutput `pulumi:"redactPii"`
-	// Auto-generated DNS-safe label that prefixes the cluster to form the agent-network endpoint. Empty until bootstrapped.
-	Subdomain pulumi.StringPtrOutput `pulumi:"subdomain"`
 	// Timestamp when the settings row was last updated. Absent until bootstrapped.
 	UpdatedAt pulumi.StringPtrOutput `pulumi:"updatedAt"`
 }
@@ -85,28 +85,32 @@ func (AgentNetworkSettingsState) ElementType() reflect.Type {
 }
 
 type agentNetworkSettingsArgs struct {
-	// Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely.
+	// Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely. Defaults to 30 when omitted.
 	AccessLogRetentionDays *int `pulumi:"accessLogRetentionDays"`
-	// Proxy cluster fronting this account's agent-network endpoint. Bootstraps the account's settings row when set for the first time; immutable thereafter — later changes must omit it or send the assigned value.
-	Cluster *string `pulumi:"cluster"`
 	// Whether per-request access-log entries are collected for this account's agent-network traffic.
 	EnableLogCollection bool `pulumi:"enableLogCollection"`
 	// Master switch for request/response prompt capture. Capture runs only when this is on AND a policy guardrail also enables it.
 	EnablePromptCollection bool `pulumi:"enablePromptCollection"`
+	// Hostname to claim as the account's self-addressed (dedicated) endpoint, served only by a proxy declaring exactly that address. Mutually exclusive with proxyAddress; exactly one of the two is required. Immutable — changing it replaces the resource.
+	Endpoint *string `pulumi:"endpoint"`
+	// Cluster address to allocate a labeled endpoint beneath: the server assigns a label and the endpoint becomes `<label>.<proxyAddress>`. Mutually exclusive with endpoint; exactly one of the two is required. Immutable — changing it replaces the resource.
+	ProxyAddress *string `pulumi:"proxyAddress"`
 	// Whether captured prompts have PII redacted.
 	RedactPii bool `pulumi:"redactPii"`
 }
 
 // The set of arguments for constructing a AgentNetworkSettings resource.
 type AgentNetworkSettingsArgs struct {
-	// Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely.
+	// Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely. Defaults to 30 when omitted.
 	AccessLogRetentionDays pulumi.IntPtrInput
-	// Proxy cluster fronting this account's agent-network endpoint. Bootstraps the account's settings row when set for the first time; immutable thereafter — later changes must omit it or send the assigned value.
-	Cluster pulumi.StringPtrInput
 	// Whether per-request access-log entries are collected for this account's agent-network traffic.
 	EnableLogCollection pulumi.BoolInput
 	// Master switch for request/response prompt capture. Capture runs only when this is on AND a policy guardrail also enables it.
 	EnablePromptCollection pulumi.BoolInput
+	// Hostname to claim as the account's self-addressed (dedicated) endpoint, served only by a proxy declaring exactly that address. Mutually exclusive with proxyAddress; exactly one of the two is required. Immutable — changing it replaces the resource.
+	Endpoint pulumi.StringPtrInput
+	// Cluster address to allocate a labeled endpoint beneath: the server assigns a label and the endpoint becomes `<label>.<proxyAddress>`. Mutually exclusive with endpoint; exactly one of the two is required. Immutable — changing it replaces the resource.
+	ProxyAddress pulumi.StringPtrInput
 	// Whether captured prompts have PII redacted.
 	RedactPii pulumi.BoolInput
 }
@@ -203,14 +207,14 @@ func (o AgentNetworkSettingsOutput) AccessLogRetentionDays() pulumi.IntPtrOutput
 	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.IntPtrOutput { return v.AccessLogRetentionDays }).(pulumi.IntPtrOutput)
 }
 
-// Proxy cluster fronting this account's agent-network endpoint.
-func (o AgentNetworkSettingsOutput) Cluster() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.StringPtrOutput { return v.Cluster }).(pulumi.StringPtrOutput)
-}
-
 // Timestamp when the settings row was created. Absent until bootstrapped.
 func (o AgentNetworkSettingsOutput) CreatedAt() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.StringPtrOutput { return v.CreatedAt }).(pulumi.StringPtrOutput)
+}
+
+// Whether the account's gateway is served by a proxy dedicated to it (endpoint equals proxyAddress).
+func (o AgentNetworkSettingsOutput) Dedicated() pulumi.BoolOutput {
+	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.BoolOutput { return v.Dedicated }).(pulumi.BoolOutput)
 }
 
 // Whether per-request access-log entries are collected.
@@ -228,14 +232,14 @@ func (o AgentNetworkSettingsOutput) Endpoint() pulumi.StringPtrOutput {
 	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.StringPtrOutput { return v.Endpoint }).(pulumi.StringPtrOutput)
 }
 
+// Declared cluster address of the proxy serving this account's gateway. Equal to endpoint when a dedicated proxy serves the account; otherwise the endpoint's immediate parent.
+func (o AgentNetworkSettingsOutput) ProxyAddress() pulumi.StringPtrOutput {
+	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.StringPtrOutput { return v.ProxyAddress }).(pulumi.StringPtrOutput)
+}
+
 // Whether captured prompts have PII redacted.
 func (o AgentNetworkSettingsOutput) RedactPii() pulumi.BoolOutput {
 	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.BoolOutput { return v.RedactPii }).(pulumi.BoolOutput)
-}
-
-// Auto-generated DNS-safe label that prefixes the cluster to form the agent-network endpoint. Empty until bootstrapped.
-func (o AgentNetworkSettingsOutput) Subdomain() pulumi.StringPtrOutput {
-	return o.ApplyT(func(v *AgentNetworkSettings) pulumi.StringPtrOutput { return v.Subdomain }).(pulumi.StringPtrOutput)
 }
 
 // Timestamp when the settings row was last updated. Absent until bootstrapped.

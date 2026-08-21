@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.5.7] - 2026-08-21
+
+### Added
+
+- Agent Network test coverage: `tests/agentnetwork_test.go` (provider lifecycle, identity-header round-trip, labeled and dedicated settings bootstrap, mutually-exclusive bootstrap validation) and the matching endpoints in the mock NetBird API test server (`tests/mock`) — nested `/api/agent-network/*` routing, provider shaping that seals `api_key` and always reports both identity headers, and the settings singleton with its bootstrap `POST`, echo-checked `PUT` and provider-guarded `DELETE`. `TestAgentNetworkProviderNoDiffWithoutIdentityHeaders` is the regression test for the perpetual diff below; it fails on 0.5.6.
+- `tests/common_test.go` helpers `assertCheckFails` (asserts a `Check` failure reason) and `withProps` (copy-with-overrides for input maps).
+
+### Changed
+
+- **Breaking:** `AgentNetworkSettings` follows netbird v0.77.0's reshaped bootstrap contract. `cluster` and `subdomain` are gone, replaced by `proxyAddress` (allocate a labeled endpoint beneath a cluster address — the server assigns the label, and the endpoint becomes `<label>.<proxyAddress>`) and `endpoint` (claim a hostname verbatim as a self-addressed, dedicated endpoint); exactly one is required, both are immutable, and the new `dedicated` output reports which shape the account got. Bootstrap now goes through the dedicated `POST /api/agent-network/settings` rather than a `PUT` carrying `cluster`, and a create against an already-bootstrapped account reports the conflict with the `pulumi import` command to run instead. `Update` echoes the assigned `endpoint`/`proxyAddress` back unchanged, which the API now requires. `Delete` releases the endpoint through the new `DELETE` endpoint instead of being a no-op — the API refuses while any provider still exists, and re-bootstrapping allocates a new endpoint. Changing `proxyAddress`/`endpoint` therefore replaces the resource (delete-before-create), which is exactly the procedure the API documents. `accessLogRetentionDays` now defaults to `30` in `Check`, because the update endpoint takes a plain int where `0` means "keep indefinitely" — an omitted value would otherwise silently become "retain forever" on the next update.
+- `AgentNetworkProvider.bootstrapCluster` is deprecated and ignored: netbird v0.77.0 removed `bootstrap_cluster` from the provider API, and gateway bootstrap moved to `AgentNetworkSettings`. The property is kept in the schema — carrying a deprecation message — so existing programs keep working instead of failing on an unknown property; it is no longer sent to the API.
+- Bumped `netbird` to `v0.77.0`, `pulumi-go-provider` to `v1.5.0` and `pulumi/sdk/v3` to `v3.259.0` across all modules, and the Go directive to `1.26.0`.
+- CI: `actions/cache` `v5` → `v6` and `actions/setup-go` `v6` → `v7` (both are ESM migrations with no input changes).
+
+### Fixed
+
+- `AgentNetworkProvider`: `identityHeaderUserId` and `identityHeaderGroups` no longer trigger a perpetual `Update` diff on every `pulumi up`/`preview`. The API declares both as non-pointer strings and always reports them on the wire — empty when unset — so state held a pointer to `""` while a program that never set them left the input `nil`, and `equalPtr` treated those as different forever. The update never converged either: the request field is `omitempty`, so a `nil` input was omitted and the server left its value untouched. Same class of bug as the 0.5.4 `ReverseProxyService` fix. Both headers now always travel explicitly — `""` for an unset input, which the API documents as "do not stamp" — so removing the field from a program actually clears the header, and `Diff` compares through the new `equalOptionalStr` (`nil` ≡ `""`).
+- `AgentNetworkGuardrail` and `AgentNetworkPolicy`: `description` had the same perpetual diff and the same inability to be cleared, and is fixed the same way.
+- `User`: `name` and `email` no longer propose a **replacement** on every preview when they are omitted from the program. Both are `UpdateReplace` and both are always returned by the API but cannot be changed by a request, so a `nil` input could never equal the returned value — this destroyed and recreated the user on every `pulumi up`. They are now compared with the new `equalServerAssignedPtr`, which accepts whatever the server reports while the input is unset and compares normally once it is set.
+- `AzureIDP` and `GoogleIDP`: `syncInterval` no longer diffs forever when omitted, for the same reason — the server substitutes its own default, which a `nil` input could never match.
+
 ## [0.5.6] - 2026-08-07
 
 ### Added

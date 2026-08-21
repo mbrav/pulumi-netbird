@@ -105,7 +105,9 @@ func (AgentNetworkProviderState) ElementType() reflect.Type {
 type agentNetworkProviderArgs struct {
 	// Upstream provider API key. Sealed at rest on the management server and never returned in responses.
 	ApiKey string `pulumi:"apiKey"`
-	// Proxy cluster used to bootstrap the per-account agent-network endpoint when this is the account's first provider. Ignored on subsequent creates and on updates.
+	// Deprecated and ignored. NetBird removed bootstrap_cluster from the provider API; bootstrap the account's gateway endpoint with netbird:resource:AgentNetworkSettings (proxyAddress or endpoint) instead.
+	//
+	// Deprecated: bootstrapCluster is ignored. Bootstrap the account gateway with AgentNetworkSettings (proxyAddress or endpoint).
 	BootstrapCluster *string `pulumi:"bootstrapCluster"`
 	// Whether the provider is enabled.
 	Enabled *bool `pulumi:"enabled"`
@@ -133,7 +135,9 @@ type agentNetworkProviderArgs struct {
 type AgentNetworkProviderArgs struct {
 	// Upstream provider API key. Sealed at rest on the management server and never returned in responses.
 	ApiKey pulumi.StringInput
-	// Proxy cluster used to bootstrap the per-account agent-network endpoint when this is the account's first provider. Ignored on subsequent creates and on updates.
+	// Deprecated and ignored. NetBird removed bootstrap_cluster from the provider API; bootstrap the account's gateway endpoint with netbird:resource:AgentNetworkSettings (proxyAddress or endpoint) instead.
+	//
+	// Deprecated: bootstrapCluster is ignored. Bootstrap the account gateway with AgentNetworkSettings (proxyAddress or endpoint).
 	BootstrapCluster pulumi.StringPtrInput
 	// Whether the provider is enabled.
 	Enabled pulumi.BoolPtrInput

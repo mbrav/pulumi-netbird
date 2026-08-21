@@ -1,6 +1,7 @@
 package tests_test
 
 import (
+	"strings"
 	"testing"
 
 	p "github.com/pulumi/pulumi-go-provider"
@@ -106,6 +107,35 @@ func assertNoDiff(t *testing.T, server integration.Server, urn resource.URN, id 
 	t.Helper()
 
 	assert.False(t, diff(t, server, urn, id, state, inputs, inputs).HasChanges)
+}
+
+// assertCheckFails asserts that Check rejects inputs with a failure whose
+// reason contains want.
+func assertCheckFails(t *testing.T, server integration.Server, urn resource.URN, inputs property.Map, want string) {
+	t.Helper()
+
+	check, err := server.Check(p.CheckRequest{Urn: urn, Inputs: inputs})
+	require.NoError(t, err)
+	require.NotEmpty(t, check.Failures)
+
+	reasons := make([]string, 0, len(check.Failures))
+	for _, failure := range check.Failures {
+		reasons = append(reasons, failure.Reason)
+	}
+
+	assert.Contains(t, strings.Join(reasons, "; "), want)
+}
+
+// withProps returns a copy of base with the given key/value pairs set.
+func withProps(base property.Map, kv ...any) property.Map {
+	values := base.AsMap()
+
+	overrides := props(kv...)
+	for key, value := range overrides.AsMap() {
+		values[key] = value
+	}
+
+	return property.NewMap(values)
 }
 
 func props(kv ...any) property.Map {

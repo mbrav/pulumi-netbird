@@ -224,7 +224,7 @@ func (*GoogleIDP) Diff(ctx context.Context, req infer.DiffRequest[GoogleIDPArgs,
 		diff["userGroupPrefixes"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
-	if !equalPtr(req.Inputs.SyncInterval, req.State.SyncInterval) {
+	if !equalServerAssignedPtr(req.Inputs.SyncInterval, req.State.SyncInterval) {
 		diff["syncInterval"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 

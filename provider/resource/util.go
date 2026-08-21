@@ -1,9 +1,13 @@
 package resource
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
 	"slices"
 	"strings"
+
+	"github.com/netbirdio/netbird/shared/management/client/rest"
 )
 
 // strPtr helper function to stringify a pointer safely.
@@ -13,6 +17,37 @@ func strPtr(str *string) string {
 	}
 
 	return *str
+}
+
+// equalOptionalStr compares an optional string input against the value the API
+// reports, treating nil and "" as the same thing.
+//
+// Use it for optional string fields the API always returns on the wire (a
+// non-pointer `string` in the response type) and normalises so that empty
+// means unset. Comparing those with equalPtr reports a diff on every preview
+// once the field is omitted from the configuration — nil input never equals a
+// pointer to "" — and the update never converges. Resources using this must
+// also send an explicit "" for a nil input (see strPtr) so that removing the
+// field from the configuration actually clears it server-side.
+func equalOptionalStr(input, state *string) bool {
+	return strPtr(input) == strPtr(state)
+}
+
+// equalServerAssignedPtr compares an optional input against server state,
+// accepting whatever the server assigned when the input is nil.
+//
+// Use it for fields the server fills in or defaults on its own and that a
+// request cannot clear (an IdP sync interval, a user's name and email). For
+// those, a nil input can never equal the returned value, so an unconditional
+// comparison proposes the same update — or, worse, the same replacement — on
+// every preview forever. Once the field is set in the configuration it is
+// compared normally, so real changes are still detected.
+func equalServerAssignedPtr[T comparable](input, state *T) bool {
+	if input == nil {
+		return true
+	}
+
+	return equalPtr(input, state)
 }
 
 // equalPtr compares two pointers of any comparable type safely.
@@ -89,6 +124,16 @@ func isBlank(v string) bool {
 // isNotFoundErr returns true when err represents a 404 / "not found" response from the NetBird API.
 func isNotFoundErr(err error) bool {
 	return err != nil && strings.Contains(strings.ToLower(err.Error()), "not found")
+}
+
+// isConflictErr returns true when err represents a 409 Conflict response from the NetBird API.
+func isConflictErr(err error) bool {
+	var apiErr *rest.APIError
+	if errors.As(err, &apiErr) {
+		return apiErr.StatusCode == http.StatusConflict
+	}
+
+	return false
 }
 
 // parseNestedID splits a compound "<parentID>/<childID>" import ID.

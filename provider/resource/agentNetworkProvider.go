@@ -72,7 +72,9 @@ func (a *AgentNetworkProviderArgs) Annotate(ann infer.Annotator) {
 	ann.Describe(&a.IdentityHeaderGroups, "Wire header name the proxy stamps with the caller's NetBird groups (comma-separated), when the catalog entry supports customizable identity headers.")
 	ann.Describe(&a.ExtraValues, "Operator-typed values for catalog-declared extra headers (see getAgentNetworkCatalogProviders).")
 	ann.Describe(&a.Models, "Models exposed through this endpoint, with operator per-1k price overrides. Empty means all catalog models are allowed at catalog prices.")
-	ann.Describe(&a.BootstrapCluster, "Proxy cluster used to bootstrap the per-account agent-network endpoint when this is the account's first provider. Ignored on subsequent creates and on updates.")
+	ann.Describe(&a.BootstrapCluster, "Deprecated and ignored. NetBird removed bootstrap_cluster from the provider API; "+
+		"bootstrap the account's gateway endpoint with netbird:resource:AgentNetworkSettings (proxyAddress or endpoint) instead.")
+	ann.Deprecate(&a.BootstrapCluster, "bootstrapCluster is ignored. Bootstrap the account gateway with AgentNetworkSettings (proxyAddress or endpoint).")
 }
 
 // AgentNetworkProviderState represents the output state of an Agent Network provider.
@@ -128,6 +130,13 @@ func (*AgentNetworkProvider) Create(
 	}
 
 	apiKey := req.Inputs.APIKey
+	// The identity headers always travel explicitly: the API treats an omitted
+	// header as "keep" and an empty one as "do not stamp", and the response
+	// always echoes both. Sending "" for an unset input keeps inputs and state
+	// in agreement instead of diffing forever, and lets removing the field from
+	// the configuration actually clear the header.
+	identityHeaderUserID := strPtr(req.Inputs.IdentityHeaderUserID)
+	identityHeaderGroups := strPtr(req.Inputs.IdentityHeaderGroups)
 
 	created, err := client.AgentNetwork.CreateProvider(ctx, nbapi.AgentNetworkProviderRequest{
 		Name:                 req.Inputs.Name,
@@ -137,11 +146,10 @@ func (*AgentNetworkProvider) Create(
 		Enabled:              req.Inputs.Enabled,
 		SkipTlsVerification:  req.Inputs.SkipTLSVerification,
 		MetadataDisabled:     req.Inputs.MetadataDisabled,
-		IdentityHeaderUserId: req.Inputs.IdentityHeaderUserID,
-		IdentityHeaderGroups: req.Inputs.IdentityHeaderGroups,
+		IdentityHeaderUserId: &identityHeaderUserID,
+		IdentityHeaderGroups: &identityHeaderGroups,
 		ExtraValues:          req.Inputs.ExtraValues,
 		Models:               toAPIAgentNetworkProviderModels(req.Inputs.Models),
-		BootstrapCluster:     req.Inputs.BootstrapCluster,
 	})
 	if err != nil {
 		return infer.CreateResponse[AgentNetworkProviderState]{}, fmt.Errorf("creating agent network provider failed: %w", err)
@@ -217,6 +225,8 @@ func (*AgentNetworkProvider) Update(
 	}
 
 	apiKey := req.Inputs.APIKey
+	identityHeaderUserID := strPtr(req.Inputs.IdentityHeaderUserID)
+	identityHeaderGroups := strPtr(req.Inputs.IdentityHeaderGroups)
 
 	updated, err := client.AgentNetwork.UpdateProvider(ctx, req.ID, nbapi.AgentNetworkProviderRequest{
 		Name:                 req.Inputs.Name,
@@ -226,11 +236,10 @@ func (*AgentNetworkProvider) Update(
 		Enabled:              req.Inputs.Enabled,
 		SkipTlsVerification:  req.Inputs.SkipTLSVerification,
 		MetadataDisabled:     req.Inputs.MetadataDisabled,
-		IdentityHeaderUserId: req.Inputs.IdentityHeaderUserID,
-		IdentityHeaderGroups: req.Inputs.IdentityHeaderGroups,
+		IdentityHeaderUserId: &identityHeaderUserID,
+		IdentityHeaderGroups: &identityHeaderGroups,
 		ExtraValues:          req.Inputs.ExtraValues,
 		Models:               toAPIAgentNetworkProviderModels(req.Inputs.Models),
-		BootstrapCluster:     nil,
 	})
 	if err != nil {
 		return infer.UpdateResponse[AgentNetworkProviderState]{}, fmt.Errorf("updating agent network provider failed: %w", err)
@@ -294,11 +303,11 @@ func (*AgentNetworkProvider) Diff(
 		diff["metadataDisabled"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
-	if !equalPtr(req.Inputs.IdentityHeaderUserID, req.State.IdentityHeaderUserID) {
+	if !equalOptionalStr(req.Inputs.IdentityHeaderUserID, req.State.IdentityHeaderUserID) {
 		diff["identityHeaderUserId"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
-	if !equalPtr(req.Inputs.IdentityHeaderGroups, req.State.IdentityHeaderGroups) {
+	if !equalOptionalStr(req.Inputs.IdentityHeaderGroups, req.State.IdentityHeaderGroups) {
 		diff["identityHeaderGroups"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 

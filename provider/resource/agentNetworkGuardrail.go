@@ -106,9 +106,14 @@ func (*AgentNetworkGuardrail) Create(
 		return infer.CreateResponse[AgentNetworkGuardrailState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
+	// The API always echoes description on the wire and treats "" as unset, so an
+	// omitted input travels as "" rather than being left out: that keeps inputs and
+	// state in agreement and makes removing the field clear it server-side.
+	description := strPtr(req.Inputs.Description)
+
 	created, err := client.AgentNetwork.CreateGuardrail(ctx, nbapi.AgentNetworkGuardrailRequest{
 		Name:        req.Inputs.Name,
-		Description: req.Inputs.Description,
+		Description: &description,
 		Checks:      toAPIAgentNetworkGuardrailChecks(req.Inputs.Checks),
 	})
 	if err != nil {
@@ -175,9 +180,14 @@ func (*AgentNetworkGuardrail) Update(
 		return infer.UpdateResponse[AgentNetworkGuardrailState]{}, fmt.Errorf("error getting NetBird client: %w", err)
 	}
 
+	// The API always echoes description on the wire and treats "" as unset, so an
+	// omitted input travels as "" rather than being left out: that keeps inputs and
+	// state in agreement and makes removing the field clear it server-side.
+	description := strPtr(req.Inputs.Description)
+
 	updated, err := client.AgentNetwork.UpdateGuardrail(ctx, req.ID, nbapi.AgentNetworkGuardrailRequest{
 		Name:        req.Inputs.Name,
-		Description: req.Inputs.Description,
+		Description: &description,
 		Checks:      toAPIAgentNetworkGuardrailChecks(req.Inputs.Checks),
 	})
 	if err != nil {
@@ -218,7 +228,7 @@ func (*AgentNetworkGuardrail) Diff(
 		diff["name"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 
-	if !equalPtr(req.Inputs.Description, req.State.Description) {
+	if !equalOptionalStr(req.Inputs.Description, req.State.Description) {
 		diff["description"] = p.PropertyDiff{InputDiff: false, Kind: p.Update}
 	}
 

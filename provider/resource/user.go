@@ -279,14 +279,14 @@ func (*User) Diff(ctx context.Context, req infer.DiffRequest[UserArgs, UserState
 
 	diff := map[string]p.PropertyDiff{}
 
-	if !equalPtr(req.Inputs.Name, req.State.Name) {
+	if !equalServerAssignedPtr(req.Inputs.Name, req.State.Name) {
 		diff["name"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.UpdateReplace,
 		}
 	}
 
-	if !equalPtr(req.Inputs.Email, req.State.Email) {
+	if !equalServerAssignedPtr(req.Inputs.Email, req.State.Email) {
 		diff["email"] = p.PropertyDiff{
 			InputDiff: false,
 			Kind:      p.UpdateReplace,

@@ -134,8 +134,8 @@ func (*Token) Read(ctx context.Context, req infer.ReadRequest[TokenArgs, TokenSt
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[TokenArgs, TokenState]{
 				ID:     "",
-				Inputs: TokenArgs{},  //nolint:exhaustruct
-				State:  TokenState{}, //nolint:exhaustruct
+				Inputs: TokenArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  TokenState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

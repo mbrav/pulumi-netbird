@@ -113,8 +113,8 @@ func (*IngressPeer) Read(ctx context.Context, req infer.ReadRequest[IngressPeerA
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[IngressPeerArgs, IngressPeerState]{
 				ID:     "",
-				Inputs: IngressPeerArgs{},  //nolint:exhaustruct
-				State:  IngressPeerState{}, //nolint:exhaustruct
+				Inputs: IngressPeerArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  IngressPeerState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

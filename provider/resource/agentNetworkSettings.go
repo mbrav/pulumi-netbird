@@ -153,8 +153,8 @@ func (*AgentNetworkSettings) Read(
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[AgentNetworkSettingsArgs, AgentNetworkSettingsState]{
 				ID:     "",
-				Inputs: AgentNetworkSettingsArgs{},  //nolint:exhaustruct
-				State:  AgentNetworkSettingsState{}, //nolint:exhaustruct
+				Inputs: AgentNetworkSettingsArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  AgentNetworkSettingsState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

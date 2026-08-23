@@ -142,8 +142,8 @@ func (*IdentityProvider) Read(ctx context.Context, req infer.ReadRequest[Identit
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[IdentityProviderArgs, IdentityProviderState]{
 				ID:     "",
-				Inputs: IdentityProviderArgs{},  //nolint:exhaustruct
-				State:  IdentityProviderState{}, //nolint:exhaustruct
+				Inputs: IdentityProviderArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  IdentityProviderState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

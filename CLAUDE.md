@@ -96,8 +96,8 @@ if err != nil {
     if isNotFoundErr(err) {
         return infer.ReadResponse[FooArgs, FooState]{
             ID:     "",
-            Inputs: FooArgs{},  //nolint:exhaustruct
-            State:  FooState{}, //nolint:exhaustruct
+            Inputs: FooArgs{},  //nolint:exhaustruct,exhaustruct_v5
+            State:  FooState{}, //nolint:exhaustruct,exhaustruct_v5
         }, nil
     }
     return infer.ReadResponse[FooArgs, FooState]{}, fmt.Errorf("reading foo failed: %w", err)
@@ -113,7 +113,7 @@ if err != nil && !isNotFoundErr(err) {
 }
 ```
 
-The `nolint:exhaustruct` comment is required on zero-value `Args`/`State` literals inside `infer.ReadResponse` because `exhaustruct` applies to all types in this package, not just `nbapi` types.
+The `nolint:exhaustruct,exhaustruct_v5` comment is required on zero-value `Args`/`State` literals inside `infer.ReadResponse` because the linter applies to all types in this package, not just `nbapi` types. Both linter names must be listed: golangci-lint renamed `exhaustruct` to `exhaustruct_v5` in v2.13.0, and CI pins v2.13.1 while older local installs still expose the old name — naming only one leaves the directive inert on the other version.
 
 ### Optional field diffs
 
@@ -184,7 +184,7 @@ Extract a helper function (e.g. `fooCheckArgs`) when the validation body exceeds
 
 The project uses `golangci-lint` with `default: all` and selectively disables linters. Notable active linters:
 
-- **`exhaustruct`** — all struct literals for types in `nbapi` must fill every field; use `nil`/zero for optional fields rather than omitting them. Our own `Args`/`State` types are also subject to this rule — use `//nolint:exhaustruct` only for intentional zero-value returns (e.g. the 404 read-miss pattern above).
+- **`exhaustruct_v5`** (named `exhaustruct` before golangci-lint v2.13.0) — all struct literals for types in `nbapi` must fill every field; use `nil`/zero for optional fields rather than omitting them. Our own `Args`/`State` types are also subject to this rule — use `//nolint:exhaustruct,exhaustruct_v5` only for intentional zero-value returns (e.g. the 404 read-miss pattern above).
 - **`wrapcheck`** — errors from external packages must be wrapped with `fmt.Errorf("...: %w", err)`.
 - **`nlreturn`** — blank line required before `return` statements; also required before `if` blocks that follow variable declarations (`wsl_v5`).
 - **`nonamedreturns`** — do not use named return values.

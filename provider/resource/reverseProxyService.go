@@ -718,8 +718,8 @@ func (*ReverseProxyService) Read(ctx context.Context, req infer.ReadRequest[Reve
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[ReverseProxyServiceArgs, ReverseProxyServiceState]{
 				ID:     "",
-				Inputs: ReverseProxyServiceArgs{},  //nolint:exhaustruct
-				State:  ReverseProxyServiceState{}, //nolint:exhaustruct
+				Inputs: ReverseProxyServiceArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  ReverseProxyServiceState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

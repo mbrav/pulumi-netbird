@@ -114,8 +114,8 @@ func (*AgentNetworkBudgetRule) Read(
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[AgentNetworkBudgetRuleArgs, AgentNetworkBudgetRuleState]{
 				ID:     "",
-				Inputs: AgentNetworkBudgetRuleArgs{},  //nolint:exhaustruct
-				State:  AgentNetworkBudgetRuleState{}, //nolint:exhaustruct
+				Inputs: AgentNetworkBudgetRuleArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  AgentNetworkBudgetRuleState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

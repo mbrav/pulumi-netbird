@@ -126,8 +126,8 @@ func (*AgentNetworkPolicy) Read(
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[AgentNetworkPolicyArgs, AgentNetworkPolicyState]{
 				ID:     "",
-				Inputs: AgentNetworkPolicyArgs{},  //nolint:exhaustruct
-				State:  AgentNetworkPolicyState{}, //nolint:exhaustruct
+				Inputs: AgentNetworkPolicyArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  AgentNetworkPolicyState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

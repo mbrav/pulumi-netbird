@@ -110,8 +110,8 @@ func (*Group) Read(ctx context.Context, req infer.ReadRequest[GroupArgs, GroupSt
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[GroupArgs, GroupState]{
 				ID:     "",
-				Inputs: GroupArgs{},  //nolint:exhaustruct
-				State:  GroupState{}, //nolint:exhaustruct
+				Inputs: GroupArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  GroupState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

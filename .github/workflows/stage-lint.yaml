@@ -11,11 +11,11 @@ env:
 
 jobs:
   lint:
-    container: golangci/golangci-lint:v2.12.2
+    container: golangci/golangci-lint:v2.13.1
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo ✅
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Cache Go modules 📦
         uses: actions/cache@v6

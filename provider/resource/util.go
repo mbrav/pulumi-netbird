@@ -128,12 +128,12 @@ func isNotFoundErr(err error) bool {
 
 // isConflictErr returns true when err represents a 409 Conflict response from the NetBird API.
 func isConflictErr(err error) bool {
-	var apiErr *rest.APIError
-	if errors.As(err, &apiErr) {
-		return apiErr.StatusCode == http.StatusConflict
+	apiErr, ok := errors.AsType[*rest.APIError](err)
+	if !ok {
+		return false
 	}
 
-	return false
+	return apiErr.StatusCode == http.StatusConflict
 }
 
 // parseNestedID splits a compound "<parentID>/<childID>" import ID.

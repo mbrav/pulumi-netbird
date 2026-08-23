@@ -107,8 +107,8 @@ func (*OktaScimIDP) Read(ctx context.Context, req infer.ReadRequest[OktaScimIDPA
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[OktaScimIDPArgs, OktaScimIDPState]{
 				ID:     "",
-				Inputs: OktaScimIDPArgs{},  //nolint:exhaustruct
-				State:  OktaScimIDPState{}, //nolint:exhaustruct
+				Inputs: OktaScimIDPArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  OktaScimIDPState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

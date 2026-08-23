@@ -92,7 +92,7 @@ func newNetworkBundle(
 	args NetworkBundleArgs,
 	opts ...pulumi.ResourceOption,
 ) (*NetworkBundleState, error) {
-	comp := &NetworkBundleState{} //nolint:exhaustruct
+	comp := &NetworkBundleState{} //nolint:exhaustruct,exhaustruct_v5
 
 	err := ctx.RegisterComponentResource(typ, name, comp, opts...)
 	if err != nil {

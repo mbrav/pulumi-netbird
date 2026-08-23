@@ -142,8 +142,8 @@ func (*AgentNetworkGuardrail) Read(
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[AgentNetworkGuardrailArgs, AgentNetworkGuardrailState]{
 				ID:     "",
-				Inputs: AgentNetworkGuardrailArgs{},  //nolint:exhaustruct
-				State:  AgentNetworkGuardrailState{}, //nolint:exhaustruct
+				Inputs: AgentNetworkGuardrailArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  AgentNetworkGuardrailState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

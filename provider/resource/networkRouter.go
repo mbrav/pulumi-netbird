@@ -135,8 +135,8 @@ func (*NetworkRouter) Read(ctx context.Context, req infer.ReadRequest[NetworkRou
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[NetworkRouterArgs, NetworkRouterState]{
 				ID:     "",
-				Inputs: NetworkRouterArgs{},  //nolint:exhaustruct
-				State:  NetworkRouterState{}, //nolint:exhaustruct
+				Inputs: NetworkRouterArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  NetworkRouterState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

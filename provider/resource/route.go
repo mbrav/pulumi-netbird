@@ -234,8 +234,8 @@ func (*Route) Read(ctx context.Context, req infer.ReadRequest[RouteArgs, RouteSt
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[RouteArgs, RouteState]{
 				ID:     "",
-				Inputs: RouteArgs{},  //nolint:exhaustruct
-				State:  RouteState{}, //nolint:exhaustruct
+				Inputs: RouteArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  RouteState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

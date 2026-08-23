@@ -139,8 +139,8 @@ func (*NetworkResource) Read(ctx context.Context, req infer.ReadRequest[NetworkR
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[NetworkResourceArgs, NetworkResourceState]{
 				ID:     "",
-				Inputs: NetworkResourceArgs{},  //nolint:exhaustruct
-				State:  NetworkResourceState{}, //nolint:exhaustruct
+				Inputs: NetworkResourceArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  NetworkResourceState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

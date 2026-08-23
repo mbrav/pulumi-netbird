@@ -74,7 +74,7 @@ func newDNSZoneBundle(
 	args DNSZoneBundleArgs,
 	opts ...pulumi.ResourceOption,
 ) (*DNSZoneBundleState, error) {
-	comp := &DNSZoneBundleState{} //nolint:exhaustruct
+	comp := &DNSZoneBundleState{} //nolint:exhaustruct,exhaustruct_v5
 
 	err := ctx.RegisterComponentResource(typ, name, comp, opts...)
 	if err != nil {

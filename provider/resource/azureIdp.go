@@ -141,8 +141,8 @@ func (*AzureIDP) Read(ctx context.Context, req infer.ReadRequest[AzureIDPArgs, A
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[AzureIDPArgs, AzureIDPState]{
 				ID:     "",
-				Inputs: AzureIDPArgs{},  //nolint:exhaustruct
-				State:  AzureIDPState{}, //nolint:exhaustruct
+				Inputs: AzureIDPArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  AzureIDPState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

@@ -169,8 +169,8 @@ func (*DNS) Read(ctx context.Context, req infer.ReadRequest[DNSArgs, DNSState]) 
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[DNSArgs, DNSState]{
 				ID:     "",
-				Inputs: DNSArgs{},  //nolint:exhaustruct
-				State:  DNSState{}, //nolint:exhaustruct
+				Inputs: DNSArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  DNSState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

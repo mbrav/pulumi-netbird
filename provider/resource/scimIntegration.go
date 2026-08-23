@@ -112,8 +112,8 @@ func (*ScimIntegration) Read(ctx context.Context, req infer.ReadRequest[ScimInte
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[ScimIntegrationArgs, ScimIntegrationState]{
 				ID:     "",
-				Inputs: ScimIntegrationArgs{},  //nolint:exhaustruct
-				State:  ScimIntegrationState{}, //nolint:exhaustruct
+				Inputs: ScimIntegrationArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  ScimIntegrationState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

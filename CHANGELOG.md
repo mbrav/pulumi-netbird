@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.5.8] - 2026-08-21
+
+Re-release of 0.5.7, which shipped with a stale version stamp. **Use this release instead of 0.5.7**; it carries no resource behaviour changes of its own.
+
+### Fixed
+
+- Release metadata: 0.5.7 was tagged with `provider.Version` left at `"0.5.6"`, so the published plugin reported itself as `0.5.6`, the schema it serves declared `"version": "0.5.6"`, and the generated Go SDK tagged `sdk/v0.5.7` asked Pulumi for plugin `0.5.6` — a program installing plugin `0.5.7` and SDK `v0.5.7` ended up with a version-mismatched pair. `provider.Version`, `schema.json` and the generated SDK are all stamped `0.5.8` and verified to agree.
+
+### Changed
+
+- CI: `actions/checkout` `v6` → `v7` (ESM migration; it also blocks fork-PR checkout under `pull_request_target`/`workflow_run`, neither of which this pipeline uses).
+- Lint compatibility with the pinned `golangci-lint` v2.13.1: it renamed `exhaustruct` to `exhaustruct_v5`, which silently voided all 46 `//nolint:exhaustruct` directives on the intentional zero-value `Args`/`State` returns. Every directive now names both linters, so it applies on either version. `isConflictErr` uses Go 1.26's `errors.AsType` instead of `errors.As`, per the new `modernize`/`errorsastype` analyzer.
+- Install snippets in `README.md` and `docs/installation-configuration.md` reference `0.5.8`. The docs command in `docs/installation-configuration.md` had been stale at `0.3.8`.
+
 ## [0.5.7] - 2026-08-21
 
 ### Added

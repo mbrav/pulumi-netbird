@@ -341,8 +341,8 @@ func (*Policy) Read(ctx context.Context, req infer.ReadRequest[PolicyArgs, Polic
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[PolicyArgs, PolicyState]{
 				ID:     "",
-				Inputs: PolicyArgs{},  //nolint:exhaustruct
-				State:  PolicyState{}, //nolint:exhaustruct
+				Inputs: PolicyArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  PolicyState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

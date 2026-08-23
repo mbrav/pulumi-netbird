@@ -117,8 +117,8 @@ func (*DNSZone) Read(ctx context.Context, req infer.ReadRequest[DNSZoneArgs, DNS
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[DNSZoneArgs, DNSZoneState]{
 				ID:     "",
-				Inputs: DNSZoneArgs{},  //nolint:exhaustruct
-				State:  DNSZoneState{}, //nolint:exhaustruct
+				Inputs: DNSZoneArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  DNSZoneState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

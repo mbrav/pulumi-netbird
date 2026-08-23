@@ -71,7 +71,7 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/natefinch/atomic v1.0.1 // indirect
-	github.com/netbirdio/netbird v0.77.0 // indirect
+	github.com/netbirdio/netbird v0.77.1 // indirect
 	github.com/oapi-codegen/runtime v1.7.0 // indirect
 	github.com/opentracing/basictracer-go v1.1.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect

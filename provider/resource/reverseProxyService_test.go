@@ -109,7 +109,7 @@ func TestEqualReverseProxyTargetsIgnoresNilVsZeroOptions(t *testing.T) {
 			Protocol:   ReverseProxyTargetProtocolHTTP,
 			TargetType: ReverseProxyTargetTypePeer,
 			Path:       nil,
-			Options:    &ReverseProxyTargetOptions{}, //nolint:exhaustruct
+			Options:    &ReverseProxyTargetOptions{}, //nolint:exhaustruct,exhaustruct_v5
 		},
 	}
 

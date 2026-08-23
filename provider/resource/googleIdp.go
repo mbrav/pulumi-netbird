@@ -116,8 +116,8 @@ func (*GoogleIDP) Read(ctx context.Context, req infer.ReadRequest[GoogleIDPArgs,
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[GoogleIDPArgs, GoogleIDPState]{
 				ID:     "",
-				Inputs: GoogleIDPArgs{},  //nolint:exhaustruct
-				State:  GoogleIDPState{}, //nolint:exhaustruct
+				Inputs: GoogleIDPArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  GoogleIDPState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

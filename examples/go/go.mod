@@ -1,9 +1,9 @@
 module github.com/mbrav/pulumi-netbird/examples/go
 
-go 1.25.11
+go 1.26.0
 
 require (
-	github.com/mbrav/pulumi-netbird/sdk v0.5.6
+	github.com/mbrav/pulumi-netbird/sdk v0.5.8
 	github.com/pulumi/pulumi/sdk/v3 v3.259.0
 )
 

@@ -177,8 +177,8 @@ func (*AgentNetworkProvider) Read(
 		if isNotFoundErr(err) {
 			return infer.ReadResponse[AgentNetworkProviderArgs, AgentNetworkProviderState]{
 				ID:     "",
-				Inputs: AgentNetworkProviderArgs{},  //nolint:exhaustruct
-				State:  AgentNetworkProviderState{}, //nolint:exhaustruct
+				Inputs: AgentNetworkProviderArgs{},  //nolint:exhaustruct,exhaustruct_v5
+				State:  AgentNetworkProviderState{}, //nolint:exhaustruct,exhaustruct_v5
 			}, nil
 		}
 

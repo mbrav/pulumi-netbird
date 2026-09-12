@@ -31,12 +31,8 @@ type GetCountriesResult struct {
 }
 
 func GetCountriesOutput(ctx *pulumi.Context, args GetCountriesOutputArgs, opts ...pulumi.InvokeOption) GetCountriesResultOutput {
-	return pulumi.ToOutputWithContext(ctx.Context(), args).
-		ApplyT(func(v interface{}) (GetCountriesResultOutput, error) {
-			args := v.(GetCountriesArgs)
-			options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
-			return ctx.InvokeOutput("netbird:function:getCountries", args, GetCountriesResultOutput{}, options).(GetCountriesResultOutput), nil
-		}).(GetCountriesResultOutput)
+	options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
+	return ctx.InvokeOutput("netbird:function:getCountries", args, GetCountriesResultOutput{}, options).(GetCountriesResultOutput)
 }
 
 type GetCountriesOutputArgs struct {

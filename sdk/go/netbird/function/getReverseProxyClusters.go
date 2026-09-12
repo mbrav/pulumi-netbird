@@ -33,12 +33,8 @@ type GetReverseProxyClustersResult struct {
 }
 
 func GetReverseProxyClustersOutput(ctx *pulumi.Context, args GetReverseProxyClustersOutputArgs, opts ...pulumi.InvokeOption) GetReverseProxyClustersResultOutput {
-	return pulumi.ToOutputWithContext(ctx.Context(), args).
-		ApplyT(func(v interface{}) (GetReverseProxyClustersResultOutput, error) {
-			args := v.(GetReverseProxyClustersArgs)
-			options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
-			return ctx.InvokeOutput("netbird:function:getReverseProxyClusters", args, GetReverseProxyClustersResultOutput{}, options).(GetReverseProxyClustersResultOutput), nil
-		}).(GetReverseProxyClustersResultOutput)
+	options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
+	return ctx.InvokeOutput("netbird:function:getReverseProxyClusters", args, GetReverseProxyClustersResultOutput{}, options).(GetReverseProxyClustersResultOutput)
 }
 
 type GetReverseProxyClustersOutputArgs struct {

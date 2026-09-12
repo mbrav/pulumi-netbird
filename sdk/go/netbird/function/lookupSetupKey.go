@@ -51,12 +51,8 @@ type LookupSetupKeyResult struct {
 }
 
 func LookupSetupKeyOutput(ctx *pulumi.Context, args LookupSetupKeyOutputArgs, opts ...pulumi.InvokeOption) LookupSetupKeyResultOutput {
-	return pulumi.ToOutputWithContext(ctx.Context(), args).
-		ApplyT(func(v interface{}) (LookupSetupKeyResultOutput, error) {
-			args := v.(LookupSetupKeyArgs)
-			options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
-			return ctx.InvokeOutput("netbird:function:lookupSetupKey", args, LookupSetupKeyResultOutput{}, options).(LookupSetupKeyResultOutput), nil
-		}).(LookupSetupKeyResultOutput)
+	options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
+	return ctx.InvokeOutput("netbird:function:lookupSetupKey", args, LookupSetupKeyResultOutput{}, options).(LookupSetupKeyResultOutput)
 }
 
 type LookupSetupKeyOutputArgs struct {

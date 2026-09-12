@@ -33,12 +33,8 @@ type GetPeersResult struct {
 }
 
 func GetPeersOutput(ctx *pulumi.Context, args GetPeersOutputArgs, opts ...pulumi.InvokeOption) GetPeersResultOutput {
-	return pulumi.ToOutputWithContext(ctx.Context(), args).
-		ApplyT(func(v interface{}) (GetPeersResultOutput, error) {
-			args := v.(GetPeersArgs)
-			options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
-			return ctx.InvokeOutput("netbird:function:getPeers", args, GetPeersResultOutput{}, options).(GetPeersResultOutput), nil
-		}).(GetPeersResultOutput)
+	options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
+	return ctx.InvokeOutput("netbird:function:getPeers", args, GetPeersResultOutput{}, options).(GetPeersResultOutput)
 }
 
 type GetPeersOutputArgs struct {

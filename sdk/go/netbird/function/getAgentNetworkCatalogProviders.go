@@ -31,12 +31,8 @@ type GetAgentNetworkCatalogProvidersResult struct {
 }
 
 func GetAgentNetworkCatalogProvidersOutput(ctx *pulumi.Context, args GetAgentNetworkCatalogProvidersOutputArgs, opts ...pulumi.InvokeOption) GetAgentNetworkCatalogProvidersResultOutput {
-	return pulumi.ToOutputWithContext(ctx.Context(), args).
-		ApplyT(func(v interface{}) (GetAgentNetworkCatalogProvidersResultOutput, error) {
-			args := v.(GetAgentNetworkCatalogProvidersArgs)
-			options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
-			return ctx.InvokeOutput("netbird:function:getAgentNetworkCatalogProviders", args, GetAgentNetworkCatalogProvidersResultOutput{}, options).(GetAgentNetworkCatalogProvidersResultOutput), nil
-		}).(GetAgentNetworkCatalogProvidersResultOutput)
+	options := pulumi.InvokeOutputOptions{InvokeOptions: internal.PkgInvokeDefaultOpts(opts)}
+	return ctx.InvokeOutput("netbird:function:getAgentNetworkCatalogProviders", args, GetAgentNetworkCatalogProvidersResultOutput{}, options).(GetAgentNetworkCatalogProvidersResultOutput)
 }
 
 type GetAgentNetworkCatalogProvidersOutputArgs struct {

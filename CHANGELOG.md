@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.5.9] - 2026-09-12
+
+Dependency-maintenance release. No resource behaviour or schema changes — netbird v0.78.1 adds nothing this provider models.
+
+### Changed
+
+- Bumped `netbird` to `v0.78.1`, `pulumi-go-provider` to `v1.6.0`, `pulumi/sdk/v3` to `v3.262.0` and `testify` to `v1.12.1` across all modules; Go directive to `1.26.6`.
+- CI: `golangci-lint` `v2.13.1` → `v2.13.2`, and `.golangci.yml`'s target Go version `1.24` → `1.26`.
+
 ## [0.5.8] - 2026-08-21
 
 Re-release of 0.5.7, which shipped with a stale version stamp. **Use this release instead of 0.5.7**; it carries no resource behaviour changes of its own.

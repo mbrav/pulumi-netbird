@@ -26,7 +26,7 @@ type ReverseProxyDomain struct {
 	TargetCluster pulumi.StringOutput `pulumi:"targetCluster"`
 	// Type of the reverse proxy domain (custom or free).
 	Type ReverseProxyDomainTypeOutput `pulumi:"type"`
-	// Whether the domain has been validated.
+	// Whether the domain has been validated. A `ReverseProxyService` can only use a validated custom domain. Since netbird v0.79.0 a pending registration expires 48 hours after it is created, and an expired registration is removed unless services are still attached to it.
 	Validated pulumi.BoolOutput `pulumi:"validated"`
 }
 
@@ -202,7 +202,7 @@ func (o ReverseProxyDomainOutput) Type() ReverseProxyDomainTypeOutput {
 	return o.ApplyT(func(v *ReverseProxyDomain) ReverseProxyDomainTypeOutput { return v.Type }).(ReverseProxyDomainTypeOutput)
 }
 
-// Whether the domain has been validated.
+// Whether the domain has been validated. A `ReverseProxyService` can only use a validated custom domain. Since netbird v0.79.0 a pending registration expires 48 hours after it is created, and an expired registration is removed unless services are still attached to it.
 func (o ReverseProxyDomainOutput) Validated() pulumi.BoolOutput {
 	return o.ApplyT(func(v *ReverseProxyDomain) pulumi.BoolOutput { return v.Validated }).(pulumi.BoolOutput)
 }

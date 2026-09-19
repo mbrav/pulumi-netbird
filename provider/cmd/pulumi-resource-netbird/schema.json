@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -3293,7 +3293,7 @@
         },
         "validated": {
           "type": "boolean",
-          "description": "Whether the domain has been validated."
+          "description": "Whether the domain has been validated. A `ReverseProxyService` can only use a validated custom domain. Since netbird v0.79.0 a pending registration expires 48 hours after it is created, and an expired registration is removed unless services are still attached to it."
         }
       },
       "required": [
@@ -3337,7 +3337,7 @@
         },
         "domain": {
           "type": "string",
-          "description": "Domain for the service."
+          "description": "Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise."
         },
         "enabled": {
           "type": "boolean",
@@ -3415,7 +3415,7 @@
         },
         "domain": {
           "type": "string",
-          "description": "Domain for the service."
+          "description": "Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise."
         },
         "enabled": {
           "type": "boolean",

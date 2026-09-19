@@ -45,7 +45,7 @@ func (r *ReverseProxyDomainState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.Domain, "Domain name for the reverse proxy.")
 	annotator.Describe(&r.TargetCluster, "The proxy cluster this domain is validated against.")
 	annotator.Describe(&r.Type, "Type of the reverse proxy domain (custom or free).")
-	annotator.Describe(&r.Validated, "Whether the domain has been validated.")
+	annotator.Describe(&r.Validated, "Whether the domain has been validated. A `ReverseProxyService` can only use a validated custom domain. Since netbird v0.79.0 a pending registration expires 48 hours after it is created, and an expired registration is removed unless services are still attached to it.")
 	annotator.Describe(&r.RequireSubdomain, "Whether a subdomain label is required in front of this domain.")
 	annotator.Describe(&r.SupportsCustomPorts, "Whether the cluster supports binding arbitrary TCP/UDP ports.")
 }

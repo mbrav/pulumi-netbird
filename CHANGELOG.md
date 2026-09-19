@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+Versions match the `v`-prefixed git tags.
+
+## [0.5.10] - 2026-09-19
+
+Dependency-maintenance release for netbird v0.79.0. No resource behaviour or schema changes.
+
+### Changed
+
+- Bumped `netbird` to `v0.79.0` and refreshed all other module dependencies.
+
+### Notes
+
+- netbird v0.79.0's only API-surface addition is the managed Agent Network gateway (`POST`/`GET /api/agent-network/managed-proxy`, types `AgentNetworkManagedProxy`, `AgentNetworkManagedProxyState`, `AgentNetworkManagedProxyConflict`). It is an account-level provisioning action rather than a declarative resource, so nothing is modelled yet. Existing types and the REST client are unchanged.
+- The release's reverse-proxy tightening is server-side only, but it changes what the API accepts: a custom domain must be validated before a `ReverseProxyService` may use it or move to it, and custom domain registrations now expire after a 48-hour validation window. Both constraints are now documented on `ReverseProxyService.domain` and `ReverseProxyDomain.validated` in the schema, so they surface in the generated SDKs and registry docs rather than only as an API rejection at `pulumi up`.
+
 ## [0.5.9] - 2026-09-12
 
 Dependency-maintenance release. No resource behaviour or schema changes — netbird v0.78.1 adds nothing this provider models.

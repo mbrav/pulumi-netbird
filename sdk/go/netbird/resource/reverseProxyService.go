@@ -22,7 +22,7 @@ type ReverseProxyService struct {
 	AccessRestrictions ReverseProxyAccessRestrictionsPtrOutput `pulumi:"accessRestrictions"`
 	// Authentication configuration for the service.
 	Auth ReverseProxyAuthPtrOutput `pulumi:"auth"`
-	// Domain for the service.
+	// Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise.
 	Domain pulumi.StringOutput `pulumi:"domain"`
 	// Whether the service is enabled.
 	Enabled pulumi.BoolOutput `pulumi:"enabled"`
@@ -108,7 +108,7 @@ type reverseProxyServiceArgs struct {
 	AccessRestrictions *ReverseProxyAccessRestrictions `pulumi:"accessRestrictions"`
 	// Authentication configuration for the service (bearer/header/link/password/pin). Mutually exclusive with private=true.
 	Auth *ReverseProxyAuth `pulumi:"auth"`
-	// Domain for the service.
+	// Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise.
 	Domain string `pulumi:"domain"`
 	// Whether the service is enabled.
 	Enabled bool `pulumi:"enabled"`
@@ -136,7 +136,7 @@ type ReverseProxyServiceArgs struct {
 	AccessRestrictions ReverseProxyAccessRestrictionsPtrInput
 	// Authentication configuration for the service (bearer/header/link/password/pin). Mutually exclusive with private=true.
 	Auth ReverseProxyAuthPtrInput
-	// Domain for the service.
+	// Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise.
 	Domain pulumi.StringInput
 	// Whether the service is enabled.
 	Enabled pulumi.BoolInput
@@ -258,7 +258,7 @@ func (o ReverseProxyServiceOutput) Auth() ReverseProxyAuthPtrOutput {
 	return o.ApplyT(func(v *ReverseProxyService) ReverseProxyAuthPtrOutput { return v.Auth }).(ReverseProxyAuthPtrOutput)
 }
 
-// Domain for the service.
+// Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise.
 func (o ReverseProxyServiceOutput) Domain() pulumi.StringOutput {
 	return o.ApplyT(func(v *ReverseProxyService) pulumi.StringOutput { return v.Domain }).(pulumi.StringOutput)
 }

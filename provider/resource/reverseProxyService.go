@@ -38,7 +38,7 @@ type ReverseProxyServiceArgs struct {
 // Annotate provides documentation for ReverseProxyServiceArgs fields.
 func (r *ReverseProxyServiceArgs) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.Name, "Service name.")
-	annotator.Describe(&r.Domain, "Domain for the service.")
+	annotator.Describe(&r.Domain, "Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise.")
 	annotator.Describe(&r.Enabled, "Whether the service is enabled.")
 	annotator.Describe(&r.Mode, `Service mode: "http" for L7 reverse proxy, "tcp"/"udp"/"tls" for L4 passthrough.`)
 	annotator.Describe(&r.Targets, "List of target backends for this service.")
@@ -74,7 +74,7 @@ type ReverseProxyServiceState struct {
 // Annotate provides documentation for ReverseProxyServiceState fields.
 func (r *ReverseProxyServiceState) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.Name, "Service name.")
-	annotator.Describe(&r.Domain, "Domain for the service.")
+	annotator.Describe(&r.Domain, "Domain for the service. A custom domain must already be validated (see `ReverseProxyDomain.validated`) before a service may use it, or before a service may be moved onto it — since netbird v0.79.0 the API rejects both otherwise.")
 	annotator.Describe(&r.Enabled, "Whether the service is enabled.")
 	annotator.Describe(&r.Mode, `Service mode: "http" for L7 reverse proxy, "tcp"/"udp"/"tls" for L4 passthrough.`)
 	annotator.Describe(&r.Targets, "List of target backends for this service.")

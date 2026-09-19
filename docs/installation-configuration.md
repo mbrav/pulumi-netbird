@@ -15,7 +15,7 @@ The NetBird Pulumi provider is available for multiple Pulumi-supported languages
 The provider plugin is distributed via GitHub Releases. Install it explicitly before running `pulumi up`:
 
 ```sh
-pulumi plugin install resource netbird 0.5.10 \
+pulumi plugin install resource netbird 0.5.11 \
   --server github://api.github.com/mbrav/pulumi-netbird
 ```
 

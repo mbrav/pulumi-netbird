@@ -137,6 +137,7 @@ func (o DNSRecordSpecArrayOutput) Index(i pulumi.IntInput) DNSRecordSpecOutput {
 	}).(DNSRecordSpecOutput)
 }
 
+// Router configuration for a NetworkBundle. At least one of peer or peerGroups must be set - the underlying NetworkRouter rejects a router with neither.
 type NetworkRouterSpec struct {
 	// Whether the router is enabled.
 	Enabled bool `pulumi:"enabled"`
@@ -161,6 +162,7 @@ type NetworkRouterSpecInput interface {
 	ToNetworkRouterSpecOutputWithContext(context.Context) NetworkRouterSpecOutput
 }
 
+// Router configuration for a NetworkBundle. At least one of peer or peerGroups must be set - the underlying NetworkRouter rejects a router with neither.
 type NetworkRouterSpecArgs struct {
 	// Whether the router is enabled.
 	Enabled pulumi.BoolInput `pulumi:"enabled"`
@@ -186,6 +188,7 @@ func (i NetworkRouterSpecArgs) ToNetworkRouterSpecOutputWithContext(ctx context.
 	return pulumi.ToOutputWithContext(ctx, i).(NetworkRouterSpecOutput)
 }
 
+// Router configuration for a NetworkBundle. At least one of peer or peerGroups must be set - the underlying NetworkRouter rejects a router with neither.
 type NetworkRouterSpecOutput struct{ *pulumi.OutputState }
 
 func (NetworkRouterSpecOutput) ElementType() reflect.Type {

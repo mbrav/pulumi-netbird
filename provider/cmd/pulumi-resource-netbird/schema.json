@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -107,6 +107,7 @@
       ]
     },
     "netbird:component:NetworkRouterSpec": {
+      "description": "Router configuration for a NetworkBundle. At least one of peer or peerGroups must be set - the underlying NetworkRouter rejects a router with neither.",
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -1673,6 +1674,7 @@
   },
   "resources": {
     "netbird:component:DNSZoneBundle": {
+      "description": "Experimental. Declares a DNSZone and one DNSRecord per records[] entry as a single unit. The created zoneID is wired into every record automatically.",
       "properties": {
         "recordIds": {
           "type": "array",
@@ -1739,6 +1741,7 @@
       "isComponent": true
     },
     "netbird:component:NetworkBundle": {
+      "description": "Experimental. Declares a Network, a NetworkRouter, and one NetworkResource per subnets[] entry as a single unit. The created networkID is wired into the router and every subnet automatically.",
       "properties": {
         "networkId": {
           "type": "string",

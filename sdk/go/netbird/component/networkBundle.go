@@ -12,6 +12,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// Experimental. Declares a Network, a NetworkRouter, and one NetworkResource per subnets[] entry as a single unit. The created networkID is wired into the router and every subnet automatically.
 type NetworkBundle struct {
 	pulumi.ResourceState
 

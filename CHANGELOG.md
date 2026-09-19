@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions match the `v`-prefixed git tags.
 
+## [0.5.11] - 2026-09-19
+
+Documentation release. No resource behaviour changes; the only schema movement is added descriptions.
+
+### Changed
+
+- `README.md`: every resource, invoke function, component and nested type is now documented in its own collapsible `<details>` block — description, an inputs table (name, type, required, description, with secret and deprecated fields flagged), a read-only outputs table, and a YAML example. The 28 resources are grouped by area (networks and routing, peers/users/access control, DNS, reverse proxy, Agent Network, identity providers and SCIM), and the 42 object types and 18 enums they reference are documented in a new "Nested Types" section. Tables are generated from `schema.json`, so they cannot drift from the provider; examples come from [`examples/yaml/Pulumi.yaml`](examples/yaml/Pulumi.yaml) where it covers the resource, and every hand-written example was validated field-by-field against the schema.
+- The feature list said "27 NetBird resource types"; the provider registers 28.
+
+### Added
+
+- Schema descriptions that were missing and showed up as gaps once the README was generated from the schema:
+  - `netbird:component:NetworkBundle` and `netbird:component:DNSZoneBundle` had no type-level description at all.
+  - `netbird:component:NetworkRouterSpec` now documents that at least one of `peer` or `peerGroups` must be set, which is what `NetworkRouter.Check` enforces.
+
 ## [0.5.10] - 2026-09-19
 
 Dependency-maintenance release for netbird v0.79.0. No resource behaviour or schema changes.

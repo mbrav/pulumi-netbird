@@ -12,6 +12,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
+// Experimental. Declares a DNSZone and one DNSRecord per records[] entry as a single unit. The created zoneID is wired into every record automatically.
 type DNSZoneBundle struct {
 	pulumi.ResourceState
 

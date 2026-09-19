@@ -17,12 +17,14 @@ type NetworkRouterSpec struct {
 }
 
 // Annotate adds schema descriptions to NetworkRouterSpec fields.
-func (r *NetworkRouterSpec) Annotate(a infer.Annotator) {
-	a.Describe(&r.Enabled, "Whether the router is enabled.")
-	a.Describe(&r.Masquerade, "Whether to masquerade traffic through the router.")
-	a.Describe(&r.Metric, "Route metric; lower values have higher priority.")
-	a.Describe(&r.PeerGroups, "Peer groups to use as router peers.")
-	a.Describe(&r.Peer, "Specific peer to use as router.")
+func (r *NetworkRouterSpec) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&r, "Router configuration for a NetworkBundle. At least one of peer or peerGroups must be "+
+		"set - the underlying NetworkRouter rejects a router with neither.")
+	annotator.Describe(&r.Enabled, "Whether the router is enabled.")
+	annotator.Describe(&r.Masquerade, "Whether to masquerade traffic through the router.")
+	annotator.Describe(&r.Metric, "Route metric; lower values have higher priority.")
+	annotator.Describe(&r.PeerGroups, "Peer groups to use as router peers.")
+	annotator.Describe(&r.Peer, "Specific peer to use as router.")
 }
 
 // NetworkSubnetSpec holds configuration for a single subnet resource in a NetworkBundle.
@@ -77,6 +79,12 @@ func (s *NetworkBundleState) Annotate(a infer.Annotator) {
 
 // NetworkBundle is the ComponentResource anchor for the NetworkBundle component.
 type NetworkBundle struct{}
+
+// Annotate adds a description to the NetworkBundle component type.
+func (n *NetworkBundle) Annotate(a infer.Annotator) {
+	a.Describe(&n, "Experimental. Declares a Network, a NetworkRouter, and one NetworkResource per subnets[] entry "+
+		"as a single unit. The created networkID is wired into the router and every subnet automatically.")
+}
 
 // Construct implements infer.ComponentResource and creates the child resources.
 func (*NetworkBundle) Construct(

@@ -60,6 +60,12 @@ func (s *DNSZoneBundleState) Annotate(a infer.Annotator) {
 // DNSZoneBundle is the ComponentResource anchor for the DNSZoneBundle component.
 type DNSZoneBundle struct{}
 
+// Annotate adds a description to the DNSZoneBundle component type.
+func (d *DNSZoneBundle) Annotate(a infer.Annotator) {
+	a.Describe(&d, "Experimental. Declares a DNSZone and one DNSRecord per records[] entry as a single unit. "+
+		"The created zoneID is wired into every record automatically.")
+}
+
 // Construct implements infer.ComponentResource and creates the child resources.
 func (*DNSZoneBundle) Construct(
 	ctx *pulumi.Context, name, typ string,

@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions match the `v`-prefixed git tags.
 
+## [0.5.12] - 2026-10-04
+
+### Fixed
+
+- `ReverseProxyDomain.Delete` now treats a 404 as success, like every other resource in this provider. It was the only `Delete` that returned the raw error, so a domain deleted outside Pulumi left a stack that could never be destroyed — `pulumi destroy` failed on the missing domain every time. Regression test: `TestReverseProxyDomainDeleteIsIdempotent`.
+
+### Changed
+
+- Bumped `netbird` to `v0.80.0`, `pulumi-go-provider` to `v1.7.0` (from `v1.5.0`) and `pulumi/sdk/v3` to `v3.267.0`, plus the usual dependency refresh across all modules.
+- CI: `golangci-lint` container `v2.13.2` → `v2.14.0`.
+- `ReverseProxyDomain.Delete` reports netbird v0.80.0's new 412 response with an actionable message. The API now refuses to delete a custom domain while the domain or any of its subdomains is still attached to a service — **including disabled services** — where it previously allowed it. The error names the cause and suggests referencing the domain from the services that use it (`domain: ${<domain>.domain}`) so Pulumi enforces the destroy order instead of racing. A 412 is deliberately *not* swallowed like a 404: pinned by `TestReverseProxyDomainDeleteInUseFails`.
+- The mock NetBird API test server (`tests/mock`) routes `/api/reverse-proxies/*` and returns 404 on deleting an unknown ID rather than silently succeeding, so idempotent-destroy behaviour is actually exercised.
+
+### Notes on netbird v0.80.0
+
+- `shared/management/http/api/types.gen.go` is **byte-identical** to v0.79.0, and `shared/management/client/rest` is unchanged. The only API-surface change touching this provider is the documented 412 on `DELETE /api/reverse-proxies/domains/{domainId}` above.
+- Everything else in the release is server-side or client-side: proxy rate limiting, the Agent Network cross-account gateway and proxy-cluster validation, IdP redirect hardening, store-by-table splits, and client/daemon fixes. None of it changes a request or response this provider sends.
+
+### Notes on pulumi-go-provider v1.5.0 → v1.7.0
+
+Regenerating `schema.json` against v1.7.0 produced **no change** beyond the version string, so the upgrade is schema-neutral. Behaviour the provider picks up for free:
+
+- Secret annotations are now applied on `Read` (#583), which matches what the secret-preserving `Read` paths here already hand-rolled for `AgentNetworkProvider.apiKey`, `IdentityProvider.clientSecret` and friends.
+- Enum values are validated at runtime (#587), so a bad `type`/`mode`/`role` is rejected by the framework rather than reaching the NetBird API.
+- Provider config diffs on version no longer force a replacement (#593).
+- Zero-valued value-typed optional fields are treated as unset (#580). This provider has four such fields — `Peer.sshEnabled`, `Peer.loginExpirationEnabled`, `Peer.inactivityExpirationEnabled` and `User.isServiceUser` — and the full test suite passes unchanged, but they are the place to look first if a `false` stops being sent.
+
 ## [0.5.11] - 2026-09-19
 
 Documentation release. No resource behaviour changes; the only schema movement is added descriptions.

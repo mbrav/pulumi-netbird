@@ -136,6 +136,18 @@ func isConflictErr(err error) bool {
 	return apiErr.StatusCode == http.StatusConflict
 }
 
+// isPreconditionFailedErr returns true when err represents a 412 Precondition Failed response from
+// the NetBird API. Since netbird v0.80.0, deleting a reverse proxy custom domain answers 412 while
+// the domain or any of its subdomains is still attached to a service, including disabled ones.
+func isPreconditionFailedErr(err error) bool {
+	apiErr, ok := errors.AsType[*rest.APIError](err)
+	if !ok {
+		return false
+	}
+
+	return apiErr.StatusCode == http.StatusPreconditionFailed
+}
+
 // parseNestedID splits a compound "<parentID>/<childID>" import ID.
 // Both parts must be non-empty; otherwise an error is returned to the caller.
 func parseNestedID(kind, id string) (string, string, error) {

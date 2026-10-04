@@ -178,7 +178,16 @@ func (*ReverseProxyDomain) Delete(ctx context.Context, req infer.DeleteRequest[R
 	}
 
 	err = client.ReverseProxyDomains.Delete(ctx, req.ID)
-	if err != nil {
+	if err != nil && !isNotFoundErr(err) {
+		if isPreconditionFailedErr(err) {
+			return infer.DeleteResponse{}, fmt.Errorf(
+				"deleting reverse proxy domain %q failed: the domain or one of its subdomains is still "+
+					"used by a service (disabled services count too). Delete or move those services first; "+
+					"if they are managed by Pulumi, reference this domain from them "+
+					"(domain: ${<thisResource>.domain}) so the destroy order is enforced: %w",
+				req.State.Domain, err)
+		}
+
 		return infer.DeleteResponse{}, fmt.Errorf("deleting reverse proxy domain failed: %w", err)
 	}
 

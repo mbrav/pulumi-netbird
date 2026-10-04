@@ -43,6 +43,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		parts = append([]string{parts[0], parts[1] + "/" + parts[2]}, parts[3:]...)
 	}
 
+	// The reverse-proxy endpoints nest the same way
+	// (/api/reverse-proxies/<kind>[/<id>]).
+	if len(parts) >= 3 && parts[1] == "reverse-proxies" {
+		parts = append([]string{parts[0], parts[1] + "/" + parts[2]}, parts[3:]...)
+	}
+
 	// Settings are a per-account singleton with a bootstrap POST, an
 	// echo-checked PUT and a guarded DELETE, so they bypass generic routing.
 	if len(parts) == 2 && parts[1] == agentNetworkSettingsKey {
@@ -159,6 +165,24 @@ func (s *Server) update(w http.ResponseWriter, resource, id string, r *http.Requ
 func (s *Server) delete(w http.ResponseWriter, resource, id string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
+	item, ok := s.store(resource)[id]
+	if !ok {
+		writeError(w, http.StatusNotFound, "not found")
+
+		return
+	}
+
+	// netbird v0.80.0 answers 412 when a reverse proxy custom domain (or one of
+	// its subdomains) is still attached to a service. A domain whose name starts
+	// with "inuse." stands in for that state.
+	if resource == reverseProxyDomainsKey {
+		if domain, isStr := item["domain"].(string); isStr && strings.HasPrefix(domain, "inuse.") {
+			writeError(w, http.StatusPreconditionFailed, "domain is still used by a service")
+
+			return
+		}
+	}
 
 	delete(s.store(resource), id)
 	w.WriteHeader(http.StatusOK)
@@ -298,6 +322,7 @@ func writeError(w http.ResponseWriter, status int, msg string) {
 const (
 	agentNetworkSettingsKey = "agent-network/settings"
 	agentNetworkSettingsRow = "singleton"
+	reverseProxyDomainsKey  = "reverse-proxies/domains"
 	mockTimestamp           = "2024-01-01T00:00:00Z"
 )
 

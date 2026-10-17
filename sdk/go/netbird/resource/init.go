@@ -47,8 +47,6 @@ func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi
 		r = &Group{}
 	case "netbird:resource:IdentityProvider":
 		r = &IdentityProvider{}
-	case "netbird:resource:IngressPeer":
-		r = &IngressPeer{}
 	case "netbird:resource:Network":
 		r = &Network{}
 	case "netbird:resource:NetworkResource":

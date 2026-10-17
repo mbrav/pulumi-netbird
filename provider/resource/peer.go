@@ -45,16 +45,31 @@ type PeerState struct {
 	LoginExpirationEnabled      bool   `pulumi:"loginExpirationEnabled,optional"`
 	SSHEnabled                  bool   `pulumi:"sshEnabled,optional"`
 	// Cloud Only — deprecated, not maintained by this provider, always stored as nil
-	ApprovalRequired *bool `pulumi:"approvalRequired,optional"`
+	ApprovalRequired *bool                 `pulumi:"approvalRequired,optional"`
+	NetworkAddresses *[]PeerNetworkAddress `pulumi:"networkAddresses,optional"`
+}
+
+// PeerNetworkAddress describes one network interface reported by the peer.
+type PeerNetworkAddress struct {
+	Mac   string `pulumi:"mac"`
+	NetIP string `pulumi:"netIp"`
+}
+
+// Annotate adds descriptive annotations to the PeerNetworkAddress fields.
+func (p *PeerNetworkAddress) Annotate(a infer.Annotator) {
+	a.Describe(&p.Mac, "MAC address of the interface.")
+	a.Describe(&p.NetIP, "IP address with CIDR of the interface.")
 }
 
 // Annotate adds descriptive annotations to the PeerState fields for use in generated SDKs.
-func (p *PeerState) Annotate(a infer.Annotator) {
-	a.Describe(&p.Name, "The name of the peer.")
-	a.Describe(&p.InactivityExpirationEnabled, "Whether Inactivity Expiration is enabled.")
-	a.Describe(&p.LoginExpirationEnabled, "Whether Login Expiration is enabled.")
-	a.Describe(&p.SSHEnabled, "Whether SSH is enabled.")
-	a.Deprecate(&p.ApprovalRequired, "Cloud only, not maintained in this provider")
+func (p *PeerState) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&p.Name, "The name of the peer.")
+	annotator.Describe(&p.InactivityExpirationEnabled, "Whether Inactivity Expiration is enabled.")
+	annotator.Describe(&p.LoginExpirationEnabled, "Whether Login Expiration is enabled.")
+	annotator.Describe(&p.SSHEnabled, "Whether SSH is enabled.")
+	annotator.Deprecate(&p.ApprovalRequired, "Cloud only, not maintained in this provider")
+	annotator.Describe(&p.NetworkAddresses, "Network interfaces reported by the peer. Read-only: the peer itself "+
+		"reports them, so they are populated by Read and refresh.")
 }
 
 // Create is a no-op; peers must be imported.
@@ -65,6 +80,7 @@ func (*Peer) Create(_ context.Context, req infer.CreateRequest[PeerArgs]) (infer
 		LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
 		SSHEnabled:                  req.Inputs.SSHEnabled,
 		ApprovalRequired:            nil,
+		NetworkAddresses:            nil,
 	}
 
 	if req.DryRun {
@@ -108,6 +124,7 @@ func (*Peer) Read(ctx context.Context, req infer.ReadRequest[PeerArgs, PeerState
 			LoginExpirationEnabled:      peer.LoginExpirationEnabled,
 			SSHEnabled:                  peer.SshEnabled,
 			ApprovalRequired:            nil,
+			NetworkAddresses:            fromAPINetworkAddresses(peer.NetworkAddresses),
 		},
 	}, nil
 }
@@ -124,6 +141,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 				LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
 				SSHEnabled:                  req.Inputs.SSHEnabled,
 				ApprovalRequired:            nil,
+				NetworkAddresses:            req.State.NetworkAddresses,
 			},
 		}, nil
 	}
@@ -153,6 +171,7 @@ func (*Peer) Update(ctx context.Context, req infer.UpdateRequest[PeerArgs, PeerS
 			LoginExpirationEnabled:      req.Inputs.LoginExpirationEnabled,
 			SSHEnabled:                  req.Inputs.SSHEnabled,
 			ApprovalRequired:            nil,
+			NetworkAddresses:            req.State.NetworkAddresses,
 		},
 	}, nil
 }
@@ -247,4 +266,21 @@ func (*Peer) WireDependencies(f infer.FieldSelector, args *PeerArgs, state *Peer
 	f.OutputField(&state.LoginExpirationEnabled).DependsOn(f.InputField(&args.LoginExpirationEnabled))
 	f.OutputField(&state.SSHEnabled).DependsOn(f.InputField(&args.SSHEnabled))
 	f.OutputField(&state.ApprovalRequired).DependsOn(f.InputField(&args.ApprovalRequired))
+}
+
+// fromAPINetworkAddresses converts the peer-reported interface list to Pulumi outputs.
+func fromAPINetworkAddresses(addresses *[]nbapi.NetworkAddress) *[]PeerNetworkAddress {
+	if addresses == nil {
+		return nil
+	}
+
+	result := make([]PeerNetworkAddress, len(*addresses))
+	for idx, address := range *addresses {
+		result[idx] = PeerNetworkAddress{
+			Mac:   address.Mac,
+			NetIP: address.NetIp,
+		}
+	}
+
+	return &result
 }

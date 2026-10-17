@@ -166,6 +166,44 @@ func (ReverseProxyTargetType) Values() []infer.EnumValue[ReverseProxyTargetType]
 	}
 }
 
+// ReverseProxyTargetAccessAction defines the access action applied once a target's
+// HTTP path prefix is selected. HTTP services only.
+type ReverseProxyTargetAccessAction string
+
+const (
+	// ReverseProxyTargetAccessActionInherit applies the service authentication configuration.
+	ReverseProxyTargetAccessActionInherit ReverseProxyTargetAccessAction = ReverseProxyTargetAccessAction(
+		nbapi.ServiceTargetAccessActionInherit)
+	// ReverseProxyTargetAccessActionBypass skips service authentication for this path.
+	ReverseProxyTargetAccessActionBypass ReverseProxyTargetAccessAction = ReverseProxyTargetAccessAction(
+		nbapi.ServiceTargetAccessActionBypass)
+	// ReverseProxyTargetAccessActionBlock denies access to this path.
+	ReverseProxyTargetAccessActionBlock ReverseProxyTargetAccessAction = ReverseProxyTargetAccessAction(
+		nbapi.ServiceTargetAccessActionBlock)
+)
+
+// Values returns the valid enum values for ReverseProxyTargetAccessAction.
+func (ReverseProxyTargetAccessAction) Values() []infer.EnumValue[ReverseProxyTargetAccessAction] {
+	return []infer.EnumValue[ReverseProxyTargetAccessAction]{
+		{
+			Name:        "inherit",
+			Value:       ReverseProxyTargetAccessActionInherit,
+			Description: "Apply the service authentication configuration to this path. The default.",
+		},
+		{
+			Name:  "bypass",
+			Value: ReverseProxyTargetAccessActionBypass,
+			Description: "Skip service authentication for this path, exposing it publicly even when the " +
+				"service itself is authenticated.",
+		},
+		{
+			Name:        "block",
+			Value:       ReverseProxyTargetAccessActionBlock,
+			Description: "Deny all access to this path.",
+		},
+	}
+}
+
 // ReverseProxyPathRewrite controls how the request path is rewritten before forwarding to the backend.
 type ReverseProxyPathRewrite string
 
@@ -251,14 +289,15 @@ func (r *ReverseProxyTargetOptions) Annotate(annotator infer.Annotator) {
 
 // ReverseProxyTarget defines a single backend target for a reverse proxy service.
 type ReverseProxyTarget struct {
-	TargetID   string                     `pulumi:"targetId"`
-	Enabled    bool                       `pulumi:"enabled"`
-	Host       *string                    `pulumi:"host,optional"`
-	Port       int                        `pulumi:"port"`
-	Protocol   ReverseProxyTargetProtocol `pulumi:"protocol"`
-	TargetType ReverseProxyTargetType     `pulumi:"targetType"`
-	Path       *string                    `pulumi:"path,optional"`
-	Options    *ReverseProxyTargetOptions `pulumi:"options,optional"`
+	TargetID     string                          `pulumi:"targetId"`
+	Enabled      bool                            `pulumi:"enabled"`
+	Host         *string                         `pulumi:"host,optional"`
+	Port         int                             `pulumi:"port"`
+	Protocol     ReverseProxyTargetProtocol      `pulumi:"protocol"`
+	TargetType   ReverseProxyTargetType          `pulumi:"targetType"`
+	Path         *string                         `pulumi:"path,optional"`
+	Options      *ReverseProxyTargetOptions      `pulumi:"options,optional"`
+	AccessAction *ReverseProxyTargetAccessAction `pulumi:"accessAction,optional"`
 }
 
 // Annotate provides documentation for ReverseProxyTarget fields.
@@ -271,6 +310,9 @@ func (r *ReverseProxyTarget) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&r.TargetType, "Target type.")
 	annotator.Describe(&r.Path, "URL path prefix for this target (HTTP only).")
 	annotator.Describe(&r.Options, "Advanced per-target proxy options.")
+	annotator.Describe(&r.AccessAction, "Access action applied once this target's path prefix is selected. "+
+		`"inherit" (the default) applies the service authentication configuration, "bypass" skips service `+
+		`authentication for this path, and "block" denies access to it. HTTP services only.`)
 }
 
 // ReverseProxyBearerAuth configures bearer (SSO) authentication.
@@ -421,15 +463,23 @@ func fromAPITargetOptions(options *nbapi.ServiceTargetOptions) *ReverseProxyTarg
 func toAPITargets(targets []ReverseProxyTarget) []nbapi.ServiceTarget {
 	apiTargets := make([]nbapi.ServiceTarget, len(targets))
 	for idx, target := range targets {
+		var accessAction *nbapi.ServiceTargetAccessAction
+
+		if target.AccessAction != nil {
+			action := nbapi.ServiceTargetAccessAction(*target.AccessAction)
+			accessAction = &action
+		}
+
 		apiTargets[idx] = nbapi.ServiceTarget{
-			TargetId:   target.TargetID,
-			Enabled:    target.Enabled,
-			Host:       target.Host,
-			Port:       target.Port,
-			Protocol:   nbapi.ServiceTargetProtocol(target.Protocol),
-			TargetType: nbapi.ServiceTargetTargetType(target.TargetType),
-			Path:       target.Path,
-			Options:    toAPITargetOptions(target.Options),
+			TargetId:     target.TargetID,
+			Enabled:      target.Enabled,
+			Host:         target.Host,
+			Port:         target.Port,
+			Protocol:     nbapi.ServiceTargetProtocol(target.Protocol),
+			TargetType:   nbapi.ServiceTargetTargetType(target.TargetType),
+			Path:         target.Path,
+			Options:      toAPITargetOptions(target.Options),
+			AccessAction: accessAction,
 		}
 	}
 
@@ -440,15 +490,23 @@ func toAPITargets(targets []ReverseProxyTarget) []nbapi.ServiceTarget {
 func fromAPITargets(targets []nbapi.ServiceTarget) []ReverseProxyTarget {
 	result := make([]ReverseProxyTarget, len(targets))
 	for idx, apiTarget := range targets {
+		var accessAction *ReverseProxyTargetAccessAction
+
+		if apiTarget.AccessAction != nil {
+			action := ReverseProxyTargetAccessAction(*apiTarget.AccessAction)
+			accessAction = &action
+		}
+
 		result[idx] = ReverseProxyTarget{
-			TargetID:   apiTarget.TargetId,
-			Enabled:    apiTarget.Enabled,
-			Host:       apiTarget.Host,
-			Port:       apiTarget.Port,
-			Protocol:   ReverseProxyTargetProtocol(apiTarget.Protocol),
-			TargetType: ReverseProxyTargetType(apiTarget.TargetType),
-			Path:       apiTarget.Path,
-			Options:    fromAPITargetOptions(apiTarget.Options),
+			TargetID:     apiTarget.TargetId,
+			Enabled:      apiTarget.Enabled,
+			Host:         apiTarget.Host,
+			Port:         apiTarget.Port,
+			Protocol:     ReverseProxyTargetProtocol(apiTarget.Protocol),
+			TargetType:   ReverseProxyTargetType(apiTarget.TargetType),
+			Path:         apiTarget.Path,
+			Options:      fromAPITargetOptions(apiTarget.Options),
+			AccessAction: accessAction,
 		}
 	}
 
@@ -892,21 +950,12 @@ func (*ReverseProxyService) Check(ctx context.Context, req infer.CheckRequest) (
 
 // reverseProxyCheckArgs validates a ReverseProxyServiceArgs and returns all failures.
 //
-//nolint:cyclop
-func reverseProxyCheckArgs(args ReverseProxyServiceArgs) []p.CheckFailure {
-	var failures []p.CheckFailure
 
-	if isBlank(args.Name) {
-		failures = append(failures, p.CheckFailure{Property: "name", Reason: "name must not be empty"})
-	}
-
-	if isBlank(args.Domain) {
-		failures = append(failures, p.CheckFailure{Property: "domain", Reason: "domain must not be empty"})
-	}
-
-	if len(args.Targets) == 0 {
-		failures = append(failures, p.CheckFailure{Property: "targets", Reason: "at least one target is required"})
-	}
+// reverseProxyTargetFailures validates the per-target fields of a reverse proxy
+// service. Split out of reverseProxyCheckArgs to keep that function under the
+// gocognit limit.
+func reverseProxyTargetFailures(args ReverseProxyServiceArgs) []p.CheckFailure {
+	failures := []p.CheckFailure{}
 
 	for idx, target := range args.Targets {
 		if target.Port < 1 || target.Port > 65535 {
@@ -924,7 +973,37 @@ func reverseProxyCheckArgs(args ReverseProxyServiceArgs) []p.CheckFailure {
 				})
 			}
 		}
+
+		// accessAction selects what happens after the target's path prefix matches,
+		// so it is meaningful only for the L7 proxy.
+		if target.AccessAction != nil && (args.Mode == nil || *args.Mode != ReverseProxyServiceModeHTTP) {
+			failures = append(failures, p.CheckFailure{
+				Property: fmt.Sprintf("targets[%d].accessAction", idx),
+				Reason:   "accessAction is only supported when mode is http",
+			})
+		}
 	}
+
+	return failures
+}
+
+//nolint:cyclop
+func reverseProxyCheckArgs(args ReverseProxyServiceArgs) []p.CheckFailure {
+	var failures []p.CheckFailure
+
+	if isBlank(args.Name) {
+		failures = append(failures, p.CheckFailure{Property: "name", Reason: "name must not be empty"})
+	}
+
+	if isBlank(args.Domain) {
+		failures = append(failures, p.CheckFailure{Property: "domain", Reason: "domain must not be empty"})
+	}
+
+	if len(args.Targets) == 0 {
+		failures = append(failures, p.CheckFailure{Property: "targets", Reason: "at least one target is required"})
+	}
+
+	failures = append(failures, reverseProxyTargetFailures(args)...)
 
 	if args.AccessGroups != nil {
 		for i, group := range *args.AccessGroups {
@@ -985,12 +1064,25 @@ func equalReverseProxyTargets(targetsA, targetsB []ReverseProxyTarget) bool {
 			targetsA[idx].TargetType != targetsB[idx].TargetType ||
 			!equalPtr(targetsA[idx].Host, targetsB[idx].Host) ||
 			!equalPtr(targetsA[idx].Path, targetsB[idx].Path) ||
+			accessActionOrDefault(targetsA[idx].AccessAction) != accessActionOrDefault(targetsB[idx].AccessAction) ||
 			!equalOptionalDeep(targetsA[idx].Options, targetsB[idx].Options) {
 			return false
 		}
 	}
 
 	return true
+}
+
+// accessActionOrDefault normalizes an unset per-target access action to "inherit",
+// which is the behaviour the API applies when a target carries none. Comparing the
+// raw pointers would make a program that omits accessAction diff forever against a
+// server that reports the default explicitly.
+func accessActionOrDefault(action *ReverseProxyTargetAccessAction) ReverseProxyTargetAccessAction {
+	if action == nil {
+		return ReverseProxyTargetAccessActionInherit
+	}
+
+	return *action
 }
 
 // equalOptionalDeep compares two pointers by the values they point to,

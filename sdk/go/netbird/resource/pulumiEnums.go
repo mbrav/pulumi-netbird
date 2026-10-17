@@ -1899,6 +1899,176 @@ func (o ReverseProxyServiceStatusPtrOutput) ToStringPtrOutputWithContext(ctx con
 	}).(pulumi.StringPtrOutput)
 }
 
+type ReverseProxyTargetAccessAction string
+
+const (
+	// Apply the service authentication configuration to this path. The default.
+	ReverseProxyTargetAccessActionInherit = ReverseProxyTargetAccessAction("inherit")
+	// Skip service authentication for this path, exposing it publicly even when the service itself is authenticated.
+	ReverseProxyTargetAccessActionBypass = ReverseProxyTargetAccessAction("bypass")
+	// Deny all access to this path.
+	ReverseProxyTargetAccessActionBlock = ReverseProxyTargetAccessAction("block")
+)
+
+func (ReverseProxyTargetAccessAction) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetAccessAction)(nil)).Elem()
+}
+
+func (e ReverseProxyTargetAccessAction) ToReverseProxyTargetAccessActionOutput() ReverseProxyTargetAccessActionOutput {
+	return pulumi.ToOutput(e).(ReverseProxyTargetAccessActionOutput)
+}
+
+func (e ReverseProxyTargetAccessAction) ToReverseProxyTargetAccessActionOutputWithContext(ctx context.Context) ReverseProxyTargetAccessActionOutput {
+	return pulumi.ToOutputWithContext(ctx, e).(ReverseProxyTargetAccessActionOutput)
+}
+
+func (e ReverseProxyTargetAccessAction) ToReverseProxyTargetAccessActionPtrOutput() ReverseProxyTargetAccessActionPtrOutput {
+	return e.ToReverseProxyTargetAccessActionPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyTargetAccessAction) ToReverseProxyTargetAccessActionPtrOutputWithContext(ctx context.Context) ReverseProxyTargetAccessActionPtrOutput {
+	return ReverseProxyTargetAccessAction(e).ToReverseProxyTargetAccessActionOutputWithContext(ctx).ToReverseProxyTargetAccessActionPtrOutputWithContext(ctx)
+}
+
+func (e ReverseProxyTargetAccessAction) ToStringOutput() pulumi.StringOutput {
+	return pulumi.ToOutput(pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyTargetAccessAction) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return pulumi.ToOutputWithContext(ctx, pulumi.String(e)).(pulumi.StringOutput)
+}
+
+func (e ReverseProxyTargetAccessAction) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringPtrOutputWithContext(context.Background())
+}
+
+func (e ReverseProxyTargetAccessAction) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return pulumi.String(e).ToStringOutputWithContext(ctx).ToStringPtrOutputWithContext(ctx)
+}
+
+type ReverseProxyTargetAccessActionOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetAccessActionOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*ReverseProxyTargetAccessAction)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToReverseProxyTargetAccessActionOutput() ReverseProxyTargetAccessActionOutput {
+	return o
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToReverseProxyTargetAccessActionOutputWithContext(ctx context.Context) ReverseProxyTargetAccessActionOutput {
+	return o
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToReverseProxyTargetAccessActionPtrOutput() ReverseProxyTargetAccessActionPtrOutput {
+	return o.ToReverseProxyTargetAccessActionPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToReverseProxyTargetAccessActionPtrOutputWithContext(ctx context.Context) ReverseProxyTargetAccessActionPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v ReverseProxyTargetAccessAction) *ReverseProxyTargetAccessAction {
+		return &v
+	}).(ReverseProxyTargetAccessActionPtrOutput)
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToStringOutput() pulumi.StringOutput {
+	return o.ToStringOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToStringOutputWithContext(ctx context.Context) pulumi.StringOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyTargetAccessAction) string {
+		return string(e)
+	}).(pulumi.StringOutput)
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetAccessActionOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e ReverseProxyTargetAccessAction) *string {
+		v := string(e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+type ReverseProxyTargetAccessActionPtrOutput struct{ *pulumi.OutputState }
+
+func (ReverseProxyTargetAccessActionPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**ReverseProxyTargetAccessAction)(nil)).Elem()
+}
+
+func (o ReverseProxyTargetAccessActionPtrOutput) ToReverseProxyTargetAccessActionPtrOutput() ReverseProxyTargetAccessActionPtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetAccessActionPtrOutput) ToReverseProxyTargetAccessActionPtrOutputWithContext(ctx context.Context) ReverseProxyTargetAccessActionPtrOutput {
+	return o
+}
+
+func (o ReverseProxyTargetAccessActionPtrOutput) Elem() ReverseProxyTargetAccessActionOutput {
+	return o.ApplyT(func(v *ReverseProxyTargetAccessAction) ReverseProxyTargetAccessAction {
+		if v != nil {
+			return *v
+		}
+		var ret ReverseProxyTargetAccessAction
+		return ret
+	}).(ReverseProxyTargetAccessActionOutput)
+}
+
+func (o ReverseProxyTargetAccessActionPtrOutput) ToStringPtrOutput() pulumi.StringPtrOutput {
+	return o.ToStringPtrOutputWithContext(context.Background())
+}
+
+func (o ReverseProxyTargetAccessActionPtrOutput) ToStringPtrOutputWithContext(ctx context.Context) pulumi.StringPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, e *ReverseProxyTargetAccessAction) *string {
+		if e == nil {
+			return nil
+		}
+		v := string(*e)
+		return &v
+	}).(pulumi.StringPtrOutput)
+}
+
+// ReverseProxyTargetAccessActionInput is an input type that accepts values of the ReverseProxyTargetAccessAction enum
+// A concrete instance of `ReverseProxyTargetAccessActionInput` can be one of the following:
+//
+//	ReverseProxyTargetAccessActionInherit
+//	ReverseProxyTargetAccessActionBypass
+//	ReverseProxyTargetAccessActionBlock
+type ReverseProxyTargetAccessActionInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetAccessActionOutput() ReverseProxyTargetAccessActionOutput
+	ToReverseProxyTargetAccessActionOutputWithContext(context.Context) ReverseProxyTargetAccessActionOutput
+}
+
+var reverseProxyTargetAccessActionPtrType = reflect.TypeOf((**ReverseProxyTargetAccessAction)(nil)).Elem()
+
+type ReverseProxyTargetAccessActionPtrInput interface {
+	pulumi.Input
+
+	ToReverseProxyTargetAccessActionPtrOutput() ReverseProxyTargetAccessActionPtrOutput
+	ToReverseProxyTargetAccessActionPtrOutputWithContext(context.Context) ReverseProxyTargetAccessActionPtrOutput
+}
+
+type reverseProxyTargetAccessActionPtr string
+
+func ReverseProxyTargetAccessActionPtr(v string) ReverseProxyTargetAccessActionPtrInput {
+	return (*reverseProxyTargetAccessActionPtr)(&v)
+}
+
+func (*reverseProxyTargetAccessActionPtr) ElementType() reflect.Type {
+	return reverseProxyTargetAccessActionPtrType
+}
+
+func (in *reverseProxyTargetAccessActionPtr) ToReverseProxyTargetAccessActionPtrOutput() ReverseProxyTargetAccessActionPtrOutput {
+	return pulumi.ToOutput(in).(ReverseProxyTargetAccessActionPtrOutput)
+}
+
+func (in *reverseProxyTargetAccessActionPtr) ToReverseProxyTargetAccessActionPtrOutputWithContext(ctx context.Context) ReverseProxyTargetAccessActionPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, in).(ReverseProxyTargetAccessActionPtrOutput)
+}
+
 type ReverseProxyTargetProtocol string
 
 const (
@@ -2867,6 +3037,8 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyPathRewritePtrInput)(nil)).Elem(), ReverseProxyPathRewrite("preserve"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyServiceModeInput)(nil)).Elem(), ReverseProxyServiceMode("http"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyServiceModePtrInput)(nil)).Elem(), ReverseProxyServiceMode("http"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetAccessActionInput)(nil)).Elem(), ReverseProxyTargetAccessAction("inherit"))
+	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetAccessActionPtrInput)(nil)).Elem(), ReverseProxyTargetAccessAction("inherit"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetProtocolInput)(nil)).Elem(), ReverseProxyTargetProtocol("http"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetProtocolPtrInput)(nil)).Elem(), ReverseProxyTargetProtocol("http"))
 	pulumi.RegisterInputType(reflect.TypeOf((*ReverseProxyTargetTypeInput)(nil)).Elem(), ReverseProxyTargetType("cluster"))
@@ -2901,6 +3073,8 @@ func init() {
 	pulumi.RegisterOutputType(ReverseProxyServiceModePtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyServiceStatusOutput{})
 	pulumi.RegisterOutputType(ReverseProxyServiceStatusPtrOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetAccessActionOutput{})
+	pulumi.RegisterOutputType(ReverseProxyTargetAccessActionPtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetProtocolOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetProtocolPtrOutput{})
 	pulumi.RegisterOutputType(ReverseProxyTargetTypeOutput{})

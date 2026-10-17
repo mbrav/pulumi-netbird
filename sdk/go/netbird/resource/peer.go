@@ -24,6 +24,8 @@ type Peer struct {
 	LoginExpirationEnabled pulumi.BoolPtrOutput `pulumi:"loginExpirationEnabled"`
 	// The name of the peer.
 	Name pulumi.StringOutput `pulumi:"name"`
+	// Network interfaces reported by the peer. Read-only: the peer itself reports them, so they are populated by Read and refresh.
+	NetworkAddresses PeerNetworkAddressArrayOutput `pulumi:"networkAddresses"`
 	// Whether SSH is enabled.
 	SshEnabled pulumi.BoolPtrOutput `pulumi:"sshEnabled"`
 }
@@ -202,6 +204,11 @@ func (o PeerOutput) LoginExpirationEnabled() pulumi.BoolPtrOutput {
 // The name of the peer.
 func (o PeerOutput) Name() pulumi.StringOutput {
 	return o.ApplyT(func(v *Peer) pulumi.StringOutput { return v.Name }).(pulumi.StringOutput)
+}
+
+// Network interfaces reported by the peer. Read-only: the peer itself reports them, so they are populated by Read and refresh.
+func (o PeerOutput) NetworkAddresses() PeerNetworkAddressArrayOutput {
+	return o.ApplyT(func(v *Peer) PeerNetworkAddressArrayOutput { return v.NetworkAddresses }).(PeerNetworkAddressArrayOutput)
 }
 
 // Whether SSH is enabled.

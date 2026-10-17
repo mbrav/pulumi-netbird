@@ -19,7 +19,6 @@ func All() []infer.InferredResource {
 		infer.Resource(&GoogleIDP{}),
 		infer.Resource(&Group{}),
 		infer.Resource(&IdentityProvider{}),
-		infer.Resource(&IngressPeer{}),
 		infer.Resource(&Network{}),
 		infer.Resource(&NetworkResource{}),
 		infer.Resource(&NetworkRouter{}),

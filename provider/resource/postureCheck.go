@@ -54,6 +54,7 @@ type PostureChecksConfig struct {
 	OsVersion    *PostureOSVersionCheck        `pulumi:"osVersionCheck,optional"`
 	NetworkRange *PosturePeerNetworkRangeCheck `pulumi:"peerNetworkRangeCheck,optional"`
 	Process      *PostureProcessCheck          `pulumi:"processCheck,optional"`
+	Certificate  *PostureCertificateCheck      `pulumi:"certificateCheck,optional"`
 }
 
 // Annotate provides documentation for PostureChecksConfig fields.
@@ -63,6 +64,19 @@ func (pc *PostureChecksConfig) Annotate(annotator infer.Annotator) {
 	annotator.Describe(&pc.OsVersion, "Posture check for the minimum operating system version.")
 	annotator.Describe(&pc.NetworkRange, "Posture check based on peer local network addresses.")
 	annotator.Describe(&pc.Process, "Posture check for required binaries running on the peer.")
+	annotator.Describe(&pc.Certificate, "Posture check requiring the peer's certificate to chain to one of "+
+		"the given CA certificates.")
+}
+
+// PostureCertificateCheck defines a client certificate posture check.
+type PostureCertificateCheck struct {
+	CaCertificates []string `pulumi:"caCertificates"`
+}
+
+// Annotate provides documentation for PostureCertificateCheck fields.
+func (pc *PostureCertificateCheck) Annotate(annotator infer.Annotator) {
+	annotator.Describe(&pc.CaCertificates,
+		"PEM encoded CA certificates the peer's certificate must chain to.")
 }
 
 // PostureGeoLocationCheck defines a geo location posture check.
@@ -273,6 +287,7 @@ func fromAPIOSVersionCheck(check *nbapi.OSVersionCheck) *PostureOSVersionCheck {
 // toAPIChecks converts a PostureChecksConfig to an api.Checks.
 func toAPIChecks(checks PostureChecksConfig) nbapi.Checks {
 	result := nbapi.Checks{
+		CertificateCheck:      nil,
 		GeoLocationCheck:      nil,
 		NbVersionCheck:        nil,
 		OsVersionCheck:        nil,
@@ -324,6 +339,12 @@ func toAPIChecks(checks PostureChecksConfig) nbapi.Checks {
 		result.ProcessCheck = &nbapi.ProcessCheck{Processes: processes}
 	}
 
+	if checks.Certificate != nil {
+		result.CertificateCheck = &nbapi.CertificateCheck{
+			CaCertificates: sortedStrings(checks.Certificate.CaCertificates),
+		}
+	}
+
 	return result
 }
 
@@ -335,6 +356,7 @@ func fromAPIChecks(checks nbapi.Checks) PostureChecksConfig {
 		OsVersion:    nil,
 		NetworkRange: nil,
 		Process:      nil,
+		Certificate:  nil,
 	}
 
 	if checks.GeoLocationCheck != nil {
@@ -378,6 +400,12 @@ func fromAPIChecks(checks nbapi.Checks) PostureChecksConfig {
 		}
 
 		result.Process = &PostureProcessCheck{Processes: processes}
+	}
+
+	if checks.CertificateCheck != nil {
+		result.Certificate = &PostureCertificateCheck{
+			CaCertificates: sortedStrings(checks.CertificateCheck.CaCertificates),
+		}
 	}
 
 	return result
@@ -566,6 +594,24 @@ func (*PostureCheck) Check(ctx context.Context, req infer.CheckRequest) (infer.C
 		})
 	}
 
+	if args.Checks.Certificate != nil {
+		if len(args.Checks.Certificate.CaCertificates) == 0 {
+			failures = append(failures, p.CheckFailure{
+				Property: "checks.certificateCheck.caCertificates",
+				Reason:   "at least one CA certificate is required when certificateCheck is set",
+			})
+		}
+
+		for i, cert := range args.Checks.Certificate.CaCertificates {
+			if isBlank(cert) {
+				failures = append(failures, p.CheckFailure{
+					Property: fmt.Sprintf("checks.certificateCheck.caCertificates[%d]", i),
+					Reason:   "CA certificate must not be empty",
+				})
+			}
+		}
+	}
+
 	if args.Checks.Process != nil && len(args.Checks.Process.Processes) == 0 {
 		failures = append(failures, p.CheckFailure{
 			Property: "checks.processCheck.processes",
@@ -592,7 +638,20 @@ func equalChecks(checksA, checksB PostureChecksConfig) bool {
 		equalMinVersionCheck(checksA.NbVersion, checksB.NbVersion) &&
 		equalOSVersionCheck(checksA.OsVersion, checksB.OsVersion) &&
 		equalNetworkRangeCheck(checksA.NetworkRange, checksB.NetworkRange) &&
-		equalProcessCheck(checksA.Process, checksB.Process)
+		equalProcessCheck(checksA.Process, checksB.Process) &&
+		equalCertificateCheck(checksA.Certificate, checksB.Certificate)
+}
+
+func equalCertificateCheck(checkA, checkB *PostureCertificateCheck) bool {
+	if checkA == nil && checkB == nil {
+		return true
+	}
+
+	if checkA == nil || checkB == nil {
+		return false
+	}
+
+	return equalSlice(checkA.CaCertificates, checkB.CaCertificates)
 }
 
 func equalGeoLocationCheck(checkA, checkB *PostureGeoLocationCheck) bool {

@@ -882,81 +882,6 @@ func (o AgentNetworkTokenLimitPtrOutput) WindowSeconds() pulumi.IntPtrOutput {
 	}).(pulumi.IntPtrOutput)
 }
 
-type IngressAvailablePorts struct {
-	// Number of available TCP ports left on the ingress peer.
-	Tcp int `pulumi:"tcp"`
-	// Number of available UDP ports left on the ingress peer.
-	Udp int `pulumi:"udp"`
-}
-
-type IngressAvailablePortsOutput struct{ *pulumi.OutputState }
-
-func (IngressAvailablePortsOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((*IngressAvailablePorts)(nil)).Elem()
-}
-
-func (o IngressAvailablePortsOutput) ToIngressAvailablePortsOutput() IngressAvailablePortsOutput {
-	return o
-}
-
-func (o IngressAvailablePortsOutput) ToIngressAvailablePortsOutputWithContext(ctx context.Context) IngressAvailablePortsOutput {
-	return o
-}
-
-// Number of available TCP ports left on the ingress peer.
-func (o IngressAvailablePortsOutput) Tcp() pulumi.IntOutput {
-	return o.ApplyT(func(v IngressAvailablePorts) int { return v.Tcp }).(pulumi.IntOutput)
-}
-
-// Number of available UDP ports left on the ingress peer.
-func (o IngressAvailablePortsOutput) Udp() pulumi.IntOutput {
-	return o.ApplyT(func(v IngressAvailablePorts) int { return v.Udp }).(pulumi.IntOutput)
-}
-
-type IngressAvailablePortsPtrOutput struct{ *pulumi.OutputState }
-
-func (IngressAvailablePortsPtrOutput) ElementType() reflect.Type {
-	return reflect.TypeOf((**IngressAvailablePorts)(nil)).Elem()
-}
-
-func (o IngressAvailablePortsPtrOutput) ToIngressAvailablePortsPtrOutput() IngressAvailablePortsPtrOutput {
-	return o
-}
-
-func (o IngressAvailablePortsPtrOutput) ToIngressAvailablePortsPtrOutputWithContext(ctx context.Context) IngressAvailablePortsPtrOutput {
-	return o
-}
-
-func (o IngressAvailablePortsPtrOutput) Elem() IngressAvailablePortsOutput {
-	return o.ApplyT(func(v *IngressAvailablePorts) IngressAvailablePorts {
-		if v != nil {
-			return *v
-		}
-		var ret IngressAvailablePorts
-		return ret
-	}).(IngressAvailablePortsOutput)
-}
-
-// Number of available TCP ports left on the ingress peer.
-func (o IngressAvailablePortsPtrOutput) Tcp() pulumi.IntPtrOutput {
-	return o.ApplyT(func(v *IngressAvailablePorts) *int {
-		if v == nil {
-			return nil
-		}
-		return &v.Tcp
-	}).(pulumi.IntPtrOutput)
-}
-
-// Number of available UDP ports left on the ingress peer.
-func (o IngressAvailablePortsPtrOutput) Udp() pulumi.IntPtrOutput {
-	return o.ApplyT(func(v *IngressAvailablePorts) *int {
-		if v == nil {
-			return nil
-		}
-		return &v.Udp
-	}).(pulumi.IntPtrOutput)
-}
-
 type Nameserver struct {
 	// IP of Nameserver
 	Ip string `pulumi:"ip"`
@@ -1070,6 +995,57 @@ func (o NameserverArrayOutput) Index(i pulumi.IntInput) NameserverOutput {
 	return pulumi.All(o, i).ApplyT(func(vs []interface{}) Nameserver {
 		return vs[0].([]Nameserver)[vs[1].(int)]
 	}).(NameserverOutput)
+}
+
+type PeerNetworkAddress struct {
+	// MAC address of the interface.
+	Mac string `pulumi:"mac"`
+	// IP address with CIDR of the interface.
+	NetIp string `pulumi:"netIp"`
+}
+
+type PeerNetworkAddressOutput struct{ *pulumi.OutputState }
+
+func (PeerNetworkAddressOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PeerNetworkAddress)(nil)).Elem()
+}
+
+func (o PeerNetworkAddressOutput) ToPeerNetworkAddressOutput() PeerNetworkAddressOutput {
+	return o
+}
+
+func (o PeerNetworkAddressOutput) ToPeerNetworkAddressOutputWithContext(ctx context.Context) PeerNetworkAddressOutput {
+	return o
+}
+
+// MAC address of the interface.
+func (o PeerNetworkAddressOutput) Mac() pulumi.StringOutput {
+	return o.ApplyT(func(v PeerNetworkAddress) string { return v.Mac }).(pulumi.StringOutput)
+}
+
+// IP address with CIDR of the interface.
+func (o PeerNetworkAddressOutput) NetIp() pulumi.StringOutput {
+	return o.ApplyT(func(v PeerNetworkAddress) string { return v.NetIp }).(pulumi.StringOutput)
+}
+
+type PeerNetworkAddressArrayOutput struct{ *pulumi.OutputState }
+
+func (PeerNetworkAddressArrayOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*[]PeerNetworkAddress)(nil)).Elem()
+}
+
+func (o PeerNetworkAddressArrayOutput) ToPeerNetworkAddressArrayOutput() PeerNetworkAddressArrayOutput {
+	return o
+}
+
+func (o PeerNetworkAddressArrayOutput) ToPeerNetworkAddressArrayOutputWithContext(ctx context.Context) PeerNetworkAddressArrayOutput {
+	return o
+}
+
+func (o PeerNetworkAddressArrayOutput) Index(i pulumi.IntInput) PeerNetworkAddressOutput {
+	return pulumi.All(o, i).ApplyT(func(vs []interface{}) PeerNetworkAddress {
+		return vs[0].([]PeerNetworkAddress)[vs[1].(int)]
+	}).(PeerNetworkAddressOutput)
 }
 
 type PolicyRuleArgs struct {
@@ -1421,7 +1397,146 @@ func (o PolicyRuleStateArrayOutput) Index(i pulumi.IntInput) PolicyRuleStateOutp
 	}).(PolicyRuleStateOutput)
 }
 
+type PostureCertificateCheck struct {
+	// PEM encoded CA certificates the peer's certificate must chain to.
+	CaCertificates []string `pulumi:"caCertificates"`
+}
+
+// PostureCertificateCheckInput is an input type that accepts PostureCertificateCheckArgs and PostureCertificateCheckOutput values.
+// You can construct a concrete instance of `PostureCertificateCheckInput` via:
+//
+//	PostureCertificateCheckArgs{...}
+type PostureCertificateCheckInput interface {
+	pulumi.Input
+
+	ToPostureCertificateCheckOutput() PostureCertificateCheckOutput
+	ToPostureCertificateCheckOutputWithContext(context.Context) PostureCertificateCheckOutput
+}
+
+type PostureCertificateCheckArgs struct {
+	// PEM encoded CA certificates the peer's certificate must chain to.
+	CaCertificates pulumi.StringArrayInput `pulumi:"caCertificates"`
+}
+
+func (PostureCertificateCheckArgs) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureCertificateCheck)(nil)).Elem()
+}
+
+func (i PostureCertificateCheckArgs) ToPostureCertificateCheckOutput() PostureCertificateCheckOutput {
+	return i.ToPostureCertificateCheckOutputWithContext(context.Background())
+}
+
+func (i PostureCertificateCheckArgs) ToPostureCertificateCheckOutputWithContext(ctx context.Context) PostureCertificateCheckOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureCertificateCheckOutput)
+}
+
+func (i PostureCertificateCheckArgs) ToPostureCertificateCheckPtrOutput() PostureCertificateCheckPtrOutput {
+	return i.ToPostureCertificateCheckPtrOutputWithContext(context.Background())
+}
+
+func (i PostureCertificateCheckArgs) ToPostureCertificateCheckPtrOutputWithContext(ctx context.Context) PostureCertificateCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureCertificateCheckOutput).ToPostureCertificateCheckPtrOutputWithContext(ctx)
+}
+
+// PostureCertificateCheckPtrInput is an input type that accepts PostureCertificateCheckArgs, PostureCertificateCheckPtr and PostureCertificateCheckPtrOutput values.
+// You can construct a concrete instance of `PostureCertificateCheckPtrInput` via:
+//
+//	        PostureCertificateCheckArgs{...}
+//
+//	or:
+//
+//	        nil
+type PostureCertificateCheckPtrInput interface {
+	pulumi.Input
+
+	ToPostureCertificateCheckPtrOutput() PostureCertificateCheckPtrOutput
+	ToPostureCertificateCheckPtrOutputWithContext(context.Context) PostureCertificateCheckPtrOutput
+}
+
+type postureCertificateCheckPtrType PostureCertificateCheckArgs
+
+func PostureCertificateCheckPtr(v *PostureCertificateCheckArgs) PostureCertificateCheckPtrInput {
+	return (*postureCertificateCheckPtrType)(v)
+}
+
+func (*postureCertificateCheckPtrType) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureCertificateCheck)(nil)).Elem()
+}
+
+func (i *postureCertificateCheckPtrType) ToPostureCertificateCheckPtrOutput() PostureCertificateCheckPtrOutput {
+	return i.ToPostureCertificateCheckPtrOutputWithContext(context.Background())
+}
+
+func (i *postureCertificateCheckPtrType) ToPostureCertificateCheckPtrOutputWithContext(ctx context.Context) PostureCertificateCheckPtrOutput {
+	return pulumi.ToOutputWithContext(ctx, i).(PostureCertificateCheckPtrOutput)
+}
+
+type PostureCertificateCheckOutput struct{ *pulumi.OutputState }
+
+func (PostureCertificateCheckOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((*PostureCertificateCheck)(nil)).Elem()
+}
+
+func (o PostureCertificateCheckOutput) ToPostureCertificateCheckOutput() PostureCertificateCheckOutput {
+	return o
+}
+
+func (o PostureCertificateCheckOutput) ToPostureCertificateCheckOutputWithContext(ctx context.Context) PostureCertificateCheckOutput {
+	return o
+}
+
+func (o PostureCertificateCheckOutput) ToPostureCertificateCheckPtrOutput() PostureCertificateCheckPtrOutput {
+	return o.ToPostureCertificateCheckPtrOutputWithContext(context.Background())
+}
+
+func (o PostureCertificateCheckOutput) ToPostureCertificateCheckPtrOutputWithContext(ctx context.Context) PostureCertificateCheckPtrOutput {
+	return o.ApplyTWithContext(ctx, func(_ context.Context, v PostureCertificateCheck) *PostureCertificateCheck {
+		return &v
+	}).(PostureCertificateCheckPtrOutput)
+}
+
+// PEM encoded CA certificates the peer's certificate must chain to.
+func (o PostureCertificateCheckOutput) CaCertificates() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v PostureCertificateCheck) []string { return v.CaCertificates }).(pulumi.StringArrayOutput)
+}
+
+type PostureCertificateCheckPtrOutput struct{ *pulumi.OutputState }
+
+func (PostureCertificateCheckPtrOutput) ElementType() reflect.Type {
+	return reflect.TypeOf((**PostureCertificateCheck)(nil)).Elem()
+}
+
+func (o PostureCertificateCheckPtrOutput) ToPostureCertificateCheckPtrOutput() PostureCertificateCheckPtrOutput {
+	return o
+}
+
+func (o PostureCertificateCheckPtrOutput) ToPostureCertificateCheckPtrOutputWithContext(ctx context.Context) PostureCertificateCheckPtrOutput {
+	return o
+}
+
+func (o PostureCertificateCheckPtrOutput) Elem() PostureCertificateCheckOutput {
+	return o.ApplyT(func(v *PostureCertificateCheck) PostureCertificateCheck {
+		if v != nil {
+			return *v
+		}
+		var ret PostureCertificateCheck
+		return ret
+	}).(PostureCertificateCheckOutput)
+}
+
+// PEM encoded CA certificates the peer's certificate must chain to.
+func (o PostureCertificateCheckPtrOutput) CaCertificates() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *PostureCertificateCheck) []string {
+		if v == nil {
+			return nil
+		}
+		return v.CaCertificates
+	}).(pulumi.StringArrayOutput)
+}
+
 type PostureChecksConfig struct {
+	// Posture check requiring the peer's certificate to chain to one of the given CA certificates.
+	CertificateCheck *PostureCertificateCheck `pulumi:"certificateCheck"`
 	// Posture check for geo location.
 	GeoLocationCheck *PostureGeoLocationCheck `pulumi:"geoLocationCheck"`
 	// Posture check for the minimum NetBird client version.
@@ -1446,6 +1561,8 @@ type PostureChecksConfigInput interface {
 }
 
 type PostureChecksConfigArgs struct {
+	// Posture check requiring the peer's certificate to chain to one of the given CA certificates.
+	CertificateCheck PostureCertificateCheckPtrInput `pulumi:"certificateCheck"`
 	// Posture check for geo location.
 	GeoLocationCheck PostureGeoLocationCheckPtrInput `pulumi:"geoLocationCheck"`
 	// Posture check for the minimum NetBird client version.
@@ -1482,6 +1599,11 @@ func (o PostureChecksConfigOutput) ToPostureChecksConfigOutput() PostureChecksCo
 
 func (o PostureChecksConfigOutput) ToPostureChecksConfigOutputWithContext(ctx context.Context) PostureChecksConfigOutput {
 	return o
+}
+
+// Posture check requiring the peer's certificate to chain to one of the given CA certificates.
+func (o PostureChecksConfigOutput) CertificateCheck() PostureCertificateCheckPtrOutput {
+	return o.ApplyT(func(v PostureChecksConfig) *PostureCertificateCheck { return v.CertificateCheck }).(PostureCertificateCheckPtrOutput)
 }
 
 // Posture check for geo location.
@@ -4014,6 +4136,8 @@ func (o ReverseProxyPasswordAuthPtrOutput) Password() pulumi.StringPtrOutput {
 }
 
 type ReverseProxyTarget struct {
+	// Access action applied once this target's path prefix is selected. "inherit" (the default) applies the service authentication configuration, "bypass" skips service authentication for this path, and "block" denies access to it. HTTP services only.
+	AccessAction *ReverseProxyTargetAccessAction `pulumi:"accessAction"`
 	// Whether this target is enabled.
 	Enabled bool `pulumi:"enabled"`
 	// Backend IP or domain for this target.
@@ -4044,6 +4168,8 @@ type ReverseProxyTargetInput interface {
 }
 
 type ReverseProxyTargetArgs struct {
+	// Access action applied once this target's path prefix is selected. "inherit" (the default) applies the service authentication configuration, "bypass" skips service authentication for this path, and "block" denies access to it. HTTP services only.
+	AccessAction ReverseProxyTargetAccessActionPtrInput `pulumi:"accessAction"`
 	// Whether this target is enabled.
 	Enabled pulumi.BoolInput `pulumi:"enabled"`
 	// Backend IP or domain for this target.
@@ -4111,6 +4237,11 @@ func (o ReverseProxyTargetOutput) ToReverseProxyTargetOutput() ReverseProxyTarge
 
 func (o ReverseProxyTargetOutput) ToReverseProxyTargetOutputWithContext(ctx context.Context) ReverseProxyTargetOutput {
 	return o
+}
+
+// Access action applied once this target's path prefix is selected. "inherit" (the default) applies the service authentication configuration, "bypass" skips service authentication for this path, and "block" denies access to it. HTTP services only.
+func (o ReverseProxyTargetOutput) AccessAction() ReverseProxyTargetAccessActionPtrOutput {
+	return o.ApplyT(func(v ReverseProxyTarget) *ReverseProxyTargetAccessAction { return v.AccessAction }).(ReverseProxyTargetAccessActionPtrOutput)
 }
 
 // Whether this target is enabled.
@@ -4597,6 +4728,8 @@ func init() {
 	pulumi.RegisterInputType(reflect.TypeOf((*NameserverArrayInput)(nil)).Elem(), NameserverArray{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsInput)(nil)).Elem(), PolicyRuleArgsArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PolicyRuleArgsArrayInput)(nil)).Elem(), PolicyRuleArgsArray{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureCertificateCheckInput)(nil)).Elem(), PostureCertificateCheckArgs{})
+	pulumi.RegisterInputType(reflect.TypeOf((*PostureCertificateCheckPtrInput)(nil)).Elem(), PostureCertificateCheckArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PostureChecksConfigInput)(nil)).Elem(), PostureChecksConfigArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PostureGeoLocationCheckInput)(nil)).Elem(), PostureGeoLocationCheckArgs{})
 	pulumi.RegisterInputType(reflect.TypeOf((*PostureGeoLocationCheckPtrInput)(nil)).Elem(), PostureGeoLocationCheckArgs{})
@@ -4648,14 +4781,16 @@ func init() {
 	pulumi.RegisterOutputType(AgentNetworkProviderModelPricingArrayOutput{})
 	pulumi.RegisterOutputType(AgentNetworkTokenLimitOutput{})
 	pulumi.RegisterOutputType(AgentNetworkTokenLimitPtrOutput{})
-	pulumi.RegisterOutputType(IngressAvailablePortsOutput{})
-	pulumi.RegisterOutputType(IngressAvailablePortsPtrOutput{})
 	pulumi.RegisterOutputType(NameserverOutput{})
 	pulumi.RegisterOutputType(NameserverArrayOutput{})
+	pulumi.RegisterOutputType(PeerNetworkAddressOutput{})
+	pulumi.RegisterOutputType(PeerNetworkAddressArrayOutput{})
 	pulumi.RegisterOutputType(PolicyRuleArgsOutput{})
 	pulumi.RegisterOutputType(PolicyRuleArgsArrayOutput{})
 	pulumi.RegisterOutputType(PolicyRuleStateOutput{})
 	pulumi.RegisterOutputType(PolicyRuleStateArrayOutput{})
+	pulumi.RegisterOutputType(PostureCertificateCheckOutput{})
+	pulumi.RegisterOutputType(PostureCertificateCheckPtrOutput{})
 	pulumi.RegisterOutputType(PostureChecksConfigOutput{})
 	pulumi.RegisterOutputType(PostureGeoLocationCheckOutput{})
 	pulumi.RegisterOutputType(PostureGeoLocationCheckPtrOutput{})

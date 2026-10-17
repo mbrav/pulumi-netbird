@@ -14,7 +14,7 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 
 ## ✨ Features
 
-- Manage 28 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
+- Manage 27 NetBird resource types declaratively using Pulumi (Go, Python, YAML, TypeScript, C#)
 - 10 read-only **invoke functions** (data sources) for referencing existing NetBird objects by name, email, CIDR, or country
 - Built natively with Pulumi's Go SDK
 - Works with NetBird Cloud (`https://api.netbird.io`) and self-hosted management servers
@@ -24,7 +24,7 @@ This repository contains the **Pulumi NetBird Provider**, a native Pulumi provid
 To install the Pulumi NetBird resource plugin, replace the version number with the desired release if needed. The plugin will be downloaded from the specified GitHub repository.
 
 ```bash
-pulumi plugin install resource netbird 0.5.12 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.6.0 --server github://api.github.com/mbrav/pulumi-netbird
 ````
 
 ## 🧪 Build and Test
@@ -55,7 +55,7 @@ You can use this provider with **Pulumi YAML** to manage NetBird infrastructure 
 Install the plugin (required before first `pulumi up`):
 
 ```bash
-pulumi plugin install resource netbird 0.5.12 --server github://api.github.com/mbrav/pulumi-netbird
+pulumi plugin install resource netbird 0.6.0 --server github://api.github.com/mbrav/pulumi-netbird
 ```
 
 > **Note:** `--server` is a CLI-only flag. Do **not** add it to `Pulumi.yaml` — the `plugins.providers` block only accepts `name`, `path` (local binary), and `version`. For GitHub-hosted plugins, the CLI install above is sufficient.
@@ -329,7 +329,7 @@ go list -m -versions github.com/mbrav/pulumi-netbird/sdk
 Output:
 
 ```bash
-github.com/mbrav/pulumi-netbird/sdk v0.3.6 v0.3.7 v0.3.8 v0.4.1 v0.5.0 v0.5.1 v0.5.2 v0.5.3 v0.5.4 v0.5.5 v0.5.6 v0.5.7 v0.5.8 v0.5.9 v0.5.10 v0.5.11 v0.5.12 # ... and so on
+github.com/mbrav/pulumi-netbird/sdk v0.3.6 v0.3.7 v0.3.8 v0.4.1 v0.5.0 v0.5.1 v0.5.2 v0.5.3 v0.5.4 v0.5.5 v0.5.6 v0.5.7 v0.5.8 v0.5.9 v0.5.10 v0.5.11 v0.5.12 v0.6.0 # ... and so on
 ```
 
 ### 1. Setup
@@ -370,7 +370,7 @@ make sdk_python
 Then install the wheel:
 
 ```bash
-pip install sdk/python/bin/dist/pulumi_netbird-0.5.12.tar.gz
+pip install sdk/python/bin/dist/pulumi_netbird-0.6.0.tar.gz
 ```
 
 Navigate to the Python example directory:
@@ -580,6 +580,12 @@ A NetBird peer representing a connected device.
 | `loginExpirationEnabled` | `boolean` | no | Whether Login Expiration is enabled. |
 | `sshEnabled` | `boolean` | no | Whether SSH is enabled. |
 
+**Outputs** (read-only, in addition to the inputs above)
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `networkAddresses` | `PeerNetworkAddress[]` | Network interfaces reported by the peer. Read-only: the peer itself reports them, so they are populated by Read and refresh. |
+
 **Example**
 
 ```yaml
@@ -594,41 +600,6 @@ A NetBird peer representing a connected device.
       loginExpirationEnabled: true
       inactivityExpirationEnabled: false
       approvalRequired: false
-```
-
-</details>
-
-<details>
-<summary><code>netbird:resource:IngressPeer</code></summary>
-
-A NetBird ingress peer: an existing peer designated to receive forwarded ingress traffic.
-
-**Inputs**
-
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| `enabled` | `boolean` | yes | Whether the ingress peer is enabled. |
-| `fallback` | `boolean` | yes | Whether this ingress peer may be used as a fallback when no ingress peer exists in the forwarded peer's region. |
-| `peerId` | `string` | yes | ID of the peer used as an ingress peer. Changing this forces a replacement. |
-
-**Outputs** (read-only, in addition to the inputs above)
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `availablePorts` | `IngressAvailablePorts` | Forwarding ports remaining on the ingress peer. |
-| `connected` | `boolean` | Whether the ingress peer is connected to the management server. |
-| `ingressIp` | `string` | Ingress IP address where forwarded traffic arrives. |
-| `region` | `string` | Region of the ingress peer. |
-
-**Example**
-
-```yaml
-  ingress-gw:
-    type: netbird:resource:IngressPeer
-    properties:
-      peerId: ${peer-gw.id}
-      enabled: true
-      fallback: false
 ```
 
 </details>
@@ -1853,7 +1824,7 @@ Experimental. Declares a Network, a NetworkRouter, and one NetworkResource per s
 Object and enum types referenced from the resource tables above.
 
 <details>
-<summary><strong>Object types</strong> (42)</summary>
+<summary><strong>Object types</strong> (43)</summary>
 
 <details>
 <summary><code>netbird:component:DNSRecordSpec</code></summary>
@@ -2104,14 +2075,14 @@ Router configuration for a NetworkBundle. At least one of peer or peerGroups mus
 </details>
 
 <details>
-<summary><code>netbird:resource:IngressAvailablePorts</code></summary>
+<summary><code>netbird:resource:PeerNetworkAddress</code></summary>
 
 **Fields**
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
-| `tcp` | `integer` | yes | Number of available TCP ports left on the ingress peer. |
-| `udp` | `integer` | yes | Number of available UDP ports left on the ingress peer. |
+| `mac` | `string` | yes | MAC address of the interface. |
+| `netIp` | `string` | yes | IP address with CIDR of the interface. |
 
 </details>
 
@@ -2183,11 +2154,23 @@ Router configuration for a NetworkBundle. At least one of peer or peerGroups mus
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
+| `certificateCheck` | `PostureCertificateCheck` | no | Posture check requiring the peer's certificate to chain to one of the given CA certificates. |
 | `geoLocationCheck` | `PostureGeoLocationCheck` | no | Posture check for geo location. |
 | `nbVersionCheck` | `PostureMinVersionCheck` | no | Posture check for the minimum NetBird client version. |
 | `osVersionCheck` | `PostureOSVersionCheck` | no | Posture check for the minimum operating system version. |
 | `peerNetworkRangeCheck` | `PosturePeerNetworkRangeCheck` | no | Posture check based on peer local network addresses. |
 | `processCheck` | `PostureProcessCheck` | no | Posture check for required binaries running on the peer. |
+
+</details>
+
+<details>
+<summary><code>netbird:resource:PostureCertificateCheck</code></summary>
+
+**Fields**
+
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| `caCertificates` | `string[]` | yes | PEM encoded CA certificates the peer's certificate must chain to. |
 
 </details>
 
@@ -2402,6 +2385,7 @@ Router configuration for a NetworkBundle. At least one of peer or peerGroups mus
 | `protocol` | `ReverseProxyTargetProtocol` | yes | Protocol to use when connecting to the backend. |
 | `targetId` | `string` | yes | Target ID (assigned by the server). |
 | `targetType` | `ReverseProxyTargetType` | yes | Target type. |
+| `accessAction` | `ReverseProxyTargetAccessAction` | no | Access action applied once this target's path prefix is selected. "inherit" (the default) applies the service authentication configuration, "bypass" skips service authentication for this path, and "block" denies access to it. HTTP services only. |
 | `host` | `string` | no | Backend IP or domain for this target. |
 | `options` | `ReverseProxyTargetOptions` | no | Advanced per-target proxy options. |
 | `path` | `string` | no | URL path prefix for this target (HTTP only). |
@@ -2452,7 +2436,7 @@ Router configuration for a NetworkBundle. At least one of peer or peerGroups mus
 </details>
 
 <details>
-<summary><strong>Enum types</strong> (18)</summary>
+<summary><strong>Enum types</strong> (19)</summary>
 
 <details>
 <summary><code>netbird:resource:AzureHost</code></summary>
@@ -2596,6 +2580,17 @@ Router configuration for a NetworkBundle. At least one of peer or peerGroups mus
 | `https` | HTTPS protocol. |
 | `tcp` | TCP protocol. |
 | `udp` | UDP protocol. |
+
+</details>
+
+<details>
+<summary><code>netbird:resource:ReverseProxyTargetAccessAction</code></summary>
+
+| Value | Description |
+| ----- | ----------- |
+| `inherit` | Apply the service authentication configuration to this path. The default. |
+| `bypass` | Skip service authentication for this path, exposing it publicly even when the service itself is authenticated. |
+| `block` | Deny all access to this path. |
 
 </details>
 

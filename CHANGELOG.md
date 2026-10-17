@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions match the `v`-prefixed git tags.
 
+## [0.6.0] - 2026-10-17
+
+Tracks netbird v0.81.2. **Breaking:** the `IngressPeer` resource is gone, because the API behind it is.
+
+### Removed
+
+- **Breaking:** `netbird:resource:IngressPeer`. netbird v0.81.0 removed the entire Ingress Peer API — `IngressPeer`, `IngressPeerCreateRequest`, `IngressPeerUpdateRequest`, `IngressPortAllocation`, `AvailablePorts` and the `rest.Client.Ingress` accessor are all gone upstream ([#8062](https://github.com/netbirdio/netbird/pull/8062)), so the resource could no longer be compiled, let alone called. A program still declaring one must drop it and run `pulumi state delete` on the existing resource; there is no replacement endpoint to migrate to.
+
+### Added
+
+- `ReverseProxyService.targets[].accessAction` — the per-target HTTP access action added in netbird v0.81.0 ([#8114](https://github.com/netbirdio/netbird/pull/8114), [#8115](https://github.com/netbirdio/netbird/pull/8115), [#8116](https://github.com/netbirdio/netbird/pull/8116), [#8117](https://github.com/netbirdio/netbird/pull/8117)). New `ReverseProxyTargetAccessAction` enum: `inherit` (apply the service authentication configuration — the default), `bypass` (skip service authentication for this path prefix, exposing it publicly even when the service is authenticated) and `block` (deny the path outright). `Check` rejects it on non-HTTP services, which is the only mode the API supports it in. Documented at <https://docs.netbird.io/manage/reverse-proxy/authentication#per-target-access-actions>.
+- `PostureCheck.checks.certificateCheck` — the Certificate posture check added in netbird v0.81.0 ([#7535](https://github.com/netbirdio/netbird/pull/7535), [#8052](https://github.com/netbirdio/netbird/pull/8052)). Takes `caCertificates`, the PEM-encoded CAs a peer's certificate must chain to. `Check` requires a non-empty list with no blank entries.
+- `Peer.networkAddresses` — the per-interface `mac` / `netIp` list netbird v0.81.0 exposes on peers ([#6553](https://github.com/netbirdio/netbird/pull/6553)). Read-only: the peer reports it, so it is populated by `Read` and refresh and carried through `Update` untouched.
+
+### Changed
+
+- Bumped `netbird` to `v0.81.2` from `v0.80.0`.
+
+### Fixed
+
+- `accessAction` is compared through a nil-vs-`inherit` normalization, so a program that omits it does not diff forever against a server reporting the effective default — the perpetual-diff class of bug fixed for target `options` in 0.5.4 and the identity headers in 0.5.7. Pinned by `TestEqualReverseProxyTargetsNormalizesAccessAction`.
+- `certificateCheck.caCertificates` is compared order-insensitively (`equalSlice`), so a server returning the CAs in a different order than declared does not plan an update on every preview. Pinned by `TestPostureCheckCertificateCheckNoDiffOnReorder`.
+
+### Tests
+
+- `provider/resource/reverseProxyService_test.go` — the `accessAction` nil/default/differing-value matrix.
+- `provider/resource/peer_test.go` — `fromAPINetworkAddresses`, including that an absent list stays absent rather than becoming `[]`.
+- `tests/posturecheck_test.go` — `certificateCheck` create/read round trip, the reorder no-diff case, and both `Check` validation failures.
+
 ## [0.5.12] - 2026-10-04
 
 ### Fixed

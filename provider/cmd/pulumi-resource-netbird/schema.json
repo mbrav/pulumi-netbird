@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "displayName": "netbird",
-  "version": "0.5.12",
+  "version": "0.6.0",
   "description": "Manage NetBird resources declaratively using Pulumi's infrastructure-as-code framework.",
   "keywords": [
     "category/networking",
@@ -667,23 +667,6 @@
         }
       ]
     },
-    "netbird:resource:IngressAvailablePorts": {
-      "properties": {
-        "tcp": {
-          "type": "integer",
-          "description": "Number of available TCP ports left on the ingress peer."
-        },
-        "udp": {
-          "type": "integer",
-          "description": "Number of available UDP ports left on the ingress peer."
-        }
-      },
-      "type": "object",
-      "required": [
-        "tcp",
-        "udp"
-      ]
-    },
     "netbird:resource:Nameserver": {
       "properties": {
         "ip": {
@@ -714,6 +697,23 @@
           "description": "UDP type",
           "value": "udp"
         }
+      ]
+    },
+    "netbird:resource:PeerNetworkAddress": {
+      "properties": {
+        "mac": {
+          "type": "string",
+          "description": "MAC address of the interface."
+        },
+        "netIp": {
+          "type": "string",
+          "description": "IP address with CIDR of the interface."
+        }
+      },
+      "type": "object",
+      "required": [
+        "mac",
+        "netIp"
       ]
     },
     "netbird:resource:PolicyRuleArgs": {
@@ -888,8 +888,27 @@
         "protocol"
       ]
     },
+    "netbird:resource:PostureCertificateCheck": {
+      "properties": {
+        "caCertificates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "PEM encoded CA certificates the peer's certificate must chain to."
+        }
+      },
+      "type": "object",
+      "required": [
+        "caCertificates"
+      ]
+    },
     "netbird:resource:PostureChecksConfig": {
       "properties": {
+        "certificateCheck": {
+          "$ref": "#/types/netbird:resource:PostureCertificateCheck",
+          "description": "Posture check requiring the peer's certificate to chain to one of the given CA certificates."
+        },
         "geoLocationCheck": {
           "$ref": "#/types/netbird:resource:PostureGeoLocationCheck",
           "description": "Posture check for geo location."
@@ -1378,6 +1397,10 @@
     },
     "netbird:resource:ReverseProxyTarget": {
       "properties": {
+        "accessAction": {
+          "$ref": "#/types/netbird:resource:ReverseProxyTargetAccessAction",
+          "description": "Access action applied once this target's path prefix is selected. \"inherit\" (the default) applies the service authentication configuration, \"bypass\" skips service authentication for this path, and \"block\" denies access to it. HTTP services only."
+        },
         "enabled": {
           "type": "boolean",
           "description": "Whether this target is enabled."
@@ -1418,6 +1441,26 @@
         "port",
         "protocol",
         "targetType"
+      ]
+    },
+    "netbird:resource:ReverseProxyTargetAccessAction": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "inherit",
+          "description": "Apply the service authentication configuration to this path. The default.",
+          "value": "inherit"
+        },
+        {
+          "name": "bypass",
+          "description": "Skip service authentication for this path, exposing it publicly even when the service itself is authenticated.",
+          "value": "bypass"
+        },
+        {
+          "name": "block",
+          "description": "Deny all access to this path.",
+          "value": "block"
+        }
       ]
     },
     "netbird:resource:ReverseProxyTargetOptions": {
@@ -2802,63 +2845,6 @@
         "clientSecret"
       ]
     },
-    "netbird:resource:IngressPeer": {
-      "description": "A NetBird ingress peer: an existing peer designated to receive forwarded ingress traffic.",
-      "properties": {
-        "availablePorts": {
-          "$ref": "#/types/netbird:resource:IngressAvailablePorts",
-          "description": "Forwarding ports remaining on the ingress peer."
-        },
-        "connected": {
-          "type": "boolean",
-          "description": "Whether the ingress peer is connected to the management server."
-        },
-        "enabled": {
-          "type": "boolean",
-          "description": "Whether the ingress peer is enabled."
-        },
-        "fallback": {
-          "type": "boolean",
-          "description": "Whether this ingress peer may be used as a fallback."
-        },
-        "ingressIp": {
-          "type": "string",
-          "description": "Ingress IP address where forwarded traffic arrives."
-        },
-        "peerId": {
-          "type": "string",
-          "description": "ID of the peer used as an ingress peer."
-        },
-        "region": {
-          "type": "string",
-          "description": "Region of the ingress peer."
-        }
-      },
-      "required": [
-        "peerId",
-        "enabled",
-        "fallback"
-      ],
-      "inputProperties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Whether the ingress peer is enabled."
-        },
-        "fallback": {
-          "type": "boolean",
-          "description": "Whether this ingress peer may be used as a fallback when no ingress peer exists in the forwarded peer's region."
-        },
-        "peerId": {
-          "type": "string",
-          "description": "ID of the peer used as an ingress peer. Changing this forces a replacement."
-        }
-      },
-      "requiredInputs": [
-        "peerId",
-        "enabled",
-        "fallback"
-      ]
-    },
     "netbird:resource:Network": {
       "description": "A NetBird network.",
       "properties": {
@@ -3128,6 +3114,13 @@
         "name": {
           "type": "string",
           "description": "The name of the peer."
+        },
+        "networkAddresses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/types/netbird:resource:PeerNetworkAddress"
+          },
+          "description": "Network interfaces reported by the peer. Read-only: the peer itself reports them, so they are populated by Read and refresh."
         },
         "sshEnabled": {
           "type": "boolean",

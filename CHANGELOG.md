@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions match the `v`-prefixed git tags.
 
+## [0.6.2] - 2026-10-27
+
+Tracks netbird v0.81.5. Dependency-only release with no resource or schema changes.
+
+### Changed
+
+- Bumped `pulumi-go-provider` to `v1.8.0` from `v1.7.0` and the Pulumi SDK to `v3.272.0` from `v3.270.0`.
+- The Go example now uses SDK `v0.6.1`.
+
 ## [0.6.1] - 2026-10-27
 
 Tracks netbird v0.81.5. Dependency-only release: the management API is unchanged since v0.81.2, so there are no resource changes.

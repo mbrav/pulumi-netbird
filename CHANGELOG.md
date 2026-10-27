@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions match the `v`-prefixed git tags.
 
+## [0.6.1] - 2026-10-27
+
+Tracks netbird v0.81.5. Dependency-only release: the management API is unchanged since v0.81.2, so there are no resource changes.
+
+### Changed
+
+- Bumped `netbird` to `v0.81.5` from `v0.81.2`. The upstream changes in v0.81.3–v0.81.5 are client, relay and SSH fixes ([#8254](https://github.com/netbirdio/netbird/pull/8254), [#8328](https://github.com/netbirdio/netbird/pull/8328), [#8368](https://github.com/netbirdio/netbird/pull/8368)).
+
 ## [0.6.0] - 2026-10-17
 
 Tracks netbird v0.81.2. **Breaking:** the `IngressPeer` resource is gone, because the API behind it is.

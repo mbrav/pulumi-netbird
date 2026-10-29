@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions match the `v`-prefixed git tags.
 
+## [0.6.3] - 2026-10-29
+
+Tracks netbird v0.82.0. No resource or schema changes: the API changes in this release are in areas the provider does not manage.
+
+### Changed
+
+- Bumped `netbird` to `v0.82.0` from `v0.81.5`. Upstream added a `sync_interval` setting to EDR integrations ([#8299](https://github.com/netbirdio/netbird/pull/8299)) and made custom domain validation synchronous; the provider manages neither.
+- Bumped the Pulumi SDK to `v3.273.0` from `v3.272.0`.
+
 ## [0.6.2] - 2026-10-27
 
 Tracks netbird v0.81.5. Dependency-only release with no resource or schema changes.

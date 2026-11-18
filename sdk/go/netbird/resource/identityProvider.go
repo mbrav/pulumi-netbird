@@ -89,6 +89,12 @@ func (IdentityProviderState) ElementType() reflect.Type {
 	return reflect.TypeOf((*identityProviderState)(nil)).Elem()
 }
 
+// IdentityProviderExists checks whether an existing IdentityProvider resource with the given ID exists.
+func IdentityProviderExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *IdentityProviderState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:IdentityProvider", id, state, "", opts...)
+}
+
 type identityProviderArgs struct {
 	// OAuth2 client ID.
 	ClientId string `pulumi:"clientId"`

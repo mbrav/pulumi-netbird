@@ -86,6 +86,12 @@ func (GoogleIDPState) ElementType() reflect.Type {
 	return reflect.TypeOf((*googleIDPState)(nil)).Elem()
 }
 
+// GoogleIDPExists checks whether an existing GoogleIDP resource with the given ID exists.
+func GoogleIDPExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *GoogleIDPState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:GoogleIDP", id, state, "", opts...)
+}
+
 type googleIDPArgs struct {
 	// DEX connector ID for embedded IdP setups.
 	ConnectorId *string `pulumi:"connectorId"`

@@ -73,6 +73,12 @@ func (AgentNetworkGuardrailState) ElementType() reflect.Type {
 	return reflect.TypeOf((*agentNetworkGuardrailState)(nil)).Elem()
 }
 
+// AgentNetworkGuardrailExists checks whether an existing AgentNetworkGuardrail resource with the given ID exists.
+func AgentNetworkGuardrailExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *AgentNetworkGuardrailState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:AgentNetworkGuardrail", id, state, "", opts...)
+}
+
 type agentNetworkGuardrailArgs struct {
 	// Guardrail check parameters. Each entry has an enabled flag plus per-check configuration; disabled entries are inert.
 	Checks AgentNetworkGuardrailChecks `pulumi:"checks"`

@@ -96,6 +96,12 @@ func (AzureIDPState) ElementType() reflect.Type {
 	return reflect.TypeOf((*azureIDPState)(nil)).Elem()
 }
 
+// AzureIDPExists checks whether an existing AzureIDP resource with the given ID exists.
+func AzureIDPExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *AzureIDPState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:AzureIDP", id, state, "", opts...)
+}
+
 type azureIDPArgs struct {
 	// Azure AD application (client) ID.
 	ClientId string `pulumi:"clientId"`

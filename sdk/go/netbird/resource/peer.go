@@ -72,6 +72,12 @@ func (PeerState) ElementType() reflect.Type {
 	return reflect.TypeOf((*peerState)(nil)).Elem()
 }
 
+// PeerExists checks whether an existing Peer resource with the given ID exists.
+func PeerExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *PeerState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:Peer", id, state, "", opts...)
+}
+
 type peerArgs struct {
 	// Deprecated: Cloud only, not maintained in this provider
 	ApprovalRequired *bool `pulumi:"approvalRequired"`

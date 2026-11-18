@@ -81,6 +81,12 @@ func (NetworkRouterState) ElementType() reflect.Type {
 	return reflect.TypeOf((*networkRouterState)(nil)).Elem()
 }
 
+// NetworkRouterExists checks whether an existing NetworkRouter resource with the given ID exists.
+func NetworkRouterExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *NetworkRouterState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:NetworkRouter", id, state, "", opts...)
+}
+
 type networkRouterArgs struct {
 	// Whether the router is enabled.
 	Enabled bool `pulumi:"enabled"`

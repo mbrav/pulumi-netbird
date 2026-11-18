@@ -84,6 +84,12 @@ func (AgentNetworkPolicyState) ElementType() reflect.Type {
 	return reflect.TypeOf((*agentNetworkPolicyState)(nil)).Elem()
 }
 
+// AgentNetworkPolicyExists checks whether an existing AgentNetworkPolicy resource with the given ID exists.
+func AgentNetworkPolicyExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *AgentNetworkPolicyState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:AgentNetworkPolicy", id, state, "", opts...)
+}
+
 type agentNetworkPolicyArgs struct {
 	// Optional human-readable description.
 	Description *string `pulumi:"description"`

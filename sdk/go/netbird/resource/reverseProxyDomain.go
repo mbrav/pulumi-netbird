@@ -75,6 +75,12 @@ func (ReverseProxyDomainState) ElementType() reflect.Type {
 	return reflect.TypeOf((*reverseProxyDomainState)(nil)).Elem()
 }
 
+// ReverseProxyDomainExists checks whether an existing ReverseProxyDomain resource with the given ID exists.
+func ReverseProxyDomainExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *ReverseProxyDomainState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:ReverseProxyDomain", id, state, "", opts...)
+}
+
 type reverseProxyDomainArgs struct {
 	// Domain name for the reverse proxy.
 	Domain string `pulumi:"domain"`

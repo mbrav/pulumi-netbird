@@ -97,6 +97,12 @@ func (DNSState) ElementType() reflect.Type {
 	return reflect.TypeOf((*dnsState)(nil)).Elem()
 }
 
+// DNSExists checks whether an existing DNS resource with the given ID exists.
+func DNSExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *DNSState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:DNS", id, state, "", opts...)
+}
+
 type dnsArgs struct {
 	// Description of the nameserver group
 	Description string `pulumi:"description"`

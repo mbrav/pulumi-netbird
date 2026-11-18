@@ -84,6 +84,12 @@ func (AgentNetworkSettingsState) ElementType() reflect.Type {
 	return reflect.TypeOf((*agentNetworkSettingsState)(nil)).Elem()
 }
 
+// AgentNetworkSettingsExists checks whether an existing AgentNetworkSettings resource with the given ID exists.
+func AgentNetworkSettingsExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *AgentNetworkSettingsState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:AgentNetworkSettings", id, state, "", opts...)
+}
+
 type agentNetworkSettingsArgs struct {
 	// Days to retain full access-log rows; older rows are swept. 0 or less means keep indefinitely. Defaults to 30 when omitted.
 	AccessLogRetentionDays *int `pulumi:"accessLogRetentionDays"`

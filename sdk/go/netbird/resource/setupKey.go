@@ -94,6 +94,12 @@ func (SetupKeyState) ElementType() reflect.Type {
 	return reflect.TypeOf((*setupKeyState)(nil)).Elem()
 }
 
+// SetupKeyExists checks whether an existing SetupKey resource with the given ID exists.
+func SetupKeyExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *SetupKeyState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:SetupKey", id, state, "", opts...)
+}
+
 type setupKeyArgs struct {
 	// Allow peers to add extra DNS labels beyond the base peer name.
 	AllowExtraDnsLabels *bool `pulumi:"allowExtraDnsLabels"`

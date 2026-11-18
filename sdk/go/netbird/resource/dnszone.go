@@ -82,6 +82,12 @@ func (DNSZoneState) ElementType() reflect.Type {
 	return reflect.TypeOf((*dnszoneState)(nil)).Elem()
 }
 
+// DNSZoneExists checks whether an existing DNSZone resource with the given ID exists.
+func DNSZoneExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *DNSZoneState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:DNSZone", id, state, "", opts...)
+}
+
 type dnszoneArgs struct {
 	// Group IDs that define groups of peers that will resolve this zone.
 	DistributionGroups []string `pulumi:"distributionGroups"`

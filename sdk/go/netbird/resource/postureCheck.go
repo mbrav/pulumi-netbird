@@ -69,6 +69,12 @@ func (PostureCheckState) ElementType() reflect.Type {
 	return reflect.TypeOf((*postureCheckState)(nil)).Elem()
 }
 
+// PostureCheckExists checks whether an existing PostureCheck resource with the given ID exists.
+func PostureCheckExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *PostureCheckState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:PostureCheck", id, state, "", opts...)
+}
+
 type postureCheckArgs struct {
 	// List of checks to perform against peer properties.
 	Checks PostureChecksConfig `pulumi:"checks"`

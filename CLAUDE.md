@@ -113,7 +113,7 @@ if err != nil && !isNotFoundErr(err) {
 }
 ```
 
-The `nolint:exhaustruct,exhaustruct_v5` comment is required on zero-value `Args`/`State` literals inside `infer.ReadResponse` because the linter applies to all types in this package, not just `nbapi` types. Both linter names must be listed: golangci-lint renamed `exhaustruct` to `exhaustruct_v5` in v2.13.0, and CI pins v2.13.1 while older local installs still expose the old name — naming only one leaves the directive inert on the other version.
+The `nolint:exhaustruct,exhaustruct_v5` comment is required on zero-value `Args`/`State` literals inside `infer.ReadResponse` because the linter applies to all types in this package, not just `nbapi` types. Both linter names must be listed: golangci-lint renamed `exhaustruct` to `exhaustruct_v5` in v2.13.0, and CI pins v2.15.0 while older local installs still expose the old name — naming only one leaves the directive inert on the other version.
 
 ### Optional field diffs
 

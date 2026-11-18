@@ -84,6 +84,12 @@ func (NetworkResourceState) ElementType() reflect.Type {
 	return reflect.TypeOf((*networkResourceState)(nil)).Elem()
 }
 
+// NetworkResourceExists checks whether an existing NetworkResource resource with the given ID exists.
+func NetworkResourceExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *NetworkResourceState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:NetworkResource", id, state, "", opts...)
+}
+
 type networkResourceArgs struct {
 	// CIDR or IP address block assigned to the resource.
 	Address string `pulumi:"address"`

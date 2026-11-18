@@ -82,6 +82,12 @@ func (DNSRecordState) ElementType() reflect.Type {
 	return reflect.TypeOf((*dnsrecordState)(nil)).Elem()
 }
 
+// DNSRecordExists checks whether an existing DNSRecord resource with the given ID exists.
+func DNSRecordExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *DNSRecordState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:DNSRecord", id, state, "", opts...)
+}
+
 type dnsrecordArgs struct {
 	// DNS record content (IP address for A/AAAA, domain for CNAME).
 	Content string `pulumi:"content"`

@@ -102,6 +102,12 @@ func (AgentNetworkProviderState) ElementType() reflect.Type {
 	return reflect.TypeOf((*agentNetworkProviderState)(nil)).Elem()
 }
 
+// AgentNetworkProviderExists checks whether an existing AgentNetworkProvider resource with the given ID exists.
+func AgentNetworkProviderExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *AgentNetworkProviderState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:AgentNetworkProvider", id, state, "", opts...)
+}
+
 type agentNetworkProviderArgs struct {
 	// Upstream provider API key. Sealed at rest on the management server and never returned in responses.
 	ApiKey string `pulumi:"apiKey"`

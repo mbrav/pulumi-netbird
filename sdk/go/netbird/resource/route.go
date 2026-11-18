@@ -106,6 +106,12 @@ func (RouteState) ElementType() reflect.Type {
 	return reflect.TypeOf((*routeState)(nil)).Elem()
 }
 
+// RouteExists checks whether an existing Route resource with the given ID exists.
+func RouteExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *RouteState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:Route", id, state, "", opts...)
+}
+
 type routeArgs struct {
 	// Access control group IDs associated with this route.
 	AccessControlGroups []string `pulumi:"accessControlGroups"`

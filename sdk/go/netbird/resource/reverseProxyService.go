@@ -101,6 +101,12 @@ func (ReverseProxyServiceState) ElementType() reflect.Type {
 	return reflect.TypeOf((*reverseProxyServiceState)(nil)).Elem()
 }
 
+// ReverseProxyServiceExists checks whether an existing ReverseProxyService resource with the given ID exists.
+func ReverseProxyServiceExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *ReverseProxyServiceState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:ReverseProxyService", id, state, "", opts...)
+}
+
 type reverseProxyServiceArgs struct {
 	// NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise.
 	AccessGroups []string `pulumi:"accessGroups"`

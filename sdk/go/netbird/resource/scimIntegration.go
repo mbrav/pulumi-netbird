@@ -83,6 +83,12 @@ func (ScimIntegrationState) ElementType() reflect.Type {
 	return reflect.TypeOf((*scimIntegrationState)(nil)).Elem()
 }
 
+// ScimIntegrationExists checks whether an existing ScimIntegration resource with the given ID exists.
+func ScimIntegrationExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *ScimIntegrationState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:ScimIntegration", id, state, "", opts...)
+}
+
 type scimIntegrationArgs struct {
 	// DEX connector ID for embedded IdP setups.
 	ConnectorId *string `pulumi:"connectorId"`

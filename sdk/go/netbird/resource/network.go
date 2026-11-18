@@ -64,6 +64,12 @@ func (NetworkState) ElementType() reflect.Type {
 	return reflect.TypeOf((*networkState)(nil)).Elem()
 }
 
+// NetworkExists checks whether an existing Network resource with the given ID exists.
+func NetworkExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *NetworkState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:Network", id, state, "", opts...)
+}
+
 type networkArgs struct {
 	// An optional description of the network.
 	Description *string `pulumi:"description"`

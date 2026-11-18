@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Versions match the `v`-prefixed git tags.
 
+## [0.6.4] - 2026-11-18
+
+Tracks netbird v0.83.1. The provider resources and schema are unchanged. The only upstream API change is in agent network access logs, and the provider does not manage those.
+
+### Added
+
+- The Go SDK now has a `<Resource>Exists` function for each resource, such as `resource.GroupExists`. It comes from the Pulumi `v3.277.0` code generator.
+
+### Changed
+
+- Bumped `netbird` to `v0.83.1` from `v0.82.0`. Upstream added `blocked_by`, `error_detail` and `error_source` to `AgentNetworkAccessLog`. These are read-only log fields with no matching provider resource.
+- Bumped the Pulumi SDK to `v3.277.0` from `v3.273.0`.
+- CI now lints with `golangci-lint` `v2.15.0` instead of `v2.14.0`.
+
 ## [0.6.3] - 2026-10-29
 
 Tracks netbird v0.82.0. No resource or schema changes: the API changes in this release are in areas the provider does not manage.

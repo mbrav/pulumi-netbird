@@ -62,6 +62,12 @@ func (DNSSettingsState) ElementType() reflect.Type {
 	return reflect.TypeOf((*dnssettingsState)(nil)).Elem()
 }
 
+// DNSSettingsExists checks whether an existing DNSSettings resource with the given ID exists.
+func DNSSettingsExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *DNSSettingsState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:DNSSettings", id, state, "", opts...)
+}
+
 type dnssettingsArgs struct {
 	// Group IDs whose DNS management is disabled.
 	DisabledManagementGroups []string `pulumi:"disabledManagementGroups"`

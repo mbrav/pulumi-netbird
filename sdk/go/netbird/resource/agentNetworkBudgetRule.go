@@ -77,6 +77,12 @@ func (AgentNetworkBudgetRuleState) ElementType() reflect.Type {
 	return reflect.TypeOf((*agentNetworkBudgetRuleState)(nil)).Elem()
 }
 
+// AgentNetworkBudgetRuleExists checks whether an existing AgentNetworkBudgetRule resource with the given ID exists.
+func AgentNetworkBudgetRuleExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *AgentNetworkBudgetRuleState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:AgentNetworkBudgetRule", id, state, "", opts...)
+}
+
 type agentNetworkBudgetRuleArgs struct {
 	// Whether the rule is enforced.
 	Enabled *bool `pulumi:"enabled"`

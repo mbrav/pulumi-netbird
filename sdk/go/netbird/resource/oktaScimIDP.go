@@ -78,6 +78,12 @@ func (OktaScimIDPState) ElementType() reflect.Type {
 	return reflect.TypeOf((*oktaScimIDPState)(nil)).Elem()
 }
 
+// OktaScimIDPExists checks whether an existing OktaScimIDP resource with the given ID exists.
+func OktaScimIDPExists(ctx *pulumi.Context,
+	id pulumi.StringInput, state *OktaScimIDPState, opts ...pulumi.ResourceOption) pulumi.BoolOutput {
+	return ctx.ExistsResource("netbird:resource:OktaScimIDP", id, state, "", opts...)
+}
+
 type oktaScimIDPArgs struct {
 	// The Okta enterprise connection name on Auth0. Changing this forces a replacement.
 	ConnectionName string `pulumi:"connectionName"`
